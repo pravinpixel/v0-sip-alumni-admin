@@ -1,0 +1,225 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Alumnis;
+use App\Models\Cities;
+use App\Models\MobileOtp;
+use App\Models\Occupation;
+use Illuminate\Support\Facades\Validator;
+
+class AlumniController extends Controller
+{
+    public function register(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'full_name'            => 'required|string|max:255',
+                'year_of_completion'   => 'required|integer|digits:4',
+                'state_id'             => 'required|integer',
+                'city_id'              => 'required',
+                'email'                => 'required|email|unique:alumnis,email',
+                'mobile_number'        => 'required|digits:10|unique:alumnis,mobile_number',
+                'occupation'           => 'required|string|max:255',
+                'other_city'           => 'required_if:city_id,others|string|max:255',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation errors',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            /** ------------------------------
+             *  1️⃣ OTP CHECK
+             * -----------------------------*/
+            $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
+
+            if (!$otpRecord || $otpRecord->is_verified == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please verify OTP before registration.'
+                ], 400);
+            }
+
+            /** OPTIONAL: verify flag check  
+             *   If you are deleting OTP on success then skip  
+             */
+            // if ($otpRecord->is_verified == 0) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'OTP is not verified.'
+            //     ], 400);
+            // }
+
+            /** ------------------------------
+             *  2️⃣ CITY HANDLE (OTHERS)
+             * -----------------------------*/
+            $cityId = $request->city_id;
+
+        if ($request->city_id == "others") {
+
+            $cityName = ucfirst(strtolower($request->other_city));
+
+            $city = Cities::firstOrCreate([
+                'name'     => $cityName,
+                'state_id' => $request->state_id
+            ]);
+
+            $cityId = $city->id;
+        }
+
+            /** ------------------------------
+             * 3️⃣ OCCUPATION auto-suggestion
+             * -----------------------------*/
+            $occupationName = ucfirst(strtolower($request->occupation));
+
+        $occupation = Occupation::firstOrCreate([
+            'name' => $occupationName
+        ]);
+
+            /** ------------------------------
+             *  4️⃣ SAVE ALUMNI
+             * -----------------------------*/
+
+            $alumni = Alumnis::create([
+                'full_name'          => $request->full_name,
+                'year_of_completion' => $request->year_of_completion,
+                'state_id'           => $request->state_id,
+                'city_id'            => $cityId,
+                'email'              => $request->email,
+                'mobile_number'      => $request->mobile_number,
+                'occupation_id'      => $occupation->id,
+                'status'             => 'active', // default
+            ]);
+
+            /** ------------------------------
+             * 5️⃣ DELETE OTP after success
+             * -----------------------------*/
+            $otpRecord->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Alumni registered successfully!',
+                'data'    => $alumni
+            ], 201);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration failed',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function sendOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile_number' => 'required|digits:10'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $mobile = $request->mobile_number;
+        $otp = rand(100000, 999999);
+
+        // Check existing OTP record
+        $existingOtp = MobileOtp::where('mobile_number', $mobile)->first();
+
+        if ($existingOtp) {
+            $seconds = now()->diffInSeconds($existingOtp->updated_at);
+
+            // Cooldown check (30 sec)
+            if ($seconds < 30) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please wait before requesting a new OTP.',
+                    'wait_seconds' => 30 - $seconds
+                ], 429);
+            }
+
+            // Update OTP (Resend)
+            $existingOtp->update([
+                'otp' => $otp,
+                'expires_at' => now()->addMinutes(5)
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP resent successfully',
+                'otp' => $otp // (remove in production)
+            ], 200);
+        } else {
+            // First time send OTP
+            MobileOtp::create([
+                'mobile_number' => $mobile,
+                'otp' => $otp,
+                'expires_at' => now()->addMinutes(5)
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent successfully',
+                'otp' => $otp // (remove in production)
+            ], 200);
+        }
+    }
+
+
+    public function verifyOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'mobile_number' => 'required|digits:10',
+            'otp' => 'required|digits:6'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation error',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $record = MobileOtp::where('mobile_number', $request->mobile_number)
+            ->where('otp', $request->otp)
+            ->first();
+
+        if (!$record) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid OTP'
+            ], 400);
+        }
+
+        if (now()->gt($record->expires_at)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'OTP expired'
+            ], 400);
+        }
+
+        // Delete OTP after success
+        $record->update([
+            'is_verified' => 1
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP verified successfully'
+        ]);
+    }
+}
