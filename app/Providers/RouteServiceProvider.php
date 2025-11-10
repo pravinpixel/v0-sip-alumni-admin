@@ -37,7 +37,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('admin')
                 ->group(base_path('routes/web.php'));
 
-            Route::middleware('alumni')
+            Route::middleware('web')
                 ->group(base_path('routes/alumni.php'));
         });
     }
