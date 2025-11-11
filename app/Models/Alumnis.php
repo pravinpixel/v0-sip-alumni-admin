@@ -33,4 +33,9 @@ class Alumnis extends Model
         return $this->belongsTo(Cities::class, 'city_id');
     }
 
+    public function occupation()
+    {
+        return $this->belongsTo(Occupation::class, 'occupation_id');
+    }
+
 }

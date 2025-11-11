@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
+<head>
+    <title>Alumni Dashboard</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: 70px;
+        }
+
+        /* Main Layout */
+        .body-wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        /* Sidebar - Fixed position version */
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            left: 0;
+            top: 70px; /* Below header */
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Profile Section in Sidebar */
+        .profile-section {
+            text-align: center;
+            padding: 40px 20px 30px;
+        }
+
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border: 3px solid #f3f4f6;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .profile-info {
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f9fafb;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-icon {
+            width: 18px;
+            height: 18px;
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .info-content {
+            flex: 1;
+        }
+
+        .info-label {
+            display: block;
+            font-size: 11px;
+            color: #9ca3af;
+            margin-bottom: 3px;
+        }
+
+        .info-value {
+            color: #1f2937;
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .edit-profile-btn {
+            margin: 20px;
+            padding: 12px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .edit-profile-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* Main Content Area - Adjusted for fixed sidebar */
+        .main-content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-left: 250px; /* Make space for fixed sidebar */
+            min-width: 0;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 30px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 70px; /* Below header */
+            z-index: 5;
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            padding: 30px;
+            background-color: #f5f5f5;
+            overflow-y: auto;
+            min-height: calc(100vh - 140px); /* Account for header + navbar */
+        }
+
+        /* Scrollbar styling */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: #f3f4f6;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 20px;
+                height: 60px;
+            }
+            
+            .sidebar {
+                width: 280px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                top: 60px;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 9;
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            .main-content-area {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .navbar {
+                padding: 12px 20px;
+                top: 60px;
+            }
+            
+            .content {
+                padding: 20px;
+                min-height: calc(100vh - 120px);
+            }
+        }
+
+        /* For very small screens */
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 100%;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <!-- Header -->
+        @include('alumni.layouts.header')
+
+        <!-- Main Layout -->
+        <div class="body-wrapper">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                @include('alumni.layouts.sidebar')
+            </div>
+
+            <!-- Sidebar Overlay for Mobile -->
+            <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+            <!-- Main Content Area -->
+            <div class="main-content-area">
+                <!-- Navbar -->
+                <div class="navbar">
+                    @include('alumni.layouts.navbar')
+                </div>
+
+                <!-- Content -->
+                <div class="content">
+                    @yield('content')
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+    <script>
+        // Mobile sidebar toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const menuToggle = document.getElementById('menuToggle'); // Add this to your header
+
+            // Function to open sidebar
+            function openSidebar() {
+                sidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            // Function to close sidebar
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            // Toggle sidebar when menu button is clicked
+            if (menuToggle) {
+                menuToggle.addEventListener('click', openSidebar);
+            }
+
+            // Close sidebar when overlay is clicked
+            if (sidebarOverlay) {
+                sidebarOverlay.addEventListener('click', closeSidebar);
+            }
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 768 && 
+                    !event.target.closest('.sidebar') && 
+                    !event.target.closest('#menuToggle')) {
+                    closeSidebar();
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    closeSidebar();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

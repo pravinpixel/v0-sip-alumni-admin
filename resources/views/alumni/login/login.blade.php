@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <title>@yield('title', config('app.name'))</title>
-
     <meta charset="utf-8" />
     <meta name="description" content="test" />
     <meta name="keywords" content="alumni" />
@@ -14,52 +14,42 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    
+
     @section('style')
     <link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/alumni/style.css') }}" />
     @show
 </head>
 
-<body id="kt_body" class="app-blank app-blank bgi-size-cover bgi-position-center bgi-no-repeat">
+<body id="kt_body" class="app-blank app-blank bgi-size-cover bgi-position-center bgi-no-repeat" style="background-color:#f8f8f8;">
 
     <div class="d-flex flex-column flex-root min-vh-100" id="kt_app_root">
-        <!-- 🌟 Logo at the top -->
-        <div class="text-center mt-10 mb-5">
-            <img src="{{ asset('images/logo/sip_logo.png') }}" alt="logo" style="width:200px; height:auto;">
-            <div class="text-gray-600 fw-semibold fs-6 mt-6">Alumni Admin Portal</div>
-        </div>
+        <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+            <div class="bg-body d-flex flex-column align-items-center rounded-4 w-450px p-6 log">
+                <div class="w-100" style="max-width:450px;">
 
-        <!-- 🔲 Centered login box -->
-        <div class="flex-grow-1 d-flex justify-content-center align-items-start">
-            <div class="bg-body d-flex flex-column align-items-center rounded-4 w-md-500px p-10 log shadow-lg">
-                <div class="w-100" style="max-width:400px;">
-                    <h2 class="text-center mb-4 fw-bold" style="font-size:30px;">Admin Login</h2>
-                    <p class="text-center mb-8">Enter your credentials to access the admin panel</p>
-
-                    <form id="dynamic-form" method="post" action="{{ url('admin/login_check') }}">
+                    <img src="{{ asset('images/logo/sip_logo.png') }}" alt="logo" style="width:180px; height:auto;" class="d-block mx-auto">
+                    
+                    <!-- Change form action to send-otp -->
+                    <form id="dynamic-form" method="post" action="{{ url('/send-otp') }}">
                         @csrf
 
-                        <div class="text-center mb-11">
+                        <div class="text-center mt-4 mb-4">
                             <span id="invalid-credential-error" style="color:red"></span>
                         </div>
 
-                        <div class="fv-row mb-6">
-                            <label class="form-label text-dark fw-bold">Email Address</label>
-                            <input type="text" name="email" placeholder="Email Address" autocomplete="off" class="form-control bg-transparent" />
-                            <span class="field-error" id="email-error" style="color:red"></span>
+                        <div class="fv-row mb-4">
+                            <label class="form-label text-dark fw-bold">Mobile Number</label>
+                            <input type="text" name="number" placeholder="Enter 10-digit mobile number"
+                                autocomplete="off" class="form-control bg-transparent" maxlength="10"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+
+                            <span class="field-error" id="number-error" style="color:red"></span>
                         </div>
 
-                        <div class="fv-row mb-3">
-                            <label class="form-label text-dark fw-bold">Password</label>
-                            <input type="password" id="password-field" placeholder="Password" name="password" class="form-control bg-transparent" required />
-                            <span toggle="#password-field" class="fa fa-fw fa-eye-slash field-icon toggle-password"></span>
-                            <span class="field-error" id="password-error" style="color:red"></span>
-                        </div>
-
-                        <div class="d-grid mt-10">
-                            <button type="button" id="dynamic-submit" class="btn" style="background-color:oklch(0.48 0.22 18.5); color:white;">
-                                <span class="indicator-label">Log In</span>
+                        <div class="d-grid mt-2">
+                            <button type="button" id="dynamic-submit" class="btn" style="background-color:oklch(0.52 0.24 22); color:white;">
+                                <span class="indicator-label">Send OTP</span>
                                 <span class="indicator-progress">
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                 </span>
@@ -78,46 +68,66 @@
     <script src="{{ asset('js/common.js') }}"></script>
 
     <script>
+        document.querySelector('input[name="number"]').addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             $('#dynamic-submit').on('click', function(e) {
-                loginChecking(e);
+                sendOtp(e);
             });
         });
 
-        function loginChecking(event) {
+        function sendOtp(event) {
             event.preventDefault();
+
             let formData = new FormData(document.getElementById('dynamic-form'));
+
+            $("#invalid-credential-error").text("");
+            $("#number-error").text("");
 
             $('#dynamic-submit .indicator-label').hide();
             $('#dynamic-submit .indicator-progress').show();
 
             $.ajax({
-                url: $('#dynamic-form').attr('action'),
+                url: $('#dynamic-form').attr('action'), // Now points to /send-otp
                 type: 'POST',
                 data: formData,
                 contentType: false,
                 processData: false,
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+
                 success: function(response) {
-                    if (response) {
-                        window.location.href = '{{ route("dashboard.view") }}';
+                    if (response.success) {
+                        // Show success message
+                        alert('OTP sent successfully! OTP: ' + response.otp); // Remove in production
+                        window.location.href = response.redirect;
                     }
                 },
-                error: function(response) {
-                    if (response.status === 422 && response.responseJSON.error) {
-                        var errors = response.responseJSON.error;
-                        $('#dynamic-form').find(".field-error").text('');
-                        if (typeof errors === 'object') {
-                            $.each(errors, function(key, value) {
-                                $('#' + key + '-error').text(value[0]);
+
+                error: function(xhr) {
+                    console.log('Error:', xhr.responseJSON);
+
+                    if (xhr.status === 422 || xhr.status === 400) {
+                        let res = xhr.responseJSON;
+
+                        if (res.errors) {
+                            $.each(res.errors, function(key, val) {
+                                $("#" + key + "-error").text(val[0]);
                             });
-                        } else {
-                            $('#invalid-credential-error').text(errors);
                         }
-                    } else {
-                        alert(response.responseJSON?.error || 'An unexpected error occurred.');
+
+                        if (res.error) {
+                            $("#invalid-credential-error").text(res.error);
+                        }
+                        return;
                     }
+
+                    alert("Unexpected error occurred.");
                 },
+
                 complete: function() {
                     $('#dynamic-submit .indicator-label').show();
                     $('#dynamic-submit .indicator-progress').hide();

@@ -44,6 +44,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'employees',
         ],
+        'alumni' => [
+            'driver' => 'session',
+            'provider' => 'alumnis',
+        ],
     ],
 
     /*
@@ -71,6 +75,10 @@ return [
         'employees' => [
             'driver' => 'eloquent',
             'model' => App\Models\Employee::class,
+        ],
+        'alumnis' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Alumnis::class,
         ],
 
 
