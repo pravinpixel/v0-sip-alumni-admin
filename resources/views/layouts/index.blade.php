@@ -18,7 +18,9 @@
     <link rel="stylesheet" href="{{ asset('css/style.bundle.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"  />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
     @show
+    @stack('styles')
 </head>
 
 <body id="kt_app_body" data-kt-app-layout="light-sidebar" data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
@@ -33,7 +35,6 @@
                             @yield('content')
                         </div>
                     </div>
-                    @include('layouts.footer')
                 </div>
             </div>
         </div>
@@ -46,6 +47,8 @@
     <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script>
 
     </script>
@@ -55,6 +58,7 @@
     </script>
     @endif
     @show
+    @stack('scripts')
 </body>
 
 </html>

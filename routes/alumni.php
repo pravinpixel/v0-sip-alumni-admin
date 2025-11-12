@@ -17,8 +17,24 @@ Route::controller(AuthCheckController::class)->group(function () {
 });
 
 Route::middleware('alumni.auth')->group(function () {
-    Route::get('/alumni/dashboard', [DashboardController::class, 'index'])->name('alumni.dashboard');
+    Route::prefix('dashboard')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('alumni.dashboard');
+    });
+    Route::prefix('directory')->group(function () {
+        Route::get('/', [DirectoryController::class, 'index'])->name('alumni.directory');
+        Route::get('/data', [DirectoryController::class, 'getData'])->name('alumni.directory.data');
+        Route::post('/connect/{receiverId}', [DirectoryController::class, 'sendRequest'])->name('alumni.send.request');
+    });
+    Route::prefix('connections')->group(function () {
+        Route::get('/', [ConnectionsController::class, 'index'])->name('alumni.connections');
+        Route::get('/list', [ConnectionsController::class, 'getConnections'])->name('alumni.connections.list');
+        Route::get('/requests', [ConnectionsController::class, 'getRequests'])->name('alumni.connections.requests');
+        Route::get('/profile/{id}', [ConnectionsController::class, 'getProfileData'])->name('alumni.connections.profile');
+        Route::post('/accept/{id}', [ConnectionsController::class, 'acceptConnection'])->name('alumni.connections.accept');
+        Route::post('/reject/{id}', [ConnectionsController::class, 'rejectConnection'])->name('alumni.connections.reject');
+    });
+
+
+
 });
-Route::get('/alumni/directory', [DirectoryController::class, 'index'])->name('alumni.directory');
-Route::get('/alumni/connections', [ConnectionsController::class, 'index'])->name('alumni.connections');
 Route::get('/alumni/forums', [ForumsController::class, 'index'])->name('alumni.forums');

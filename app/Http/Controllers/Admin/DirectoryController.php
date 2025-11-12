@@ -14,192 +14,85 @@ use App\Models\Location;
 use App\Models\Role;
 use App\Models\Task;
 use App\Notifications\EmployeeCreateNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Yajra\DataTables\Facades\DataTables;
 
-class EmployeeController extends Controller
+class DirectoryController extends Controller
 {
-    // public function index(Request $request)
-    // {
-    //     $search = $request->input('search');
-    //     $status = $request->input('status');
-    //     $perPage = $request->input('pageItems');
-    //     $selectedBranchName = $request->input('branch');
-    //     $selectedLocationName = $request->input('location');
-    //     $selectedDepartmentName = $request->input('department');
-    //     $selectedDesignationName = $request->input('designation');
-    //     $selectedReportingManager = $request->input('reportingManager');
-
-    //     $query = Employee::query();
-    //     if ($search) {
-    //         $branch_id = BranchLocation::where('name', $search)->value('id');
-    //         $rep_manager = Employee::where('first_name', $search)->orWhere('last_name', $search)->value('id');
-    //         $rep_managers = (string) $rep_manager;
-    //         $branch_ids = (string) $branch_id;
-    //         $query->where(function ($q) use ($search, $branch_ids, $rep_managers) {
-    //                 $q->where(DB::raw("REPLACE(CONCAT(first_name, ' ', last_name), ' ', '')"), 'like', '%' . str_replace(' ', '', $search) . '%')
-    //                     ->orWhere('email', 'like', '%' . $search . '%')
-    //                     ->orWhere('phone_number', 'like', '%' . $search . '%')
-    //                     ->orWhere('employee_id', 'like', '%' . $search . '%')
-    //                     ->orWhereRaw('JSON_UNQUOTE(reporting_manager) REGEXP ?', ['\\"'.$rep_managers.'\\"'])
-    //                     ->orWhereRaw('JSON_UNQUOTE(branch_id) REGEXP ?', ['\\"'.$branch_ids.'\\"'])
-    //                     ->orWhereHas('location', function ($query) use ($search) {
-    //                         $query->where('name', 'like', '%' . $search . '%');
-    //                     })->orWhereHas('designation', function ($query) use ($search) {
-    //                         $query->where('name', 'like', '%' . $search . '%');
-    //                     })->orWhereHas('department', function ($query) use ($search) {
-    //                         $query->where('name', 'like', '%' . $search . '%');
-    //                     });
-    //         });
-    //     }
-
-    //     if ($status === '1' || $status === '0') {
-    //         $query->where('status', $status);
-    //     }
-
-    //     if ($selectedBranchName) {
-    //         $branchId = BranchLocation::where('name', $selectedBranchName)->value('id');
-    //         $branchId = (string) $branchId;
-    //         $query->orWhereRaw('JSON_UNQUOTE(branch_id) REGEXP ?', ['\\"'.$branchId.'\\"']);
-    //     }
-
-    //     if (!empty($selectedReportingManager)) {
-    //         $idsArray = explode(',', $selectedReportingManager);
-    //         $idsRegex = implode('|', array_map(fn($id) => '(^|[^0-9])' . intval($id) . '([^0-9]|$)', $idsArray));
-    //         $query->whereRaw('JSON_UNQUOTE(reporting_manager) REGEXP ?', [$idsRegex])
-    //             ->whereNull('deleted_at');
-    //     }
-
-    //     if ($selectedLocationName) {
-    //         $locationIds = Location::where('name', $selectedLocationName)->pluck('id');
-    //         $query->whereIn('location_id', $locationIds);
-    //     }
-
-    //     if ($selectedDepartmentName) {
-    //         $departmentIds = Department::where('name', $selectedDepartmentName)->pluck('id');
-    //         $query->whereIn('department_id', $departmentIds);
-    //     }
-
-    //     if ($selectedDesignationName) {
-    //         $designationIds = Designation::where('name', $selectedDesignationName)->pluck('id');
-    //         $query->whereIn('designation_id', $designationIds);
-    //     }
-
-
-    //     $users = $query->orderBy('id', 'desc')->paginate($perPage);
-
-
-
-    //      $currentPage = $users->currentPage();
-    //      $serialNumberStart = ($currentPage - 1) * $perPage + 1;
-
-    //     $designations = Designation::where('status', '1')->whereNull('deleted_at')->get();
-    //     // $roles = Role::where('status', '1')->whereNull('deleted_at')->get();
-    //     $departments = Department::where('status', '1')->whereNull('deleted_at')->get();
-    //     $branches = BranchLocation::where('status', '1')->whereNull('deleted_at')->get();
-    //     $locations = Location::where('status', '1')->whereNull('deleted_at')->get();
-    //     $managerIds = Employee::whereNotNull('reporting_manager')
-    //         ->pluck('reporting_manager') 
-    //         ->flatMap(function ($jsonString) {
-    //             return json_decode($jsonString, true) ?? []; 
-    //         })
-    //         ->unique() 
-    //         ->toArray();
-    //     $reportingManagers = Employee::whereIn('id', $managerIds)
-    //     ->get(['id', 'first_name', 'last_name']);    
-
-    //     $total_count = Employee::count();
-
-
-    //     return view('masters.employee.index', [
-    //         'users' => $users,
-    //         'selectedStatus' => $status,
-    //         'search' => $search,
-    //         'total_count' => $total_count,
-    //         'serialNumberStart' => $serialNumberStart,
-    //         'designations' => $designations,
-    //         // 'roles' => $roles,
-    //         'departments' => $departments,
-    //         'branches' => $branches,
-    //         'locations' => $locations,
-    //         'reportingManagers' => $reportingManagers
-    //     ]);
-    // }
-
     public function index(Request $request)
     {
-        $search  = $request->input('search');
-        $status  = $request->input('status');
-        $stateId = $request->input('state_id');
-        $cityId  = $request->input('city_id');
-        $year    = $request->input('year');
-        $occupation = $request->input('occupation');
-        $perPage = $request->input('pageItems', 10);
+        return view('masters.directory.index');
+    }
 
-        $query = Alumnis::query();
+    public function getData(Request $request)
+    {
+        try {
+            $query = Alumnis::with(['city', 'occupation'])->orderBy('id', 'desc');
 
-        // 🔍 Search Filter
-        if (!empty($search)) {
-            $query->where(function ($q) use ($search) {
-                $q->where('full_name', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%")
-                    ->orWhere('mobile_number', 'like', "%$search%")
-                    ->orWhere('occupation_text', 'like', "%$search%");
-            });
+            // Apply filters
+            if ($request->filled('batch')) {
+                $query->where('year_of_completion', $request->batch);
+            }
+            if ($request->filled('location')) {
+                $query->whereHas('city', function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->location . '%');
+                });
+            }
+
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($row) {
+                    return '<span>' . Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->setTimezone('Asia/kolkata')->format('d-m-Y h:i A') . '</span>';
+                })
+                ->editColumn('alumni', function ($row) {
+                    $img = $row->image ? asset($row->image) : asset('images/avatar/blank.png');
+                    $occ = $row->occupation->name ?? '—';
+                    return '<div style="display:flex;align-items:center;gap:12px;">
+                        <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                    </div>';
+                })
+                ->addColumn('full_name', function ($row) {
+                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->full_name ?? '—') . '</span>';
+                })
+                ->addColumn('batch', function ($row) {
+                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->year_of_completion ?? '—') . '</span>';
+                })
+                ->addColumn('mobile_number', function ($row) {
+                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->mobile_number ?? '—') . '</span>';
+                })
+                ->addColumn('location', function ($row) {
+                    return ($row->city?->state?->name ?? '-') . ', ' . ($row->city?->name ?? '-');
+                })
+                ->addColumn('occupation', function ($row) {
+                    return $row->occupation->name ?? '-';
+                })
+                ->addColumn('connections', function ($row) {
+                    return '<button onclick="viewProfile(' . $row->id . ')" class="btn btn-sm btn-primary">View Profile</button>';
+                })
+                ->addColumn('action', function ($row) {
+                    return '
+                      <div class="dropdown">
+                                <button class="btn btn-sm btn-light" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
+                                <i class="fas fa-ellipsis-v"></i>
+                                     </button>
+                                <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
+                                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="sendMessage(' . $row->id . ')">Send Message</a></li>
+                               </ul>
+                               </div>';
+                })
+                ->rawColumns(['alumni', 'batch', 'location', 'action', 'full_name', 'mobile_number', 'created_at', 'connections'])
+                ->make(true);
+        } catch (\Throwable $e) {
+            Log::error('Directory DataTable error: ' . $e->getMessage(), [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        // ✔ Status Filter
-        if (!empty($status)) {
-            $query->where('status', $status);
-        }
-
-        // ✔ State Filter
-        if (!empty($stateId)) {
-            $query->where('state_id', $stateId);
-        }
-
-        // ✔ City Filter
-        if (!empty($cityId)) {
-            $query->where('city_id', $cityId);
-        }
-
-        // ✔ Year Filter
-        if (!empty($year)) {
-            $query->where('year_of_completion', $year);
-        }
-
-        // ✔ Occupation Auto-Suggest Filter
-        if (!empty($occupation)) {
-            $query->where('occupation_text', 'like', "%$occupation%");
-        }
-
-        // Pagination
-        $alumnis = $query->orderBy('id', 'desc')->paginate($perPage);
-
-        $currentPage = $alumnis->currentPage();
-        $serialNumberStart = ($currentPage - 1) * $perPage + 1;
-
-        // Dropdown Data
-        // $states   = State::orderBy('name')->get();
-        // $cities   = City::orderBy('name')->get();
-        $years    = Alumnis::orderBy('year_of_completion', 'desc')
-            ->pluck('year_of_completion')
-            ->unique();
-
-        // $occupations = Occupation::orderBy('name')->get();
-
-        return view('masters.employee.index', [
-            'alumnis' => $alumnis,
-            'serialNumberStart' => $serialNumberStart,
-            // 'states' => $states,
-            // 'cities' => $cities,
-            'years' => $years,
-            // 'occupations' => $occupations,
-            'search' => $search,
-            'status' => $status
-        ]);
     }
 
 
@@ -263,7 +156,7 @@ class EmployeeController extends Controller
 
     public function save(Request $request)
     {
-        
+
         if (!empty($request->branch_id) && $request->branch_id[0] === 'all') {
             $branchIds = array_filter($request->branch_id, function ($id) {
                 return $id !== 'all';

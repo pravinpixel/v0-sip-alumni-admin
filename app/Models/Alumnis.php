@@ -38,4 +38,14 @@ class Alumnis extends Model
         return $this->belongsTo(Occupation::class, 'occupation_id');
     }
 
+    public function sendconnections()
+    {
+        return $this->hasMany(AlumniConnections::class, 'sender_id');
+    }
+
+    public function receiveconnections()
+    {
+        return $this->hasMany(AlumniConnections::class, 'receiver_id');
+    }
+
 }

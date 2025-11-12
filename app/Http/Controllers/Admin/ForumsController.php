@@ -4,66 +4,93 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\OrganizationExport;
 use App\Http\Controllers\Controller;
+use App\Models\Alumnis;
 use App\Models\ContactMaster;
 use App\Models\Iallert;
 use App\Models\Location;
 use App\Models\Organization;
 use App\Models\OrganizationContact;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\DataTables;
 
-class OrganizationController extends Controller
+class ForumsController extends Controller
 {
     public function index(Request $request)
     {
+        return view('masters.directory.index');
+    }
 
-        $search = $request->input('search');
-        $status = $request->input('status');
-        $perPage = $request->input('pageItems');
-        $selectedLocationName = $request->input('location');
+    public function getData(Request $request)
+    {
+        try {
+            $query = Alumnis::with(['city', 'occupation'])->orderBy('id', 'desc');
 
+            // Apply filters
+            if ($request->filled('batch')) {
+                $query->where('year_of_completion', $request->batch);
+            }
+            if ($request->filled('location')) {
+                $query->whereHas('city', function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->location . '%');
+                });
+            }
 
-        $query = Organization::query()->with('location');
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('customer_code', 'like', '%' . $search . '%')
-                    ->orWhere('company_name', 'like', '%' . $search . '%')
-                    ->orWhere('address', 'like', '%' . $search . '%')
-                    ->orWhere('primary_mail_id1', 'like', '%' . $search . '%')
-                    ->orWhere('primary_mail_id2', 'like', '%' . $search . '%')
-                    ->orWhere('primary_phone1', 'like', '%' . $search . '%')
-                    ->orWhere('primary_phone2', 'like', '%' . $search . '%')
-                    ->orWhere('primary_name1', 'like', '%' . $search . '%')
-                    ->orWhere('primary_name2', 'like', '%' . $search . '%');
-            });
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->editColumn('created_at', function ($row) {
+                    return '<span>' . Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->setTimezone('Asia/kolkata')->format('d-m-Y h:i A') . '</span>';
+                })
+                ->editColumn('alumni', function ($row) {
+                    $img = $row->image ? asset($row->image) : asset('images/avatar/blank.png');
+                    $occ = $row->occupation->name ?? '—';
+                    return '<div style="display:flex;align-items:center;gap:12px;">
+                        <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                    </div>';
+                })
+                ->addColumn('full_name', function ($row) {
+                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->full_name ?? '—') . '</span>';
+                })
+                ->addColumn('batch', function ($row) {
+                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->year_of_completion ?? '—') . '</span>';
+                })
+                ->addColumn('mobile_number', function ($row) {
+                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->mobile_number ?? '—') . '</span>';
+                })
+                ->addColumn('location', function ($row) {
+                    return ($row->city?->state?->name ?? '-') . ', ' . ($row->city?->name ?? '-');
+                })
+                ->addColumn('occupation', function ($row) {
+                    return $row->occupation->name ?? '-';
+                })
+                ->addColumn('connections', function ($row) {
+                    return '<button onclick="viewProfile(' . $row->id . ')" class="btn btn-sm btn-primary">View Profile</button>';
+                })
+                ->addColumn('action', function ($row) {
+                    return '
+                      <div class="dropdown">
+                                <button class="btn btn-sm btn-light" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
+                                <i class="fas fa-ellipsis-v"></i>
+                                     </button>
+                                <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
+                                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="sendMessage(' . $row->id . ')">Send Message</a></li>
+                               </ul>
+                               </div>';
+                })
+                ->rawColumns(['alumni', 'batch', 'location', 'action', 'full_name', 'mobile_number', 'created_at', 'connections'])
+                ->make(true);
+        } catch (\Throwable $e) {
+            Log::error('Directory DataTable error: ' . $e->getMessage(), [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        if ($selectedLocationName) {
-            $locationIds = Location::where('name', $selectedLocationName)->pluck('id');
-            $query->whereIn('location_id', $locationIds);
-        }
-
-        $organizations = $query->orderBy('id', 'desc')->paginate($perPage);
-
-
-        $currentPage = $organizations->currentPage();
-        $serialNumberStart = ($currentPage - 1) * $perPage + 1;
-        $locations = Location::where('status', '1')->whereNull('deleted_at')->get();
-
-        $total_count = Organization::count();
-
-
-        return view('organization.index', [
-            'organizations' => $organizations,
-            'selectedStatus' => $status,
-            'search' => $search,
-            'total_count' => $total_count,
-            'serialNumberStart' => $serialNumberStart,
-            'locations' => $locations
-        ]);
     }
 
     public function create(Request $request)

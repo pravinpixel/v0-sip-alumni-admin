@@ -62,7 +62,7 @@
 
                 @can('employee.view')
                 <div class="menu-item">
-                    <a class="menu-link {{ (request()->is('admin/employee*')) ? 'active' : '' }}" href="{{ url('admin/employee') }}">
+                    <a class="menu-link {{ (request()->is('admin/directory*')) ? 'active' : '' }}" href="{{ route('admin.directory.index') }}">
                         <i class="custom_icon fas fa-address-book"></i>
                         <span class="menu-title"><b>Directory</b></span>
                     </a>
@@ -71,7 +71,7 @@
 
                 @can('organization.view')
                 <div class="menu-item">
-                    <a class="menu-link {{ (request()->is('admin/organization*')) ? 'active' : '' }}" href="{{ url('admin/organization') }}">
+                    <a class="menu-link {{ (request()->is('admin/forums*')) ? 'active' : '' }}" href="{{ route('admin.forums.index') }}">
                         <i class="custom_icon fas fa-comments"></i>
                         <span class="menu-title"><b>Forums</b></span>
                     </a>

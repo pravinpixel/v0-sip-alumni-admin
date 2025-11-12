@@ -1,5 +1,8 @@
 @php
-    $alumni = $alumni ?? null;
+$alumni = $alumni ?? null;
+$city = $alumni && isset($alumni->city) ? $alumni->city : null;
+$state = $city && isset($city->state) ? $city->state : null;
+$occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null;
 @endphp
 
 <!-- Sidebar Overlay for Mobile -->
@@ -8,15 +11,16 @@
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <!-- Profile Section -->
-    <div class="profile-section">
-        <img src="https://via.placeholder.com/100" 
-             alt="Profile" 
-             class="profile-img">
-        <div class="profile-name">{{ $alumni->full_name ?? '-' }}</div>
-    </div>
 
     <!-- Profile Info -->
     <div class="profile-info">
+        <div class="profile-section" style="position: relative;">
+            <button class="close-btn" onclick="closeSidebar()">×</button>
+            <img src="{{ $alumni->image ?? asset('images/avatar/blank.png') }}"
+                alt="Profile"
+                class="profile-img">
+            <div class="profile-name">{{ $alumni->full_name ?? '-' }}</div>
+        </div>
         <div class="info-item">
             <i class="fa fa-graduation-cap info-icon"></i>
             <div class="info-content">
@@ -56,21 +60,45 @@
                 <div class="info-value">{{ $occupation->name ?? '-' }}</div>
             </div>
         </div>
+        <button class="edit-profile-btn" onclick="alert('Edit Profile clicked')">
+            <i class="fa fa-pencil"></i>
+            Edit Profile
+        </button>
     </div>
 
     <!-- Edit Profile Button -->
-    <button class="edit-profile-btn" onclick="alert('Edit Profile clicked')">
-        <i class="fa fa-pencil"></i>
-        Edit Profile
-    </button>
 </div>
 
+<style>
+    .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #ef4444;
+    color: #ef4444;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 26px;
+    text-align: center;
+    z-index: 1000;
+}
+
+
+
+</style>
+
 <script>
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        sidebar.classList.toggle('active');
-        overlay.classList.toggle('active');
-    }
+function closeSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    sidebar.classList.remove('active');
+    sidebarOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
 </script>
