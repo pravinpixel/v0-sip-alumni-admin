@@ -8,9 +8,8 @@
         border-bottom: 1px solid #e5e7eb;
         position: sticky;
         top: 0;
-        z-index: 101;
+        z-index: 10;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        position: relative;
     }
 
     .header-logo img {
