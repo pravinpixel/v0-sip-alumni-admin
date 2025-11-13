@@ -10,6 +10,7 @@
         top: 0;
         z-index: 101;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        position: relative;
     }
 
     .header-logo img {
@@ -79,6 +80,8 @@
     @media (max-width: 768px) {
         .top-header {
             padding: 12px 20px;
+            flex-direction: column;
+            gap: 12px;
         }
 
         .header-logo img {
@@ -86,36 +89,55 @@
         }
 
         .user-info {
-            display: none;
+            display: block;
         }
 
         .user-avatar {
-            width: 38px;
-            height: 38px;
+            width: 50px !important;
+            height: 50px !important;
         }
 
         .menu-toggle {
             display: block;
         }
+
+        .top-header>div:nth-child(2) {
+            position: static !important;
+            transform: none !important;
+        }
     }
 </style>
 
 <!-- Header -->
-<div class="top-header">
-    <!-- Left: Logo -->
-    <div class="header-logo">
-        <img src="{{ asset('images/logo/sip_logo.png') }}" alt="Logo">
+<div class="top-header" > <!-- Left: Menu Toggle + Logo -->
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="header-logo">
+            <img src=" {{ asset('images/logo/sip_logo.png') }}" alt="Logo">
+        </div>
     </div>
 
-    <!-- Right: User Profile -->
-    <div class="header-right">
-        <div class="user-profile" onclick="toggleProfileDropdown()">
-            <div class="user-info">
-                <div class="user-name">Rohit</div>
-                <span class="user-batch">Batch 2019</span>
+    <!-- Center: User Profile -->
+    <div
+        style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px;">
+        <img src="{{ $alumni->image ?? asset('images/avatar/blank.png') }}" alt="User" class="user-avatar"
+            style="width: 60px; height: 60px; border: 3px solid #e5e7eb;">
+        <div style="text-align: left;">
+            <div class="user-name" style="font-size: 24px; margin-bottom: 4px;">{{ $alumni->full_name ?? 'Rohit' }}
             </div>
-            <img src="https://via.placeholder.com/45" alt="User" class="user-avatar">
+            <span class="user-batch" style="font-size: 16px; padding: 4px 16px;">Batch
+                {{ $alumni->year_of_completion ?? '2019' }}</span>
         </div>
+    </div>
+
+    <!-- Right: Icons/Actions -->
+    <div class="header-right">
+        <button style="background: transparent; border: none; cursor: pointer; padding: 8px;"
+            onclick="toggleProfileDropdown()">
+            <i class="fas fa-user-circle" style="font-size: 24px; color: #6b7280;"></i>
+        </button>
     </div>
 </div>
 
