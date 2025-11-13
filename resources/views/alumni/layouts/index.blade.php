@@ -6,9 +6,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         * {
@@ -37,7 +38,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -57,7 +58,8 @@
             border-right: 1px solid #e5e7eb;
             position: fixed;
             left: 0;
-            top: 70px; /* Below header */
+            top: 70px;
+            /* Below header */
             bottom: 0;
             overflow-y: auto;
             z-index: 10;
@@ -157,7 +159,8 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            margin-left: 250px; /* Make space for fixed sidebar */
+            margin-left: 250px;
+            /* Make space for fixed sidebar */
             min-width: 0;
         }
 
@@ -168,7 +171,8 @@
             padding: 15px 30px;
             flex-shrink: 0;
             position: sticky;
-            top: 70px; /* Below header */
+            top: 70px;
+            /* Below header */
             z-index: 5;
         }
 
@@ -178,7 +182,8 @@
             padding: 30px;
             background-color: #f5f5f5;
             overflow-y: auto;
-            min-height: calc(100vh - 140px); /* Account for header + navbar */
+            min-height: calc(100vh - 140px);
+            /* Account for header + navbar */
         }
 
         /* Scrollbar styling */
@@ -205,7 +210,7 @@
                 padding: 12px 20px;
                 height: 60px;
             }
-            
+
             .sidebar {
                 width: 280px;
                 transform: translateX(-100%);
@@ -231,17 +236,17 @@
             .sidebar-overlay.active {
                 display: block;
             }
-            
+
             .main-content-area {
                 margin-left: 0;
                 width: 100%;
             }
-            
+
             .navbar {
                 padding: 12px 20px;
                 top: 60px;
             }
-            
+
             .content {
                 padding: 20px;
                 min-height: calc(100vh - 120px);
@@ -253,7 +258,7 @@
             .sidebar {
                 width: 100%;
             }
-            
+
             .content {
                 padding: 15px;
             }
@@ -295,10 +300,10 @@
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    
+
     <script>
         // Mobile sidebar toggle functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const sidebar = document.querySelector('.sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
             const menuToggle = document.getElementById('menuToggle'); // Add this to your header
@@ -328,16 +333,16 @@
             }
 
             // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function(event) {
-                if (window.innerWidth <= 768 && 
-                    !event.target.closest('.sidebar') && 
+            document.addEventListener('click', function (event) {
+                if (window.innerWidth <= 768 &&
+                    !event.target.closest('.sidebar') &&
                     !event.target.closest('#menuToggle')) {
                     closeSidebar();
                 }
             });
 
             // Handle window resize
-            window.addEventListener('resize', function() {
+            window.addEventListener('resize', function () {
                 if (window.innerWidth > 768) {
                     closeSidebar();
                 }
