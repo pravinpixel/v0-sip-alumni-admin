@@ -1,60 +1,52 @@
 <style>
     .alumni-navbar {
-        background: white;
-        padding: 0;
+        background: #f3f4f6;
+        padding: 16px;
         display: flex;
-        gap: 0;
+        gap: 12px;
         align-items: center;
-        flex-wrap: wrap;
-        border-bottom: 1px solid #e5e7eb;
+        width: 100%;
+        margin: 0;
+        box-sizing: border-box;
+        border-radius: 8px;
     }
 
     .nav-link {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 10px;
-        padding: 16px 28px;
+        padding: 14px 20px;
         color: #6b7280;
         text-decoration: none;
         font-size: 15px;
         font-weight: 500;
         transition: all 0.3s ease;
         border: none;
-        border-bottom: none;
         background: transparent;
         cursor: pointer;
         position: relative;
-        box-shadow: none;
+        border-radius: 6px;
+        border-bottom: 3px solid transparent;
+        flex: 1;
     }
 
     .nav-link i {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .nav-link:hover {
-        background-color: #f9fafb;
+        background-color: #e5e7eb;
         color: #374151;
+        border-bottom: 3px solid #fbbf24;
     }
 
     .nav-link.active {
-        background-color: #dc2626;
+        background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
         color: white;
         font-weight: 600;
-        border-radius: 8px 8px 0 0;
-        border: none;
-        box-shadow: none;
-        position: relative;
-    }
-
-    .nav-link.active::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background-color: #fbbf24;
-        border-radius: 0 0 2px 2px;
+        border-bottom: 4px solid #fbbf24;
+        border-radius: 6px;
     }
 
     .nav-link.active i {
@@ -65,11 +57,13 @@
         .alumni-navbar {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
+            padding: 15px 20px;
+            gap: 12px;
         }
 
         .nav-link {
             white-space: nowrap;
-            padding: 14px 20px;
+            padding: 10px 20px;
             font-size: 14px;
         }
     }

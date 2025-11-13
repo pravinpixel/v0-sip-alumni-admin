@@ -177,10 +177,6 @@
             border-bottom: 1px solid #e0e0e0;
             padding: 15px 30px;
             flex-shrink: 0;
-            position: sticky;
-            top: 70px;
-            /* Below header */
-            z-index: 5;
         }
 
         /* Content */

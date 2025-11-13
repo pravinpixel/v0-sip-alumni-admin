@@ -109,7 +109,7 @@
 </style>
 
 <!-- Header -->
-<div class="top-header" > <!-- Left: Menu Toggle + Logo -->
+<div class="top-header"> <!-- Left: Menu Toggle + Logo -->
     <div style="display: flex; align-items: center; gap: 15px;">
         <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
             <i class="fas fa-bars"></i>
@@ -122,22 +122,18 @@
     <!-- Center: User Profile -->
     <div
         style="position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 16px;">
-        <img src="{{ $alumni->image ?? asset('images/avatar/blank.png') }}" alt="User" class="user-avatar"
-            style="width: 60px; height: 60px; border: 3px solid #e5e7eb;">
-        <div style="text-align: left;">
-            <div class="user-name" style="font-size: 24px; margin-bottom: 4px;">{{ $alumni->full_name ?? 'Rohit' }}
-            </div>
-            <span class="user-batch" style="font-size: 16px; padding: 4px 16px;">Batch
-                {{ $alumni->year_of_completion ?? '2019' }}</span>
-        </div>
     </div>
 
-    <!-- Right: Icons/Actions -->
-    <div class="header-right">
-        <button style="background: transparent; border: none; cursor: pointer; padding: 8px;"
-            onclick="toggleProfileDropdown()">
-            <i class="fas fa-user-circle" style="font-size: 24px; color: #6b7280;"></i>
-        </button>
+    <!-- Right: User Profile -->
+    <div class="header-right" style="cursor: pointer; gap: 12px;" onclick="toggleProfileDropdown()">
+        <img src="{{ $alumni->image ?? asset('images/avatar/blank.png') }}" alt="User" class="user-avatar"
+            style="width: 45px; height: 45px; border: 2px solid #e5e7eb;">
+        <div style="text-align: left;">
+            <div class="user-name" style="font-size: 15px; margin-bottom: 2px;">{{ $alumni->full_name ?? 'Rohit' }}
+            </div>
+            <span class="user-batch" style="font-size: 12px; padding: 3px 10px;">Batch
+                {{ $alumni->year_of_completion ?? '2019' }}</span>
+        </div>
     </div>
 </div>
 
