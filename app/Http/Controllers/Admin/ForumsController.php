@@ -23,7 +23,7 @@ class ForumsController extends Controller
 {
     public function index(Request $request)
     {
-        return view('masters.directory.index');
+        return view('forums.index');
     }
 
     public function getData(Request $request)

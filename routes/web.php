@@ -57,6 +57,7 @@ Route::get('mail', [TestController::class, 'mail']);
         Route::prefix('directory')->controller(DirectoryController::class)->group(function () {
             Route::get('/', 'index')->name('admin.directory.index')->middleware('checkAccess:employee.view');
             Route::get('/get-data', [DirectoryController::class, 'getData'])->name('admin.directory.data');
+            Route::get('/connections/{id}', [DirectoryController::class, 'getConnections'])->name('admin.directory.connections');
 
             Route::get('create', 'create')->name('employee.create')->middleware('checkAccess:employee.create');
             Route::post('save', 'save')->name('employee.save');

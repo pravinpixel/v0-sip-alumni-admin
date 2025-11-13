@@ -11,7 +11,7 @@
         <!-- Search and Filter -->
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
             <div style="flex: 1; position: relative;">
-                <input type="text" id="searchInput" placeholder="🔍 Search alumni..."
+                <input type="text" id="searchInput" placeholder="🔍 Search by name or email..."
                     style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
             </div>
             <button id="filterToggleBtn"
@@ -42,9 +42,9 @@
         </div>
 
         <!-- Alumni Table -->
-        <table id="directoryTable" class="display" style="width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;">
+        <table id="directoryTable" class="display" style="width: 100%;border-collapse: collapse;background-color: white;box-shadow: 0 2px 8px rgba(0,0,0,0.08);border-radius: 6px;border: 1px solid #e0e0e0;border-radius: 8px;">
             <thead>
-                <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
+                <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 12px;">
                     <th style="padding: 15px; text-align: left;">Created On</th>
                     <th style="padding: 15px; text-align: left;">Profile Picture</th>
                     <th style="padding: 15px; text-align: left;">Name</th>
@@ -65,8 +65,34 @@
 <style>
     /* Add padding to tbody cells */
     #directoryTable tbody td {
-        padding: 12px 15px; /* Adjust as needed */
+        padding: 12px 15px;
+        /* Adjust as needed */
         vertical-align: middle;
+        box-sizing: border-box;
+    }
+
+    table.dataTable th,
+    table.dataTable td {
+        white-space: nowrap;
+        /* Prevent wrapping */
+    }
+    .dataTables_wrapper {
+    margin-top: 25px !important; /* pushes the whole table area down */
+}
+
+    table.dataTable thead th {
+        box-sizing: border-box;
+        /* Ensure proper width calculation */
+    }
+
+    #directoryTable tbody td {
+        border-bottom: 1px solid #f0f0f0;
+        /* soft line between rows */
+    }
+
+    #directoryTable thead th {
+        border-bottom: 2px solid #e0e0e0;
+        /* slightly thicker under header */
     }
 </style>
 
@@ -111,7 +137,7 @@
             serverSide: true,
             ajax: {
                 url: "{{ route('admin.directory.data') }}",
-                type : 'GET',
+                type: 'GET',
                 data: function(d) {
                     d.batch = $('#filterBatch').val();
                     d.location = $('#filterLocation').val();
@@ -188,7 +214,7 @@
             const section = $('#filterSection');
             const isVisible = section.is(':visible');
             section.slideToggle();
-            $(this).find('span').text(isVisible ? '🔽 Open Filters' : '🔼 Close Filters');
+            $(this).find('span').text(isVisible ? '🔽 Filters' : '🔼 Close Filters');
         });
     });
 
