@@ -10,9 +10,14 @@
 
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
+    <!-- Drawer Toggle Button -->
+    <button class="drawer-toggle" id="drawerToggle" onclick="toggleDrawer()">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
     <!-- Profile Section -->
     <div class="profile-section" style="position: relative;">
-        <button class="close-btn" onclick="toggleSidebar()">×</button>
+        <button class="close-btn" onclick="closeSidebar()">×</button>
         <img src="{{ $alumni->image ?? asset('images/avatar/blank.png') }}" alt="Profile" class="profile-img">
         <div class="profile-name">{{ $alumni->full_name ?? '-' }}</div>
     </div>
@@ -68,6 +73,85 @@
 </div>
 
 <style>
+    /* Drawer Toggle Button */
+    .drawer-toggle {
+        position: absolute;
+        top: 50%;
+        right: -15px;
+        transform: translateY(-50%);
+        width: 30px;
+        height: 60px;
+        background: #dc2626;
+        border: none;
+        border-radius: 0 8px 8px 0;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1001;
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .drawer-toggle:hover {
+        background: #b91c1c;
+        right: -18px;
+    }
+
+    .drawer-toggle i {
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.collapsed .drawer-toggle i {
+        transform: rotate(180deg);
+    }
+
+    #sidebar.collapsed {
+        width: 80px !important;
+        overflow: visible !important;
+        transition: width 0.3s ease !important;
+    }
+
+    #sidebar.collapsed .profile-section {
+        padding: 30px 10px 10px;
+    }
+
+    #sidebar.collapsed .profile-img {
+        width: 55px;
+        height: 55px;
+        margin: 0 auto 5px;
+    }
+
+    #sidebar.collapsed .profile-name,
+    #sidebar.collapsed .info-item,
+    #sidebar.collapsed .profile-info {
+        display: none;
+    }
+
+    #sidebar.collapsed .edit-profile-btn {
+        width: 35px;
+        height: 35px;
+        margin: 10px auto 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0;
+        position: relative;
+    }
+
+    #sidebar.collapsed .edit-profile-btn i {
+        font-size: 14px;
+        margin: 0;
+    }
+
+    #sidebar.collapsed .drawer-toggle {
+        right: -15px;
+    }
+
     .close-btn {
         position: absolute;
         top: 10px;
@@ -91,11 +175,16 @@
         .close-btn {
             display: block;
         }
+
+        .drawer-toggle {
+            display: none;
+        }
     }
 
     /* Ensure sidebar has clean white background */
-    .sidebar {
+    #sidebar {
         background: white !important;
+        transition: left 0.3s ease !important;
     }
 
     /* Ensure edit button is red, not yellow */
@@ -113,3 +202,48 @@
         background: transparent !important;
     }
 </style>
+
+<script>
+    function toggleDrawer() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('.main-content-area');
+
+        console.log('Toggle drawer clicked', sidebar, mainContent);
+
+        if (!sidebar) {
+            console.error('Sidebar not found');
+            return;
+        }
+
+        const isCollapsed = sidebar.classList.contains('collapsed');
+
+        if (isCollapsed) {
+            // Expand sidebar
+            sidebar.classList.remove('collapsed');
+            sidebar.style.width = '250px';
+            sidebar.style.padding = '20px 0';
+            if (mainContent) {
+                mainContent.style.marginLeft = '250px';
+            }
+        } else {
+            // Collapse sidebar to mini version
+            sidebar.classList.add('collapsed');
+            sidebar.style.width = '80px';
+            sidebar.style.padding = '20px 0';
+            if (mainContent) {
+                mainContent.style.marginLeft = '80px';
+            }
+        }
+
+        console.log('Sidebar collapsed:', !isCollapsed, 'Width:', sidebar.style.width);
+    }
+
+    function closeSidebar() {
+        const sidebar = document.querySelector('.sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        if (sidebar) sidebar.classList.remove('active');
+        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+</script>

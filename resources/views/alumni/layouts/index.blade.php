@@ -54,8 +54,8 @@
         /* Sidebar - Fixed position version */
         .sidebar {
             width: 250px;
-            background: white;
-            border-right: 1px solid #e5e7eb;
+            /* background: white; */
+            /* border-right: 1px solid #e5e7eb; */
             position: fixed;
             left: 0;
             top: 70px;
@@ -66,6 +66,13 @@
             display: flex;
             padding: 20px 0;
             flex-direction: column;
+            transition: left 0.3s ease, width 0.3s ease;
+        }
+
+        /* Sidebar collapsed state - mini sidebar */
+        .sidebar.collapsed {
+            width: 80px;
+            overflow: visible;
         }
 
         /* Profile Section in Sidebar */
