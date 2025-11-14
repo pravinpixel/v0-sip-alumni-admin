@@ -44,6 +44,7 @@ Route::middleware('alumni.auth')->group(function () {
     });
     Route::prefix('forums')->group(function () {
         Route::get('/', [ForumsController::class, 'index'])->name('alumni.forums');
+        Route::post('/create-post', [ForumsController::class, 'createPost'])->name('alumni.create.post');
     });
 
     Route::get('/alumni/{id}', [CommonController::class, 'getAlumni']);
