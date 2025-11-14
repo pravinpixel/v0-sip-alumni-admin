@@ -16,7 +16,7 @@
                 </button>
                 <button
                     style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;"
-                    onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+                    onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'" onclick="openCreatePostModal()">
                     <i class="fas fa-plus"></i>
                     Create Post
                 </button>
@@ -170,4 +170,7 @@
             </div>
         @endforeach
     </div>
+
+    <!-- Include Create Post Modal -->
+    @include('alumni.modals.create-post-modal')
 @endsection

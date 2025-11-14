@@ -58,7 +58,7 @@
             /* border-right: 1px solid #e5e7eb; */
             position: fixed;
             left: 0;
-            top: 70px;
+            top: 81px;
             /* Below header */
             bottom: 0;
             overflow-y: auto;
@@ -67,6 +67,7 @@
             padding: 20px 0;
             flex-direction: column;
             transition: left 0.3s ease, width 0.3s ease;
+            height: 96%;
         }
 
         /* Sidebar collapsed state - mini sidebar */
@@ -78,7 +79,7 @@
         /* Profile Section in Sidebar */
         .profile-section {
             text-align: center;
-            padding: 40px 20px 30px;
+            padding: 10px;
         }
 
         .profile-img {

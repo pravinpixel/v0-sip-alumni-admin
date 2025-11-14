@@ -10,7 +10,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Storage;
 
 class Alumnis extends Model
 {
@@ -18,6 +18,7 @@ class Alumnis extends Model
     use SoftDeletes;
 
     protected $table = 'alumnis';
+    protected $appends = ['image_url'];
     protected $fillable = [
         'full_name',
         'year_of_completion',
@@ -47,5 +48,19 @@ class Alumnis extends Model
     {
         return $this->hasMany(AlumniConnections::class, 'receiver_id');
     }
+
+    public function getImageUrlAttribute()
+    {
+    if (!empty($this->image)) {
+        // Image path based on your directory
+        $path =  $this->image;
+
+        // Generate a full URL (works with storage:link)
+        return asset(Storage::url($path));
+    }
+
+    // Return default placeholder if no image exists
+    return asset('images/avatar/blank.png');
+}
 
 }

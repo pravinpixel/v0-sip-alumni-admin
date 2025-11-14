@@ -98,7 +98,7 @@ class DirectoryController extends Controller
                 ->rawColumns(['alumni', 'batch', 'location', 'action'])
                 ->make(true);
         } catch (\Throwable $e) {
-            \Log::error('Directory DataTable error: ' . $e->getMessage(), [
+            Log::error('Directory DataTable error: ' . $e->getMessage(), [
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
             ]);
