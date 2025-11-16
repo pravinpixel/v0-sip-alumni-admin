@@ -50,7 +50,6 @@ class AuthCheckController extends Controller
             session(['verify_mobile' => $mobile]);
 
             // TODO: Send SMS via your SMS gateway
-            // $this->sendSms($mobile, $otp);
 
             return response()->json([
                 'success' => true,
