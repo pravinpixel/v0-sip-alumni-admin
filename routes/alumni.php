@@ -44,12 +44,15 @@ Route::middleware('alumni.auth')->group(function () {
     });
     Route::prefix('forums')->group(function () {
         Route::get('/', [ForumsController::class, 'index'])->name('alumni.forums');
+        Route::get('/data', [ForumsController::class, 'getData'])->name('alumni.forums.data');
         Route::post('/create-post', [ForumsController::class, 'createPost'])->name('alumni.create.post');
+        Route::post('/create-reply', [ForumsController::class, 'createReply'])->name('alumni.create.reply');
     });
-
+    
     Route::get('/alumni/{id}', [CommonController::class, 'getAlumni']);
 });
 
+Route::get('/view-thread/{id}', [ForumsController::class, 'viewThread'])->name('alumni.view.thread');
 
 Route::get('/states', [CommonController::class, 'getStates'])->name('alumni.states');
 Route::get('/cities-by-state/{stateId}', [CommonController::class, 'getCitiesByState'])->name('alumni.cities');

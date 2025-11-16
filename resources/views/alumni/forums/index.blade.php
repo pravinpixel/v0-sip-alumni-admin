@@ -1,176 +1,331 @@
 @extends('alumni.layouts.index')
 
 @section('content')
-    <div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
-        {{-- Header --}}
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
-            <div>
-                <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Forum Posts</h1>
-                <p style="color: #6b7280; font-size: 15px;">Share and engage with the SIP Academy community</p>
-            </div>
-            <div style="display: flex; gap: 12px;">
-                <button
-                    style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;"
-                    onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
-                    Your Activity
-                </button>
-                <button
-                    style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;"
-                    onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'" onclick="openCreatePostModal()">
-                    <i class="fas fa-plus"></i>
-                    Create Post
-                </button>
-            </div>
+@include('alumni.modals.view-thread-modal')
+<div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+    {{-- Header --}}
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
+        <div>
+            <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Forum Posts</h1>
+            <p style="color: #6b7280; font-size: 15px;">Share and engage with the SIP Academy community</p>
         </div>
-
-        {{-- Search and Filter --}}
-        <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-            <div style="flex: 1; position: relative;">
-                <i class="fas fa-search"
-                    style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-                <input type="text" placeholder="Search posts..."
-                    style="width: 100%; padding: 12px 16px 12px 45px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
-                    onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#e5e7eb'">
-            </div>
+        <div style="display: flex; gap: 12px;">
             <button
-                style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;"
-                onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                <i class="fas fa-filter"></i>
-                Filter
+                style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;"
+                onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+                Your Activity
+            </button>
+            <button
+                style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;"
+                onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'" onclick="openCreatePostModal()">
+                <i class="fas fa-plus"></i>
+                Create Post
             </button>
         </div>
+    </div>
+    @include('alumni.modals.create-post-modal')
 
-        {{-- Forum Posts --}}
-        @php
-            $forumPosts = [
-                [
-                    'id' => 1,
-                    'title' => 'Introduction to Abacus Training',
-                    'description' => 'Excited to share insights about our new Abacus training program for young learners.',
-                    'author' => 'Rajesh Kumar',
-                    'authorInitial' => 'RK',
-                    'date' => 'Mar 28, 2024 at 04:00 PM',
-                    'tags' => ['Abacus', 'Training', 'Education'],
-                    'views' => 245,
-                    'likes' => 34,
-                    'comments' => 12,
-                    'pinned' => true
-                ],
-                [
-                    'id' => 2,
-                    'title' => 'Career Opportunities in EdTech',
-                    'description' => 'Looking for talented individuals to join our growing team in the education technology sector.',
-                    'author' => 'Priya Sharma',
-                    'authorInitial' => 'PS',
-                    'date' => 'Mar 27, 2024 at 02:30 PM',
-                    'tags' => ['Career', 'EdTech', 'Hiring'],
-                    'views' => 189,
-                    'likes' => 28,
-                    'comments' => 9,
-                    'pinned' => false
-                ],
-                [
-                    'id' => 3,
-                    'title' => 'Alumni Meetup 2024 - Bangalore',
-                    'description' => 'Planning our annual alumni gathering in Bangalore. Join us for networking and fun activities.',
-                    'author' => 'Amit Patel',
-                    'authorInitial' => 'AP',
-                    'date' => 'Mar 26, 2024 at 11:15 AM',
-                    'tags' => ['Event', 'Networking', 'Meetup'],
-                    'views' => 156,
-                    'likes' => 42,
-                    'comments' => 15,
-                    'pinned' => false
-                ]
-            ];
-        @endphp
+    {{-- Search and Filter --}}
+    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+        <div style="flex: 1; position: relative;">
+            <i class="fas fa-search"
+                style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+            <input type="text" placeholder="Search posts..."
+                style="width: 100%; padding: 12px 16px 12px 45px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
+                onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#e5e7eb'">
+        </div>
+        <button
+            style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;"
+            onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+            <i class="fas fa-filter"></i>
+            Filter
+        </button>
+    </div>
 
-        @foreach($forumPosts as $post)
-            <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 16px; transition: all 0.3s;"
-                onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'" onmouseout="this.style.boxShadow='none'">
+    <div id="forumPostsContainer"></div>
+</div>
+<style>
+    .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #10b981;
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        animation: slideInUp 0.3s ease;
+        z-index: 3000;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        loadForumPosts();
+    });
 
-                {{-- Post Header --}}
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <h2 style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0;">{{ $post['title'] }}</h2>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        @if($post['pinned'])
-                            <span
-                                style="background: #fbbf24; color: #78350f; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-thumbtack"></i>
-                                Pinned
-                            </span>
-                        @endif
-                        <button
-                            style="background: transparent; border: none; color: #dc2626; cursor: pointer; padding: 4px 8px; font-size: 18px;">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                    </div>
+    function loadForumPosts() {
+        const container = document.getElementById('forumPostsContainer');
+
+        fetch("{{ route('alumni.forums.data') }}")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle different response structures
+                let posts = [];
+
+                if (data && data.success && Array.isArray(data.data)) {
+                    posts = data.data;
+                } else if (Array.isArray(data)) {
+                    posts = data;
+                } else if (data && Array.isArray(data.posts)) {
+                    posts = data.posts;
+                } else {
+                    throw new Error('Unexpected API response structure');
+                }
+
+                renderForumPosts(posts, container);
+            })
+            .catch(error => {
+                console.error('Error loading forum posts:', error);
+                showError(container, error.message);
+            });
+    }
+
+    function renderForumPosts(posts, container) {
+        if (!posts || posts.length === 0) {
+            container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; color: #6b7280; background: white; border-radius: 12px; border: 2px solid #e5e7eb;">
+                <i class="fas fa-inbox" style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;"></i>
+                <h3 style="font-size: 20px; margin-bottom: 8px; color: #374151;">No forum posts yet</h3>
+                <p style="margin-bottom: 20px; color: #6b7280;">Be the first to create a post and start the discussion!</p>
+                <button onclick="openCreatePostModal()" style="background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                    <i class="fas fa-plus"></i> Create First Post
+                </button>
+            </div>
+        `;
+            return;
+        }
+
+        let html = '';
+
+        posts.forEach((post, index) => {
+            const title = post.title || 'Untitled Post';
+            const description = post.description ?
+                post.description.replace(/<\/?[^>]+>/g, "").substring(0, 200) +
+                (post.description.length > 200 ? '...' : '') :
+                'No description available';
+
+            const tags = post.labels ?
+                post.labels.split(',').filter(tag => tag.trim() !== '') : [];
+
+            const author = post.alumni ?
+                (post.alumni.full_name || 'Unknown') :
+                (post.user ? (post.user.full_name || 'Unknown') : 'Unknown');
+
+            const authorInitial = author.substring(0, 2).toUpperCase();
+            const date = post.created_at ?
+                new Date(post.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) :
+                'Unknown date';
+
+            html += `
+            <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease;"
+                 onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'; this.style.borderColor='#dc2626'"
+                 onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
+
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                    <h2 style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;">
+                        ${escapeHtml(title)}
+                    </h2>
                 </div>
 
-                {{-- Post Description --}}
-                <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">{{ $post['description'] }}
+                <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px;">
+                    ${escapeHtml(description)}
                 </p>
 
-                {{-- Tags --}}
-                <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
-                    @foreach($post['tags'] as $tag)
-                        <span
-                            style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">{{ $tag }}</span>
-                    @endforeach
+                ${tags.length > 0 ? `
+                    <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+                        ${tags.map(tag => `
+                            <span style="background: #F7C744; color: #000000ff; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">
+                                ${escapeHtml(tag.trim())}
+                            </span>
+                        `).join('')}
+                    </div>
+                ` : ''}
+
+                <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">
+                        ${authorInitial}
+                    </div>
+                    <div>
+                        <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 2px 0;">${escapeHtml(author)}</p>
+                        <p style="font-size: 12px; color: #6b7280; margin: 0;">${date}</p>
+                    </div>
                 </div>
 
-                {{-- Post Footer --}}
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div
-                            style="width: 32px; height: 32px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
-                            {{ $post['authorInitial'] }}
+                {{-- Added engagement stats and action buttons with reply toggle --}}
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0px; margin-bottom: 16px;border-top: 1px solid #e5e7eb;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                            <i class="fas fa-eye"></i>
+                            <span>${post.views_count || 0}</span>
                         </div>
-                        <div>
-                            <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0;">{{ $post['author'] }}</p>
-                            <p style="font-size: 12px; color: #6b7280; margin: 0;">{{ $post['date'] }}</p>
+                        <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                            <i class="fas fa-heart"></i>
+                            <span>${post.likes_count || 0}</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                            <i class="fas fa-comment"></i>
+                            <span>${post.comments_count || 0}</span>
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 16px; align-items: center;">
-                        <div style="display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 14px;">
-                            <i class="fas fa-eye"></i>
-                            <span>{{ $post['views'] }}</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 14px;">
-                            <i class="fas fa-heart"></i>
-                            <span>{{ $post['likes'] }}</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 14px;">
-                            <i class="fas fa-comment"></i>
-                            <span>{{ $post['comments'] }}</span>
-                        </div>
-
-                        <button
-                            style="background: transparent; border: 2px solid #e5e7eb; color: #374151; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px;"
-                            onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <button style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
+                                onmouseover="this.style.background='#f3f4f6'; this.style.color='#dc2626'"
+                                onmouseout="this.style.background='transparent'; this.style.color='#6b7280'">
                             <i class="fas fa-heart"></i>
                             Like
                         </button>
-                        <button
-                            style="background: transparent; border: 2px solid #e5e7eb; color: #374151; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px;"
-                            onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+                        <button style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
+                                onclick="toggleReplyForm(this, ${post.id})"
+                                onmouseover="this.style.background='#f3f4f6'; this.style.color='#374151'"
+                                onmouseout="this.style.background='transparent'; this.style.color='#6b7280'">
                             <i class="fas fa-reply"></i>
                             Reply
                         </button>
-                        <button
-                            style="background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;"
-                            onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+                        <button onclick="openThreadModal(${post.id})"
+                            style="background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
+                                onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
+                                onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
                             <i class="fas fa-eye"></i>
                             View Thread
                         </button>
                     </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
 
-    <!-- Include Create Post Modal -->
-    @include('alumni.modals.create-post-modal')
+                {{-- Added reply input form that shows/hides on button click --}}
+                <div id="replyForm-${post.id}" style="display: none; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                            DU
+                        </div>
+                        <input type="text" placeholder="Write your reply..."
+                            id="replyInput-${post.id}"
+                            style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
+                            onfocus="this.style.borderColor='#dc2626'" 
+                            onblur="this.style.borderColor='#e5e7eb'">
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                        <button onclick="toggleReplyForm(document.querySelector('[onclick*=toggleReplyForm][data-post-id=\\'${post.id}\\']'), ${post.id})"
+                                style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                                onmouseover="this.style.background='#f3f4f6'"
+                                onmouseout="this.style.background='white'">
+                            Cancel
+                        </button>
+                        <button onclick="submitReply(${post.id})"
+                                style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
+                                onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
+                                onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
+                            <i class="fas fa-paper-plane"></i>
+                            Post Reply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function showError(container, message) {
+        container.innerHTML = `
+        <div style="text-align: center; padding: 60px 20px; color: #dc2626; background: white; border-radius: 12px; border: 2px solid #fecaca;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 64px; margin-bottom: 20px; opacity: 0.7;"></i>
+            <h3 style="font-size: 20px; margin-bottom: 12px; color: #dc2626;">Failed to Load Posts</h3>
+            <p style="margin-bottom: 20px; color: #6b7280;">${escapeHtml(message)}</p>
+            <button onclick="loadForumPosts()" style="background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                    onmouseover="this.style.background='#b91c1c'"
+                    onmouseout="this.style.background='#dc2626'">
+                <i class="fas fa-redo"></i> Try Again
+            </button>
+        </div>
+    `;
+    }
+
+    function toggleReplyForm(button, postId) {
+        const replyForm = document.getElementById(`replyForm-${postId}`);
+        if (replyForm.style.display === 'none') {
+            replyForm.style.display = 'block';
+            document.getElementById(`replyInput-${postId}`).focus();
+        } else {
+            replyForm.style.display = 'none';
+        }
+    }
+
+    function submitReply(postId) {
+        const replyInput = document.getElementById(`replyInput-${postId}`);
+        const replyText = replyInput.value.trim();
+
+        if (!replyText) {
+            showToast('Please write a reply before posting', 'error');
+            return;
+        }
+
+        // AJAX call to submit reply
+        fetch("{{ route('alumni.create.reply') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    forum_post_id: postId,
+                    message: replyText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Clear input and hide form
+                    replyInput.value = '';
+                    document.getElementById(`replyForm-${postId}`).style.display = 'none';
+
+                    // Update comments count
+                    showToast('Reply posted successfully!', 'success');
+                    loadForumPosts(); // Reload posts to show new reply
+                } else {
+                    showToast('Failed to post reply: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error posting reply', 'error');
+            });
+    }
+
+
+    function escapeHtml(unsafe) {
+        if (unsafe === null || unsafe === undefined) return '';
+        return String(unsafe)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+</script>
+
 @endsection

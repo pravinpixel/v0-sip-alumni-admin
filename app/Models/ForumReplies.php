@@ -12,22 +12,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
-class ForumPost extends Model
+class ForumReplies extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
-    protected $table = 'forum_post';
+    protected $table = 'forum_replies';
     protected $fillable = [
+        'forum_post_id',
         'alumni_id',
-        'title',
-        'description',
-        'labels',
+        'message',
         'status'
-    ];
-
-    protected $casts = [
-        'labels' => 'array',
     ];
 
     public function alumni()
@@ -35,9 +30,9 @@ class ForumPost extends Model
         return $this->belongsTo(Alumnis::class, 'alumni_id');
     }
 
-    public function replies()
+    public function forumPost()
     {
-        return $this->hasMany(ForumReplies::class, 'forum_post_id');
+        return $this->belongsTo(ForumPost::class, 'forum_post_id');
     }
 
 }
