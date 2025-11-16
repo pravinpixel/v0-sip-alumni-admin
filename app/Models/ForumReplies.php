@@ -21,6 +21,7 @@ class ForumReplies extends Model
     protected $fillable = [
         'forum_post_id',
         'alumni_id',
+        'parent_reply_id',
         'message',
         'status'
     ];
@@ -33,6 +34,15 @@ class ForumReplies extends Model
     public function forumPost()
     {
         return $this->belongsTo(ForumPost::class, 'forum_post_id');
+    }
+    public function parentReply()
+    {
+        return $this->belongsTo(ForumReplies::class, 'parent_reply_id');
+    }
+
+    public function childReplies()
+    {
+        return $this->hasMany(ForumReplies::class, 'parent_reply_id');
     }
 
 }

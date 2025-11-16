@@ -2,20 +2,19 @@
     <div style="background: white; border-radius: 12px; max-width: 700px; margin: 20px auto; padding: 0; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
 
         {{-- Close Button --}}
-
+        <div style="position: sticky; top: 0; right: 0; padding: 16px; display: flex; justify-content: flex-end; background: white; border-bottom: 1px solid #e5e7eb; z-index: 10;">
+            <button onclick="closeThreadModal()" style="background: transparent; border: none; font-size: 24px; cursor: pointer; color: #6b7280;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
 
         {{-- Thread Content --}}
         <div style="padding: 24px;">
-            <div style="position: sticky; top: 0; right: 0; display: flex; justify-content: flex-end; background: white;">
-                <button onclick="closeThreadModal()" style="background: transparent; border: none; font-size: 14px; cursor: pointer; color: #6b7280;">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
             {{-- Original Post --}}
-            <div style="margin-bottom: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px;">
+            <div style="margin-bottom: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 24px;">
                 <h2 id="threadTitle" style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0 0 16px 0;"></h2>
-                <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb; margin-bottom: 16px;">
+                
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                     <div id="threadAuthorAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;"></div>
                     <div>
                         <p id="threadAuthor" style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 2px 0;"></p>
@@ -26,8 +25,6 @@
                 <p id="threadDescription" style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;"></p>
 
                 <div id="threadTags" style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;"></div>
-
-
             </div>
 
             {{-- Comments Count --}}
@@ -45,22 +42,54 @@
                 <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 12px; opacity: 0.5;"></i>
                 <p style="font-size: 14px; margin: 0;">No comments yet. Be the first to reply!</p>
             </div>
-            <div style="display: flex; align-items: center;">
-                <input
-                    type="text"
-                    placeholder="Write your reply..."
-                    id="replyInput-${post.id}"
-                    style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
-                    onfocus="this.style.borderColor='#dc2626'"
-                    onblur="this.style.borderColor='#e5e7eb'">
 
-                <button
-                    onclick=""
-                    style="margin-left: 12px; padding: 12px 20px; background: #dc2626; color: white; border: none; border-radius: 8px; font-size: 14px; cursor: pointer;">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+            {{-- Reply Input Section --}}
+            <div id="replySection" style="border-top: 1px solid #e5e7eb; padding-top: 24px;">
+                {{-- Replying To Indicator --}}
+                <div id="replyingToIndicator" style="display: none; background: #f3f4f6; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid #dc2626;">
+                    <div style="display: flex; justify-content: between; align-items: center;">
+                        <span style="font-size: 14px; color: #374151; font-weight: 600;">
+                            Replying to <span id="replyingToName" style="color: #dc2626;"></span>
+                        </span>
+                        <button onclick="cancelReply()" style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: flex-start; gap: 12px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                        DU
+                    </div>
+                    <div style="flex: 1;">
+                        <input
+                            type="text"
+                            placeholder="Write your reply..."
+                            id="replyInput"
+                            style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 12px;"
+                            onfocus="this.style.borderColor='#dc2626'"
+                            onblur="this.style.borderColor='#e5e7eb'">
+                        
+                        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                            <button
+                                onclick="cancelReply()"
+                                style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                                onmouseover="this.style.background='#f3f4f6'"
+                                onmouseout="this.style.background='white'">
+                                Cancel
+                            </button>
+                            <button
+                                onclick="submitThreadReply(activePostId)"
+                                style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
+                                onmouseover="this.style.background='#b91c1c'"
+                                onmouseout="this.style.background='#dc2626'">
+                                <i class="fas fa-paper-plane"></i>
+                                Post Reply
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -70,30 +99,18 @@
         animation: fadeIn 0.3s ease;
     }
 
-    #threadModal>div {
+    #threadModal > div {
         animation: slideUp 0.3s ease;
     }
 
     @keyframes fadeIn {
-        from {
-            background: rgba(0, 0, 0, 0);
-        }
-
-        to {
-            background: rgba(0, 0, 0, 0.5);
-        }
+        from { background: rgba(0, 0, 0, 0); }
+        to { background: rgba(0, 0, 0, 0.5); }
     }
 
     @keyframes slideUp {
-        from {
-            transform: translateY(20px);
-            opacity: 0;
-        }
-
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
     }
 
     .comment-item {
@@ -107,11 +124,31 @@
     .comment-item:hover {
         background: #f3f4f6;
     }
+
+    .comment-item.highlighted {
+        background: #fff7ed;
+        border-left: 3px solid #f59e0b;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+    }
+
+    .replying-indicator {
+        background: #fef3c7;
+        color: #92400e;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: inline-block;
+    }
 </style>
 
 <script>
-    window.openThreadModal = function(postId) {
+    let activePostId = null;
+    let replyingToReplyId = null;
+    let replyingToUserName = null;
 
+    window.openThreadModal = function(postId) {
         const url = "{{ route('alumni.view.thread', ':id') }}".replace(':id', postId);
 
         fetch(url)
@@ -123,30 +160,31 @@
                 }
 
                 populateThreadModal(data.data);
-
                 document.getElementById('threadModal').style.display = 'block';
                 document.body.style.overflow = 'hidden';
             })
             .catch(err => {
                 console.error(err);
-                alert("Error loading thread.", 'error');
+                showToast("Error loading thread.", 'error');
             });
     };
 
-
-
     function populateThreadModal(threadData) {
         const post = threadData.post;
+        activePostId = post.id;
         const replies = threadData.replies || [];
+
+        // Reset reply state
+        resetReplyState();
 
         document.getElementById('threadTitle').textContent = post.title || 'Untitled Post';
         document.getElementById('threadDescription').textContent = post.description ?
             post.description.replace(/<\/?[^>]+>/g, "").substring(0, 200) +
             (post.description.length > 200 ? '...' : '') :
             'No description available';
-        document.getElementById('threadAuthor').textContent = post.alumni?.full_name || 'Unknown';
-
+        
         const author = post.alumni?.full_name || 'Unknown';
+        document.getElementById('threadAuthor').textContent = author;
         document.getElementById('threadAuthorAvatar').textContent = author.substring(0, 2).toUpperCase();
 
         const date = new Date(post.created_at).toLocaleDateString('en-US', {
@@ -163,7 +201,7 @@
         if (post.labels) {
             post.labels.split(',').forEach(tag => {
                 const tagElement = document.createElement('span');
-                tagElement.style.cssText = 'background: #F7C744; color: #000000ff; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;';
+                tagElement.style.cssText = 'background: #F7C744; color: #000000; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;';
                 tagElement.textContent = tag.trim();
                 tagsContainer.appendChild(tagElement);
             });
@@ -192,32 +230,33 @@
 
                 const commentElement = document.createElement('div');
                 commentElement.className = 'comment-item';
+                commentElement.setAttribute('data-reply-id', reply.id);
+                
                 commentElement.innerHTML = `
-                <div style="display: flex; gap: 12px;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
-                        ${replyInitial}
+                    <div style="display: flex; gap: 12px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                            ${replyInitial}
+                        </div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 4px 0;">${escapeHtml(replyAuthor)}</p>
+                                    <p style="font-size: 12px; color: #6b7280; margin: 0;">${replyDate}</p>
+                                </div>
+                                <button 
+                                    onclick="setReplyTo(${reply.id}, '${escapeHtml(replyAuthor)}')"
+                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#fef2f2'"
+                                    onmouseout="this.style.background='transparent'">
+                                    <i class="fas fa-reply"></i> Reply
+                                </button>
+                            </div>
+                            <p style="font-size: 14px; color: #374151; line-height: 1.5; margin: 0; word-wrap: break-word;">
+                                ${escapeHtml(reply.message || 'No message')}
+                            </p>
+                        </div>
                     </div>
-                    <div style="flex: 1;">
-                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
-                        <div>
-                            <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0;">${escapeHtml(replyAuthor)}</p>
-                            <p style="font-size: 12px; color: #6b7280; margin: 0;">${replyDate}</p>
-                        </div>
-                        <div>
-                            <button style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 8px 0; margin-top: 8px; font-weight: 600;">
-                            <i class="fas fa-reply"></i> Reply
-                        </button>
-                        </div>
-                        </div>
-                        <p style="font-size: 14px; color: #374151; line-height: 1.5; margin: 0; word-wrap: break-word;">
-                            ${escapeHtml(reply.message || 'No message')}
-                        </p>
-                        <button style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 8px 0; margin-top: 8px; font-weight: 600;">
-                            <i class="fas fa-reply"></i> View Thread
-                        </button>
-                    </div>
-                </div>
-            `;
+                `;
                 commentsContainer.appendChild(commentElement);
             });
         } else {
@@ -226,10 +265,108 @@
         }
     }
 
+    function setReplyTo(replyId, userName) {
+        // Remove previous highlights
+        document.querySelectorAll('.comment-item.highlighted').forEach(item => {
+            item.classList.remove('highlighted');
+        });
+
+        // Highlight the comment being replied to
+        const commentElement = document.querySelector(`[data-reply-id="${replyId}"]`);
+        if (commentElement) {
+            commentElement.classList.add('highlighted');
+            
+            // Scroll to the highlighted comment
+            commentElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Set reply state
+        replyingToReplyId = replyId;
+        replyingToUserName = userName;
+
+        // Show replying indicator
+        document.getElementById('replyingToIndicator').style.display = 'block';
+        document.getElementById('replyingToName').textContent = userName;
+
+        // Focus on reply input
+        document.getElementById('replyInput').focus();
+        document.getElementById('replyInput').placeholder = `Replying to ${userName}...`;
+    }
+
+    function cancelReply() {
+        resetReplyState();
+    }
+
+    function resetReplyState() {
+        // Remove highlights
+        document.querySelectorAll('.comment-item.highlighted').forEach(item => {
+            item.classList.remove('highlighted');
+        });
+
+        // Reset reply state
+        replyingToReplyId = null;
+        replyingToUserName = null;
+
+        // Hide replying indicator
+        document.getElementById('replyingToIndicator').style.display = 'none';
+        document.getElementById('replyingToName').textContent = '';
+
+        // Reset input
+        document.getElementById('replyInput').placeholder = 'Write your reply...';
+        document.getElementById('replyInput').value = '';
+    }
+
+    function submitThreadReply(postId) {
+        const replyInput = document.getElementById('replyInput');
+        const replyText = replyInput.value.trim();
+
+        if (!replyText) {
+            showToast('Please write a reply before posting', 'error');
+            return;
+        }
+
+        // Prepare request data
+        const requestData = {
+            forum_post_id: postId,
+            message: replyText
+        };
+
+        // Add parent reply ID if replying to a specific comment
+        if (replyingToReplyId) {
+            requestData.parent_reply_id = replyingToReplyId;
+        }
+
+        // AJAX call to submit reply
+        fetch("{{ route('alumni.create.reply') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Reply posted successfully!', 'success');
+                    resetReplyState();
+                    
+                    // Reload the thread to show new reply
+                    openThreadModal(postId);
+                } else {
+                    showToast('Failed to post reply: ' + (data.message || 'Unknown error'), 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error posting reply', 'error');
+            });
+    }
 
     function closeThreadModal() {
         document.getElementById('threadModal').style.display = 'none';
         document.body.style.overflow = 'auto';
+        resetReplyState();
     }
 
     document.addEventListener('click', function(event) {

@@ -292,6 +292,7 @@
                 },
                 body: JSON.stringify({
                     forum_post_id: postId,
+                    parent_reply_id: null,
                     message: replyText
                 })
             })

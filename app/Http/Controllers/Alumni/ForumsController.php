@@ -120,12 +120,13 @@ class ForumsController extends Controller
     {
         try {
             $forumPost = ForumPost::with(['alumni', 'replies.alumni'])->findOrFail($id);
+            $replies = ForumReplies::with('alumni')->where('forum_post_id', $id)->get();
 
             return response()->json([
                 'success' => true,
                 'data' => [
                     'post' => $forumPost,
-                    'replies' => $forumPost->replies
+                    'replies' => $replies
                 ]
             ]);
         } catch (\Exception $e) {
