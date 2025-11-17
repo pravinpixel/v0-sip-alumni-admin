@@ -84,8 +84,9 @@ class ForumsController extends Controller
             $alumniId = session('alumni.id');
 
             $validator      = Validator::make($request->all(), [
-                'forum_post_id' => 'nullable',
-                'message' => 'nullable',
+                'forum_post_id' => 'required',
+                'message' => 'required|string|max:255',
+                'parent_reply_id' => 'nullable',
             ]);
 
             if ($validator->fails()) {
@@ -99,6 +100,7 @@ class ForumsController extends Controller
             $form =ForumReplies::create([
                 'forum_post_id' => $request->forum_post_id,
                 'alumni_id' => $alumniId,
+                'parent_reply_id' => $request->parent_reply_id ?? null,
                 'message' => $request->message,
                 'status' => 'pending',
             ]);

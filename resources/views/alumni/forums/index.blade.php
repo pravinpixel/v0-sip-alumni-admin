@@ -156,7 +156,7 @@
                 ${tags.length > 0 ? `
                     <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
                         ${tags.map(tag => `
-                            <span style="background: #F7C744; color: #000000ff; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">
+                            <span style="background: #F7C744; color: #000000ff; padding: 4px 12px; border-radius: 14px; font-size: 10px; font-weight: 600;">
                                 ${escapeHtml(tag.trim())}
                             </span>
                         `).join('')}
@@ -197,13 +197,14 @@
                             <i class="fas fa-heart"></i>
                             Like
                         </button>
-                        <button style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
-                                onclick="toggleReplyForm(this, ${post.id})"
-                                onmouseover="this.style.background='#f3f4f6'; this.style.color='#374151'"
-                                onmouseout="this.style.background='transparent'; this.style.color='#6b7280'">
-                            <i class="fas fa-reply"></i>
-                            Reply
-                        </button>
+                        <button 
+                                 style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
+                                    onmouseover="replyHover(this)"
+                                    onmouseout="replyUnhover(this)"
+                                    onclick="toggleReplyForm(this, ${post.id})">
+                                    <i class="fas fa-reply"></i> Reply
+                                    </button>
+
                         <button onclick="openThreadModal(${post.id})"
                             style="background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
                                 onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
@@ -266,13 +267,37 @@
 
     function toggleReplyForm(button, postId) {
         const replyForm = document.getElementById(`replyForm-${postId}`);
-        if (replyForm.style.display === 'none') {
-            replyForm.style.display = 'block';
+
+        // Remove active style from all buttons
+        document.querySelectorAll("button.reply-active").forEach(btn => {
+            btn.classList.remove("reply-active");
+            btn.style.background = "transparent";
+            btn.style.color = "#6b7280";
+            btn.style.border = "none";
+        });
+
+        if (replyForm.style.display === "none" || replyForm.style.display === "") {
+            replyForm.style.display = "block";
+
+            // Activate current button
+            button.classList.add("reply-active");
+            button.style.background = "#ffffff";
+            button.style.color = "#dc2626";
+
             document.getElementById(`replyInput-${postId}`).focus();
         } else {
-            replyForm.style.display = 'none';
+            replyForm.style.display = "none";
+
+            // Deactivate
+            button.classList.remove("reply-active");
+            button.style.background = "transparent";
+            button.style.color = "#6b7280";
+            button.style.border = "none";
         }
     }
+
+
+
 
     function submitReply(postId) {
         const replyInput = document.getElementById(`replyInput-${postId}`);
@@ -283,7 +308,6 @@
             return;
         }
 
-        // AJAX call to submit reply
         fetch("{{ route('alumni.create.reply') }}", {
                 method: 'POST',
                 headers: {
@@ -305,7 +329,7 @@
 
                     // Update comments count
                     showToast('Reply posted successfully!', 'success');
-                    loadForumPosts(); // Reload posts to show new reply
+                    loadForumPosts();
                 } else {
                     showToast('Failed to post reply: ' + (data.message || 'Unknown error'), 'error');
                 }
@@ -327,6 +351,24 @@
             .replace(/'/g, "&#039;");
     }
 
+    function replyHover(button) {
+        button.style.background = "#F7C744"; // yellow
+        button.style.color = "#374151"; // dark
+    }
+
+
+    function replyUnhover(button) {
+        if (button.classList.contains("reply-active")) {
+            // return to active style
+            button.style.background = "#ffdbdbff";
+            button.style.color = "#dc2626";
+        } else {
+            // return to default
+            button.style.background = "transparent";
+            button.style.color = "#6b7280";
+            button.style.border = "none";
+        }
+    }
 </script>
 
 @endsection

@@ -79,7 +79,7 @@
                                 Cancel
                             </button>
                             <button
-                                onclick="submitThreadReply(activePostId)"
+                                onclick="submitThreadReply()"
                                 style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
                                 onmouseover="this.style.background='#b91c1c'"
                                 onmouseout="this.style.background='#dc2626'">
@@ -149,6 +149,7 @@
     let replyingToUserName = null;
 
     window.openThreadModal = function(postId) {
+        window.currentThreadPostId = postId;
         const url = "{{ route('alumni.view.thread', ':id') }}".replace(':id', postId);
 
         fetch(url)
@@ -171,7 +172,7 @@
 
     function populateThreadModal(threadData) {
         const post = threadData.post;
-        activePostId = post.id;
+        activePostId = window.currentThreadPostId;
         const replies = threadData.replies || [];
 
         // Reset reply state
@@ -266,57 +267,54 @@
     }
 
     function setReplyTo(replyId, userName) {
-        // Remove previous highlights
-        document.querySelectorAll('.comment-item.highlighted').forEach(item => {
-            item.classList.remove('highlighted');
-        });
 
-        // Highlight the comment being replied to
-        const commentElement = document.querySelector(`[data-reply-id="${replyId}"]`);
-        if (commentElement) {
-            commentElement.classList.add('highlighted');
-            
-            // Scroll to the highlighted comment
-            commentElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+    // highlight the comment
+    document.querySelectorAll('.comment-item.highlighted')
+        .forEach(item => item.classList.remove('highlighted'));
 
-        // Set reply state
-        replyingToReplyId = replyId;
-        replyingToUserName = userName;
-
-        // Show replying indicator
-        document.getElementById('replyingToIndicator').style.display = 'block';
-        document.getElementById('replyingToName').textContent = userName;
-
-        // Focus on reply input
-        document.getElementById('replyInput').focus();
-        document.getElementById('replyInput').placeholder = `Replying to ${userName}...`;
+    const commentElement = document.querySelector(`[data-reply-id="${replyId}"]`);
+    if (commentElement) {
+        commentElement.classList.add('highlighted');
+        commentElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+
+    replyingToReplyId = replyId;
+    replyingToUserName = userName;
+
+    // IMPORTANT → now post id fixed!
+    activePostId = window.currentThreadPostId;
+
+    // show indicator
+    document.getElementById('replyingToIndicator').style.display = 'block';
+    document.getElementById('replyingToName').textContent = userName;
+
+    // change placeholder
+    const input = document.getElementById('replyInput');
+    input.focus();
+    input.placeholder = `Replying to ${userName}...`;
+}
+
 
     function cancelReply() {
         resetReplyState();
     }
 
     function resetReplyState() {
-        // Remove highlights
         document.querySelectorAll('.comment-item.highlighted').forEach(item => {
             item.classList.remove('highlighted');
         });
 
-        // Reset reply state
         replyingToReplyId = null;
         replyingToUserName = null;
 
-        // Hide replying indicator
         document.getElementById('replyingToIndicator').style.display = 'none';
         document.getElementById('replyingToName').textContent = '';
 
-        // Reset input
         document.getElementById('replyInput').placeholder = 'Write your reply...';
         document.getElementById('replyInput').value = '';
     }
 
-    function submitThreadReply(postId) {
+    function submitThreadReply() {
         const replyInput = document.getElementById('replyInput');
         const replyText = replyInput.value.trim();
 
@@ -324,19 +322,14 @@
             showToast('Please write a reply before posting', 'error');
             return;
         }
+        const postId = window.currentThreadPostId;
 
-        // Prepare request data
         const requestData = {
             forum_post_id: postId,
+            parent_reply_id: replyingToReplyId,
             message: replyText
         };
 
-        // Add parent reply ID if replying to a specific comment
-        if (replyingToReplyId) {
-            requestData.parent_reply_id = replyingToReplyId;
-        }
-
-        // AJAX call to submit reply
         fetch("{{ route('alumni.create.reply') }}", {
                 method: 'POST',
                 headers: {
@@ -351,7 +344,6 @@
                     showToast('Reply posted successfully!', 'success');
                     resetReplyState();
                     
-                    // Reload the thread to show new reply
                     openThreadModal(postId);
                 } else {
                     showToast('Failed to post reply: ' + (data.message || 'Unknown error'), 'error');
