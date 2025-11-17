@@ -52,9 +52,9 @@
         background: #fef2f2;
         color: #dc2626;
         padding: 2px 10px;
-        border-radius: 4px;
+        border-radius: 14px ;
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 700;
         display: inline-block;
     }
 
@@ -125,13 +125,13 @@
 
     <!-- Right: User Profile -->
     <div class="header-right" style="cursor: pointer; gap: 12px;" onclick="toggleProfileDropdown()">
-        <img src="{{ $alumni->image ?? asset('images/avatar/blank.png') }}" alt="User" class="user-avatar"
+        <img src="{{ $alumni->image_url ?? asset('images/avatar/blank.png') }}" alt="User" class="user-avatar"
             style="width: 45px; height: 45px; border: 2px solid #e5e7eb;">
         <div style="text-align: left;">
             <div class="user-name" style="font-size: 15px; margin-bottom: 2px;">{{ $alumni->full_name ?? 'Rohit' }}
             </div>
             <span class="user-batch" style="font-size: 12px; padding: 3px 10px;">Batch
-                {{ $alumni->year_of_completion ?? '2019' }}</span>
+                {{ $alumni->year_of_completion ?? '-' }}</span>
         </div>
     </div>
 </div>
