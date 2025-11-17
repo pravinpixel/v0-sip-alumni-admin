@@ -80,8 +80,8 @@
                 // Handle different response structures
                 let posts = [];
 
-                if (data && data.success && Array.isArray(data.data)) {
-                    posts = data.data;
+                if (data && data.success && data.data && Array.isArray(data.data.posts)) {
+                    posts = data.data.posts;
                 } else if (Array.isArray(data)) {
                     posts = data;
                 } else if (data && Array.isArray(data.posts)) {
@@ -186,7 +186,7 @@
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
                             <i class="fas fa-comment"></i>
-                            <span>${post.comments_count || 0}</span>
+                            <span>${post.reply_count || 0}</span>
                         </div>
                     </div>
 
@@ -194,7 +194,9 @@
                         <button style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
                                 onmouseover="this.style.background='#f3f4f6'; this.style.color='#dc2626'"
                                 onmouseout="this.style.background='transparent'; this.style.color='#6b7280'">
-                            <i class="fas fa-heart"></i>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+  <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+</svg>
                             Like
                         </button>
                         <button 
@@ -369,6 +371,8 @@
             button.style.border = "none";
         }
     }
+
+    
 </script>
 
 @endsection

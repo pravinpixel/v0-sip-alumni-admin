@@ -17,12 +17,15 @@ class ForumPost extends Model
     use HasFactory;
     use SoftDeletes;
 
+    protected $appends = ['reply_count'];
     protected $table = 'forum_post';
     protected $fillable = [
         'alumni_id',
         'title',
         'description',
         'labels',
+        'likes',
+        'views',
         'status'
     ];
 
@@ -38,6 +41,11 @@ class ForumPost extends Model
     public function replies()
     {
         return $this->hasMany(ForumReplies::class, 'forum_post_id');
+    }
+
+    public function getReplyCountAttribute()
+    {
+        return $this->replies()->count();
     }
 
 }

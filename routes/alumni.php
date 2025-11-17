@@ -47,6 +47,7 @@ Route::middleware('alumni.auth')->group(function () {
         Route::get('/data', [ForumsController::class, 'getData'])->name('alumni.forums.data');
         Route::post('/create-post', [ForumsController::class, 'createPost'])->name('alumni.create.post');
         Route::post('/create-reply', [ForumsController::class, 'createReply'])->name('alumni.create.reply');
+        Route::post('/like', [ForumsController::class, 'toggleLike'])->name('alumni.like.post');
     });
     
     Route::get('/alumni/{id}', [CommonController::class, 'getAlumni']);

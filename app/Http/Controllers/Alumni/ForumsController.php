@@ -19,23 +19,25 @@ class ForumsController extends Controller
         return view('alumni.forums.index', compact('forumPosts'));
     }
 
-        public function getData(Request $request)
-        {
-            try {
-                $forumPosts = ForumPost::with('alumni')->orderBy('created_at', 'desc')->get();
-    
-                return response()->json([
-                    'success' => true,
-                    'data' => $forumPosts
-                ]);
-            } catch (\Exception $e) {
-                Log::error('Error fetching forum posts: ' . $e->getMessage());
-                return response()->json([
-                    'success' => false,
-                    'message' => 'An error occurred while fetching forum posts.'
-                ], 500);
-            }
+    public function getData(Request $request)
+    {
+        try {
+            $forumPosts = ForumPost::with('alumni')->orderBy('created_at', 'desc')->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'posts' => $forumPosts
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching forum posts: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching forum posts.'
+            ], 500);
         }
+    }
 
     public function createPost(Request $request)
     {
@@ -97,7 +99,7 @@ class ForumsController extends Controller
                 ], 422);
             }
 
-            $form =ForumReplies::create([
+            $form = ForumReplies::create([
                 'forum_post_id' => $request->forum_post_id,
                 'alumni_id' => $alumniId,
                 'parent_reply_id' => $request->parent_reply_id ?? null,
@@ -121,9 +123,17 @@ class ForumsController extends Controller
     public function viewThread($id)
     {
         try {
-            $forumPost = ForumPost::with(['alumni', 'replies.alumni'])->findOrFail($id);
-            $replies = ForumReplies::with('alumni')->where('forum_post_id', $id)->get();
-
+            $forumPost = ForumPost::with(['alumni'])->findOrFail($id);
+            // $replies = ForumReplies::with(['alumni', 'childReplies.alumni'])->where('forum_post_id', $id)->get();
+            $replies = ForumReplies::with([
+                'alumni',
+                'childReplies.alumni',
+                'childReplies.childReplies.alumni',
+            ])
+                ->where('forum_post_id', $id)
+                ->whereNull('parent_reply_id')
+                ->orderBy('created_at', 'ASC')
+                ->get();
             return response()->json([
                 'success' => true,
                 'data' => [
@@ -140,4 +150,46 @@ class ForumsController extends Controller
         }
     }
 
+    public function toggleLike(Request $request)
+    {
+        try {
+            $alumniId = session('alumni.id');
+
+            $validator = Validator::make($request->all(), [
+                'post_id' => 'required',
+                'liked' => 'required|boolean',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation Error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $post = ForumPost::findOrFail($request->post_id);
+
+            if ($request->liked) {
+                $post->likes += 1;
+            } else {
+                $post->likes -= 1;
+                if ($post->likes < 0) $post->likes = 0;
+            }
+
+            $post->save();
+            $likes = $post->likes;
+            return response()->json([
+                'success' => true,
+                'message' => 'Like status updated successfully.',
+                'likes_count' => $likes
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error toggling like: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating like status.'
+            ], 500);
+        }
+    }
 }
