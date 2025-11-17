@@ -65,9 +65,14 @@ class CommonController extends Controller
             $alumni->state_id = $request->state_id;
             $alumni->occupation_id = $request->occupation_id;
 
-            // Handle image upload
+            if ($request->remove_image == 1) {
+                if ($alumni->image && Storage::disk('public')->exists($alumni->image)) {
+                    Storage::disk('public')->delete($alumni->image);
+                }
+                $alumni->image = null;
+            }
+
             if ($request->hasFile('image')) {
-                // Delete old image if exists
                 if ($alumni->image && Storage::disk('public')->exists($alumni->image)) {
                     Storage::disk('public')->delete($alumni->image);
                 }
@@ -95,7 +100,7 @@ class CommonController extends Controller
     {
         try {
             $alumni = Alumnis::with(['city.state', 'occupation'])->findOrFail($id);
-            
+
             return response()->json([
                 'success' => true,
                 'alumni' => $alumni

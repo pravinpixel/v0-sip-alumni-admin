@@ -330,49 +330,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 <script>
     let selectedFile = null;
 
-    // function openEditProfileModal(alumniId) {
-    //     const modal = document.getElementById('editProfileModal');
-    //     if (!modal) return;
-
-    //     modal.classList.add('open');
-
-    //     // Show loading message
-    //     const modalBody = modal.querySelector('.modal-body');
-    //     modalBody.innerHTML = '<p>Loading profile...</p>';
-
-    //     // Fetch profile data from your route
-    //     fetch(`/profile-modal/${alumniId}`)
-    //         .then(res => res.json())
-    //         .then(data => {
-    //             if (!data.success) {
-    //                 modalBody.innerHTML = '<p style="color:red;">Failed to load profile.</p>';
-    //                 return;
-    //             }
-
-    //             const a = data.alumni;
-
-    //             // Fill modal with data
-    //             modalBody.innerHTML = `
-    //             <div class="profile-view">
-    //                 <div style="text-align:center;margin-bottom:20px;">
-    //                     <img src="${a.image}" alt="Profile" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #dc2626;">
-    //                 </div>
-    //                 <p><strong>Full Name:</strong> ${a.full_name}</p>
-    //                 <p><strong>Email:</strong> ${a.email}</p>
-    //                 <p><strong>Mobile:</strong> ${a.mobile_number}</p>
-    //                 <p><strong>Year of Completion:</strong> ${a.year_of_completion}</p>
-    //                 <p><strong>Occupation:</strong> ${a.occupation ?? '-'}</p>
-    //                 <p><strong>State:</strong> ${a.state ?? '-'}</p>
-    //                 <p><strong>City:</strong> ${a.city ?? '-'}</p>
-    //             </div>
-    //         `;
-    //         })
-    //         .catch(err => {
-    //             console.error(err);
-    //             modalBody.innerHTML = '<p style="color:red;">Error loading profile.</p>';
-    //         });
-    // }
-
     function closeEditProfileModal() {
         const modal = document.getElementById('editProfileModal');
         if (modal) {
@@ -411,6 +368,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         if (profileImg) {
             profileImg.src = "{{ asset('images/avatar/blank.png') }}";
             selectedFile = null;
+            window.removeImage = true;
         }
     }
 
@@ -430,6 +388,10 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         if (selectedFile) {
             formData.append('image', selectedFile);
         }
+        if (window.removeImage) {
+            formData.append('remove_image', 1);
+        }
+
 
         const modal = document.getElementById('editProfileModal');
         const alumniId = modal.getAttribute('data-alumni-id');

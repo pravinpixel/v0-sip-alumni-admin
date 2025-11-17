@@ -18,7 +18,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     <!-- Profile Section -->
     <div class="profile-section" style="position: relative;">
         <button class="close-btn" onclick="closeSidebar()">×</button>
-        <img src="{{ $alumni->image ?? asset('images/avatar/blank.png') }}" alt="Profile" class="profile-img">
+        <img src="{{ $alumni->image_url ?? asset('images/avatar/blank.png') }}" alt="Profile" class="profile-img">
         <div class="profile-name">{{ $alumni->full_name ?? '-' }}</div>
     </div>
 
@@ -463,7 +463,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         }
 
         const profileImg = document.querySelector('.modal-profile-img');
-        if (profileImg) profileImg.src = alumni.image || "{{ asset('images/avatar/blank.png') }}";
+        if (profileImg) profileImg.src = alumni.image_url || "{{ asset('images/avatar/blank.png') }}";
     }
 
     // ✅ Load all states
