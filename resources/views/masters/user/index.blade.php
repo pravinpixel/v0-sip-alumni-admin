@@ -1,270 +1,207 @@
 @extends('layouts.index')
 
-@section('title', 'Task Master | Usha Fire')
+@section('title', 'User Management')
 
-@section('style')
-@parent
-<style>
-    .loading-cursor {
-        cursor: wait !important;
-    }
-
-    .del {
-        margin-top: 10% !important;
-    }
-
-    .let {
-        font-size: 120% !important;
-
-    }
-</style>
-@endsection
 @section('content')
 
-<div id="pageLoader" class="page-loader">
-    <div class="loader"></div>
-</div>
-<meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-    <div class="d-flex flex-column flex-column-fluid">
-        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
-            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
-                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
-                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Users</h1>
-                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                        <li class="breadcrumb-item text-muted">
-                            <a href="{{url('dashboard')}}" class="text-muted text-hover-primary">Dashboard</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
-                        </li>
-
-                        <li class="breadcrumb-item text-muted">
-                            <a href="{{url('/user')}}" class="text-muted text-hover-primary">Users</a>
-                        </li>
-                    </ul>
-                </div>
-                <!--end::Page title-->
-                <!--begin::Actions-->
-                <div class="d-flex align-items-center gap-2 gap-lg-3">
-                    <!--begin::Filter menu-->
-                    <div class="m-0">
-                        <!--begin::Menu toggle-->
-                        <!--end::Menu 1-->
-                    </div>
-                    <!--end::Filter menu-->
-                </div>
-                <!--end::Actions-->
-            </div>
-            <!--end::Toolbar container-->
+    <div style="padding: 2rem;">
+        <!-- Header Section -->
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0;">User Management</h1>
+            <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">Manage admin users and their access
+                permissions</p>
         </div>
-        <!--end::Toolbar-->
-        <!--begin::Content-->
-        <div id="kt_app_content" class="app-content flex-column-fluid">
-            <!--begin::Content container-->
-            <div id="kt_app_content_container" class="app-container container-xxl">
-                <!--begin::Card-->
-                <div class="card">
-                    <!--begin::Card header-->
-                    <div class="card-header border-0 pt-6">
-                        <!--begin::Card title-->
-                        <div class="card-title">
-                            <!--begin::Search-->
-                            <div class="d-flex align-items-center position-relative my-1">
-                                <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-                                <span class="svg-icon svg-icon-1 position-absolute ms-6">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
-                                        <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
-                                    </svg>
-                                </span>
-                                <!--end::Svg Icon-->
-                                <input type="text" id="searchInput" class="form-control form-control-solid w-250px ps-15" placeholder="Search" />
-                            </div>
-                            <!--end::Search-->
-                            <!--begin::Card toolbar-->
-                                <div class="card-toolbar">
-                                        <div class="w-150px me-3">
-                                            <div style="margin-top: 10px; margin-left: 9%; font-size: 13px"><label for="overdue_count">Total Records:</label>
-                                            <span style="color: green;">{{$total_count ?? ''}}</span></div>
-                                        </div>
-                                        <div class="w-100px me-3">
-                                                <!--begin::Select2-->
-                                                <select class="form-select form-select-solid" name="row-count-filter" data-control="select2" data-hide-search="true" data-placeholder="">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                </select>
-                                                <!--end::Select2-->
-                                        </div>
-                                    <!--begin::Toolbar-->
-                                    <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
-                                        <button type="button" class="btn btn-primary me-3" data-bs-toggle="tooltip" id="filter_panel">
-                                            <i class="fa-solid fa-filter"><span class="path1"></span><span class="path2"></span></i>
-                                            Filter
-                                        </button> 
-                                        <!--begin::Filter-->
-                                        @can('user.create')
-                                        <button type="button" class="btn btn-primary float-end" onclick="window.location='{{url('/user/add_edit')}}'">
-                                            <span class="svg-icon svg-icon-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                                    <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="currentColor" />
-                                                    <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
-                                                </svg>
-                                            </span>
-                                            Add User
-                                        </button>
-                                        @endcan
 
-                                    </div>
-                                    <!--end::Group actions-->
-                                </div>
-                            <!--end::Card toolbar-->
-                        </div>
-                        <!--begin::Card title-->
-                        
-                    </div>
-                    <!--end::Card header-->
-                    @include('masters/user.filter')
-                    <!--begin::Card body-->
-                    <div class="card-body pt-0">
-                        <!--begin::Table-->
-                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_table">
-                            <!--begin::Table head-->
-                            <thead>
-                                <!--begin::Table row-->
-                                <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-                                    <th class="min-w-120px">S.No</th>
-                                    <th class="min-w-125px">user Name</th>
-                                    <th class="min-w-125px">Role</th>
-                                    <th class="min-w-125px">Status</th>
-                                    @if(auth()->user()->can('user.edit') || auth()->user()->can('user.delete'))
-                                    <th class="min-w-125px">Actions</th>
-                                    @endif
-                                </tr>
-                                <!--end::Table row-->
-                            </thead>
-                            <!--end::Table head-->
-                            <!--begin::Table body-->
-                            <tbody class="fw-semibold text-gray-600">
-                            @if($datas->isEmpty())
-                                <tr>
-                                    <td colspan="6" class="text-center">No results found.</td>
-                                </tr>
-                            @else
+        <!-- Main Card -->
+        <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem;">
 
+            <!-- Search and Actions Bar -->
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;">
+                <!-- Search Input -->
+                <div style="position: relative; flex: 1; max-width: 600px;">
+                    <i class="fas fa-search"
+                        style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                    <input type="text" id="searchInput"
+                        style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                        placeholder="Search by user ID, name, or email...">
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 0.75rem; align-items: center;">
+                    <button type="button" id="filter_panel"
+                        style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-filter" style="color: #6b7280;"></i>
+                        Filter
+                    </button>
+
+                    @can('user.create')
+                        <button type="button" onclick="window.location='{{ route('user.create') }}'"
+                            style="padding: 0.75rem 1.5rem; background: #dc2626; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-plus"></i>
+                            Create User
+                        </button>
+                    @endcan
+                </div>
+            </div>
+
+            @include('masters/user.filter')
+
+            <!-- Table Container -->
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;" id="kt_customers_table">
+                    <thead>
+                        <tr style="background: #dc2626; color: white;">
+                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">User ID</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">User Name
+                            </th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Email ID
+                            </th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Role</th>
+                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Status</th>
+                            @if(auth()->user()->can('user.edit') || auth()->user()->can('user.delete'))
+                                <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Actions</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($datas->isEmpty())
+                            <tr>
+                                <td colspan="6" style="padding: 2rem; text-align: center; color: #6b7280;">No results found.
+                                </td>
+                            </tr>
+                        @else
                             @foreach($datas as $data)
-                                <tr>
-                                    <td>
-                                        {{ $serialNumberStart++ }}
+                                <tr style="border-bottom: 1px solid #f3f4f6;">
+                                    <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">
+                                        USER{{ str_pad($serialNumberStart++, 3, '0', STR_PAD_LEFT) }}</td>
+                                    <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">{{$data->name}}</td>
+                                    <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">{{$data->email ?? 'N/A'}}</td>
+                                    <td style="padding: 1rem;">
+                                        <span
+                                            style="padding: 0.375rem 0.75rem; background: #f3f4f6; color: #4b5563; border-radius: 0.375rem; font-size: 0.875rem;">
+                                            {{$data->role->name ?? 'N/A'}}
+                                        </span>
                                     </td>
-                                    <td>
-                                        {{$data->name}}
-                                    </td>
-                                    <td>
-                                        {{$data->role->name ?? ''}}
-                                    </td>
-                                    <!--begin::IP Address=-->
-                                    <td>
-                                        @if($data->status==1)
-
-                                        <div class="badge badge-light-success">Active</div>
-                                        @else
-                                        <div class="badge badge-light-danger"> InActive</div>
-                                        @endif
+                                    <td style="padding: 1rem;">
+                                        <span
+                                            style="padding: 0.375rem 0.75rem; background: {{$data->status == 1 ? '#dcfce7' : '#fee2e2'}}; color: {{$data->status == 1 ? '#16a34a' : '#dc2626'}}; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600;">
+                                            {{$data->status == 1 ? 'Active' : 'Inactive'}}
+                                        </span>
                                     </td>
                                     @if(auth()->user()->can('user.edit') || auth()->user()->can('user.delete'))
-                                    <td class="td">
-                                        @can('user.edit')
-                                        <a href="{{ route('user.edit', ['id' => $data->id]) }}" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px editbranchbtn">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        @endcan
-                                        @can('user.delete')
-                                        <!-- Delete Button -->
-                                        <button type="button" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px deletestateBtn" data-user-id="{{ $data->id }}">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                        @endcan
-                                    </td>
+                                        <td style="padding: 1rem; position: relative;">
+                                            <button class="action-menu-btn"
+                                                style="background: none; border: none; cursor: pointer; padding: 0.5rem;">
+                                                <i class="fas fa-ellipsis-v" style="color: #6b7280;"></i>
+                                            </button>
+                                            <div class="action-menu"
+                                                style="display: none; position: absolute; right: 2rem; top: 2.5rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
+                                                @can('user.edit')
+                                                    <a href="{{ route('user.edit', ['id' => $data->id]) }}"
+                                                        style="display: block; padding: 0.5rem 1rem; color: #111827; text-decoration: none; font-size: 0.875rem; border-radius: 0.375rem; transition: background 0.2s;"
+                                                        onmouseover="this.style.background='#f3f4f6'"
+                                                        onmouseout="this.style.background='transparent'">
+                                                        <i class="fas fa-edit" style="margin-right: 0.5rem;"></i>Edit
+                                                    </a>
+                                                @endcan
+                                                @can('user.delete')
+                                                    <button type="button" class="deletestateBtn" data-user-id="{{ $data->id }}"
+                                                        style="display: block; width: 100%; text-align: left; padding: 0.5rem 1rem; background: none; border: none; color: #dc2626; cursor: pointer; font-size: 0.875rem; border-radius: 0.375rem; transition: background 0.2s;"
+                                                        onmouseover="this.style.background='#fee2e2'"
+                                                        onmouseout="this.style.background='transparent'">
+                                                        <i class="fas fa-trash" style="margin-right: 0.5rem;"></i>Delete
+                                                    </button>
+                                                @endcan
+                                            </div>
+                                        </td>
                                     @endif
                                 </tr>
-                                @endforeach
-                                @endif
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
+            </div>
 
-                            </tbody>
-                            <!--end::Table body-->
-                        </table>
-                        <!--end::Table-->
-                        <div class="row">
-                            <div id="paginationLinks" class="col-lg-12 col-md-12 col-sm-12">
-                               {{ $datas->links('pagination::bootstrap-4') }}
-                            </div>
-                        </div>
-                    </div>
-                    <!--end::Card body-->
+            <!-- Pagination -->
+            <div style="margin-top: 1.5rem;">
+                <div id="paginationLinks">
+                    {{ $datas->links('pagination::bootstrap-4') }}
                 </div>
             </div>
-            <!--end::Content container-->
         </div>
-        <!--end::Content-->
     </div>
-    <!--end::Content wrapper-->
-</div>
 
 @endsection
 
 @section('script')
-@parent
-<script>
-    $(document).ready(function() {
-        let eventListenersActive = true;
-        $('#searchInput').keyup(function() {
-            if(eventListenersActive){
-               updateTableData();
-            }
+    @parent
+    <script>
+        $(document).ready(function () {
+            let eventListenersActive = true;
 
-        });
-        // Event listener for status select change
-        $('[data-kt-ecommerce-order-filter="status"]').on('change', function() {
-            if(eventListenersActive){
-                updateTableData();
-            }
-            
-        });
+            // Three-dot menu toggle
+            $(document).on('click', '.action-menu-btn', function (e) {
+                e.stopPropagation();
+                $('.action-menu').not($(this).siblings('.action-menu')).hide();
+                $(this).siblings('.action-menu').toggle();
+            });
 
-        // Event listener for status select change
-        $('[data-kt-ecommerce-order-filter="role"]').on('change', function() {
-            if(eventListenersActive){
-               updateTableData();
-            }
-        });
-        
-        $(document).on('click', '#paginationLinks a', function(e) {
-            e.preventDefault();
-            var page = $(this).attr('href').split('page=')[1];
-            updateTableData(page);
-        });
+            // Close menu when clicking outside
+            $(document).on('click', function () {
+                $('.action-menu').hide();
+            });
 
-        $(document).on('change', '[name="row-count-filter"]', function (e) {
-            if(eventListenersActive){
-                var page = 1;
+            // Prevent menu from closing when clicking inside it
+            $(document).on('click', '.action-menu', function (e) {
+                e.stopPropagation();
+            });
+            $('#searchInput').keyup(function () {
+                if (eventListenersActive) {
+                    updateTableData();
+                }
+
+            });
+            // Event listener for status select change
+            $('[data-kt-ecommerce-order-filter="status"]').on('change', function () {
+                if (eventListenersActive) {
+                    updateTableData();
+                }
+
+            });
+
+            // Event listener for status select change
+            $('[data-kt-ecommerce-order-filter="role"]').on('change', function () {
+                if (eventListenersActive) {
+                    updateTableData();
+                }
+            });
+
+            $(document).on('click', '#paginationLinks a', function (e) {
+                e.preventDefault();
+                var page = $(this).attr('href').split('page=')[1];
                 updateTableData(page);
-            }
-        });
+            });
 
-         // Filter Show / Hide Functionality
-         $(document).on('click', '#filter_panel', function (e) {
+            $(document).on('change', '[name="row-count-filter"]', function (e) {
+                if (eventListenersActive) {
+                    var page = 1;
+                    updateTableData(page);
+                }
+            });
+
+            // Filter Show / Hide Functionality
+            $(document).on('click', '#filter_panel', function (e) {
                 $("#filter_sub").toggle();
-        });
+            });
 
-        document.getElementById('clear-filters').addEventListener('click', function() {
+            document.getElementById('clear-filters').addEventListener('click', function () {
                 var form = document.getElementById('filter_form');
                 eventListenersActive = false;
                 // Clear all select inputs
-                form.querySelectorAll('select.form-select').forEach(function(select) {
+                form.querySelectorAll('select.form-select').forEach(function (select) {
                     select.value = '';
                     if ($(select).data('select2')) {
                         $(select).val('all').trigger('change');
@@ -276,98 +213,98 @@
                 }
                 updateTableData();
                 eventListenersActive = true;
-        });
+            });
 
-        function updateTableData(page = '') {
-            var searchTerm = $('#searchInput').val();
-            var selectedStatus = $('[data-kt-ecommerce-order-filter="status"]').val();
-            var selectedRole = $('[data-kt-ecommerce-order-filter="role"]').val();
-            if($('[name="row-count-filter"]').val()){
-                var pageItems = $('[name="row-count-filter"]').val();
-            }else{
-                var defaultPageItems = 10;
+            function updateTableData(page = '') {
+                var searchTerm = $('#searchInput').val();
+                var selectedStatus = $('[data-kt-ecommerce-order-filter="status"]').val();
+                var selectedRole = $('[data-kt-ecommerce-order-filter="role"]').val();
+                if ($('[name="row-count-filter"]').val()) {
+                    var pageItems = $('[name="row-count-filter"]').val();
+                } else {
+                    var defaultPageItems = 10;
+                }
+                loadTableData(searchTerm, selectedStatus, selectedRole, page, pageItems || defaultPageItems);
             }
-            loadTableData(searchTerm, selectedStatus,selectedRole, page,pageItems || defaultPageItems);
-        }
-        updateTableData();
+            updateTableData();
 
-        function loadTableData(searchTerm, selectedStatus,selectedRole, page = '',pageItems='') {
-            $.ajax({
-                url: "{{ route('user.index') }}?search=" + searchTerm + "&status=" + selectedStatus + "&role=" + selectedRole + "&page=" + page + "&pageItems=" + pageItems,
-                type: "GET",
-                data: {},
-                dataType: 'html',
-                success: function(response) {
-                    console.log(response);
-                    $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
-                    $('#paginationLinks').html($(response).find('#paginationLinks').html());
-                },
-                error: function() {
-                    console.error('Error loading table data.');
-                }
-            });
-        }
-        // Attach event listener to the "Delete" button
-        $(document).on('click', '.deletestateBtn', function() {
-            var userId = $(this).data('user-id');
+            function loadTableData(searchTerm, selectedStatus, selectedRole, page = '', pageItems = '') {
+                $.ajax({
+                    url: "{{ route('user.index') }}?search=" + searchTerm + "&status=" + selectedStatus + "&role=" + selectedRole + "&page=" + page + "&pageItems=" + pageItems,
+                    type: "GET",
+                    data: {},
+                    dataType: 'html',
+                    success: function (response) {
+                        console.log(response);
+                        $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
+                        $('#paginationLinks').html($(response).find('#paginationLinks').html());
+                    },
+                    error: function () {
+                        console.error('Error loading table data.');
+                    }
+                });
+            }
+            // Attach event listener to the "Delete" button
+            $(document).on('click', '.deletestateBtn', function () {
+                var userId = $(this).data('user-id');
 
-            Swal.fire({
-                text: "Are you sure you would like to delete?",
-                icon: "warning",
-                showCancelButton: true,
-                buttonsStyling: false,
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "No, return",
-                customClass: {
-                    confirmButton: "btn btn-danger",
-                    cancelButton: "btn btn-active-light"
-                }
-            }).then(function(result) {
-                if (result.isConfirmed) {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        url: "{{ route('user.delete', ['id' => ':id']) }}".replace(':id', userId),
-                        type: 'DELETE',
-                        success: function(res) {
-                           Swal.fire({
-                                title: "Deleted!",
-                                text: res.message,
-                                icon: "success",
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-success"
-                                },
-                                timer: 3000,
-                            });
-                            refreshTableContent();
-                        }
-                    });
-                }
+                Swal.fire({
+                    text: "Are you sure you would like to delete?",
+                    icon: "warning",
+                    showCancelButton: true,
+                    buttonsStyling: false,
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, return",
+                    customClass: {
+                        confirmButton: "btn btn-danger",
+                        cancelButton: "btn btn-active-light"
+                    }
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        $.ajax({
+                            url: "{{ route('user.delete', ['id' => ':id']) }}".replace(':id', userId),
+                            type: 'DELETE',
+                            success: function (res) {
+                                Swal.fire({
+                                    title: "Deleted!",
+                                    text: res.message,
+                                    icon: "success",
+                                    confirmButtonText: "Ok, got it!",
+                                    customClass: {
+                                        confirmButton: "btn btn-success"
+                                    },
+                                    timer: 3000,
+                                });
+                                refreshTableContent();
+                            }
+                        });
+                    }
+                });
             });
+
+            function refreshTableContent() {
+                $.ajax({
+                    url: "{{ route('user.index') }}", // Replace with the actual route name or URL
+                    type: "GET",
+                    dataType: 'html',
+                    success: function (response) {
+                        // Update the table content with the refreshed data
+                        $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
+                        updateTableData();
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            }
         });
-
-        function refreshTableContent() {
-            $.ajax({
-                url: "{{ route('user.index') }}", // Replace with the actual route name or URL
-                type: "GET",
-                dataType: 'html',
-                success: function(response) {
-                    // Update the table content with the refreshed data
-                    $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
-                    updateTableData();
-
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', error);
-                }
-            });
-        }
-    });
-</script>
+    </script>
 
 
 @endsection

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Carbon\Carbon; 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AdminEmail;
 use App\Models\User;
@@ -25,7 +25,7 @@ class AuthController extends Controller
     public function login_check(Request $request)
     {
 
-        $validatedData = Validator::make($request->all(), $this->getValidationRules(),$this->getValidationMessages());
+        $validatedData = Validator::make($request->all(), $this->getValidationRules(), $this->getValidationMessages());
         if ($validatedData->fails()) {
             return $this->returnError($validatedData->errors(), 'Validation Error', 422);
         }
@@ -40,7 +40,7 @@ class AuthController extends Controller
                 if ($user->role_id) {
                     // Fetch the role status directly from the roles table
                     $role_status = Role::where('id', $user->role_id)->value('status');
-                    
+
                     if ($role_status == 1) {
                         $request->session()->regenerate();
                         return redirect()->route('dashboard.view');
@@ -64,19 +64,20 @@ class AuthController extends Controller
     public function getValidationRules()
     {
         $rule_arr = [
-            'email' => ['required', 'email','regex:/(.+)@(.+)\.(.+)/i'],
-            'password' => ['required','string']
+            'email' => ['required', 'email', 'regex:/(.+)@(.+)\.(.+)/i'],
+            'password' => ['required', 'string']
         ];
 
         return $rule_arr;
     }
 
-    function getValidationMessages() {
+    function getValidationMessages()
+    {
         return [
             'email.required' => 'The email field is required.',
             'email.email' => 'The email address must be a valid email address.',
             'password.required' => 'The password field is required.',
-            
+
         ];
     }
 
@@ -87,12 +88,12 @@ class AuthController extends Controller
         Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('admin.login');
+        return redirect()->route('index.login');
     }
 
     public function forgot_password()
     {
-              return view('auth.forgot_password');
+        return view('auth.forgot_password');
     }
 
     public function password_reset_mail(Request $request)
@@ -103,7 +104,7 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $email)->first();
-        
+
         if (!$user) {
             return $this->returnError('Email not found', 'Validation Error', 422);
         }
@@ -118,21 +119,21 @@ class AuthController extends Controller
         $user->token = $token;
         $user->created_at = Carbon::now();
         $user->save();
-        
-        Mail::to($request->email)->send(new AdminEmail($token,$email,$user_name));
-        
+
+        Mail::to($request->email)->send(new AdminEmail($token, $email, $user_name));
+
         return $this->returnSuccess([], "We have e-mailed your password reset link!");
 
     }
 
-    public function reset_forgot_password($email,$token) 
-    { 
-        return view('auth.forgot_password_form', ['email' => $email,'token' => $token]);
+    public function reset_forgot_password($email, $token)
+    {
+        return view('auth.forgot_password_form', ['email' => $email, 'token' => $token]);
     }
 
     public function reset_forgot_password_submit(Request $request)
     {
-        
+
         $email = $request->get('email');
         $token = $request->get('token');
         $password = $request->get('password');
@@ -151,16 +152,16 @@ class AuthController extends Controller
 
 
         $password_reset = AdminResetPassword::where('email', $email)
-                                              ->where('token', $token)
-                                              ->first();
+            ->where('token', $token)
+            ->first();
         if (!$password_reset) {
-            return $this->returnError('Token not found', 'Code not found',422);
+            return $this->returnError('Token not found', 'Code not found', 422);
         }
-        try{
+        try {
             User::where('email', $email)->update(['password' => bcrypt($password)]);
             $password_reset->delete();
             return $this->returnSuccess([], 'Password Changed Successfully');
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $password_reset->saveOrFail();
             return $this->returnError($e->getMessage());
         }

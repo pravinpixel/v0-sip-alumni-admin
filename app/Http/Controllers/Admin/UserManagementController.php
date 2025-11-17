@@ -14,7 +14,7 @@ class UserManagementController extends Controller
     protected $pageNumber = 1;
     protected $perPage = 10;
 
-    
+
 
     public function index(Request $request)
     {
@@ -23,68 +23,67 @@ class UserManagementController extends Controller
         $role = $request->input('role');
         $perPage = $request->input('pageItems');
         $query = User::query();
-        $roles  = Role::all();
+        $roles = Role::all();
         if ($search) {
-                $query->where(function ($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%');
-                });
+            });
         }
         if ($status === '1' || $status === '0') {
             $query->where('status', $status);
         }
-        if ($role!= 'all') {
+        if ($role != 'all') {
             $query->where('role_id', $role);
         }
-        $datas = $query->orderBy('id','desc')->paginate($perPage);
+        $datas = $query->orderBy('id', 'desc')->paginate($perPage);
         $currentPage = $datas->currentPage();
         $serialNumberStart = ($currentPage - 1) * $perPage + 1;
 
         $total_count = User::count();
-        
+
         return view('masters.user.index', [
-              'datas' => $datas,
-              'search' => $search,
-              'total_count' => $total_count,
-              'serialNumberStart' => $serialNumberStart,
-              'roles' => $roles
-          ]);
+            'datas' => $datas,
+            'search' => $search,
+            'total_count' => $total_count,
+            'serialNumberStart' => $serialNumberStart,
+            'roles' => $roles
+        ]);
     }
 
     public function create(Request $request)
-    {   
-        $roles = Role::where('status', '1')->whereNull('deleted_at')->with(['permissions' => function($query) {
-            $query->whereNotIn('name', ['i_alert_employee.create', 'i_alert_employee.view', 'i_alert_employee.edit', 'i_alert_employee.delete', 'i_alert_employee.comment']);
-        }])->get();
-        $roles = $roles->reject(function($role) {
+    {
+        $roles = Role::where('status', '1')->whereNull('deleted_at')->with([
+            'permissions' => function ($query) {
+                $query->whereNotIn('name', ['i_alert_employee.create', 'i_alert_employee.view', 'i_alert_employee.edit', 'i_alert_employee.delete', 'i_alert_employee.comment']);
+            }
+        ])->get();
+        $roles = $roles->reject(function ($role) {
             return $role->permissions->isEmpty();
         });
-        return view("masters.user.add_edit", ['roles'=>$roles]);
+        return view("masters.user.add_edit", ['roles' => $roles]);
     }
-   
+
     public function edit($id)
-    {   
+    {
         $user = User::find($id);
-        $roles = Role::where('status', '1')->whereNull('deleted_at')->with(['permissions' => function($query) {
-            $query->whereNotIn('name', ['i_alert_employee.create', 'i_alert_employee.view', 'i_alert_employee.edit', 'i_alert_employee.delete', 'i_alert_employee.comment']);
-        }])->get();
-        $roles = $roles->reject(function($role) {
+        $roles = Role::where('status', '1')->whereNull('deleted_at')->with([
+            'permissions' => function ($query) {
+                $query->whereNotIn('name', ['i_alert_employee.create', 'i_alert_employee.view', 'i_alert_employee.edit', 'i_alert_employee.delete', 'i_alert_employee.comment']);
+            }
+        ])->get();
+        $roles = $roles->reject(function ($role) {
             return $role->permissions->isEmpty();
         });
-        return view("masters.user.add_edit", ['user'=>$user,'roles'=>$roles]);
+        return view("masters.user.add_edit", ['user' => $user, 'roles' => $roles]);
     }
-  
+
     public function getValidationRules($id = null, $isUpdatingPassword = false)
     {
         $rule_arr = [
             'user_name' => 'required',
-            'email' => ['required', 'email', 'unique:users,email,' . $id.',id,deleted_at,NULL','regex:/(.+)@(.+)\.(.+)/i'],
-            'mobile_number' => [
-                'required',
-                'digits:10',
-                Rule::unique('users', 'mobile_number')->ignore($id)
-            ],
-
+            'email' => ['required', 'email', 'unique:users,email,' . $id . ',id,deleted_at,NULL', 'regex:/(.+)@(.+)\.(.+)/i'],
             'role_id' => 'required|exists:roles,id',
+            'status' => 'required|in:0,1',
         ];
 
         if ($id == null || $isUpdatingPassword) {
@@ -95,7 +94,8 @@ class UserManagementController extends Controller
         return $rule_arr;
     }
 
-    function getValidationMessages() {
+    function getValidationMessages()
+    {
         return [
             'retype_password.required' => 'The confirm password field is required.',
             'retype_password.same' => 'The confirm password field must match password.',
@@ -106,10 +106,10 @@ class UserManagementController extends Controller
 
     public function save(Request $request)
     {
-        
+
         $id = $request->id ?? NULL;
         $isUpdatingPassword = $id == null || !empty($request->input('retype_password'));
-        $validatedData = Validator::make($request->all(), $this->getValidationRules($id, $isUpdatingPassword),$this->getValidationMessages());
+        $validatedData = Validator::make($request->all(), $this->getValidationRules($id, $isUpdatingPassword), $this->getValidationMessages());
 
         if ($validatedData->fails()) {
             return $this->returnError($validatedData->errors(), 'Validation Error', 422);
@@ -118,12 +118,16 @@ class UserManagementController extends Controller
             if (isset($id)) {
                 $user = User::find($id);
                 $user->name = $request->input('user_name');
-                $user->mobile_number = $request->input('mobile_number');
                 $user->email = $request->input('email');
-                $user->status = $request->input('status') ?? 0;
-                $user->password = bcrypt($request->input('password'));
-                $user->hash_password= Crypt::encryptString($request->input('password'));
+                $user->status = $request->input('status');
                 $user->role_id = $request->input('role_id');
+
+                // Only update password if provided
+                if ($request->filled('password')) {
+                    $user->password = bcrypt($request->input('password'));
+                    $user->hash_password = Crypt::encryptString($request->input('password'));
+                }
+
                 $user->update();
                 $user->roles()->detach();
                 if ($request->input('role_id')) {
@@ -133,11 +137,10 @@ class UserManagementController extends Controller
             } else {
                 $user = new User();
                 $user->name = $request->input('user_name');
-                $user->mobile_number = $request->input('mobile_number');
                 $user->email = $request->input('email');
-                $user->status = $request->input('status') ?? 0;
+                $user->status = $request->input('status');
                 $user->password = bcrypt($request->input('password'));
-                $user->hash_password= Crypt::encryptString($request->input('password'));
+                $user->hash_password = Crypt::encryptString($request->input('password'));
                 $user->role_id = $request->input('role_id');
                 $user->save();
                 if ($request->input('role_id')) {

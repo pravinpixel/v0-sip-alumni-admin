@@ -1,355 +1,287 @@
 @extends('layouts.index')
 
-@section('title', 'Task Master | Usha Fire')
+@section('title', 'User Management')
 
-@section('style')
-@parent
-<style>
-    .loading-cursor {
-        cursor: wait !important;
-    }
-
-    .del {
-        margin-top: 10% !important;
-    }
-
-    .let {
-        font-size: 120% !important;
-
-    }
-</style>
-<style>
-    /* Add this to your CSS stylesheet */
-    .input-group {
-        position: relative;
-        width: 100%;
-    }
-
-    .input-group .form-control {
-        width: 100%;
-        padding-right: 40px;
-        /* Adjust to leave space for the icon */
-    }
-
-    .input-group .toggle-password {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        /* Adjust as needed */
-        transform: translateY(-50%);
-        cursor: pointer;
-        font-size: 1.2em;
-        /* Adjust for icon size */
-        z-index: 999;
-    }
-
-    @media (max-width: 768px) {
-        .input-group .toggle-password {
-            font-size: 1em;
-            /* Adjust size for smaller screens */
-            right: 5px;
-            /* Adjust for smaller screens */
-        }
-    }
-
-    @media (max-width: 480px) {
-        .input-group .toggle-password {
-            font-size: 0.9em;
-            /* Further adjust for very small screens */
-            right: 3px;
-            /* Adjust as needed */
-        }
-    }
-
-    .form_mtb {
-        margin-top: 2rem;
-        margin-bottom: 2rem;
-    }
-
-    .active_btn {
-        display: flex;
-        align-items: center;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-</style>
-@endsection
 @section('content')
-@php
-    $decryptedPassword = '';
-    if (isset($user->hash_password)) {
-        try {
-            $decryptedPassword = Crypt::decryptString($user->hash_password);
-        } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
-            // Handle decryption failure
-            // Log the error or take appropriate action
-            $decryptedPassword = ''; // Default to an empty string or handle as needed
+
+    @php
+        $decryptedPassword = '';
+        if (isset($user->hash_password)) {
+            try {
+                $decryptedPassword = Crypt::decryptString($user->hash_password);
+            } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+                $decryptedPassword = '';
+            }
         }
-    }
-@endphp
-<div id="pageLoader" class="page-loader">
-    <div class="loader"></div>
-</div>
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-    <div class="d-flex flex-column flex-column-fluid">
-        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
-            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
-                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
+    @endphp
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <div style="padding: 2rem;">
+        <!-- Header Section -->
+        <div style="margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                <a href="{{url('user')}}" style="color: #6b7280; text-decoration: none; font-size: 1.5rem;">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0;">
                     @if(isset($user))
-                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Edit User</h1>
+                        Edit User
                     @else
-                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Add User</h1>
+                        Create New User
                     @endif
-
-                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                        <li class="breadcrumb-item text-muted">
-                            <a href="{{url('dashboard')}}" class="text-muted text-hover-primary">Dashboard</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
-                        </li>
-
-                        <li class="breadcrumb-item text-muted">
-                            <a href="{{url('/user')}}" class="text-muted text-hover-primary">Users</a>
-                        </li>
-                    </ul>
-                </div>
-                <!--end::Page title-->
-                <!--begin::Actions-->
-                <div class="d-flex align-items-center gap-2 gap-lg-3">
-                    <!--begin::Filter menu-->
-                    <div class="m-0">
-                        <!--begin::Menu toggle-->
-                        <!--end::Menu 1-->
-                    </div>
-                    <!--end::Filter menu-->
-                </div>
-                <!--end::Actions-->
+                </h1>
             </div>
-            <!--end::Toolbar container-->
+            <p style="font-size: 0.875rem; color: #6b7280; margin-left: 3.5rem;">
+                @if(isset($user))
+                    Update user details and permissions
+                @else
+                    Add a new admin user to the system
+                @endif
+            </p>
         </div>
-        <!--end::Toolbar-->
-        <!--begin::Content-->
-        <div id="kt_app_content" class="app-content flex-column-fluid">
-            <!--begin::Content container-->
-            <div id="kt_app_content_container" class="app-container container-xxl">
-                <!--begin::Card-->
-                <div class="card">
-                    <!--begin::Card body-->
-                    <div class="card-body pt-0">
-                        <form id="dynamic-form" method="post" action="{{ url('/user/save') }}">
-                            @csrf
-                            <input type="hidden" name="id" id="id" value="{{$user->id??''}}">
-                            <input type="hidden" name="title" id="title" value="">
-                            <div class="page-title d-flex justify-content-center flex-wrap me-3 card_arrow">
-                                <a href="{{url('user')}}" style="cursor: pointer;" class="text-muted text-hover-primary">
-                                    <i class="fa fa-arrow-left"  aria-hidden="true"></i>
-                                </a>
-                                <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">User</h1>
-                            </div>
 
-                            <div class="row form_mtb">
-                                <div class="col-4">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label required">User Name:</label>
-                                        <input type="text" id="user_name" name="user_name" value="{{$user->name??''}}" class="form-control" placeholder="Enter User Name">
-                                        <span class="field-error" id="user_name-error" style="color:red"></span>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label required">Mobile Number:</label>
-                                        <input type="tel" id="mobile_number" name="mobile_number" value="{{$user->mobile_number??''}}" class="form-control" placeholder="Enter Mobile Number" maxlength="10">
-                                        <span class="field-error" id="mobile_number-error" style="color:red"></span>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label required">Email ID:</label>
-                                        <input type="text" id="email" name="email" value="{{$user->email??''}}" class="form-control" placeholder="Enter Email ID">
-                                        <span class="field-error" id="email-error" style="color:red"></span>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-4">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label required">Password:</label>
-                                        <div class="input-group">
-                                            <input type="password" id="password" name="password" value="{{ $decryptedPassword }}" class="form-control" placeholder="Enter Password">
-                                            <i class="toggle-password fa fa-eye-slash" data-toggle="password"></i>
-                                        </div>
-                                        <span class="field-error" id="password-error" style="color:red"></span>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="mb-3">
-                                        <label for="name" class="form-label required">Confirm Password:</label>
-                                        <div class="input-group">
-                                            <input type="password" id="retype_password" name="retype_password" value="{{ $decryptedPassword }}" class="form-control" placeholder="Enter Confirm Password">
-                                            <i class="toggle-password fa fa-eye-slash" data-toggle="retype_password"></i>
-                                        </div>
+        <!-- Form Card -->
+        <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 2rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 1.5rem 0;">User Details</h2>
 
-                                        <span class="field-error" id="retype_password-error" style="color:red"></span>
-                                    </div>
-                                </div>
-                                
+            <form id="dynamic-form" method="post" action="{{ route('user.save') }}">
+                @csrf
+                <input type="hidden" name="id" id="id" value="{{$user->id ?? ''}}">
 
-                                <div class="col-4">
-                                    <div class="mb-3">
-                                        <label for="role" class="form-label required">User Role:</label>
-                                        <select class="form-select form-select-solid" name="role_id" id="role_id" data-control="select2" data-hide-search="true" data-placeholder="Role" data-kt-ecommerce-order-filter="role">
-                                            <option value="">Select Role</option>
-                                            @foreach($roles as $role)
-                                            <option value="{{ $role->id }}" {{ isset($user) && $role->id == old('role_id',$user->role_id) ? 'selected' : '' }}>{{ $role->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span class="field-error" id="role_id-error" style="color:red"></span>
-                                    </div>
-                                </div>
-
-                                <div class="col-auto active_btn">
-                                    <!-- Checkbox for creating a new user -->
-                                    @if(!isset($user) || is_null($user->id))
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="status_update" name="status" value="1" checked>
-                                        <label class="form-check-label" for="status_update">Active</label>
-                                    </div>
-                                    @endif
-
-                                    <!-- Checkbox for updating an existing user -->
-                                    @if(isset($user) && !is_null($user->id))
-                                    @if($user->status == 1)
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="status_update" name="status" value="1" {{ $user->status ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="status_update">Active</label>
-                                    </div>
-                                    @else
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="status_update" name="status" value="0">
-                                        <label class="form-check-label" for="status_update">Inactive</label>
-                                    </div>
-                                    @endif
-                                    @endif
-
-                                    <!-- <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="status_update" name="status" value="1">
-                                        <label class="form-check-label" for="status_update">Active</label>
-                                    </div> -->
-                                </div>
-
-                            </div>
-
-
-                            <div class="mb-3 text-center">
-                                <button type="button" class="btn btn-success btn-submit" id="dynamic-submit">Submit</button>
-                            </div>
-                        </form>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <!-- User ID -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            User ID <span style="color: #dc2626;">*</span>
+                        </label>
+                        <input type="text"
+                            value="{{isset($user) ? 'USER' . str_pad($user->id, 3, '0', STR_PAD_LEFT) : 'Auto-generated'}}"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; background: #f9fafb;"
+                            disabled>
                     </div>
-                    <!--end::Card body-->
+
+                    <!-- User Name -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            User Name <span style="color: #dc2626;">*</span>
+                        </label>
+                        <input type="text" id="user_name" name="user_name" value="{{$user->name ?? ''}}"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                            placeholder="e.g., John Doe">
+                        <span class="field-error" id="user_name-error"
+                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    </div>
                 </div>
-            </div>
-            <!--end::Content container-->
+
+                <!-- Email ID (Full Width) -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label
+                        style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                        Email ID <span style="color: #dc2626;">*</span>
+                    </label>
+                    <input type="email" id="email" name="email" value="{{$user->email ?? ''}}"
+                        style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                        placeholder="e.g., john.doe@sipadmin.com">
+                    <span class="field-error" id="email-error"
+                        style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                    <!-- Password -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            @if(isset($user))
+                                New Password <span style="color: #6b7280; font-weight: 400;">(Leave blank to keep
+                                    current)</span>
+                            @else
+                                Password <span style="color: #dc2626;">*</span>
+                            @endif
+                        </label>
+                        <div style="position: relative;">
+                            <input type="password" id="password" name="password" value="{{ isset($user) ? '' : '' }}"
+                                style="width: 100%; padding: 0.75rem; padding-right: 3rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                                placeholder="Enter password">
+                            <i class="fas fa-eye-slash toggle-password" data-toggle="password"
+                                style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #6b7280;"></i>
+                        </div>
+                        <span class="field-error" id="password-error"
+                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            @if(isset($user))
+                                Confirm New Password
+                            @else
+                                Confirm Password <span style="color: #dc2626;">*</span>
+                            @endif
+                        </label>
+                        <div style="position: relative;">
+                            <input type="password" id="retype_password" name="retype_password"
+                                value="{{ isset($user) ? '' : '' }}"
+                                style="width: 100%; padding: 0.75rem; padding-right: 3rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                                placeholder="Re-enter password">
+                            <i class="fas fa-eye-slash toggle-password" data-toggle="retype_password"
+                                style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #6b7280;"></i>
+                        </div>
+                        <span class="field-error" id="retype_password-error"
+                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                    <!-- Select Role -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            Select Role <span style="color: #dc2626;">*</span>
+                        </label>
+                        <select name="role_id" id="role_id"
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; background: white;">
+                            <option value="">Select a role</option>
+                            @foreach($roles as $role)
+                                <option value="{{ $role->id }}" {{ isset($user) && $role->id == old('role_id', $user->role_id) ? 'selected' : '' }}>
+                                    {{ $role->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <span class="field-error" id="role_id-error"
+                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            Status
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem;">
+                            <label style="position: relative; display: inline-block; width: 48px; height: 24px;">
+                                <input type="checkbox" id="status-toggle" 
+                                    {{ isset($user) && $user->status == 1 ? 'checked' : (!isset($user) ? 'checked' : '') }}
+                                    style="opacity: 0; width: 0; height: 0;">
+                                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e7eb; transition: 0.3s; border-radius: 24px;"></span>
+                                <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%;"></span>
+                            </label>
+                            <span id="status-label" style="font-size: 0.875rem; font-weight: 600; color: {{ isset($user) && $user->status == 1 ? '#10b981' : (!isset($user) ? '#10b981' : '#6b7280') }}; transition: color 0.3s;">
+                                {{ isset($user) && $user->status == 1 ? 'Active' : (!isset($user) ? 'Active' : 'Inactive') }}
+                            </span>
+                        </div>
+                        <input type="hidden" name="status" id="status" value="{{ isset($user) && $user->status == 1 ? '1' : (!isset($user) ? '1' : '0') }}">
+                        <span class="field-error" id="status-error"
+                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div
+                    style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+                    <button type="button" onclick="window.location='{{url('user')}}'"
+                        style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; color: #111827;">
+                        Cancel
+                    </button>
+                    <button type="button" id="dynamic-submit"
+                        style="padding: 0.75rem 1.5rem; background: #dc2626; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-save"></i>
+                        @if(isset($user))
+                            Update User
+                        @else
+                            Create User
+                        @endif
+                    </button>
+                </div>
+            </form>
         </div>
-        <!--end::Content-->
     </div>
-    <!--end::Content wrapper-->
-</div>
-
-
 
 @endsection
 
 @section('script')
-@parent
-<script>
-    $(document).ready(function() {
-        $("#status_update").on('change', function() {
-        if ($(this).is(':checked')) {
-            $(this).val(1);
-            $('label[for="status_update"]').text('Active');
-        } else {
-            $(this).val(0);
-            $('label[for="status_update"]').text('Inactive');
+    @parent
+    <style>
+        /* Toggle Switch Styles */
+        #status-toggle:checked + span {
+            background-color: #10b981;
         }
-    });
-});
-    $(document).ready(function() {
-        document.getElementById('mobile_number').addEventListener('input', function(e) {
-            var input = e.target.value;
-            e.target.value = input.replace(/[^0-9]/g, '');
-        });
+        #status-toggle:checked + span + span {
+            transform: translateX(24px);
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            // Password Eye Toggle Script
+            document.querySelectorAll('.toggle-password').forEach(button => {
+                button.addEventListener('click', function () {
+                    let input = document.getElementById(this.getAttribute('data-toggle'));
 
-        // Password Eye Toggle Script
-        document.querySelectorAll('.toggle-password').forEach(button => {
-            button.addEventListener('click', function() {
-                let input = document.getElementById(this.getAttribute('data-toggle'));
-                let icon = this.querySelector('i');
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        this.classList.remove('fa-eye-slash');
+                        this.classList.add('fa-eye');
+                    } else {
+                        input.type = 'password';
+                        this.classList.remove('fa-eye');
+                        this.classList.add('fa-eye-slash');
+                    }
+                });
+            });
 
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
+            // Status Toggle Script
+            $('#status-toggle').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#status').val('1');
+                    $('#status-label').text('Active').css('color', '#10b981');
                 } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
+                    $('#status').val('0');
+                    $('#status-label').text('Inactive').css('color', '#6b7280');
                 }
+            });
+
+            $('#dynamic-submit').on('click', function (e) {
+                saveUpdateUser(e);
             });
         });
 
-        $('#dynamic-submit').on('click', function(e) {
-            saveUpdateUser(e);
-        });
-    });
+        function saveUpdateUser(event) {
+            event.preventDefault();
 
-    function saveUpdateUser(event) {
-        event.preventDefault();
-        $('#pageLoader').fadeIn();
+            // Serialize the form data
+            let allValues = $('#dynamic-form').serialize();
 
-        // Serialize the form data
-        let allValues = $('#dynamic-form').serialize();
-        // Perform the AJAX request
-        $.ajax({
-            url: $('#dynamic-form').attr('action'), // Get the form action URL
-            type: 'POST',
-            data: allValues,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Add CSRF token if needed
-            },
-            success: function(response) {
-                $('#pageLoader').fadeOut();
-                // Handle success response
-                if (response.success) {
-                    toastr.success(response.message);
-                    window.location.href = '{{ route("user.index") }}';
-                } else {
-                    toastr.success(response.error);
+            // Perform the AJAX request
+            $.ajax({
+                url: $('#dynamic-form').attr('action'),
+                type: 'POST',
+                data: allValues,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        window.location.href = '{{ route("user.index") }}';
+                    } else {
+                        toastr.error(response.error);
+                    }
+                },
+                error: function (response) {
+                    if (response.status === 422 && response.responseJSON.error) {
+                        var errors = response.responseJSON.error;
+                        $('#dynamic-form').find(".field-error").text('');
+                        $.each(errors, function (key, value) {
+                            $('#' + key + '-error').text(value[0]);
+                        });
+                    } else {
+                        toastr.error(response.responseJSON.error)
+                    }
                 }
-            },
-            error: function(response) {
-                $('#pageLoader').fadeOut();
-                if (response.status === 422 && response.responseJSON.error) {
-                    var errors = response.responseJSON.error;
-                    $('#dynamic-form').find(".field-error").text('');
-                    $.each(errors, function(key, value) {
-                        $('#' + key + '-error').text(value[0]); // Display only the first error message for each field
-                    });
-                } else {
-                    toastr.error(response.responseJSON.error)
-                }
-            }
-        });
-    }
-</script>
-
-
+            });
+        }
+    </script>
 @endsection
