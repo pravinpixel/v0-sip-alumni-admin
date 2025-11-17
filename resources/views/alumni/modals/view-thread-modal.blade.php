@@ -1,20 +1,20 @@
 <div id="threadModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 1000; overflow-y: auto; padding: 20px; z-index: 1000;">
     <div style="background: white; border-radius: 12px; max-width: 700px; margin: 20px auto; padding: 0; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);">
 
-        {{-- Close Button --}}
-        <div style="position: sticky; top: 0; right: 0; padding: 16px; display: flex; justify-content: flex-end; background: white; border-bottom: 1px solid #e5e7eb; z-index: 10;">
-            <button onclick="closeThreadModal()" style="background: transparent; border: none; font-size: 24px; cursor: pointer; color: #6b7280;">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
+        
 
         {{-- Thread Content --}}
         <div style="padding: 24px;">
             {{-- Original Post --}}
-            <div style="margin-bottom: 24px; border-bottom: 1px solid #e5e7eb; padding-bottom: 24px;">
-                <h2 id="threadTitle" style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0 0 16px 0;"></h2>
-                
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+            <div style="margin-bottom: 4px; border-bottom: 1px solid #e5e7eb; padding-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h2 id="threadTitle" style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0 0 16px 0;"></h2>
+                    <button onclick="closeThreadModal()" style="background: transparent; border: none; font-size: 14px; cursor: pointer; color: #6b7280;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 16px;border-bottom: 1px solid #e5e7eb;">
                     <div id="threadAuthorAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;"></div>
                     <div>
                         <p id="threadAuthor" style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 2px 0;"></p>
@@ -22,9 +22,9 @@
                     </div>
                 </div>
 
-                <p id="threadDescription" style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 0 0 16px 0;"></p>
+                <p id="threadDescription" style="color: #6b7280; font-size: 15px; line-height: 1.6; margin: 10px 0 16px 0;"></p>
 
-                <div id="threadTags" style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;"></div>
+                <div id="threadTags" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
             </div>
 
             {{-- Comments Count --}}
@@ -56,7 +56,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div style="display: flex; align-items: flex-start; gap: 12px;">
                     <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
                         DU
@@ -69,7 +69,7 @@
                             style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 12px;"
                             onfocus="this.style.borderColor='#dc2626'"
                             onblur="this.style.borderColor='#e5e7eb'">
-                        
+
                         <div style="display: flex; justify-content: flex-end; gap: 12px;">
                             <button
                                 onclick="cancelReply()"
@@ -99,18 +99,30 @@
         animation: fadeIn 0.3s ease;
     }
 
-    #threadModal > div {
+    #threadModal>div {
         animation: slideUp 0.3s ease;
     }
 
     @keyframes fadeIn {
-        from { background: rgba(0, 0, 0, 0); }
-        to { background: rgba(0, 0, 0, 0.5); }
+        from {
+            background: rgba(0, 0, 0, 0);
+        }
+
+        to {
+            background: rgba(0, 0, 0, 0.5);
+        }
     }
 
     @keyframes slideUp {
-        from { transform: translateY(20px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
     }
 
     .comment-item {
@@ -183,7 +195,7 @@
             post.description.replace(/<\/?[^>]+>/g, "").substring(0, 200) +
             (post.description.length > 200 ? '...' : '') :
             'No description available';
-        
+
         const author = post.alumni?.full_name || 'Unknown';
         document.getElementById('threadAuthor').textContent = author;
         document.getElementById('threadAuthorAvatar').textContent = author.substring(0, 2).toUpperCase();
@@ -232,7 +244,7 @@
                 const commentElement = document.createElement('div');
                 commentElement.className = 'comment-item';
                 commentElement.setAttribute('data-reply-id', reply.id);
-                
+
                 commentElement.innerHTML = `
                     <div style="display: flex; gap: 12px;">
                         <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
@@ -268,35 +280,39 @@
 
     function setReplyTo(replyId, userName) {
 
-    // highlight the comment
-    document.querySelectorAll('.comment-item.highlighted')
-        .forEach(item => item.classList.remove('highlighted'));
+        // highlight the comment
+        document.querySelectorAll('.comment-item.highlighted')
+            .forEach(item => item.classList.remove('highlighted'));
 
-    const commentElement = document.querySelector(`[data-reply-id="${replyId}"]`);
-    if (commentElement) {
-        commentElement.classList.add('highlighted');
-        commentElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const commentElement = document.querySelector(`[data-reply-id="${replyId}"]`);
+        if (commentElement) {
+            commentElement.classList.add('highlighted');
+            commentElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+        }
+
+        replyingToReplyId = replyId;
+        replyingToUserName = userName;
+
+        // IMPORTANT → now post id fixed!
+        activePostId = window.currentThreadPostId;
+
+        // show indicator
+        document.getElementById('replyingToIndicator').style.display = 'block';
+        document.getElementById('replyingToName').textContent = userName;
+
+        // change placeholder
+        const input = document.getElementById('replyInput');
+        input.focus();
+        input.placeholder = `Replying to ${userName}...`;
     }
-
-    replyingToReplyId = replyId;
-    replyingToUserName = userName;
-
-    // IMPORTANT → now post id fixed!
-    activePostId = window.currentThreadPostId;
-
-    // show indicator
-    document.getElementById('replyingToIndicator').style.display = 'block';
-    document.getElementById('replyingToName').textContent = userName;
-
-    // change placeholder
-    const input = document.getElementById('replyInput');
-    input.focus();
-    input.placeholder = `Replying to ${userName}...`;
-}
 
 
     function cancelReply() {
         resetReplyState();
+        closeThreadModal();
     }
 
     function resetReplyState() {
@@ -343,7 +359,7 @@
                 if (data.success) {
                     showToast('Reply posted successfully!', 'success');
                     resetReplyState();
-                    
+
                     openThreadModal(postId);
                 } else {
                     showToast('Failed to post reply: ' + (data.message || 'Unknown error'), 'error');
