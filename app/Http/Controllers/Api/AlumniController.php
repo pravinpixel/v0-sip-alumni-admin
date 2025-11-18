@@ -8,6 +8,7 @@ use App\Models\Alumnis;
 use App\Models\Cities;
 use App\Models\MobileOtp;
 use App\Models\Occupation;
+use App\Models\States;
 use Illuminate\Support\Facades\Validator;
 
 class AlumniController extends Controller
@@ -34,10 +35,6 @@ class AlumniController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-
-            /** ------------------------------
-             *  1️⃣ OTP CHECK
-             * -----------------------------*/
             $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
 
             if (!$otpRecord || $otpRecord->is_verified == 0) {
@@ -46,20 +43,6 @@ class AlumniController extends Controller
                     'message' => 'Please verify OTP before registration.'
                 ], 400);
             }
-
-            /** OPTIONAL: verify flag check  
-             *   If you are deleting OTP on success then skip  
-             */
-            // if ($otpRecord->is_verified == 0) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'OTP is not verified.'
-            //     ], 400);
-            // }
-
-            /** ------------------------------
-             *  2️⃣ CITY HANDLE (OTHERS)
-             * -----------------------------*/
             $cityId = $request->city_id;
 
         if ($request->city_id == "others") {
@@ -74,18 +57,11 @@ class AlumniController extends Controller
             $cityId = $city->id;
         }
 
-            /** ------------------------------
-             * 3️⃣ OCCUPATION auto-suggestion
-             * -----------------------------*/
-            $occupationName = ucfirst(strtolower($request->occupation));
+        $occupationName = ucfirst(strtolower($request->occupation));
 
         $occupation = Occupation::firstOrCreate([
             'name' => $occupationName
         ]);
-
-            /** ------------------------------
-             *  4️⃣ SAVE ALUMNI
-             * -----------------------------*/
 
             $alumni = Alumnis::create([
                 'full_name'          => $request->full_name,
@@ -97,10 +73,6 @@ class AlumniController extends Controller
                 'occupation_id'      => $occupation->id,
                 'status'             => 'active', // default
             ]);
-
-            /** ------------------------------
-             * 5️⃣ DELETE OTP after success
-             * -----------------------------*/
             $otpRecord->delete();
 
             return response()->json([
@@ -221,5 +193,33 @@ class AlumniController extends Controller
             'success' => true,
             'message' => 'OTP verified successfully'
         ]);
+    }
+
+    public function essentials(Request $request)
+    {
+        try {
+            $results = [];
+            $string = $request->required;
+            $required = explode(",", $string);
+
+            if (in_array("state", $required)) {
+                $states = [];
+                $states = States::select('id', 'name')->get();
+                $results['state'] = $states;
+            }
+            if (in_array("city", $required)) {
+                $city = [];
+                if($request->state_id){
+                    $city = Cities::select('id', 'name')->where('state_id', $request->state_id)->get();
+                }else {
+                    $city = Cities::select('id', 'name')->get();
+                }
+                $results['city'] = $city;
+            }
+        
+        } catch (\Throwable $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+        return response()->json(['status' => true, 'message' => 'Essentials', 'data' => $results]);
     }
 }

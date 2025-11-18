@@ -43,15 +43,55 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ asset('plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('js/scripts.bundle.js') }}"></script>
-    <script src="{{ asset('js/common.js') }}"></script>
+    <script src="{{ asset('assets/js/common.js') }}"></script>
     <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
-    <script>
 
-    </script>
+<div class="modal fade" id="globalConfirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <p id="globalConfirmMessage">Are you sure?</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-danger" id="globalConfirmYes">Yes</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+    // GLOBAL CONFIRM FUNCTION — usable in ALL PAGES
+    function confirmBox(message, callback) {
+
+        $("#globalConfirmMessage").text(message);
+
+        // remove old click events
+        $("#globalConfirmYes").off('click');
+
+        // add new callback
+        $("#globalConfirmYes").on('click', function () {
+            callback();
+            $("#globalConfirmModal").modal('hide');
+        });
+
+        // show modal
+        $("#globalConfirmModal").modal('show');
+    }
+</script>
+
     @if($message = Session::get('success'))
     <script type="text/javascript">
         toastr.success("{{ $message }}");

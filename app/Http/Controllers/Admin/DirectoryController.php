@@ -52,8 +52,7 @@ class DirectoryController extends Controller
                 })
 
                 ->editColumn('alumni', function ($row) {
-                    $img = $row->image ? asset($row->image) : asset('images/avatar/blank.png');
-                    $occ = $row->occupation->name ?? '—';
+                    $img = $row->image ? url('storage/' . $row->image ?? '') : asset('images/avatar/blank.png');
                     return '<div style="display:flex;align-items:center;gap:12px;">
                         <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
                     </div>';
@@ -92,13 +91,17 @@ class DirectoryController extends Controller
                 })
 
                 ->addColumn('action', function ($row) {
+                    $status = strtolower($row->status);
+                    if (in_array($status, ['blocked'])) {
+                        return '';
+                    }
                     return '
                       <div class="dropdown">
-                                <button class="btn btn-sm btn-light" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
+                                <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
                                 <i class="fas fa-ellipsis-v"></i>
                                      </button>
                                 <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
-                                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="sendMessage(' . $row->id . ')">Send Message</a></li>
+                                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="sendMessage(' . $row->id . ')">View Profile</a></li>
                                       <li><a class="dropdown-item" href="javascript:void(0)" onclick="sendMessage(' . $row->id . ')">Send Message</a></li>
                                </ul>
                                </div>';

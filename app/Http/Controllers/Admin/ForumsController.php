@@ -6,6 +6,7 @@ use App\Exports\OrganizationExport;
 use App\Http\Controllers\Controller;
 use App\Models\Alumnis;
 use App\Models\ContactMaster;
+use App\Models\ForumPost;
 use App\Models\Iallert;
 use App\Models\Location;
 use App\Models\Organization;
@@ -29,60 +30,161 @@ class ForumsController extends Controller
     public function getData(Request $request)
     {
         try {
-            $query = Alumnis::with(['city', 'occupation'])->orderBy('id', 'desc');
-
-            // Apply filters
-            if ($request->filled('batch')) {
-                $query->where('year_of_completion', $request->batch);
-            }
-            if ($request->filled('location')) {
-                $query->whereHas('city', function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->location . '%');
-                });
-            }
+            $query = ForumPost::with('alumni')->orderBy('created_at', 'desc');
 
             return DataTables::of($query)
                 ->addIndexColumn()
-                ->editColumn('created_at', function ($row) {
-                    return '<span>' . Carbon::createFromFormat('Y-m-d H:i:s', $row['created_at'])->setTimezone('Asia/kolkata')->format('d-m-Y h:i A') . '</span>';
+                ->addColumn('created_at', function ($row) {
+                    return \Carbon\Carbon::parse($row->created_at)
+                        ->setTimezone('Asia/Kolkata')
+                        ->format('M j, Y');
                 })
-                ->editColumn('alumni', function ($row) {
-                    $img = $row->image ? asset($row->image) : asset('images/avatar/blank.png');
-                    $occ = $row->occupation->name ?? '—';
-                    return '<div style="display:flex;align-items:center;gap:12px;">
-                        <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+
+                ->addColumn('alumni', function ($row) {
+
+                    $alumni = $row->alumni;
+
+                    if (!$alumni) {
+                        return '—';
+                    }
+
+                    $img = $alumni->image_url ? url('storage/' . $alumni->image ?? '') : asset('images/avatar/blank.png');
+
+                    return '
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <img src="' . $img . '" 
+                            style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+                        <span style="font-weight:600;">' . $alumni->full_name . '</span>
                     </div>';
                 })
-                ->addColumn('full_name', function ($row) {
-                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->full_name ?? '—') . '</span>';
+
+                ->addColumn('contact', function ($row) {
+                    return '<span style="font-size:12px;font-weight:600;">'
+                        . ($row->alumni->mobile_number ?? '—') . '</span>';
                 })
-                ->addColumn('batch', function ($row) {
-                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->year_of_completion ?? '—') . '</span>';
+
+                ->addColumn('view_post', function ($row) {
+                    return '<div class="btn-group" style = "background-color: #f3f4f6; padding: 6px 12px; border-radius: 6px;"> 
+                    <i class="fas fa-eye"></i>
+                    <a href="" 
+                        class="" style= "margin-left: 6px; font-weight: 600; color: #374151;">
+                        View
+                    </a>
+                 </div>';
                 })
-                ->addColumn('mobile_number', function ($row) {
-                    return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->mobile_number ?? '—') . '</span>';
+
+                ->addColumn('action_taken_on', function ($row) {
+                    return \Carbon\Carbon::parse($row->updated_at)
+                        ->setTimezone('Asia/Kolkata')
+                        ->format('M j, Y');
                 })
-                ->addColumn('location', function ($row) {
-                    return ($row->city?->state?->name ?? '-') . ', ' . ($row->city?->name ?? '-');
-                })
-                ->addColumn('occupation', function ($row) {
-                    return $row->occupation->name ?? '-';
-                })
-                ->addColumn('connections', function ($row) {
-                    return '<button onclick="viewProfile(' . $row->id . ')" class="btn btn-sm btn-primary">View Profile</button>';
+
+                ->addColumn('status', function ($row) {
+
+                    $status = strtolower($row->status);
+
+                    // Normal colors
+                    $colors = [
+                        'pending'       => '#f7c948', // yellow
+                        'approved'      => '#4caf50', // green
+                        'rejected'      => '#e53935', // red
+                        'post_deleted'  => '#6c757d', // dark grey
+                        'removed_by_admin' => '#ff7215ff', // light grey
+                    ];
+                    $hover = [
+                        'pending'       => '#f4b400',
+                        'approved'      => '#43a047',
+                        'rejected'      => '#c62828',
+                        'post_deleted'  => '#5a6268',
+                        'removed_by_admin' => '#ff8800ff',
+                    ];
+                    $bg  = $colors[$status] ?? '#9e9e9e';
+                    $hov = $hover[$status] ?? '#7e7e7e';
+                    return '
+                 <span class="status-badge-' . $status . '" 
+                 style="
+                background: ' . $bg . ';
+                color: white;
+                padding: 5px 12px;
+                font-size: 12px;
+                border-radius: 20px;
+                font-weight: 600;
+                text-transform: capitalize;
+                cursor: pointer;
+                transition: 0.3s;
+              ">
+            ' . str_replace('_', ' ', $status) . '
+              </span>
+
+            <style>
+            .status-badge-' . $status . ':hover {
+                background: ' . $hov . ' !important;
+            }
+            </style>
+             ';
                 })
                 ->addColumn('action', function ($row) {
+
+                    $status = strtolower($row->status);
+
+                    // statuses where action must NOT appear at all
+                    if (in_array($status, ['post_deleted', 'removed_by_admin'])) {
+                        return '';
+                    }
+
+                    $actionMenu = '';
+
+                    // PENDING → Approved + Reject
+                    if ($status === 'pending') {
+                        $actionMenu = '
+    <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'approved\')">
+        <i class="fas fa-check-circle" style="color:green;"></i> Approve
+    </a></li>
+
+    <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'rejected\')">
+        <i class="fas fa-times-circle" style="color:red;"></i> Reject
+    </a></li>
+     ';
+                    }
+
+                    // APPROVED → Remove
+                    elseif ($status === 'approved') {
+                        $actionMenu = '
+    <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'removed_by_admin\')">
+        <i class="fas fa-trash" style="color:#d9534f;"></i> Remove
+    </a></li>
+     ';
+                    }
+
+                    // REJECTED → Approved + Reject (reject disabled)
+                    elseif ($status === 'rejected') {
+                        $actionMenu = '
+    <li><a class="dropdown-item" disabled" href="#">
+        <i class="fas fa-check-circle" style="color:gray;"></i> Approve
+    </a></li>
+
+    <li><a class="dropdown-item" disabled" href="#">
+        <i class="fas fa-times-circle" style="color:gray;"></i> Reject
+    </a></li>
+     ';
+                    }
+
+                    // Build dropdown only if actions exist
                     return '
-                      <div class="dropdown">
-                                <button class="btn btn-sm btn-light" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
-                                <i class="fas fa-ellipsis-v"></i>
-                                     </button>
-                                <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
-                                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="sendMessage(' . $row->id . ')">Send Message</a></li>
-                               </ul>
-                               </div>';
+        <div class="dropdown">
+            <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu">
+                ' . $actionMenu . '
+            </ul>
+        </div>
+    ';
                 })
-                ->rawColumns(['alumni', 'batch', 'location', 'action', 'full_name', 'mobile_number', 'created_at', 'connections'])
+
+
+
+                ->rawColumns(['alumni', 'contact', 'view_post', 'status', 'action'])
                 ->make(true);
         } catch (\Throwable $e) {
             Log::error('Directory DataTable error: ' . $e->getMessage(), [
@@ -92,6 +194,29 @@ class ForumsController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+    public function changeStatus(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $post = ForumPost::findOrFail($id);
+            if($request->status == 'approved'){
+                $post->status = 'approved';
+            } elseif($request->status == 'rejected'){
+                $post->status = 'rejected';
+            } elseif($request->status == 'removed_by_admin'){
+                $post->status = 'removed_by_admin';
+            }else{
+                return $this->returnError(false,'Invalid status provided');
+            }
+            
+            $post->save();
+            return $this->returnSuccess($post, 'Status updated successfully');
+        } catch (\Exception $e) {
+            return $this->returnError('Failed to update status: ' . $e->getMessage(), 500);
+        }
+    }
+
 
     public function create(Request $request)
     {

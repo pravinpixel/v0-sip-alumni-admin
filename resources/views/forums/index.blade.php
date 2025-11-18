@@ -3,9 +3,9 @@
 
 @section('content')
 <div style="margin-bottom: 30px;">
-    <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Alumni Directory</h1>
+    <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Forums</h1>
     <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
-        Manage and view all alumni profiles
+        Manage community discussions and forum posts
     </p>
     <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <!-- Search and Filter -->
@@ -42,19 +42,15 @@
         </div>
 
         <!-- Alumni Table -->
-        <table id="directoryTable" class="display" style="width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;">
+        <table id="forumsTable" class="display" style="width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;">
             <thead>
                 <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
                     <th style="padding: 15px; text-align: left;">Created On</th>
-                    <th style="padding: 15px; text-align: left;">Profile Picture</th>
-                    <th style="padding: 15px; text-align: left;">Name</th>
-                    <th style="padding: 15px; text-align: left;">Year</th>
-                    <th style="padding: 15px; text-align: left;">City & State</th>
-                    <th style="padding: 15px; text-align: left;">Email</th>
+                    <th style="padding: 15px; text-align: left;">Alumni</th>
                     <th style="padding: 15px; text-align: left;">Contact</th>
-                    <th style="padding: 15px; text-align: left;">Occupation</th>
+                    <th style="padding: 15px; text-align: left;">View Post</th>
+                    <th style="padding: 15px; text-align: left;">Action Taken On</th>
                     <th style="padding: 15px; text-align: left;">Status</th>
-                    <th style="padding: 15px; text-align: left;">Connections</th>
                     <th style="padding: 15px; text-align: left;">Actions</th>
                 </tr>
             </thead>
@@ -64,14 +60,15 @@
 </div>
 <style>
     /* Add padding to tbody cells */
-    #directoryTable tbody td {
-        padding: 12px 15px; /* Adjust as needed */
+    #forumsTable tbody td {
+        padding: 12px 15px;
+        /* Adjust as needed */
         vertical-align: middle;
     }
 </style>
 
 <!-- Profile Modal -->
-<div class="modal fade" id="alumniProfileModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="viewPostModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header" style="background-color:#c41e3a;color:white;">
@@ -106,20 +103,22 @@
 
 <script>
     $(document).ready(function() {
-        const table = $('#directoryTable').DataTable({
+
+        const table = $('#forumsTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('admin.directory.data') }}",
-                type : 'GET',
+                url: "{{ route('admin.forums.data') }}",
+                type: 'GET',
                 data: function(d) {
                     d.batch = $('#filterBatch').val();
                     d.location = $('#filterLocation').val();
                 }
             },
+
             columns: [{
                     data: 'created_at',
-                    name: 'created_at',
+                    name: 'created_at'
                 },
                 {
                     data: 'alumni',
@@ -128,36 +127,21 @@
                     searchable: false
                 },
                 {
-                    data: 'full_name',
-                    name: 'full_name'
+                    data: 'contact',
+                    name: 'contact'
                 },
                 {
-                    data: 'year_of_completion',
-                    name: 'year_of_completion'
+                    data: 'view_post',
+                    name: 'view_post',
+                    orderable: false
                 },
                 {
-                    data: 'location',
-                    name: 'location'
-                },
-                {
-                    data: 'email',
-                    name: 'email'
-                },
-                {
-                    data: 'mobile_number',
-                    name: 'mobile_number'
-                },
-                {
-                    data: 'occupation',
-                    name: 'occupation'
+                    data: 'action_taken_on',
+                    name: 'action_taken_on'
                 },
                 {
                     data: 'status',
-                    name: 'status'
-                },
-                {
-                    data: 'connections',
-                    name: 'connections',
+                    name: 'status',
                     orderable: false,
                     searchable: false
                 },
@@ -168,6 +152,7 @@
                     searchable: false
                 },
             ],
+
             paging: true,
             searching: false,
             ordering: false,
@@ -176,21 +161,46 @@
             scrollX: true,
         });
 
+        // Search
         $('#searchInput').on('keyup', function() {
             table.search(this.value).draw();
         });
 
+        // Filters
         $('#filterBatch, #filterLocation').on('input', function() {
             table.ajax.reload();
         });
 
+        // Toggle filter section
         $('#filterToggleBtn').on('click', function() {
             const section = $('#filterSection');
             const isVisible = section.is(':visible');
             section.slideToggle();
             $(this).find('span').text(isVisible ? '🔽 Open Filters' : '🔼 Close Filters');
         });
+
     });
+
+    function statusChange(id, status) {
+        confirmBox("Are you sure you want to change the status?", function() {
+            $.ajax({
+                url: "{{ route('forums.change.status') }}",
+                type: 'POST',
+                data: {
+                    id: id,
+                    status: status,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    $('#forumsTable').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    alert('An error occurred while updating the status.');
+                }
+            });
+        });
+    }
+
 
     // Function to open profile modal
 </script>

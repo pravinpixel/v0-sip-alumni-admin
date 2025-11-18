@@ -71,6 +71,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::prefix('forums')->controller(ForumsController::class)->group(function () {
         Route::get('/', 'index')->name('admin.forums.index')->middleware('checkAccess:forum.view');
         Route::get('/get-data', 'getData')->name('admin.forums.data');
+        Route::post('/change-status', 'changeStatus')->name('forums.change.status');
 
         Route::get('create', 'create')->name('organization.create')->middleware('checkAccess:forum.create');
         Route::post('save', 'save')->name('organization.save');

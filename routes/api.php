@@ -29,6 +29,7 @@ Route::post('task-recurring', [TestController::class, 'recurrence']);
 Route::post('register', [AlumniController::class, 'Register']);
 Route::post('send-otp', [AlumniController::class, 'sendOtp']);
 Route::post('verify-otp', [AlumniController::class, 'verifyOtp']);
+Route::get('essentials', [AlumniController::class, 'essentials']);
 
 
 Route::group([
