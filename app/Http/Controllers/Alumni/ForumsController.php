@@ -22,7 +22,9 @@ class ForumsController extends Controller
     public function getData(Request $request)
     {
         try {
-            $forumPosts = ForumPost::with('alumni')->orderBy('created_at', 'desc')->get();
+            $forumPosts = ForumPost::with('alumni')
+                ->where('status', 'approved')
+                ->orderBy('created_at', 'desc')->get();
 
             return response()->json([
                 'success' => true,

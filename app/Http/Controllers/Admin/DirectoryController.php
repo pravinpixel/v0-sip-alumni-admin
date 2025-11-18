@@ -92,19 +92,30 @@ class DirectoryController extends Controller
 
                 ->addColumn('action', function ($row) {
                     $status = strtolower($row->status);
-                    if (in_array($status, ['blocked'])) {
-                        return '';
+
+                    if ($status == 'blocked') {
+                        return '
+        <div class="dropdown d-inline-block ms-2">
+            <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewProfilePic(' . $row->id . ')"><i class="fa-regular fa-eye me-2"></i>View Profile Pic</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="updateStatus(' . $row->id . ')">Unblock</a></li>
+            </ul>
+        </div>';
+                    } else {
+                        return '
+        <div class="dropdown d-inline-block ms-2">
+            <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
+                <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewProfilePic(' . $row->id . ')"><i class="fa-regular fa-eye me-2"></i></i>View Profile Pic</a></li>
+                <li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="updateStatus(' . $row->id . ')"><i class="fa-solid fa-ban me-2"></i>Block</a></li>
+            </ul>
+        </div>';
                     }
-                    return '
-                      <div class="dropdown">
-                                <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
-                                <i class="fas fa-ellipsis-v"></i>
-                                     </button>
-                                <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
-                                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="sendMessage(' . $row->id . ')">View Profile</a></li>
-                                      <li><a class="dropdown-item" href="javascript:void(0)" onclick="sendMessage(' . $row->id . ')">Send Message</a></li>
-                               </ul>
-                               </div>';
                 })
                 ->rawColumns(['alumni', 'batch', 'location', 'action', 'full_name', 'mobile_number', 'created_at', 'connections', 'status'])
                 ->make(true);
@@ -199,6 +210,32 @@ class DirectoryController extends Controller
                 'file' => $e->getFile(),
             ]);
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        try {
+            $id = $request->id;
+            $alumni = Alumnis::findOrFail($id);
+            $status = strtolower($request->status);
+            if ($status === 'blocked') {
+                $alumni->status = 'blocked';
+            } else {
+                $alumni->status = 'active';
+            }
+            $alumni->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Update Alumni Status Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update alumni status: ' . $e->getMessage()
+            ], 500);
         }
     }
 
