@@ -216,6 +216,11 @@ class AlumniController extends Controller
                 }
                 $results['city'] = $city;
             }
+            if (in_array("occupation", $required)) {
+                $occupation = [];
+                $occupation = Occupation::select('id', 'name')->get();
+                $results['occupation'] = $occupation;
+            }
         
         } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 500);
