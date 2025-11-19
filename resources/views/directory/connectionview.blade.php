@@ -5,7 +5,7 @@
 <div style="margin-bottom: 30px;">
     <div style="display: flex; gap:10px">
         <div style="margin :auto 0">
-           <button onclick="history.back()" style="background-color: #e2dedfff; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; margin-bottom: 15px;">
+            <button onclick="history.back()" style="background-color: #e2dedfff; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; margin-bottom: 15px;">
                 ←
             </button>
         </div>
@@ -99,29 +99,63 @@
 </style>
 
 <!-- Profile Modal -->
-<div class="modal fade" id="alumniProfileModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<div class="modal fade" id="alumniProfileDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content">
-            <div class="modal-header" style="background-color:#c41e3a;color:white;">
-                <h5 class="modal-title">Alumni Profile</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="text-end p-4">
+                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="profileModalBody" style="padding:20px;">
-                <div class="text-center">
-                    <img id="profileImage" src="" class="rounded-circle mb-3" style="width:100px;height:100px;object-fit:cover;">
-                    <h5 id="profileName" style="font-weight:700;"></h5>
-                    <p id="profileEmail" style="color:#666;"></p>
+            <div class="modal-body" id="profileModalBody" style="padding:10px 30px;">
+                <div style="padding: 10px;">
+                    <div style="display: flex; align-items: center; gap: 20px;">
+                        <div id="profileImageContainer" style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 4px solid #dc2626; flex-shrink: 0; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);">
+                            <img id="profileImage" src="" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div style="flex: 1; min-width: 0;">
+                            <h2 id="profileName" style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700; color: #111827; line-height: 1.2;">Alumni Connection 1</h2>
+                            <p id="profileOccupation" style="margin: 0; font-size: 15px; color: #6b7280; font-weight: 500;">Software Engineer</p>
+                        </div>
+                    </div>
                 </div>
                 <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Batch:</strong> <span id="profileBatch"></span></p>
-                        <p><strong>Location:</strong> <span id="profileLocation"></span></p>
+                <div style="padding: 24px 32px 32px 32px;">
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px;">
+                            <label style="font-size: 14px; font-weight: 600; color: #6b7280; min-width: 120px; padding-top: 2px;">Full Name:</label>
+                            <p id="profileFullName" style="margin: 0; font-size: 15px; color: #111827; font-weight: 500; flex: 1;">John Doe</p>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Occupation:</strong> <span id="profileOccupation"></span></p>
-                        <p><strong>Company:</strong> <span id="profileCompany"></span></p>
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px;">
+                            <label style="font-size: 14px; font-weight: 600; color: #6b7280; min-width: 120px; padding-top: 2px;">Year:</label>
+                            <p id="profileBatch" style="margin: 0; font-size: 15px; color: #111827; font-weight: 500; flex: 1;">2000</p>
+                        </div>
                     </div>
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px;">
+                            <label style="font-size: 14px; font-weight: 600; color: #6b7280; min-width: 120px; padding-top: 2px;">City & State:</label>
+                            <p id="profileLocation" style="margin: 0; font-size: 15px; color: #111827; font-weight: 500; flex: 1;">Mumbai, Tamil Nadu</p>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px;">
+                            <label style="font-size: 14px; font-weight: 600; color: #6b7280; min-width: 120px; padding-top: 2px;">Email:</label>
+                            <p id="profileEmail" style="margin: 0; font-size: 15px; color: #111827; font-weight: 500; flex: 1; word-break: break-all;">connection1@example.com</p>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px;">
+                            <label style="font-size: 14px; font-weight: 600; color: #6b7280; min-width: 120px; padding-top: 2px;">Contact:</label>
+                            <p id="profileNumber" style="margin: 0; font-size: 15px; color: #111827; font-weight: 500; flex: 1;">+91 4616661464</p>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 0;">
+                        <div style="display: flex; align-items: flex-start; gap: 12px;">
+                            <label style="font-size: 14px; font-weight: 600; color: #6b7280; min-width: 120px; padding-top: 2px;">Occupation:</label>
+                            <p id="profileOccupation" style="margin: 0; font-size: 15px; color: #111827; font-weight: 500; flex: 1;">Software Engineer</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -135,7 +169,7 @@
 <script>
     $(document).ready(function() {
 
-        let alumniId = "{{ $id }}"; // correct variable
+        let alumniId = "{{ $id }}";
 
         const table = $('#ConnectionListTable').DataTable({
             processing: true,
@@ -195,6 +229,32 @@
         });
 
     });
+
+    function viewProfileDetails(id) {
+        $.ajax({
+            url: "{{ route('admin.directory.view.profile', ':id') }}".replace(':id', id),
+            type: 'GET',
+            success: function(response) {
+                data = response.data;
+
+                $('#profileImage').attr('src', data.image_url);
+                $('#profileName').text(data.name);
+                $('#profileFullName').text(data.name);
+                $('#profileEmail').text(data.email);
+                $('#profileBatch').text(data.batch);
+                $('#profileLocation').text(data.location);
+                $('#profileOccupation').text(data.occupation);
+                $('#profileOccupationDetails').text(data.occupation);
+                $('#profileCompany').text(data.company);
+                $('#profileNumber').text(data.mobile_number);
+
+                $('#alumniProfileDetailsModal').modal('show');
+            },
+            error: function() {
+                alert('Failed to fetch profile details.');
+            }
+        });
+    }
 </script>
 
 @endpush

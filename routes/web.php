@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/connections/{id}', [DirectoryController::class, 'connectionViewPage'])->name('admin.directory.view.connections.page');
         Route::get('/connections-list/{id}', [DirectoryController::class, 'viewConnectionList'])->name('admin.directory.view.connections.list');
         Route::post('/update-status', 'updateStatus')->name('directory.update.status');
+        Route::get('/view-profile/{id}', 'viewProfileDetails')->name('admin.directory.view.profile');
 
         Route::get('create', 'create')->name('employee.create')->middleware('checkAccess:directory.create');
         Route::post('save', 'save')->name('employee.save');

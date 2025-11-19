@@ -194,7 +194,7 @@ class DirectoryController extends Controller
                 ->addColumn(
                     'viewProfile',
                     fn($row) =>
-                    '<button onclick="viewProfile(' . $row->id . ')" class="btn btn-sm btn-primary">View Profile</button>'
+                    '<button onclick="viewProfileDetails(' . $row->id . ')" class="btn btn-sm"><i class="fa-regular fa-eye"></i></button>'
                 )
 
                 ->addColumn('status', function ($row) {
@@ -238,6 +238,41 @@ class DirectoryController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update alumni status: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function viewProfileDetails(Request $request, $id)
+    {
+        try {
+            $alumni = Alumnis::findOrFail($id);
+            if(!$alumni){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Alumni not found'
+                ], 404);
+            }
+
+            $data = [
+                'name' => $alumni->full_name,
+                'email' => $alumni->email,
+                'batch' => $alumni->year_of_completion,
+                'location' => ($alumni->city?->state?->name ?? '-') . ', ' . ($alumni->city?->name ?? '-'),
+                'occupation' => $alumni->occupation->name ?? '-',
+                'company' => $alumni->company_name ?? '-',
+                'mobile_number' => $alumni->mobile_number,
+                'image_url' => $alumni->image_url ?? asset('images/avatar/blank.png'),
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+                'message' => 'Profile details fetched successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch profile details: ' . $e->getMessage()
             ], 500);
         }
     }
