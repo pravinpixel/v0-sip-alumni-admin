@@ -76,9 +76,11 @@
         white-space: nowrap;
         /* Prevent wrapping */
     }
+
     .dataTables_wrapper {
-    margin-top: 25px !important; /* pushes the whole table area down */
-}
+        margin-top: 25px !important;
+        /* pushes the whole table area down */
+    }
 
     table.dataTable thead th {
         box-sizing: border-box;
@@ -96,35 +98,21 @@
     }
 </style>
 
-<!-- Profile Modal -->
-<div class="modal fade" id="alumniProfileModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+<!-- Profile Picture Modal -->
+<div class="modal fade" id="profilePicModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background-color:#c41e3a;color:white;">
-                <h5 class="modal-title">Alumni Profile</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">Alumni Profile Picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="profileModalBody" style="padding:20px;">
-                <div class="text-center">
-                    <img id="profileImage" src="" class="rounded-circle mb-3" style="width:100px;height:100px;object-fit:cover;">
-                    <h5 id="profileName" style="font-weight:700;"></h5>
-                    <p id="profileEmail" style="color:#666;"></p>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Batch:</strong> <span id="profileBatch"></span></p>
-                        <p><strong>Location:</strong> <span id="profileLocation"></span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Occupation:</strong> <span id="profileOccupation"></span></p>
-                        <p><strong>Company:</strong> <span id="profileCompany"></span></p>
-                    </div>
-                </div>
+            <div class="modal-body text-center">
+                <img id="alumniProfileImage" src="" class="img-fluid rounded" alt="Profile Picture">
             </div>
         </div>
     </div>
 </div>
+
 
 @push('scripts')
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
@@ -217,8 +205,37 @@
             $(this).find('span').text(isVisible ? '🔽 Filters' : '🔼 Close Filters');
         });
     });
+    function viewConnections(id) {
+        window.location.href = "{{ route('admin.directory.view.connections.page', '') }}/" + id;
+    }
 
-    // Function to open profile modal
+    function updateStatus(id, status) {
+        if (!confirm(`Are you sure you want to ${status === 'blocked' ? 'block' : 'unblock'} this alumni?`)) {
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('directory.update.status') }}",
+            type: 'POST',
+            data: {
+                id: id,
+                status: status,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                alert(response.message);
+                $('#directoryTable').DataTable().ajax.reload();
+            },
+            error: function(xhr) {
+                const res = xhr.responseJSON;
+                alert(res && res.message ? res.message : 'An error occurred while updating status.');
+            }
+        });
+    }
+
+    function viewProfilePic(imageUrl) {
+        window.open(imageUrl, '_blank');
+    }
 </script>
 @endpush
 @endsection

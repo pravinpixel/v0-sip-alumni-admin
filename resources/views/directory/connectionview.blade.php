@@ -3,10 +3,20 @@
 
 @section('content')
 <div style="margin-bottom: 30px;">
-    <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Alumni Directory</h1>
-    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
-        Manage and view all alumni profiles
-    </p>
+    <div style="display: flex; gap:10px">
+        <div style="margin :auto 0">
+           <button onclick="history.back()" style="background-color: #e2dedfff; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 14px; margin-bottom: 15px;">
+                ←
+            </button>
+        </div>
+        <div>
+            <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Alumni Directory</h1>
+            <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+                Manage and view all alumni profiles
+            </p>
+        </div>
+    </div>
+
     <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <!-- Search and Filter -->
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
@@ -17,10 +27,6 @@
             <button id="filterToggleBtn"
                 style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 15px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px;">
                 <span>🔽 Filters</span>
-            </button>
-            <button id="exportBtn"
-                style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 15px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px;">
-                <span>Export</span>
             </button>
         </div>
 
@@ -42,20 +48,14 @@
         </div>
 
         <!-- Alumni Table -->
-        <table id="directoryTable" class="display" style="width: 100%;border-collapse: collapse;background-color: white;box-shadow: 0 2px 8px rgba(0,0,0,0.08);border-radius: 6px;border: 1px solid #e0e0e0;border-radius: 8px;">
+        <table id="ConnectionListTable" class="display" style="width: 100%;border-collapse: collapse;background-color: white;box-shadow: 0 2px 8px rgba(0,0,0,0.08);border-radius: 6px;border: 1px solid #e0e0e0;border-radius: 8px;">
             <thead>
                 <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 12px;">
-                    <th style="padding: 15px; text-align: left;">Created On</th>
-                    <th style="padding: 15px; text-align: left;">Profile Picture</th>
-                    <th style="padding: 15px; text-align: left;">Name</th>
-                    <th style="padding: 15px; text-align: left;">Year</th>
-                    <th style="padding: 15px; text-align: left;">City & State</th>
-                    <th style="padding: 15px; text-align: left;">Email</th>
-                    <th style="padding: 15px; text-align: left;">Contact</th>
-                    <th style="padding: 15px; text-align: left;">Occupation</th>
+                    <th style="padding: 15px; text-align: left;">Alumni Name</th>
+                    <th style="padding: 15px; text-align: left;">Batch</th>
+                    <th style="padding: 15px; text-align: left;">Location</th>
+                    <th style="padding: 15px; text-align: left;">View profile</th>
                     <th style="padding: 15px; text-align: left;">Status</th>
-                    <th style="padding: 15px; text-align: left;">Connections</th>
-                    <th style="padding: 15px; text-align: left;">Actions</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -64,7 +64,7 @@
 </div>
 <style>
     /* Add padding to tbody cells */
-    #directoryTable tbody td {
+    #ConnectionListTable tbody td {
         padding: 12px 15px;
         /* Adjust as needed */
         vertical-align: middle;
@@ -76,21 +76,23 @@
         white-space: nowrap;
         /* Prevent wrapping */
     }
+
     .dataTables_wrapper {
-    margin-top: 25px !important; /* pushes the whole table area down */
-}
+        margin-top: 25px !important;
+        /* pushes the whole table area down */
+    }
 
     table.dataTable thead th {
         box-sizing: border-box;
         /* Ensure proper width calculation */
     }
 
-    #directoryTable tbody td {
+    #ConnectionListTable tbody td {
         border-bottom: 1px solid #f0f0f0;
         /* soft line between rows */
     }
 
-    #directoryTable thead th {
+    #ConnectionListTable thead th {
         border-bottom: 2px solid #e0e0e0;
         /* slightly thicker under header */
     }
@@ -132,66 +134,41 @@
 
 <script>
     $(document).ready(function() {
-        const table = $('#directoryTable').DataTable({
+
+        let alumniId = "{{ $id }}"; // correct variable
+
+        const table = $('#ConnectionListTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('admin.directory.data') }}",
+                url: "{{ route('admin.directory.view.connections.list', ':id') }}".replace(':id', alumniId),
                 type: 'GET',
                 data: function(d) {
+                    console.log(d);
+
                     d.batch = $('#filterBatch').val();
                     d.location = $('#filterLocation').val();
                 }
             },
             columns: [{
-                    data: 'created_at',
-                    name: 'created_at',
-                },
-                {
                     data: 'alumni',
-                    name: 'alumni',
-                    orderable: false,
-                    searchable: false
+                    name: 'alumni'
                 },
                 {
-                    data: 'full_name',
-                    name: 'full_name'
-                },
-                {
-                    data: 'year_of_completion',
-                    name: 'year_of_completion'
+                    data: 'batch',
+                    name: 'batch'
                 },
                 {
                     data: 'location',
                     name: 'location'
                 },
                 {
-                    data: 'email',
-                    name: 'email'
-                },
-                {
-                    data: 'mobile_number',
-                    name: 'mobile_number'
-                },
-                {
-                    data: 'occupation',
-                    name: 'occupation'
+                    data: 'viewProfile',
+                    name: 'viewProfile'
                 },
                 {
                     data: 'status',
                     name: 'status'
-                },
-                {
-                    data: 'connections',
-                    name: 'connections',
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false,
-                    searchable: false
                 },
             ],
             paging: true,
@@ -216,9 +193,9 @@
             section.slideToggle();
             $(this).find('span').text(isVisible ? '🔽 Filters' : '🔼 Close Filters');
         });
-    });
 
-    // Function to open profile modal
+    });
 </script>
+
 @endpush
 @endsection

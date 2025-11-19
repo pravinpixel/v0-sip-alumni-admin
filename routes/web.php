@@ -57,7 +57,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::prefix('directory')->controller(DirectoryController::class)->group(function () {
         Route::get('/', 'index')->name('admin.directory.index')->middleware('checkAccess:directory.view');
         Route::get('/get-data', [DirectoryController::class, 'getData'])->name('admin.directory.data');
-        Route::get('/connections/{id}', [DirectoryController::class, 'getConnections'])->name('admin.directory.connections');
+        Route::get('/connections/{id}', [DirectoryController::class, 'connectionViewPage'])->name('admin.directory.view.connections.page');
+        Route::get('/connections-list/{id}', [DirectoryController::class, 'viewConnectionList'])->name('admin.directory.view.connections.list');
+        Route::post('/update-status', 'updateStatus')->name('directory.update.status');
 
         Route::get('create', 'create')->name('employee.create')->middleware('checkAccess:directory.create');
         Route::post('save', 'save')->name('employee.save');
