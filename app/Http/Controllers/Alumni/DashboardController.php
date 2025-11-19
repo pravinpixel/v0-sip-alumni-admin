@@ -13,6 +13,9 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        return view('alumni.dashboard.index');
+        $alumniId = session('alumni.id');
+        $alumni = Alumnis::findOrFail($alumniId);
+
+        return view('alumni.dashboard.index', compact('alumni'));
     }
 }

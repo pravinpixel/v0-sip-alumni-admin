@@ -16,6 +16,7 @@ Route::controller(AuthCheckController::class)->group(function () {
     Route::post('/send-otp', 'sendOtp')->name('send.otp');
     Route::post('/verify-otp', 'verifyOtp')->name('verify.otp');
     Route::get('/verify-otp-page', 'showVerifyOtp')->name('verify.otp.page');
+    Route::post('/logout', 'logout')->name('alumni.logout');
 });
 
 Route::middleware('alumni.auth')->group(function () {
@@ -37,6 +38,8 @@ Route::middleware('alumni.auth')->group(function () {
         Route::post('/accept/{id}', [ConnectionsController::class, 'acceptConnection'])->name('alumni.connections.accept');
         Route::post('/reject/{id}', [ConnectionsController::class, 'rejectConnection'])->name('alumni.connections.reject');
     });
+
+    Route::post('/update-settings', [CommonController::class, 'updateSettings'])->name('alumni.update.settings');
 
     // Profile routes
     Route::prefix('profile')->group(function () {

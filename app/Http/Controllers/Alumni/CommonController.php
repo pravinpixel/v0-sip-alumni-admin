@@ -153,4 +153,40 @@ class CommonController extends Controller
             ], 500);
         }
     }
+
+    public function updateSettings(Request $request)
+    {
+        try {
+            $alumniId = session('alumni.id');
+            $alumni = Alumnis::findOrFail($alumniId);
+
+            $validator = Validator::make($request->all(), [
+                'notify_admin_approval' => 'required|boolean',
+                'notify_post_comments' => 'required|boolean',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation Error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $alumni->notify_admin_approval = $request->notify_admin_approval;
+            $alumni->notify_post_comments = $request->notify_post_comments;
+            $alumni->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Settings updated successfully!',
+                'alumni' => $alumni
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update settings: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }
