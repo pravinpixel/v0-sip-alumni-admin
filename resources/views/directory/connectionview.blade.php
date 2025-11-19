@@ -178,8 +178,6 @@
                 url: "{{ route('admin.directory.view.connections.list', ':id') }}".replace(':id', alumniId),
                 type: 'GET',
                 data: function(d) {
-                    console.log(d);
-
                     d.batch = $('#filterBatch').val();
                     d.location = $('#filterLocation').val();
                 }
@@ -203,32 +201,53 @@
                 {
                     data: 'status',
                     name: 'status'
-                },
+                }
             ],
-            paging: true,
-            searching: false,
-            ordering: false,
+
             pageLength: 10,
             lengthChange: false,
+            searching: false,
+            ordering: false,
             scrollX: true,
+            dom: 't<"row mt-10"<"col-6 dt-info-custom"><"col-6 dt-pagination-custom text-end">>',
+            language: {
+                info: "Showing _START_ to _END_ of _TOTAL_ connections"
+            }
         });
+        // Custom Pagination Rendering
+        table.on('draw', function() {
+            let info = table.page.info();
 
-        $('#searchInput').on('keyup', function() {
-            table.search(this.value).draw();
-        });
+            $(".dt-info-custom").html(
+                `Showing ${info.start + 1} to ${info.end} connections`
+            );
 
-        $('#filterBatch, #filterLocation').on('input', function() {
-            table.ajax.reload();
-        });
+            let paginationHtml = `
+            <button class="btn btn-light btn-sm me-2" id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                ‹ Previous
+            </button>
 
-        $('#filterToggleBtn').on('click', function() {
-            const section = $('#filterSection');
-            const isVisible = section.is(':visible');
-            section.slideToggle();
-            $(this).find('span').text(isVisible ? '🔽 Filters' : '🔼 Close Filters');
+            <span class="mx-2" style="font-weight:500;">
+                Page ${info.page + 1} of ${info.pages}
+            </span>
+
+            <button class="btn btn-light btn-sm ms-2" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
+                Next ›
+            </button>
+            `;
+
+            $(".dt-pagination-custom").html(paginationHtml);
+
+            $("#prevPage").on("click", function() {
+                table.page("previous").draw("page");
+            });
+            $("#nextPage").on("click", function() {
+                table.page("next").draw("page");
+            });
         });
 
     });
+
 
     function viewProfileDetails(id) {
         $.ajax({

@@ -188,6 +188,40 @@
             pageLength: 10,
             lengthChange: false,
             scrollX: true,
+            dom: 't<"row mt-10"<"col-6 dt-info-custom"><"col-6 dt-pagination-custom text-end">>',
+            language: {
+                info: "Showing _START_ to _END_ of _TOTAL_ alumni"
+            }
+        });
+        table.on('draw', function() {
+            let info = table.page.info();
+
+            $(".dt-info-custom").html(
+                `Showing ${info.start + 1} to ${info.end} alumni`
+            );
+
+            let paginationHtml = `
+            <button class="btn btn-light btn-sm me-2" id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                ‹ Previous
+            </button>
+
+            <span class="mx-2" style="font-weight:500;">
+                Page ${info.page + 1} of ${info.pages}
+            </span>
+
+            <button class="btn btn-light btn-sm ms-2" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
+                Next ›
+            </button>
+            `;
+
+            $(".dt-pagination-custom").html(paginationHtml);
+
+            $("#prevPage").on("click", function() {
+                table.page("previous").draw("page");
+            });
+            $("#nextPage").on("click", function() {
+                table.page("next").draw("page");
+            });
         });
 
         $('#searchInput').on('keyup', function() {

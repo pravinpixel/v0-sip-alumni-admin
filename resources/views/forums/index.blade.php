@@ -42,7 +42,7 @@
         </div>
 
         <!-- Alumni Table -->
-        <table id="forumsTable" class="display" style="width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;">
+        <table id="forumsTable" class="display" style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: #f5f0f0ff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;">
             <thead>
                 <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
                     <th style="padding: 15px; text-align: left;">Created On</th>
@@ -64,6 +64,8 @@
         padding: 12px 15px;
         /* Adjust as needed */
         vertical-align: middle;
+        box-sizing: border-box;
+        border-bottom: 1px solid #dedede;
     }
 </style>
 
@@ -159,6 +161,40 @@
             pageLength: 10,
             lengthChange: false,
             scrollX: true,
+            dom: 't<"row mt-10"<"col-6 dt-info-custom"><"col-6 dt-pagination-custom text-end">>',
+            language: {
+                info: "Showing _START_ to _END_ of _TOTAL_ posts"
+            }
+        });
+        table.on('draw', function() {
+            let info = table.page.info();
+
+            $(".dt-info-custom").html(
+                `Showing ${info.start + 1} to ${info.end} posts`
+            );
+
+            let paginationHtml = `
+            <button class="btn btn-light btn-sm me-2" id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                ‹ Previous
+            </button>
+
+            <span class="mx-2" style="font-weight:500;">
+                Page ${info.page + 1} of ${info.pages}
+            </span>
+
+            <button class="btn btn-light btn-sm ms-2" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
+                Next ›
+            </button>
+            `;
+
+            $(".dt-pagination-custom").html(paginationHtml);
+
+            $("#prevPage").on("click", function() {
+                table.page("previous").draw("page");
+            });
+            $("#nextPage").on("click", function() {
+                table.page("next").draw("page");
+            });
         });
 
         // Search
