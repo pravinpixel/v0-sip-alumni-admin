@@ -65,7 +65,7 @@
         <i class="fas fa-search"
             style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
         <input type="text" id="globalSearch" placeholder="Search connections..."
-            style="width: 100%; padding: 12px 16px 12px 45px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
+            style="width: 100%; padding: 12px 16px 12px 45px; border: 2px solid #e5e7eb; border-radius: 30px; font-size: 14px; outline: none;"
             onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#e5e7eb'">
     </div>
 
@@ -208,7 +208,7 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route("alumni.connections.list") }}',
-            searching: false,
+            searching: true,
             paging: true,
             info: false, // disable default info (we'll render custom)
             lengthChange: false,
@@ -252,7 +252,7 @@
             processing: true,
             serverSide: true,
             ajax: '{{ route("alumni.connections.requests") }}',
-            searching: false,
+            searching: true,
             paging: true,
             info: false,
             lengthChange: false,
@@ -290,8 +290,8 @@
         // Global search: apply to both tables
         $('#globalSearch').on('keyup', function() {
             let q = $(this).val();
-            connectionsTable.search(q).draw(false);
-            requestsTable.search(q).draw(false);
+            connectionsTable.search(q).draw();
+            requestsTable.search(q).draw();
         });
 
         // Tab switching

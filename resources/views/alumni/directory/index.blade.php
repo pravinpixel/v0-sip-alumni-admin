@@ -185,7 +185,7 @@
     {{-- Header --}}
     <div style="margin-bottom: 30px;">
         <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Alumni Directory</h1>
-        <p style="color: #6b7280; font-size: 15px;">Connect with 15 alumni from SIP Academy</p>
+        <p style="color: #6b7280; font-size: 15px;">Connect with {{ $totalAlumni}} alumni from SIP Academy</p>
     </div>
 
     {{-- Search and Filter --}}

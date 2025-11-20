@@ -16,9 +16,11 @@ class DirectoryController extends Controller
 {
     public function index()
     {
+        $alumniId = session('alumni.id');
         $breadCrum = ['Alumni', 'Directory'];
         $title = 'Alumni Directory';
-        return view('alumni.directory.index', compact('breadCrum', 'title'));
+        $totalAlumni = Alumnis::where('id', '!=', $alumniId)->count();
+        return view('alumni.directory.index', compact('breadCrum', 'title', 'totalAlumni'));
     }
 
     public function getFilterOptions()

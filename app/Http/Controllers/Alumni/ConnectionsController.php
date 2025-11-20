@@ -25,7 +25,7 @@ class ConnectionsController extends Controller
     {
         $alumniId = session('alumni.id');
 
-        $query = AlumniConnections::with(['sender', 'receiver'])
+        $query = AlumniConnections::with(['sender.city.state', 'sender.occupation', 'receiver.city.state', 'receiver.occupation'])
             ->where(function ($q) use ($alumniId) {
                 $q->where('sender_id', $alumniId)
                     ->orWhere('receiver_id', $alumniId);
@@ -34,6 +34,53 @@ class ConnectionsController extends Controller
 
         return DataTables::of($query)
             ->addIndexColumn()
+            
+            // Add search functionality
+            ->filter(function ($query) use ($request, $alumniId) {
+                if ($request->has('search') && !empty($request->search['value'])) {
+                    $searchValue = $request->search['value'];
+                    
+                    $query->where(function ($q) use ($searchValue, $alumniId) {
+                        // Search in sender (when current user is receiver)
+                        $q->whereHas('sender', function ($senderQuery) use ($searchValue, $alumniId) {
+                            $senderQuery->where('id', '!=', $alumniId)
+                                ->where(function ($sq) use ($searchValue) {
+                                    $sq->where('full_name', 'like', "%{$searchValue}%")
+                                       ->orWhere('email', 'like', "%{$searchValue}%")
+                                       ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
+                                       ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
+                                           $occQuery->where('name', 'like', "%{$searchValue}%");
+                                       })
+                                       ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
+                                           $cityQuery->where('name', 'like', "%{$searchValue}%")
+                                                    ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
+                                                        $stateQuery->where('name', 'like', "%{$searchValue}%");
+                                                    });
+                                       });
+                                });
+                        })
+                        // Search in receiver (when current user is sender)
+                        ->orWhereHas('receiver', function ($receiverQuery) use ($searchValue, $alumniId) {
+                            $receiverQuery->where('id', '!=', $alumniId)
+                                ->where(function ($rq) use ($searchValue) {
+                                    $rq->where('full_name', 'like', "%{$searchValue}%")
+                                       ->orWhere('email', 'like', "%{$searchValue}%")
+                                       ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
+                                       ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
+                                           $occQuery->where('name', 'like', "%{$searchValue}%");
+                                       })
+                                       ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
+                                           $cityQuery->where('name', 'like', "%{$searchValue}%")
+                                                    ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
+                                                        $stateQuery->where('name', 'like', "%{$searchValue}%");
+                                                    });
+                                       });
+                                });
+                        });
+                    });
+                }
+            })
+            
             ->addColumn('alumni', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
                 $img = $alumni->image ? asset($alumni->image) : asset('images/avatar/blank.png');
@@ -77,12 +124,35 @@ class ConnectionsController extends Controller
     {
         $alumniId = session('alumni.id');
 
-        $query = AlumniConnections::with(['sender', 'receiver'])
+        $query = AlumniConnections::with(['sender.city.state', 'sender.occupation', 'receiver'])
             ->where('receiver_id', $alumniId)
             ->where('status', 'pending');
 
         return DataTables::of($query)
             ->addIndexColumn()
+            
+            // Add search functionality
+            ->filter(function ($query) use ($request) {
+                if ($request->has('search') && !empty($request->search['value'])) {
+                    $searchValue = $request->search['value'];
+                    
+                    $query->whereHas('sender', function ($senderQuery) use ($searchValue) {
+                        $senderQuery->where('full_name', 'like', "%{$searchValue}%")
+                            ->orWhere('email', 'like', "%{$searchValue}%")
+                            ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
+                            ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
+                                $occQuery->where('name', 'like', "%{$searchValue}%");
+                            })
+                            ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
+                                $cityQuery->where('name', 'like', "%{$searchValue}%")
+                                         ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
+                                             $stateQuery->where('name', 'like', "%{$searchValue}%");
+                                         });
+                            });
+                    });
+                }
+            })
+            
             ->editColumn('alumni', function ($row) {
                 $alumni = $row->sender;
                 $img = $alumni->image ? asset($alumni->image) : asset('images/avatar/blank.png');
