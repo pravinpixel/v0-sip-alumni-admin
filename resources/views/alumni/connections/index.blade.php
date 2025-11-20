@@ -53,7 +53,7 @@
     }
 </style>
 
-<div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+<div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white;">
     {{-- Header --}}
     <div style="margin-bottom: 30px;">
         <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">My Connections</h1>

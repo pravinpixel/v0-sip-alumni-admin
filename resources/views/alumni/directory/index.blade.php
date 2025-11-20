@@ -181,7 +181,7 @@
     }
 </style>
 
-<div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+<div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white">
     {{-- Header --}}
     <div style="margin-bottom: 30px;">
         <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Alumni Directory</h1>
@@ -194,7 +194,7 @@
             <i class="fas fa-search"
                 style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
             <input type="text" id="searchInput" placeholder="Search alumni..."
-                style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none;"
+                style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none;"
                 onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
         </div>
         <button id="filterToggleBtn"
@@ -514,7 +514,7 @@
                 },
             ],
             paging: true,
-            searching: false,
+            searching: true,
             ordering: false,
             lengthChange: false,
             pagelength: 10,

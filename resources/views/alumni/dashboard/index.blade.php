@@ -1,7 +1,7 @@
 @extends('alumni.layouts.index')
 
 @section('content')
-    <div style="max-width: 1400px; margin: 0 auto;">
+    <div style="max-width: 1400px; margin: 0 auto; background: white; padding: 20px;">
         {{-- Header --}}
         <div style="margin-bottom: 32px;">
             <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Alumni Dashboard</h1>

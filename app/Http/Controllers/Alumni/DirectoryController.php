@@ -114,6 +114,27 @@ class DirectoryController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
+                
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search') && !empty($request->search['value'])) {
+                        $searchValue = $request->search['value'];
+                        
+                        $query->where(function ($q) use ($searchValue) {
+                            $q->where('full_name', 'like', "%{$searchValue}%")
+                              ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
+                              ->orWhere('status', 'like', "%{$searchValue}%")
+                              ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
+                                  $occQuery->where('name', 'like', "%{$searchValue}%");
+                              })
+                              ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
+                                  $cityQuery->where('name', 'like', "%{$searchValue}%")
+                                           ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
+                                               $stateQuery->where('name', 'like', "%{$searchValue}%");
+                                           });
+                              });
+                        });
+                    }
+                })
 
                 ->editColumn('alumni', function ($row) {
                     $img = $row->image ? asset($row->image) : asset('images/avatar/blank.png');

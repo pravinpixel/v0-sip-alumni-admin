@@ -2,7 +2,7 @@
 
 @section('content')
 @include('alumni.modals.view-thread-modal')
-<div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+<div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white;">
     {{-- Header --}}
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
         <div>

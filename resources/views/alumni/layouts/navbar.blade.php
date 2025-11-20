@@ -1,6 +1,6 @@
 <style>
     .alumni-navbar {
-        background: #f3f4f6;
+        background: #ffffffff;
         padding: 16px;
         display: flex;
         gap: 12px;
