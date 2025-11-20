@@ -260,14 +260,14 @@
     </div>
 
     {{-- Info Banner --}}
-    <div
-        style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+    <div id="directoryRibbon" data-ribbon-state="{{ $isDirectoryRibbon ?? 0 }}"
+        style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 24px; display: {{ ($isDirectoryRibbon ?? 0) == 1 ? 'flex' : 'none' }}; justify-content: space-between; align-items: center;">
         <p style="color: #991b1b; font-size: 14px; margin: 0;">
             You can share your contact with alumni. Once they accept, you can view their profile and contact info in the
             Connections menu.
         </p>
-        <button onclick="this.parentElement.style.display='none'"
-            style="background: transparent; border: none; color: #991b1b; cursor: pointer; font-size: 18px; padding: 0 8px;">
+        <button id="closeDirectoryRibbon"
+            style="background: transparent; border: none; color: #991b1b; cursor: pointer; font-size: 20px; padding: 0 8px; line-height: 1;">
             ×
         </button>
     </div>
@@ -576,6 +576,31 @@
                 icon.removeClass('fa-filter').addClass('fa-times');
                 btnText.text('Close Filters');
             }
+        });
+
+        // Close directory ribbon button - update database
+        $('#closeDirectoryRibbon').on('click', function() {
+            $('#directoryRibbon').slideUp();
+            
+            // Update database via API
+            $.ajax({
+                url: "{{ route('alumni.update.ribbon') }}",
+                type: 'POST',
+                data: {
+                    is_directory_ribbon: 0,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Update the data attribute so it stays closed
+                        $('#directoryRibbon').data('ribbon-state', 0);
+                        console.log('Directory ribbon preference saved');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Failed to update directory ribbon preference:', xhr.responseText);
+                }
+            });
         });
     });
 </script>

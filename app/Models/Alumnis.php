@@ -26,7 +26,9 @@ class Alumnis extends Model
         'email',
         'mobile_number',
         'occupation_id',
-        'status'
+        'status',
+        'is_request_ribbon',
+        'is_directory_ribbon'
     ];
 
     public function city()

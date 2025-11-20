@@ -161,8 +161,8 @@ class CommonController extends Controller
             $alumni = Alumnis::findOrFail($alumniId);
 
             $validator = Validator::make($request->all(), [
-                'notify_admin_approval' => 'required|boolean',
-                'notify_post_comments' => 'required|boolean',
+                'notify_admin_approval' => 'nullable|boolean',
+                'notify_post_comments' => 'nullable|boolean',
             ]);
 
             if ($validator->fails()) {
@@ -186,6 +186,52 @@ class CommonController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update settings: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateRibbon(Request $request)
+    {
+        try {
+            $alumniId = session('alumni.id');
+            $alumni = Alumnis::findOrFail($alumniId);
+
+            $validator = Validator::make($request->all(), [
+                'is_request_ribbon' => 'sometimes|boolean',
+                'is_directory_ribbon' => 'sometimes|boolean',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation Error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            // Update request ribbon if provided
+            if ($request->has('is_request_ribbon')) {
+                $alumni->is_request_ribbon = $request->is_request_ribbon;
+            }
+
+            // Update directory ribbon if provided
+            if ($request->has('is_directory_ribbon')) {
+                $alumni->is_directory_ribbon = $request->is_directory_ribbon;
+            }
+
+            $alumni->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Ribbon preference updated successfully!',
+                'is_request_ribbon' => $alumni->is_request_ribbon,
+                'is_directory_ribbon' => $alumni->is_directory_ribbon
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Update Ribbon Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update ribbon preference: ' . $e->getMessage()
             ], 500);
         }
     }

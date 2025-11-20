@@ -54,23 +54,26 @@
 </style>
 
 <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white;">
+    {{-- Header with Search on Right --}}
     {{-- Header --}}
     <div style="margin-bottom: 30px;">
         <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">My Connections</h1>
         <p style="color: #6b7280; font-size: 15px;">Manage your alumni network and connection requests</p>
     </div>
 
-    {{-- Search Bar --}}
-    <div style="margin-bottom: 24px; position: relative; max-width: 400px;">
-        <i class="fas fa-search"
-            style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-        <input type="text" id="globalSearch" placeholder="Search connections..."
-            style="width: 100%; padding: 12px 16px 12px 45px; border: 2px solid #e5e7eb; border-radius: 30px; font-size: 14px; outline: none;"
-            onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#e5e7eb'">
+    {{-- Search Bar (Right Aligned) --}}
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 4px;">
+        <div style="position: relative; width: 350px;">
+            <i class="fas fa-search"
+                style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+            <input type="text" id="globalSearch" placeholder="Search connections..."
+                style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none;"
+                onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
+        </div>
     </div>
 
     {{-- Tab Navigation --}}
-    <div style="display: flex; gap: 0; margin-bottom: 24px;">
+    <div style="display: flex; gap: 0; margin-bottom: 20px;">
         <button class="tab-btn active" data-tab="connections"
             style="background-color: #dc2626; color: white; border: none; padding: 12px 28px; border-radius: 8px 8px 0 0; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s;">
             Connections <span id="connectionsCount"
@@ -81,6 +84,19 @@
             Requests <span id="requestsCount"
                 style="background-color: #dc2626; color: white; padding: 2px 10px; border-radius: 12px; margin-left: 8px; font-size: 12px;">0</span>
         </button>
+    </div>
+
+    {{-- Info Ribbon (Only for Requests Tab) --}}
+    <div id="infoRibbon" data-ribbon-state="{{ $isRequestRibbon ?? 0 }}" style="display: none; background: #dbeafe; border: 1px solid #93c5fd; border-radius: 8px; padding: 14px 20px; margin-bottom: 20px; position: relative;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="fas fa-info-circle" style="color: #3b82f6; font-size: 18px;"></i>
+            <p style="color: #1e40af; font-size: 14px; margin: 0; flex: 1;">
+                <strong>Note:</strong> By approving a request, your contact information will also be shared with the person who sent the request.
+            </p>
+            <button id="closeRibbon" style="background: transparent; border: none; color: #3b82f6; font-size: 20px; cursor: pointer; padding: 0; line-height: 1;">
+                ×
+            </button>
+        </div>
     </div>
 
     {{-- Connections Tab --}}
@@ -294,6 +310,9 @@
             requestsTable.search(q).draw();
         });
 
+        // Get ribbon state from database
+        const ribbonState = $('#infoRibbon').data('ribbon-state');
+        
         // Tab switching
         $('.tab-btn').on('click', function() {
             $('.tab-btn').removeClass('active').css({
@@ -308,12 +327,47 @@
             $('.tab-content').hide();
             $('#' + $(this).data('tab')).show();
 
+            // Show/hide info ribbon based on tab and database state
+            if ($(this).data('tab') === 'requests') {
+                // Show ribbon only if database says it should be shown (is_request_ribbon = 1)
+                if (ribbonState == 1) {
+                    $('#infoRibbon').slideDown();
+                }
+            } else {
+                $('#infoRibbon').slideUp();
+            }
+
             // redraw table in case of column width issues
             if ($(this).data('tab') === 'connections') {
                 connectionsTable.columns.adjust().draw(false);
             } else {
                 requestsTable.columns.adjust().draw(false);
             }
+        });
+
+        // Close ribbon button - update database
+        $('#closeRibbon').on('click', function() {
+            $('#infoRibbon').slideUp();
+            
+            // Update database via API
+            $.ajax({
+                url: "{{ route('alumni.update.ribbon') }}",
+                type: 'POST',
+                data: {
+                    is_request_ribbon: 0,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Update the data attribute so it stays closed
+                        $('#infoRibbon').data('ribbon-state', 0);
+                        console.log('Ribbon preference saved');
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Failed to update ribbon preference:', xhr.responseText);
+                }
+            });
         });
 
         // Draw handlers for custom info + pagination

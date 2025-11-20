@@ -18,7 +18,11 @@ class ConnectionsController extends Controller
     {
         $breadCrum = ['Alumni', 'Connections'];
         $title = 'Connection List';
-        return view('alumni.connections.index', compact('breadCrum', 'title'));
+        $alumniId = session('alumni.id');
+        $alumni = Alumnis::find($alumniId);
+        $isRequestRibbon = $alumni ? $alumni->is_request_ribbon : 0;
+        
+        return view('alumni.connections.index', compact('breadCrum', 'title', 'isRequestRibbon'));
     }
 
     public function getConnections(Request $request)

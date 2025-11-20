@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 
 class DirectoryController extends Controller
@@ -20,7 +21,10 @@ class DirectoryController extends Controller
         $breadCrum = ['Alumni', 'Directory'];
         $title = 'Alumni Directory';
         $totalAlumni = Alumnis::where('id', '!=', $alumniId)->count();
-        return view('alumni.directory.index', compact('breadCrum', 'title', 'totalAlumni'));
+        $alumni = Alumnis::find($alumniId);
+        $isDirectoryRibbon = $alumni ? $alumni->is_directory_ribbon : 0;
+        
+        return view('alumni.directory.index', compact('breadCrum', 'title', 'totalAlumni', 'isDirectoryRibbon'));
     }
 
     public function getFilterOptions()
@@ -116,24 +120,24 @@ class DirectoryController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
-                
+
                 ->filter(function ($query) use ($request) {
                     if ($request->has('search') && !empty($request->search['value'])) {
                         $searchValue = $request->search['value'];
-                        
+
                         $query->where(function ($q) use ($searchValue) {
                             $q->where('full_name', 'like', "%{$searchValue}%")
-                              ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
-                              ->orWhere('status', 'like', "%{$searchValue}%")
-                              ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
-                                  $occQuery->where('name', 'like', "%{$searchValue}%");
-                              })
-                              ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
-                                  $cityQuery->where('name', 'like', "%{$searchValue}%")
-                                           ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
-                                               $stateQuery->where('name', 'like', "%{$searchValue}%");
-                                           });
-                              });
+                                ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
+                                ->orWhere('status', 'like', "%{$searchValue}%")
+                                ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
+                                    $occQuery->where('name', 'like', "%{$searchValue}%");
+                                })
+                                ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
+                                    $cityQuery->where('name', 'like', "%{$searchValue}%")
+                                        ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
+                                            $stateQuery->where('name', 'like', "%{$searchValue}%");
+                                        });
+                                });
                         });
                     }
                 })

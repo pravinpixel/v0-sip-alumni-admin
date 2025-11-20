@@ -41,6 +41,7 @@ Route::middleware('alumni.auth')->group(function () {
     });
 
     Route::post('/update-settings', [CommonController::class, 'updateSettings'])->name('alumni.update.settings');
+    Route::post('/update-ribbon', [CommonController::class, 'updateRibbon'])->name('alumni.update.ribbon');
 
     // Profile routes
     Route::prefix('profile')->group(function () {
