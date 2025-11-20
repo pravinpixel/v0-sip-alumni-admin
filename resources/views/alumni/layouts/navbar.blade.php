@@ -1,7 +1,7 @@
 <style>
     .alumni-navbar {
         background: #ffffffff;
-        padding: 16px;
+        padding: 6px;
         display: flex;
         gap: 12px;
         align-items: center;
@@ -16,7 +16,7 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        padding: 14px 20px;
+        padding: 6px 20px;
         color: #6b7280;
         text-decoration: none;
         font-size: 15px;
