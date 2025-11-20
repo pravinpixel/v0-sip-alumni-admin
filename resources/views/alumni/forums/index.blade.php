@@ -102,15 +102,15 @@
         function renderForumPosts(posts, container) {
             if (!posts || posts.length === 0) {
                 container.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px; color: #6b7280; background: white; border-radius: 12px; border: 2px solid #e5e7eb;">
-                    <i class="fas fa-inbox" style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;"></i>
-                    <h3 style="font-size: 20px; margin-bottom: 8px; color: #374151;">No forum posts yet</h3>
-                    <p style="margin-bottom: 20px; color: #6b7280;">Be the first to create a post and start the discussion!</p>
-                    <button onclick="openCreatePostModal()" style="background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                        <i class="fas fa-plus"></i> Create First Post
-                    </button>
-                </div>
-            `;
+                    <div style="text-align: center; padding: 60px 20px; color: #6b7280; background: white; border-radius: 12px; border: 2px solid #e5e7eb;">
+                        <i class="fas fa-inbox" style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <h3 style="font-size: 20px; margin-bottom: 8px; color: #374151;">No forum posts yet</h3>
+                        <p style="margin-bottom: 20px; color: #6b7280;">Be the first to create a post and start the discussion!</p>
+                        <button onclick="openCreatePostModal()" style="background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                            <i class="fas fa-plus"></i> Create First Post
+                        </button>
+                    </div>
+                `;
                 return;
             }
 
@@ -140,114 +140,114 @@
                     'Unknown date';
 
                 html += `
-                <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease;"
-                     onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'; this.style.borderColor='#dc2626'"
-                     onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
+                    <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease;"
+                         onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'; this.style.borderColor='#dc2626'"
+                         onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
 
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                        <h2 style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;">
-                            ${escapeHtml(title)}
-                        </h2>
-                    </div>
-
-                    <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
-                         ${escapeHtml(description)}
-                    </p>
-
-                    ${tags.length > 0 ? `
-                        <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
-                            ${tags.map(tag => `
-                                <span style="background: #F7C744; color: #000000ff; padding: 4px 12px; border-radius: 14px; font-size: 10px; font-weight: 600;">
-                                    ${escapeHtml(tag.trim())}
-                                </span>
-                            `).join('')}
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <h2 style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;">
+                                ${escapeHtml(title)}
+                            </h2>
                         </div>
-                    ` : ''}
 
-                    <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">
-                            ${authorInitial}
-                        </div>
-                        <div>
-                            <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 2px 0;">${escapeHtml(author)}</p>
-                            <p style="font-size: 12px; color: #6b7280; margin: 0;">${date}</p>
-                        </div>
-                    </div>
+                        <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                             ${escapeHtml(description)}
+                        </p>
 
-                    {{-- Added engagement stats and action buttons with reply toggle --}}
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0px; margin-bottom: 16px;border-top: 1px solid #e5e7eb;">
-                        <div style="display: flex; align-items: center; gap: 20px;">
-                            <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
-                                <i class="fas fa-eye"></i>
-                                <span>${post.views_count || 0}</span>
+                        ${tags.length > 0 ? `
+                            <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+                                ${tags.map(tag => `
+                                    <span style="background: #F7C744; color: #000000ff; padding: 4px 12px; border-radius: 14px; font-size: 10px; font-weight: 600;">
+                                        ${escapeHtml(tag.trim())}
+                                    </span>
+                                `).join('')}
                             </div>
-                            <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
-                                <i class="fas fa-heart"></i>
-                                <span>${post.likes_count || 0}</span>
+                        ` : ''}
+
+                        <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">
+                                ${authorInitial}
                             </div>
-                            <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
-                                <i class="fas fa-comment"></i>
-                                <span>${post.reply_count || 0}</span>
+                            <div>
+                                <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 2px 0;">${escapeHtml(author)}</p>
+                                <p style="font-size: 12px; color: #6b7280; margin: 0;">${date}</p>
                             </div>
                         </div>
 
-                        <div style="display: flex; align-items: center; gap: 16px;">
-                            <button style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
-                                    onmouseover="this.style.background='#f3f4f6'; this.style.color='#dc2626'"
-                                    onmouseout="this.style.background='transparent'; this.style.color='#6b7280'">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                 <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                </svg>
-                                Like
-                            </button>
-                            <button 
-                                     style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
-                                        onmouseover="replyHover(this)"
-                                        onmouseout="replyUnhover(this)"
-                                        onclick="toggleReplyForm(this, ${post.id})">
-                                        <i class="fas fa-reply"></i> Reply
-                                        </button>
-
-                            <button onclick="openThreadModal(${post.id})"
-                                style="background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
-                                    onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
-                                    onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
-                                <i class="fas fa-eye"></i>
-                                View Thread
-                            </button>
-                        </div>
-                    </div>
-
-                    {{-- Added reply input form that shows/hides on button click --}}
-                    <div id="replyForm-${post.id}" style="display: none; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px;">
-                        <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
-                                DU
+                        {{-- Added engagement stats and action buttons with reply toggle --}}
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0px; margin-bottom: 16px;border-top: 1px solid #e5e7eb;">
+                            <div style="display: flex; align-items: center; gap: 20px;">
+                                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                                    <i class="fas fa-eye"></i>
+                                    <span>${post.views_count || 0}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                                    <i class="fas fa-heart"></i>
+                                    <span>${post.likes_count || 0}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                                    <i class="fas fa-comment"></i>
+                                    <span>${post.reply_count || 0}</span>
+                                </div>
                             </div>
-                            <input type="text" placeholder="Write your reply..."
-                                id="replyInput-${post.id}"
-                                style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
-                                onfocus="this.style.borderColor='#dc2626'" 
-                                onblur="this.style.borderColor='#e5e7eb'">
+
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <button style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
+                                        onmouseover="this.style.background='#f3f4f6'; this.style.color='#dc2626'"
+                                        onmouseout="this.style.background='transparent'; this.style.color='#6b7280'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                     <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                    </svg>
+                                    Like
+                                </button>
+                                <button 
+                                         style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
+                                            onmouseover="replyHover(this)"
+                                            onmouseout="replyUnhover(this)"
+                                            onclick="toggleReplyForm(this, ${post.id})">
+                                            <i class="fas fa-reply"></i> Reply
+                                            </button>
+
+                                <button onclick="openThreadModal(${post.id})"
+                                    style="background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
+                                        onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
+                                        onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
+                                    <i class="fas fa-eye"></i>
+                                    View Thread
+                                </button>
+                            </div>
                         </div>
-                        <div style="display: flex; justify-content: flex-end; gap: 12px;">
-                            <button onclick="toggleReplyForm(document.querySelector('[onclick*=toggleReplyForm][data-post-id=\\'${post.id}\\']'), ${post.id})"
-                                    style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
-                                    onmouseover="this.style.background='#f3f4f6'"
-                                    onmouseout="this.style.background='white'">
-                                Cancel
-                            </button>
-                            <button onclick="submitReply(${post.id})"
-                                    style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
-                                    onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
-                                    onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
-                                <i class="fas fa-paper-plane"></i>
-                                Post Reply
-                            </button>
+
+                        {{-- Added reply input form that shows/hides on button click --}}
+                        <div id="replyForm-${post.id}" style="display: none; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                                    DU
+                                </div>
+                                <input type="text" placeholder="Write your reply..."
+                                    id="replyInput-${post.id}"
+                                    style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
+                                    onfocus="this.style.borderColor='#dc2626'" 
+                                    onblur="this.style.borderColor='#e5e7eb'">
+                            </div>
+                            <div style="display: flex; justify-content: flex-end; gap: 12px;">
+                                <button onclick="toggleReplyForm(document.querySelector('[onclick*=toggleReplyForm][data-post-id=\\'${post.id}\\']'), ${post.id})"
+                                        style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#f3f4f6'"
+                                        onmouseout="this.style.background='white'">
+                                    Cancel
+                                </button>
+                                <button onclick="submitReply(${post.id})"
+                                        style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
+                                        onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Post Reply
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
             });
 
             container.innerHTML = html;
@@ -255,17 +255,17 @@
 
         function showError(container, message) {
             container.innerHTML = `
-            <div style="text-align: center; padding: 60px 20px; color: #dc2626; background: white; border-radius: 12px; border: 2px solid #fecaca;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 64px; margin-bottom: 20px; opacity: 0.7;"></i>
-                <h3 style="font-size: 20px; margin-bottom: 12px; color: #dc2626;">Failed to Load Posts</h3>
-                <p style="margin-bottom: 20px; color: #6b7280;">${escapeHtml(message)}</p>
-                <button onclick="loadForumPosts()" style="background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
-                        onmouseover="this.style.background='#b91c1c'"
-                        onmouseout="this.style.background='#dc2626'">
-                    <i class="fas fa-redo"></i> Try Again
-                </button>
-            </div>
-        `;
+                <div style="text-align: center; padding: 60px 20px; color: #dc2626; background: white; border-radius: 12px; border: 2px solid #fecaca;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 64px; margin-bottom: 20px; opacity: 0.7;"></i>
+                    <h3 style="font-size: 20px; margin-bottom: 12px; color: #dc2626;">Failed to Load Posts</h3>
+                    <p style="margin-bottom: 20px; color: #6b7280;">${escapeHtml(message)}</p>
+                    <button onclick="loadForumPosts()" style="background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                            onmouseover="this.style.background='#b91c1c'"
+                            onmouseout="this.style.background='#dc2626'">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                </div>
+            `;
         }
 
         function toggleReplyForm(button, postId) {
@@ -477,45 +477,45 @@
             commentElement.style.cssText = '';
 
             commentElement.innerHTML = `
-            <div>
-                <div style="display: flex; gap: 12px;background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; transition: all 0.2s;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
-                        ${replyInitial}
-                    </div>
-                    <div style="flex: 1; min-width: 0;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                            <div>
-                                <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 4px 0;">${escapeHtml(replyAuthor)}</p>
-                                <p style="font-size: 12px; color: #6b7280; margin: 0;">${replyDate}</p>
-                            </div>
-                            <button 
-                                onclick="setReplyTo(${reply.id}, '${escapeHtml(replyAuthor)}')"
-                                style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;"
-                                onmouseover="this.style.background='#fef2f2'"
-                                onmouseout="this.style.background='transparent'">
-                                <i class="fas fa-reply"></i> Reply
-                            </button>
+                <div>
+                    <div style="display: flex; gap: 12px;background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; transition: all 0.2s;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                            ${replyInitial}
                         </div>
-                        <p style="font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px 0; word-wrap: break-word;">
-                            ${escapeHtml(reply.message || 'No message')}
-                        </p>
-                        ${reply.child_replies && reply.child_replies.length > 0 ? `
-                            <button 
-                                id="toggle-btn-${reply.id}" 
-                                onclick="toggleReplies(${reply.id})"
-                                style="background: transparent; border: none; color: #2563eb; cursor: pointer; font-size: 13px; padding: 6px 0; font-weight: 600; transition: color 0.2s;"
-                                onmouseover="this.style.color='#1d4ed8'"
-                                onmouseout="this.style.color='#2563eb'">
-                                View Thread ${reply.child_replies.length} <i class="fas fa-chevron-down"></i>
-                            </button>
-                        ` : ''}
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 4px 0;">${escapeHtml(replyAuthor)}</p>
+                                    <p style="font-size: 12px; color: #6b7280; margin: 0;">${replyDate}</p>
+                                </div>
+                                <button 
+                                    onclick="setReplyTo(${reply.id}, '${escapeHtml(replyAuthor)}')"
+                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#fef2f2'"
+                                    onmouseout="this.style.background='transparent'">
+                                    <i class="fas fa-reply"></i> Reply
+                                </button>
+                            </div>
+                            <p style="font-size: 14px; color: #374151; line-height: 1.6; margin: 0 0 12px 0; word-wrap: break-word;">
+                                ${escapeHtml(reply.message || 'No message')}
+                            </p>
+                            ${reply.child_replies && reply.child_replies.length > 0 ? `
+                                <button 
+                                    id="toggle-btn-${reply.id}" 
+                                    onclick="toggleReplies(${reply.id})"
+                                    style="background: transparent; border: none; color: #2563eb; cursor: pointer; font-size: 13px; padding: 6px 0; font-weight: 600; transition: color 0.2s;"
+                                    onmouseover="this.style.color='#1d4ed8'"
+                                    onmouseout="this.style.color='#2563eb'">
+                                    View Thread ${reply.child_replies.length} <i class="fas fa-chevron-down"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div id="reply-box-${reply.id}" style="display: none; margin-top: 16px; margin-left: 52px; border-left: 1px solid #fbbf24; padding-left: 16px;">
+                        <!-- Nested replies will be inserted here -->
                     </div>
                 </div>
-                <div id="reply-box-${reply.id}" style="display: none; margin-top: 16px; margin-left: 52px; border-left: 1px solid #fbbf24; padding-left: 16px;">
-                    <!-- Nested replies will be inserted here -->
-                </div>
-            </div>
-            `;
+                `;
 
             return commentElement;
         }
@@ -681,13 +681,13 @@
             const bgColor = level % 2 === 0 ? '#fffbeb' : '#fef3c7';
 
             div.style.cssText = `
-                margin-left: ${marginLeft};
-                margin-bottom: 12px;
-                padding: 16px;
-                background: ${bgColor};
-                border-radius: 8px;
-                transition: all 0.2s;
-            `;
+                    margin-left: ${marginLeft};
+                    margin-bottom: 12px;
+                    padding: 16px;
+                    background: ${bgColor};
+                    border-radius: 8px;
+                    transition: all 0.2s;
+                `;
 
             const author = reply.alumni?.full_name || "Unknown";
             const initials = author.substring(0, 2).toUpperCase();
@@ -700,33 +700,33 @@
             });
 
             div.innerHTML = `
-                <div style="display: flex; gap: 12px;">
-                    <div style="width: 36px; height: 36px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
-                        ${initials}
-                    </div>
-
-                    <div style="flex: 1; min-width: 0;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                            <div>
-                                <p style="margin: 0; font-weight: 600; font-size: 14px; color: #111827;">${escapeHtml(author)}</p>
-                                <p style="margin: 0; color: #6b7280; font-size: 12px;">${date}</p>
-                            </div>
-
-                            <button 
-                                onclick="setReplyTo(${reply.id}, '${escapeHtml(author)}')"
-                                style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;"
-                                onmouseover="this.style.background='#fef2f2'"
-                                onmouseout="this.style.background='transparent'">
-                                <i class="fas fa-reply"></i> Reply
-                            </button>
+                    <div style="display: flex; gap: 12px;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
+                            ${initials}
                         </div>
 
-                        <p style="margin: 0; font-size: 14px; color: #374151; line-height: 1.6; word-wrap: break-word;">
-                            ${escapeHtml(reply.message || 'No message')}
-                        </p>
+                        <div style="flex: 1; min-width: 0;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                <div>
+                                    <p style="margin: 0; font-weight: 600; font-size: 14px; color: #111827;">${escapeHtml(author)}</p>
+                                    <p style="margin: 0; color: #6b7280; font-size: 12px;">${date}</p>
+                                </div>
+
+                                <button 
+                                    onclick="setReplyTo(${reply.id}, '${escapeHtml(author)}')"
+                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#fef2f2'"
+                                    onmouseout="this.style.background='transparent'">
+                                    <i class="fas fa-reply"></i> Reply
+                                </button>
+                            </div>
+
+                            <p style="margin: 0; font-size: 14px; color: #374151; line-height: 1.6; word-wrap: break-word;">
+                                ${escapeHtml(reply.message || 'No message')}
+                            </p>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
 
             // Recursively render nested children
             if (reply.child_replies && reply.child_replies.length > 0) {
@@ -749,19 +749,19 @@
             const bgColor = type === 'success' ? '#10b981' : '#ef4444';
 
             toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${bgColor};
-                color: white;
-                padding: 16px 24px;
-                border-radius: 8px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-                z-index: 10000;
-                font-size: 14px;
-                font-weight: 600;
-                animation: slideInRight 0.3s ease-out;
-            `;
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: ${bgColor};
+                    color: white;
+                    padding: 16px 24px;
+                    border-radius: 8px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                    z-index: 10000;
+                    font-size: 14px;
+                    font-weight: 600;
+                    animation: slideInRight 0.3s ease-out;
+                `;
 
             toast.textContent = message;
             document.body.appendChild(toast);
@@ -775,28 +775,28 @@
         // Add required animations
         const style = document.createElement('style');
         style.textContent = `
-            @keyframes slideInRight {
-                from {
-                    transform: translateX(100%);
-                    opacity: 0;
+                @keyframes slideInRight {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
                 }
-                to {
-                    transform: translateX(0);
-                    opacity: 1;
-                }
-            }
 
-            @keyframes slideOutRight {
-                from {
-                    transform: translateX(0);
-                    opacity: 1;
+                @keyframes slideOutRight {
+                    from {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    to {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
                 }
-                to {
-                    transform: translateX(100%);
-                    opacity: 0;
-                }
-            }
-        `;
+            `;
         document.head.appendChild(style);
     </script>
 @endsection

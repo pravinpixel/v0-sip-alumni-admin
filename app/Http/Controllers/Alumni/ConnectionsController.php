@@ -118,10 +118,10 @@ class ConnectionsController extends Controller
             'name' => $alumni->full_name,
             'email' => $alumni->email,
             'batch' => $alumni->year_of_completion,
-            'location' => ($alumni->city->name ?? '-') . ', ' . ($alumni->state->name ?? '-'),
+            'location' => ($alumni->city?->name ?? '-') . ', ' . ($alumni->city?->state?->name ?? '-'),
             'occupation' => $alumni->occupation->name ?? '-',
-            'company' => $alumni->company_name ?? '-',
-            'image' => $alumni->image ? asset($alumni->image) : asset('images/avatar/blank.png'),
+            'contact' => $alumni->mobile_number ?? '-',
+            'image' => $alumni->image_url ?? asset('images/avatar/blank.png'),
         ]);
     }
 

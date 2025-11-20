@@ -178,8 +178,7 @@
 
         /* Navbar */
         .navbar {
-            background-color: #fff;
-            border-bottom: 1px solid #e0e0e0;
+            background-color: #f5f5f5;
             padding: 15px 30px;
             flex-shrink: 0;
         }
