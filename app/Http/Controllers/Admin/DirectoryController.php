@@ -134,7 +134,7 @@ class DirectoryController extends Controller
 
     public function connectionViewPage($id)
     {
-        return view('directory.connectionView', compact('id'));
+        return view('directory.connectionview', compact('id'));
     }
 
     public function viewConnectionList(Request $request, $id)

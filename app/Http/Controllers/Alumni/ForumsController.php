@@ -24,12 +24,108 @@ class ForumsController extends Controller
         return view('alumni.forums.activity');
     }
 
+    public function getFilterOptions()
+    {
+        try {
+            // Get unique batch years from alumni who have posted
+            $batchYears = ForumPost::with('alumni')
+                ->whereHas('alumni', function ($query) {
+                    $query->whereNotNull('year_of_completion');
+                })
+                ->get()
+                ->pluck('alumni.year_of_completion')
+                ->unique()
+                ->filter()
+                ->sort()
+                ->values()
+                ->toArray();
+
+            // Get unique post types/labels
+            $postTypes = ForumPost::whereNotNull('labels')
+                ->where('labels', '!=', '')
+                ->pluck('labels')
+                ->flatMap(function ($labels) {
+                    return explode(',', $labels);
+                })
+                ->map(function ($label) {
+                    return trim($label);
+                })
+                ->unique()
+                ->filter()
+                ->values()
+                ->toArray();
+
+            return response()->json([
+                'success' => true,
+                'batchYears' => $batchYears,
+                'postTypes' => $postTypes
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching filter options: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching filter options.'
+            ], 500);
+        }
+    }
+
     public function getData(Request $request)
     {
         try {
-            $forumPosts = ForumPost::with('alumni')
-                ->where('status', 'approved')
-                ->orderBy('created_at', 'desc')->get();
+            $query = ForumPost::with('alumni')
+                ->where('status', 'approved');
+
+            // Search functionality
+            if ($request->has('search') && !empty($request->search)) {
+                $searchTerm = $request->search;
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('title', 'like', "%{$searchTerm}%")
+                      ->orWhere('description', 'like', "%{$searchTerm}%")
+                      ->orWhere('labels', 'like', "%{$searchTerm}%")
+                      ->orWhereHas('alumni', function ($alumniQuery) use ($searchTerm) {
+                          $alumniQuery->where('full_name', 'like', "%{$searchTerm}%");
+                      });
+                });
+            }
+
+            // Date range filter
+            if ($request->has('date_range') && !empty($request->date_range)) {
+                $dateRange = $request->date_range;
+                switch ($dateRange) {
+                    case 'today':
+                        $query->whereDate('created_at', today());
+                        break;
+                    case 'week':
+                        $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                        break;
+                    case 'month':
+                        $query->whereMonth('created_at', now()->month)
+                              ->whereYear('created_at', now()->year);
+                        break;
+                    case 'year':
+                        $query->whereYear('created_at', now()->year);
+                        break;
+                }
+            }
+
+            // Batch year filter (filter by alumni's batch year)
+            if ($request->has('batch_year') && !empty($request->batch_year)) {
+                $query->whereHas('alumni', function ($alumniQuery) use ($request) {
+                    $alumniQuery->where('year_of_completion', $request->batch_year);
+                });
+            }
+
+            // Post type filter (if you have a post_type field)
+            if ($request->has('post_type') && !empty($request->post_type)) {
+                $query->where('labels', 'like', "%{$request->post_type}%");
+            }
+
+            // Sort options
+            $sortBy = $request->get('sort_by', 'created_at');
+            $sortOrder = 'desc';
+            $query->orderBy($sortBy, $sortOrder);
+
+            $forumPosts = $query->get();
 
             return response()->json([
                 'success' => true,

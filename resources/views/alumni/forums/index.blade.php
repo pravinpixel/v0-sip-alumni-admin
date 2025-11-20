@@ -2,7 +2,7 @@
 
 @section('content')
     @include('alumni.modals.view-thread-modal')
-    <div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white">
         {{-- Header --}}
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
             <div>
@@ -27,20 +27,83 @@
         @include('alumni.modals.create-post-modal')
 
         {{-- Search and Filter --}}
-        <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-            <div style="flex: 1; position: relative;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+            <div style="flex: 1; position: relative; max-width: 400px;">
                 <i class="fas fa-search"
                     style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-                <input type="text" placeholder="Search posts..."
-                    style="width: 100%; padding: 12px 16px 12px 45px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
-                    onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#e5e7eb'">
+                <input type="text" id="searchInput" placeholder="Search posts..."
+                    style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none; height: 42px;"
+                    onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
             </div>
-            <button
-                style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;"
+            <button id="filterToggleBtn"
+                style="background: white; color: #374151; border: 1px solid #d1d5db; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; height: 42px; white-space: nowrap;"
                 onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
                 <i class="fas fa-filter"></i>
-                Filter
+                <span id="filterBtnText">Filter</span>
             </button>
+        </div>
+
+        {{-- Filter Section --}}
+        <div id="filterSection"
+            style="display: none; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                <div>
+                    <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
+                        Date Range
+                    </label>
+                    <select id="filterDateRange"
+                        style="width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; background: white; cursor: pointer;"
+                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
+                        <option value="">Select date range</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
+                        Sort By
+                    </label>
+                    <select id="filterSortBy"
+                        style="width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; background: white; cursor: pointer;"
+                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
+                        <option value="created_at">Latest</option>
+                        <option value="likes_count">Most Liked</option>
+                        <option value="reply_count">Most Commented</option>
+                        <option value="views_count">Most Viewed</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
+                        Batch Year
+                    </label>
+                    <select id="filterBatchYear"
+                        style="width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; background: white; cursor: pointer;"
+                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
+                        <option value="">Select batch years</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
+                        Post Type
+                    </label>
+                    <select id="filterPostType"
+                        style="width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; background: white; cursor: pointer;"
+                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
+                        <option value="">Select post type</option>
+                        <option value="discussion">Discussion</option>
+                        <option value="question">Question</option>
+                        <option value="announcement">Announcement</option>
+                        <option value="event">Event</option>
+                    </select>
+                </div>
+            </div>
         </div>
 
         <div id="forumPostsContainer"></div>
@@ -67,10 +130,69 @@
             loadForumPosts();
         });
 
+        let searchTimeout;
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                loadForumPosts();
+            }, 500); // Debounce for 500ms
+        });
+
+        // Filter toggle
+        document.getElementById('filterToggleBtn').addEventListener('click', function() {
+            const section = document.getElementById('filterSection');
+            const isVisible = section.style.display !== 'none';
+            section.style.display = isVisible ? 'none' : 'block';
+
+            const icon = this.querySelector('i');
+            const btnText = document.getElementById('filterBtnText');
+            if (isVisible) {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-filter');
+                btnText.textContent = 'Filter';
+            } else {
+                icon.classList.remove('fa-filter');
+                icon.classList.add('fa-times');
+                btnText.textContent = 'Close Filters';
+            }
+        });
+
+        // Filter change listeners
+        ['filterDateRange', 'filterSortBy', 'filterBatchYear', 'filterPostType'].forEach(id => {
+            document.getElementById(id).addEventListener('change', function() {
+                loadForumPosts();
+            });
+        });
+
         function loadForumPosts() {
             const container = document.getElementById('forumPostsContainer');
 
-            fetch("{{ route('alumni.forums.data') }}")
+            // Build URL with all filters
+            let url = "{{ route('alumni.forums.data') }}";
+            const params = new URLSearchParams();
+
+            const searchTerm = document.getElementById('searchInput').value;
+            if (searchTerm) params.append('search', searchTerm);
+
+            const dateRange = document.getElementById('filterDateRange').value;
+            if (dateRange) params.append('date_range', dateRange);
+
+            const sortBy = document.getElementById('filterSortBy').value;
+            if (sortBy) params.append('sort_by', sortBy);
+
+            const batchYear = document.getElementById('filterBatchYear').value;
+            if (batchYear) params.append('batch_year', batchYear);
+
+            const postType = document.getElementById('filterPostType').value;
+            if (postType) params.append('post_type', postType);
+
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+
+            fetch(url)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
