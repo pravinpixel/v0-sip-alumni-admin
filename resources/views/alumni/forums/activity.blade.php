@@ -1,0 +1,533 @@
+@extends('alumni.layouts.index')
+
+@section('content')
+    <div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+        {{-- Back to Forum Link --}}
+        <div style="margin-bottom: 20px;">
+            <a href="{{ route('alumni.forums') }}"
+                style="color: #dc2626; text-decoration: none; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px;"
+                onmouseover="this.style.color='#b91c1c'" onmouseout="this.style.color='#dc2626'">
+                <i class="fas fa-arrow-left"></i>
+                Back to Forum
+            </a>
+        </div>
+
+        {{-- Header --}}
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Your Activity</h1>
+            <p style="color: #6b7280; font-size: 15px;">Track your posts and engagement</p>
+        </div>
+
+        {{-- Dynamic Stats Cards --}}
+        <div id="statsCardsContainer" style="margin-bottom: 30px;">
+            {{-- Cards will be dynamically loaded based on active tab --}}
+        </div>
+
+        {{-- Tabs and Search in One Row --}}
+        <div style="background: white; border-radius: 12px; border: 2px solid #e5e7eb; overflow: hidden;">
+            <div
+                style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px; border-bottom: 2px solid #e5e7eb;">
+                <div
+                    style="display: flex; gap: 0; background: #f3f4f6; border-radius: 8px; overflow: hidden; flex: 0 0 auto;">
+                    <button id="activePostsTab" onclick="switchTab('activePosts')"
+                        style="padding: 12px 40px; background: #dc2626; color: white; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
+                        Active Posts
+                    </button>
+                    <button id="postStatusTab" onclick="switchTab('postStatus')"
+                        style="padding: 12px 40px; background: transparent; color: #6b7280; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
+                        Post Status
+                    </button>
+                    <button id="archiveTab" onclick="switchTab('archive')"
+                        style="padding: 12px 40px; background: transparent; color: #6b7280; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
+                        Archive
+                    </button>
+                </div>
+
+                {{-- Search Bar --}}
+                <div style="flex: 0 0 350px; max-width: 350px;">
+                    <div style="position: relative;">
+                        <i class="fas fa-search"
+                            style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                        <input type="text" id="searchInput" placeholder="Search posts..."
+                            style="width: 100%; padding: 10px 16px 10px 45px; border: 1px solid #e5e7eb; border-radius: 20px; font-size: 14px; outline: none; background: #f9fafb;"
+                            onfocus="this.style.borderColor='#dc2626'; this.style.background='white'"
+                            onblur="this.style.borderColor='#e5e7eb'; this.style.background='#f9fafb'"
+                            oninput="filterPosts()">
+                    </div>
+                </div>
+            </div>
+
+            {{-- Posts Container --}}
+            <div id="postsContainer" style="padding: 20px;">
+                {{-- Posts will be loaded here --}}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadActivityData();
+        });
+
+        function renderStatsCards(tabName, stats) {
+            const container = document.getElementById('statsCardsContainer');
+            let html = '';
+
+            if (tabName === 'activePosts') {
+                // 4 cards for Active Posts tab
+                html = `
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                                    <div style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Active Posts</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-file-alt" style="color: #ef4444; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #ef4444; margin: 0;">${stats.activePosts || 0}</h2>
+                                    </div>
+                                    <div style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Likes</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-heart" style="color: #f59e0b; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #f59e0b; margin: 0;">${stats.totalLikes || 0}</h2>
+                                    </div>
+                                    <div style="background: white; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Comments</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-comment" style="color: #3b82f6; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #3b82f6; margin: 0;">${stats.totalComments || 0}</h2>
+                                    </div>
+                                    <div style="background: white; border: 2px solid #a855f7; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Replies</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-reply" style="color: #a855f7; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #a855f7; margin: 0;">${stats.totalComments || 0}</h2>
+                                    </div>
+                                </div>
+                            `;
+            } else if (tabName === 'postStatus') {
+                // 3 cards for Post Status tab
+                html = `
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                    <div style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-file-alt" style="color: #ef4444; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #ef4444; margin: 0;">${stats.totalStatusPosts || 0}</h2>
+                                    </div>
+                                    <div style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Pending</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-clock" style="color: #f59e0b; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #f59e0b; margin: 0;">${stats.pendingPosts || 0}</h2>
+                                    </div>
+                                    <div style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Rejected</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-times-circle" style="color: #ef4444; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #ef4444; margin: 0;">${stats.rejectedPosts || 0}</h2>
+                                    </div>
+                                </div>
+                            `;
+            } else if (tabName === 'archive') {
+                // 4 cards for Archive tab
+                html = `
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+                                    <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Posts</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-file-alt" style="color: #9ca3af; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.archivedPosts || 0}</h2>
+                                    </div>
+                                    <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Active</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-check-circle" style="color: #9ca3af; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.archivedPosts || 0}</h2>
+                                    </div>
+                                    <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Pending</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-clock" style="color: #9ca3af; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">0</h2>
+                                    </div>
+                                    <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Rejected</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-times-circle" style="color: #9ca3af; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">0</h2>
+                                    </div>
+                                </div>
+                            `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function switchTab(tabName) {
+            // Update tab styles
+            const tabs = ['activePostsTab', 'postStatusTab', 'archiveTab'];
+            tabs.forEach(tab => {
+                const element = document.getElementById(tab);
+                if (tab === tabName + 'Tab') {
+                    element.style.background = '#dc2626';
+                    element.style.color = 'white';
+                } else {
+                    element.style.background = 'transparent';
+                    element.style.color = '#6b7280';
+                }
+            });
+
+            // Load content based on tab
+            loadActivityData(tabName);
+        }
+
+        function loadActivityData(filter = 'activePosts') {
+            const alumniId = '{{ session("alumni.id") }}';
+
+            fetch("{{ route('alumni.forums.data') }}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.posts) {
+                        const allPosts = data.data.posts;
+
+                        // Filter posts by current user
+                        let userPosts = allPosts.filter(post => post.alumni_id == alumniId);
+
+                        // If no user posts, show sample data
+                        if (userPosts.length === 0) {
+                            userPosts = [
+                                {
+                                    id: 1,
+                                    title: 'My Experience with Abacus Training',
+                                    description: 'I\'ve been teaching Abacus for over 5 years now, and I wanted to share some insights about effective teaching methods.',
+                                    labels: 'Abacus,Teaching,Experience',
+                                    status: 'approved',
+                                    created_at: '2024-03-25T15:30:00',
+                                    likes: 23,
+                                    reply_count: 5,
+                                    views_count: 156
+                                },
+                                {
+                                    id: 2,
+                                    title: 'Mental Math Techniques Workshop',
+                                    description: 'Join me for a comprehensive workshop on advanced mental math techniques that can help students improve their calculation speed.',
+                                    labels: 'Workshop,Mental Math,Training',
+                                    status: 'approved',
+                                    created_at: '2024-03-20T10:15:00',
+                                    likes: 45,
+                                    reply_count: 12,
+                                    views_count: 234
+                                },
+                                {
+                                    id: 3,
+                                    title: 'Introduction to Speed Mathematics',
+                                    description: 'This was my first post about speed mathematics techniques. Looking back, I\'ve learned so much since then!',
+                                    labels: 'Speed Math,Beginner,Archive',
+                                    status: 'archived',
+                                    created_at: '2024-01-15T14:20:00',
+                                    likes: 15,
+                                    reply_count: 8,
+                                    views_count: 98
+                                },
+                                {
+                                    id: 4,
+                                    title: 'Old Teaching Methods Comparison',
+                                    description: 'A comparison of traditional vs modern teaching methods that I wrote last year. Some interesting insights here.',
+                                    labels: 'Teaching,Comparison,Traditional',
+                                    status: 'archived',
+                                    created_at: '2024-02-10T11:45:00',
+                                    likes: 31,
+                                    reply_count: 15,
+                                    views_count: 187
+                                },
+                                {
+                                    id: 5,
+                                    title: 'Teaching Tips for Beginners',
+                                    description: 'Essential tips for new teachers starting their journey in education.',
+                                    labels: 'Tips,Beginners,Teaching',
+                                    status: 'pending',
+                                    created_at: '2024-03-27T14:30:00',
+                                    likes: 0,
+                                    reply_count: 0,
+                                    views_count: 0
+                                },
+                                {
+                                    id: 6,
+                                    title: 'Competition Preparation Guide',
+                                    description: 'A comprehensive guide to prepare students for math competitions.',
+                                    labels: 'Competition,Guide,Preparation',
+                                    status: 'rejected',
+                                    created_at: '2024-03-20T19:30:00',
+                                    likes: 0,
+                                    reply_count: 0,
+                                    views_count: 0
+                                }
+                            ];
+                        }
+
+                        // Calculate stats
+                        const stats = {
+                            totalPosts: userPosts.length,
+                            activePosts: userPosts.filter(post => post.status === 'approved').length,
+                            pendingPosts: userPosts.filter(post => post.status === 'pending').length,
+                            rejectedPosts: userPosts.filter(post => post.status === 'rejected').length,
+                            archivedPosts: userPosts.filter(post => post.status === 'archived').length,
+                            totalStatusPosts: userPosts.filter(post => post.status === 'pending' || post.status === 'rejected').length,
+                            totalLikes: userPosts.reduce((sum, post) => sum + (post.likes || 0), 0),
+                            totalViews: userPosts.reduce((sum, post) => sum + (post.views_count || 0), 0),
+                            totalComments: userPosts.reduce((sum, post) => sum + (post.reply_count || 0), 0)
+                        };
+
+                        // Render stat cards based on current tab
+                        renderStatsCards(filter, stats);
+
+                        // Render posts based on filter
+                        let filteredPosts = userPosts;
+                        if (filter === 'activePosts') {
+                            filteredPosts = userPosts.filter(post => post.status === 'approved');
+                        } else if (filter === 'postStatus') {
+                            filteredPosts = userPosts.filter(post => post.status === 'pending' || post.status === 'rejected');
+                        } else if (filter === 'archive') {
+                            filteredPosts = userPosts.filter(post => post.status === 'archived');
+                        }
+
+                        renderPosts(filteredPosts, filter);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading activity data:', error);
+                });
+        }
+
+        function renderPosts(posts, viewType = 'activePosts') {
+            const container = document.getElementById('postsContainer');
+
+            // Use simple layout for Post Status tab
+            if (viewType === 'postStatus') {
+                renderSimplePosts(posts);
+                return;
+            }
+
+            if (!posts || posts.length === 0) {
+                container.innerHTML = `
+                                                                        <div style="text-align: center; padding: 60px 20px; color: #6b7280;">
+                                                                            <i class="fas fa-inbox" style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;"></i>
+                                                                            <h3 style="font-size: 20px; margin-bottom: 8px; color: #374151;">No posts found</h3>
+                                                                            <p style="color: #6b7280;">Your posts will appear here</p>
+                                                                        </div>
+                                                                    `;
+                return;
+            }
+
+            let html = '';
+            posts.forEach(post => {
+                const title = post.title || 'Untitled Post';
+                const description = post.description ?
+                    post.description.replace(/<\/?[^>]+>/g, "").substring(0, 150) +
+                    (post.description.length > 150 ? '...' : '') :
+                    'No description available';
+
+                const date = post.created_at ?
+                    new Date(post.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    }) + ' at ' + new Date(post.created_at).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) :
+                    'Unknown date';
+
+                const statusColor = post.status === 'approved' ? '#dcfce7' :
+                    post.status === 'pending' ? '#fef3c7' : '#f3f4f6';
+                const statusTextColor = post.status === 'approved' ? '#16a34a' :
+                    post.status === 'pending' ? '#d97706' : '#6b7280';
+                const statusText = post.status === 'approved' ? 'Active' :
+                    post.status === 'pending' ? 'Pending' : 'Archived';
+
+                // Parse tags/labels
+                const tags = post.labels ? post.labels.split(',').filter(tag => tag.trim() !== '') : [];
+
+                html += `
+                                                                        <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 16px; position: relative;">
+                                                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                                                                <h3 style="font-size: 18px; font-weight: 700; color: #dc2626; margin: 0; flex: 1;">${escapeHtml(title)}</h3>
+                                                                                <div style="display: flex; align-items: center; gap: 8px;">
+                                                                                    <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">
+                                                                                        ${statusText}
+                                                                                    </span>
+                                                                                    <button style="background: transparent; border: none; color: #dc2626; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                                        onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
+                                                                                        title="Delete post">
+                                                                                        <i class="fas fa-trash"></i>
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <p style="color: #9ca3af; font-size: 13px; margin-bottom: 12px;">${date}</p>
+
+                                                                            <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
+                                                                                ${escapeHtml(description)}
+                                                                            </p>
+
+                                                                            ${tags.length > 0 ? `
+                                                                                <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
+                                                                                    ${tags.map(tag => `
+                                                                                        <span style="background: #fbbf24; color: #000; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 600;">
+                                                                                            ${escapeHtml(tag.trim())}
+                                                                                        </span>
+                                                                                    `).join('')}
+                                                                                </div>
+                                                                            ` : ''}
+
+                                                                            <div style="display: flex; align-items: center; gap: 20px; color: #6b7280; font-size: 14px;">
+                                                                                <span style="display: flex; align-items: center; gap: 6px;">
+                                                                                    <i class="fas fa-eye"></i> ${post.views_count || 0}
+                                                                                </span>
+                                                                                <span style="display: flex; align-items: center; gap: 6px;">
+                                                                                    <i class="fas fa-heart"></i> ${post.likes || 0}
+                                                                                </span>
+                                                                                <span style="display: flex; align-items: center; gap: 6px;">
+                                                                                    <i class="fas fa-comment"></i> ${post.reply_count || 0} replies
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                    `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderSimplePosts(posts) {
+            const container = document.getElementById('postsContainer');
+
+            if (!posts || posts.length === 0) {
+                container.innerHTML = `
+                                                <div style="text-align: center; padding: 60px 20px; color: #6b7280;">
+                                                    <i class="fas fa-inbox" style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;"></i>
+                                                    <h3 style="font-size: 20px; margin-bottom: 8px; color: #374151;">No posts found</h3>
+                                                    <p style="color: #6b7280;">Your posts will appear here</p>
+                                                </div>
+                                            `;
+                return;
+            }
+
+            let html = '';
+            posts.forEach(post => {
+                const title = post.title || 'Untitled Post';
+                const date = post.created_at ?
+                    'Posted: ' + new Date(post.created_at).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    }) + ' at ' + new Date(post.created_at).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) :
+                    'Unknown date';
+
+                const statusColor = post.status === 'pending' ? '#fef3c7' : '#fee2e2';
+                const statusTextColor = post.status === 'pending' ? '#d97706' : '#dc2626';
+                const statusText = post.status === 'pending' ? 'Pending' : 'Rejected';
+
+                html += `
+                                                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+                                                    <div style="flex: 1;">
+                                                        <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">${escapeHtml(title)}</h3>
+                                                        <p style="color: #9ca3af; font-size: 13px; margin: 0;">${date}</p>
+                                                    </div>
+                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                        <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;">
+                                                            ${statusText}
+                                                        </span>
+                                                        <div style="display: flex; gap: 8px;">
+                                                            ${post.status === 'pending' ? `
+                                                                <button style="background: transparent; border: 2px solid #3b82f6; color: #3b82f6; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                    onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'"
+                                                                    title="View post">
+                                                                    <i class="fas fa-file-alt"></i>
+                                                                </button>
+                                                            ` : ''}
+                                                            ${post.status === 'rejected' ? `
+                                                                <button style="background: transparent; border: 2px solid #3b82f6; color: #3b82f6; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                    onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'"
+                                                                    title="View post">
+                                                                    <i class="fas fa-file-alt"></i>
+                                                                </button>
+                                                                <button style="background: transparent; border: 2px solid #10b981; color: #10b981; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                    onmouseover="this.style.background='#d1fae5'" onmouseout="this.style.background='transparent'"
+                                                                    title="Resubmit">
+                                                                    <i class="fas fa-redo"></i>
+                                                                </button>
+                                                            ` : ''}
+                                                            ${post.status === 'pending' ? `
+                                                                <button style="background: transparent; border: 2px solid #f59e0b; color: #f59e0b; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                    onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='transparent'"
+                                                                    title="Edit post">
+                                                                    <i class="fas fa-edit"></i>
+                                                                </button>
+                                                            ` : ''}
+                                                            <button style="background: transparent; border: 2px solid #dc2626; color: #dc2626; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
+                                                                title="Delete post">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function filterPosts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            // Implement search filtering logic here
+            console.log('Searching for:', searchTerm);
+        }
+
+        function escapeHtml(unsafe) {
+            if (unsafe === null || unsafe === undefined) return '';
+            return String(unsafe)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+
+@endsection

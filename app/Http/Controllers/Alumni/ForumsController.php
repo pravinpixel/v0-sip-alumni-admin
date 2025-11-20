@@ -19,6 +19,11 @@ class ForumsController extends Controller
         return view('alumni.forums.index', compact('forumPosts'));
     }
 
+    public function activity(Request $request)
+    {
+        return view('alumni.forums.activity');
+    }
+
     public function getData(Request $request)
     {
         try {
@@ -46,7 +51,7 @@ class ForumsController extends Controller
         try {
             $alumniId = session('alumni.id');
 
-            $validator      = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
                 'labels' => 'nullable|string|max:255',
@@ -87,7 +92,7 @@ class ForumsController extends Controller
         try {
             $alumniId = session('alumni.id');
 
-            $validator      = Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'forum_post_id' => 'required',
                 'message' => 'required|string|max:255',
                 'parent_reply_id' => 'nullable',
@@ -176,7 +181,8 @@ class ForumsController extends Controller
                 $post->likes += 1;
             } else {
                 $post->likes -= 1;
-                if ($post->likes < 0) $post->likes = 0;
+                if ($post->likes < 0)
+                    $post->likes = 0;
             }
 
             $post->save();

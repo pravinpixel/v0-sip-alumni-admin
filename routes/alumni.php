@@ -47,6 +47,7 @@ Route::middleware('alumni.auth')->group(function () {
     });
     Route::prefix('forums')->group(function () {
         Route::get('/', [ForumsController::class, 'index'])->name('alumni.forums');
+        Route::get('/activity', [ForumsController::class, 'activity'])->name('alumni.forums.activity');
         Route::get('/data', [ForumsController::class, 'getData'])->name('alumni.forums.data');
         Route::post('/create-post', [ForumsController::class, 'createPost'])->name('alumni.create.post');
         Route::post('/create-reply', [ForumsController::class, 'createReply'])->name('alumni.create.reply');
