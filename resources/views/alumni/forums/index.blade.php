@@ -32,7 +32,7 @@
                 <i class="fas fa-search"
                     style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
                 <input type="text" id="searchInput" placeholder="Search posts..."
-                    style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none; height: 42px;"
+                    style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none; height: 42px;"
                     onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
             </div>
             <button id="filterToggleBtn"
