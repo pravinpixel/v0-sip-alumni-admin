@@ -132,4 +132,26 @@ class RoleManagementController extends Controller
         return response()->json(['hasActiveUsers' => $hasActiveUsers]);
     }
 
+    public function toggleStatus(Request $request)
+    {
+        try {
+            $role = Role::findOrFail($request->role_id);
+
+            // Check if role has active users when trying to deactivate
+            if ($request->status == 0) {
+                $hasActiveUsers = User::where('role_id', $role->id)->where('status', 1)->exists();
+                if ($hasActiveUsers) {
+                    return $this->returnError('Cannot deactivate role with active users');
+                }
+            }
+
+            $role->status = $request->status;
+            $role->save();
+
+            return $this->returnSuccess($role, "Role status updated successfully");
+        } catch (\Exception $e) {
+            return $this->returnError($e->getMessage());
+        }
+    }
+
 }

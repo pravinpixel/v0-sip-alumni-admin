@@ -164,4 +164,17 @@ class UserManagementController extends Controller
         }
     }
 
+    public function toggleStatus(Request $request)
+    {
+        try {
+            $user = User::findOrFail($request->user_id);
+            $user->status = $request->status;
+            $user->save();
+
+            return $this->returnSuccess($user, "User status updated successfully");
+        } catch (\Exception $e) {
+            return $this->returnError($e->getMessage());
+        }
+    }
+
 }

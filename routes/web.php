@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/', 'index')->name('role.index')->middleware('checkAccess:role.view');
         Route::get('/add_edit', 'create')->name('role.create')->middleware('checkAccess:role.create');
         Route::post('/save', 'save')->name('role.save');
+        Route::post('/toggle-status', 'toggleStatus')->name('role.toggle-status')->middleware('checkAccess:role.edit');
         Route::get('/{id}', 'edit')->name('role.edit')->middleware('checkAccess:role.edit');
         Route::delete('/{id}', 'delete')->name('role.delete')->middleware('checkAccess:role.delete');
         Route::get('role_user/{id}', 'role_user')->name('role.role_user')->middleware('checkAccess:role.delete');
@@ -110,6 +111,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/', 'index')->name('user.index')->middleware('checkAccess:user.view');
         Route::get('/add_edit', 'create')->name('user.create')->middleware('checkAccess:user.create');
         Route::post('/save', 'save')->name('user.save');
+        Route::post('/toggle-status', 'toggleStatus')->name('user.toggle-status')->middleware('checkAccess:user.edit');
         Route::get('/{id}', 'edit')->name('user.edit')->middleware('checkAccess:user.edit');
         Route::delete('/{id}', 'delete')->name('user.delete')->middleware('checkAccess:user.delete');
     });

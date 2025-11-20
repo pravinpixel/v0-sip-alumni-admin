@@ -2,6 +2,30 @@
 
 @section('title', 'Role Management')
 
+@push('styles')
+    <style>
+        .toggle-switch input:checked+.toggle-slider {
+                background-color: #16a34a;
+            }
+
+            .toggle-slider:before {
+                position: absolute;
+                content: "";
+                height: 18px;
+                width: 18px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                transition: 0.4s;
+                border-radius: 50%;
+            }
+
+            .toggle-switch input:checked+.toggle-slider:before {
+                transform: translateX(20px);
+            }
+        </style>
+@endpush
+
 @section('content')
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -78,10 +102,19 @@
                                         ROLE{{ str_pad($serialNumberStart++, 3, '0', STR_PAD_LEFT) }}</td>
                                     <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">{{$data->name}}</td>
                                     <td style="padding: 1rem;">
-                                        <span
-                                            style="padding: 0.375rem 0.75rem; background: {{$data->status == 1 ? '#dcfce7' : '#fee2e2'}}; color: {{$data->status == 1 ? '#16a34a' : '#dc2626'}}; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600;">
-                                            {{$data->status == 1 ? 'Active' : 'Inactive'}}
-                                        </span>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <label class="toggle-switch"
+                                                style="position: relative; display: inline-block; width: 44px; height: 24px;">
+                                                <input type="checkbox" class="status-toggle" data-role-id="{{$data->id}}"
+                                                    {{$data->status == 1 ? 'checked' : ''}} style="opacity: 0; width: 0; height: 0;">
+                                                <span class="toggle-slider"
+                                                    style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.4s; border-radius: 24px;"></span>
+                                            </label>
+                                            <span
+                                                style="padding: 0.375rem 0.75rem; background: {{$data->status == 1 ? '#dcfce7' : '#fee2e2'}}; color: {{$data->status == 1 ? '#16a34a' : '#dc2626'}}; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600;">
+                                                {{$data->status == 1 ? 'Active' : 'Inactive'}}
+                                            </span>
+                                        </div>
                                     </td>
                                     @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
                                         <td style="padding: 1rem; position: relative;">
@@ -209,6 +242,51 @@
                 });
             }
 
+            // Status toggle handler
+            $(document).on('change', '.status-toggle', function () {
+                const roleId = $(this).data('role-id');
+                const newStatus = $(this).is(':checked') ? 1 : 0;
+                const toggle = $(this);
+
+                $.ajax({
+                    url: "{{ route('role.toggle-status') }}",
+                    type: 'POST',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        role_id: roleId,
+                        status: newStatus
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Success!",
+                                text: response.message,
+                                icon: "success",
+                                confirmButtonText: "Ok",
+                                customClass: {
+                                    confirmButton: "btn btn-success"
+                                },
+                                timer: 2000,
+                            });
+                            updateTableData();
+                        }
+                    },
+                    error: function (xhr) {
+                        // Revert toggle on error
+                        toggle.prop('checked', !newStatus);
+                        Swal.fire({
+                            title: "Error!",
+                            text: xhr.responseJSON?.message || "Failed to update status",
+                            icon: "error",
+                            confirmButtonText: "Ok",
+                            customClass: {
+                                confirmButton: "btn btn-danger"
+                            }
+                        });
+                    }
+                });
+            });
+
             $(document).on('click', '.deletestateBtn', function (e) {
                 e.stopPropagation();
                 var roleId = $(this).data('role-id');
@@ -263,9 +341,9 @@
                                             confirmButton: "btn btn-danger"
                                         },
                                         timer: 4000,
-                                    });
-                                }
-                            });
+                                                  });
+                                    }
+                                });
                         }
                     });
                 });
