@@ -48,4 +48,14 @@ class ForumPost extends Model
         return $this->replies()->count();
     }
 
+    public function likes()
+    {
+        return $this->hasMany(PostLikes::class, 'post_id');
+    }
+
+    public function views()
+    {
+        return $this->hasMany(PostViews::class, 'post_id');
+    }
+
 }

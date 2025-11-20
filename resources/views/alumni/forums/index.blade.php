@@ -262,11 +262,32 @@
                     'Unknown date';
 
                 html += `
-                    <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease;"
-                         onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'; this.style.borderColor='#dc2626'"
-                         onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
+                    <div style="background: white; border: 3px solid ${post.is_pinned_by_user ? '#F7C744' : '#e5e7eb'}; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease; position: relative;"
+                         onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'"
+                         onmouseout="this.style.boxShadow='none'">
 
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                        ${post.is_pinned_by_user ? `
+                            <div style="position: absolute; top: 16px; right: 16px; display: flex; align-items: center; gap: 8px;">
+                                <div style="background: #F7C744; color: #000; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                                    <i class="fas fa-thumbtack"></i> Pinned
+                                </div>
+                                <button onclick="togglePin(${post.id}, this)" 
+                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 18px; padding: 4px;"
+                                    title="Unpin this post">
+                                    <i class="fas fa-thumbtack"></i>
+                                </button>
+                            </div>
+                        ` : `
+                            <button onclick="togglePin(${post.id}, this)" 
+                                style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 18px; padding: 4px;"
+                                onmouseover="this.style.color='#6b7280'"
+                                onmouseout="this.style.color='#9ca3af'"
+                                title="Pin this post">
+                                <i class="fas fa-thumbtack"></i>
+                            </button>
+                        `}
+
+                        <div style="margin-bottom: 16px; padding-right: 80px;">
                             <h2 style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;">
                                 ${escapeHtml(title)}
                             </h2>
@@ -476,19 +497,42 @@
                 .replace(/'/g, "&#039;");
         }
 
+        // Toggle pin/unpin post
+        function togglePin(postId, button) {
+            fetch("{{ route('alumni.pinned.post') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ post_id: postId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    loadForumPosts(); 
+                } else {
+                    showToast(data.message || 'Failed to update pin status', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error updating pin status', 'error');
+            });
+        }
+
         function replyHover(button) {
-            button.style.background = "#F7C744"; // yellow
-            button.style.color = "#374151"; // dark
+            button.style.background = "#F7C744"; 
+            button.style.color = "#374151"; 
         }
 
 
         function replyUnhover(button) {
             if (button.classList.contains("reply-active")) {
-                // return to active style
                 button.style.background = "#ffdbdbff";
                 button.style.color = "#dc2626";
             } else {
-                // return to default
                 button.style.background = "transparent";
                 button.style.color = "#6b7280";
                 button.style.border = "none";

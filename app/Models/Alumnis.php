@@ -51,6 +51,11 @@ class Alumnis extends Model
         return $this->hasMany(AlumniConnections::class, 'receiver_id');
     }
 
+    public function pinned()
+    {
+        return $this->hasMany(PostPinned::class, 'alumni_id');
+    }
+
     public function getImageUrlAttribute()
     {
         if (!empty($this->image) && Storage::disk('public')->exists($this->image)) {

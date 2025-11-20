@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\ForumReplies;
 use App\Models\ForumPost;
 use App\Models\MobileOtp;
+use App\Models\PostLikes;
+use App\Models\PostPinned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -75,7 +77,6 @@ class ForumsController extends Controller
             $query = ForumPost::with('alumni')
                 ->where('status', 'approved');
 
-            // Search functionality
             if ($request->has('search') && !empty($request->search)) {
                 $searchTerm = $request->search;
                 $query->where(function ($q) use ($searchTerm) {
@@ -88,7 +89,6 @@ class ForumsController extends Controller
                 });
             }
 
-            // Date range filter
             if ($request->has('date_range') && !empty($request->date_range)) {
                 $dateRange = $request->date_range;
                 switch ($dateRange) {
@@ -108,24 +108,27 @@ class ForumsController extends Controller
                 }
             }
 
-            // Batch year filter (filter by alumni's batch year)
             if ($request->has('batch_year') && !empty($request->batch_year)) {
                 $query->whereHas('alumni', function ($alumniQuery) use ($request) {
                     $alumniQuery->where('year_of_completion', $request->batch_year);
                 });
             }
 
-            // Post type filter (if you have a post_type field)
             if ($request->has('post_type') && !empty($request->post_type)) {
                 $query->where('labels', 'like', "%{$request->post_type}%");
             }
 
-            // Sort options
             $sortBy = $request->get('sort_by', 'created_at');
             $sortOrder = 'desc';
             $query->orderBy($sortBy, $sortOrder);
-
             $forumPosts = $query->get();
+
+            $alumniId = session('alumni.id');
+            $forumPosts->each(function ($post) use ($alumniId) {
+                $post->is_pinned_by_user = PostPinned::where('post_id', $post->id)
+                    ->where('alumni_id', $alumniId)
+                    ->exists();
+            });
 
             return response()->json([
                 'success' => true,
@@ -260,7 +263,6 @@ class ForumsController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'post_id' => 'required',
-                'liked' => 'required|boolean',
             ]);
 
             if ($validator->fails()) {
@@ -273,16 +275,20 @@ class ForumsController extends Controller
 
             $post = ForumPost::findOrFail($request->post_id);
 
-            if ($request->liked) {
-                $post->likes += 1;
-            } else {
-                $post->likes -= 1;
-                if ($post->likes < 0)
-                    $post->likes = 0;
-            }
+            $like = PostLikes::where('post_id', $post->id)
+                ->where('alumni_id', $alumniId)
+                ->first();
 
-            $post->save();
-            $likes = $post->likes;
+            if ($like) {
+                $like->delete();
+                $likes = $post->likes()->count() - 1;
+            } else {
+                PostLikes::create([
+                    'post_id' => $post->id,
+                    'alumni_id' => $alumniId,
+                ]);
+                $likes = $post->likes()->count() + 1;
+            }
             return response()->json([
                 'success' => true,
                 'message' => 'Like status updated successfully.',
@@ -293,6 +299,49 @@ class ForumsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while updating like status.'
+            ], 500);
+        }
+    }
+    public function pinnedPost(Request $request)
+    {
+        try {
+            $alumniId = session('alumni.id');
+
+            $validator = Validator::make($request->all(), [
+                'post_id' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation Error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $post = ForumPost::findOrFail($request->post_id);
+
+            $pinned = PostPinned::where('post_id', $post->id)
+                ->where('alumni_id', $alumniId)
+                ->first();
+
+            if ($pinned) {
+                $pinned->delete();
+            } else {
+                PostPinned::create([
+                    'post_id' => $post->id,
+                    'alumni_id' => $alumniId,
+                ]);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Pinned status updated successfully.',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error pinning post: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating pinned status.'
             ], 500);
         }
     }
