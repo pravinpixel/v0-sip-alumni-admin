@@ -27,6 +27,7 @@ Route::middleware('alumni.auth')->group(function () {
     Route::prefix('directory')->group(function () {
         Route::get('/', [DirectoryController::class, 'index'])->name('alumni.directory');
         Route::get('/data', [DirectoryController::class, 'getData'])->name('alumni.directory.data');
+        Route::get('/filter-options', [DirectoryController::class, 'getFilterOptions'])->name('alumni.directory.filter-options');
         Route::post('/connect/{receiverId}', [DirectoryController::class, 'sendRequest'])->name('alumni.send.request');
     });
     

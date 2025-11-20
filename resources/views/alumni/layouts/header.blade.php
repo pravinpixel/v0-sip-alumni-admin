@@ -162,12 +162,13 @@
                 padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.2);">
 
         <!-- Header -->
-        <div style="display:flex; justify-content:space-between; align-items:center;
-                    border-bottom:1px solid #eee; padding-bottom:10px; margin-bottom:15px;">
-            <h2 style="margin:0; font-size:20px; font-weight:600;">Settings</h2>
-
+        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; margin-bottom:4px;">
+            <div>
+                <h2 style="margin:0; font-size:20px; font-weight:600;">Settings</h2>
+                <p style="margin:3px 0;color:#666;font-size:12px;">Manage your notification preferences</p>
+            </div>
             <button onclick="closeSettingModal()"
-                style="background:none; border:none; font-size:22px; cursor:pointer;">
+                style="background:none; border:none; font-size:16px; cursor:pointer;">
                 ✖
             </button>
         </div>
@@ -177,10 +178,10 @@
 
             <!-- Setting 1 -->
             <div class="setting-row" style="display:flex;justify-content:space-between;align-items:center;
-                  padding:12px 0;border-bottom:1px solid #eee;">
+                  padding:12px 0;">
                 <div>
-                    <h4 style="margin:0;font-size:16px;">Admin Approvals</h4>
-                    <p style="margin:3px 0;color:#666;font-size:13px;">Get notified when admins approve or reject your requests</p>
+                    <h4 style="margin:0;font-size:13px;">Receive email notifications for all Admin Approvals</h4>
+                    <p style="margin:3px 0;color:#666;font-size:12px;">Get notified when admins approve or reject your requests</p>
                 </div>
 
                 <div style="display:flex;align-items:center;">
@@ -198,10 +199,10 @@
 
             <!-- Setting 2 -->
             <div class="setting-row" style="display:flex;justify-content:space-between;align-items:center;
-                 padding:12px 0;border-bottom:1px solid #eee;">
+                 padding:12px 0;">
                 <div>
-                    <h4 style="margin:0;font-size:16px;">Post Comments</h4>
-                    <p style="margin:3px 0;color:#666;font-size:13px;">Get notified when someone comments on your posts or replies to your comments</p>
+                    <h4 style="margin:0;font-size:13px;">Receive email notifications for post comments or updates</h4>
+                    <p style="margin:3px 0;color:#666;font-size:12px;">Get notified when someone comments on your posts or replies to your comments</p>
                 </div>
 
                 <div style="display:flex;align-items:center;">

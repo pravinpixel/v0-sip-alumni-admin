@@ -44,6 +44,141 @@
         color: #6b7280 !important;
         font-size: 14px !important;
     }
+
+    /* Multi-select dropdown styles */
+    .multi-select-container {
+        position: relative;
+    }
+
+    .multi-select-display {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 40px;
+        transition: border-color 0.2s;
+    }
+
+    .multi-select-display .placeholder {
+        color: #6b7280;
+        flex: 1;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+
+    .multi-select-display span {
+        background: none;
+    }
+
+    .multi-select-display:hover {
+        border-color: #9ca3af;
+    }
+
+    .multi-select-display:focus-within {
+        border-color: #dc2626;
+        outline: none;
+    }
+
+    .multi-select-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        margin-top: 4px;
+        max-height: 250px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .multi-select-dropdown.active {
+        display: block;
+    }
+
+    .multi-select-option {
+        margin: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background-color 0.2s;
+    }
+
+    .multi-select-option:hover {
+        background-color: #f3f4f6;
+    }
+
+    .multi-select-option input[type="checkbox"] {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        accent-color: #dc2626;
+    }
+
+    .multi-select-option label {
+        flex: 1;
+        font-size: 14px;
+        color: #374151;
+        user-select: none;
+    }
+
+    .selected-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+        min-height: 24px;
+    }
+
+    .selected-tag {
+        background: #dc2626;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+    .selected-tag .remove {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 1;
+        margin-left: 2px;
+    }
+
+    .selected-tag .remove:hover {
+        opacity: 0.8;
+    }
+
+    #filterCountBadge {
+        background: #dc2626;
+        color: white;
+        border-radius: 50%;
+        min-width: 20px;
+        height: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 6px;
+        margin-left: 4px;
+    }
 </style>
 
 <div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
@@ -54,20 +189,74 @@
     </div>
 
     {{-- Search and Filter --}}
-    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-        <div style="flex: 1; position: relative;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div style="flex: 1; position: relative; max-width: 400px;">
             <i class="fas fa-search"
                 style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
             <input type="text" id="searchInput" placeholder="Search alumni..."
-                style="width: 100%; padding: 12px 16px 12px 45px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
-                onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#e5e7eb'">
+                style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none;"
+                onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
         </div>
         <button id="filterToggleBtn"
-            style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px;"
+            style="background: white; color: #374151; border: 1px solid #d1d5db; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; position: relative;"
             onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-            <i class="fas fa-filter"></i>
-            Filter
+            <i class="fas fa-filter" style="font-size: 13px;"></i>
+            <span id="filterBtnText">Filter</span>
+            <span id="filterCountBadge" style="display: none; background: #dc2626; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; margin-left: 4px;">0</span>
         </button>
+        <button id="clearFiltersBtn"
+            style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; white-space: nowrap;"
+            onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
+            Clear All Filters
+        </button>
+    </div>
+
+    {{-- Filter Section --}}
+    <div id="filterSection"
+        style="display: none; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+            <div>
+                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
+                    Batch Year
+                </label>
+                <div class="multi-select-container" data-filter="batch">
+                    <div class="multi-select-display">
+                        <span class="placeholder">Select batch years</span>
+                        <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                    </div>
+                    <div class="multi-select-dropdown"></div>
+                </div>
+            </div>
+            <div>
+                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
+                    Location
+                </label>
+                <div class="multi-select-container" data-filter="location">
+                    <div class="multi-select-display">
+                        <span class="placeholder">Select locations</span>
+                        <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                    </div>
+                    <div class="multi-select-dropdown"></div>
+                </div>
+            </div>
+            <div>
+                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
+                    Status
+                </label>
+                <div class="multi-select-container" data-filter="status">
+                    <div class="multi-select-display">
+                        <span class="placeholder">Select status</span>
+                        <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                    </div>
+                    <div class="multi-select-dropdown"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Selected Filters Display (Always visible when filters are selected) --}}
+    <div id="selectedFiltersDisplay" style="display: none; margin-bottom: 20px;">
+        <div class="selected-tags" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
     </div>
 
     {{-- Info Banner --}}
@@ -83,27 +272,6 @@
         </button>
     </div>
 
-    {{-- Filter Section --}}
-    <div id="filterSection"
-        style="display: none; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
-            <div>
-                <label
-                    style="font-weight: 600; font-size: 14px; color: #374151; display: block; margin-bottom: 8px;">Batch
-                    Year</label>
-                <input type="text" id="filterBatch" placeholder="e.g. 2022"
-                    style="width: 100%; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
-                    onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#e5e7eb'">
-            </div>
-            <div>
-                <label
-                    style="font-weight: 600; font-size: 14px; color: #374151; display: block; margin-bottom: 8px;">Location</label>
-                <input type="text" id="filterLocation" placeholder="e.g. Chennai"
-                    style="width: 100%; padding: 10px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
-                    onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#e5e7eb'">
-            </div>
-        </div>
-    </div>
 
     {{-- Alumni Table --}}
     <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
@@ -132,14 +300,192 @@
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 <script>
     $(document).ready(function() {
+        let selectedFilters = {
+            batch: [],
+            location: [],
+            status: []
+        };
+
+        let filterOptions = {
+            batch: [],
+            location: [],
+            status: []
+        };
+
+        // Load filter options
+        $.ajax({
+            url: "{{ route('alumni.directory.filter-options') }}",
+            method: 'GET',
+            success: function(data) {
+                filterOptions.batch = data.batchYears.map(year => ({ id: year, name: year }));
+                filterOptions.location = data.locations;
+                filterOptions.status = data.statuses;
+
+                populateDropdown('batch', filterOptions.batch);
+                populateDropdown('location', filterOptions.location);
+                populateDropdown('status', filterOptions.status);
+            }
+        });
+
+        function populateDropdown(type, options) {
+            const container = $(`.multi-select-container[data-filter="${type}"]`);
+            const dropdown = container.find('.multi-select-dropdown');
+            
+            dropdown.empty();
+            options.forEach(option => {
+                const optionHtml = `
+                    <div class="multi-select-option" data-value="${option.id}">
+                        <input type="checkbox" id="${type}_${option.id}" value="${option.id}">
+                        <label for="${type}_${option.id}" style="cursor: pointer; margin: 0;">${option.name}</label>
+                    </div>
+                `;
+                dropdown.append(optionHtml);
+            });
+        }
+
+        // Toggle dropdown
+        $(document).on('click', '.multi-select-display', function(e) {
+            e.stopPropagation();
+            const dropdown = $(this).siblings('.multi-select-dropdown');
+            $('.multi-select-dropdown').not(dropdown).removeClass('active');
+            dropdown.toggleClass('active');
+        });
+
+        // Prevent dropdown from closing when clicking inside
+        $(document).on('click', '.multi-select-dropdown', function(e) {
+            e.stopPropagation();
+        });
+
+        // Close dropdowns when clicking outside
+        $(document).on('click', function() {
+            $('.multi-select-dropdown').removeClass('active');
+        });
+
+        // Handle checkbox selection
+        $(document).on('change', '.multi-select-option input[type="checkbox"]', function() {
+            const container = $(this).closest('.multi-select-container');
+            const filterType = container.data('filter');
+            const value = $(this).val();
+            const label = $(this).siblings('label').text();
+
+            if ($(this).is(':checked')) {
+                selectedFilters[filterType].push({ id: value, name: label });
+            } else {
+                selectedFilters[filterType] = selectedFilters[filterType].filter(item => item.id != value);
+            }
+
+            updatePlaceholder(filterType);
+            table.ajax.reload();
+            updateClearButton();
+        });
+
+        function updatePlaceholder(type) {
+            const container = $(`.multi-select-container[data-filter="${type}"]`);
+            const placeholder = container.find('.placeholder');
+            const count = selectedFilters[type].length;
+
+            if (count > 0) {
+                placeholder.text(`${count} selected`);
+            } else {
+                const placeholders = {
+                    batch: 'Select batch years',
+                    location: 'Select locations',
+                    status: 'Select status'
+                };
+                placeholder.text(placeholders[type]);
+            }
+        }
+
+        // Remove tag
+        $(document).on('click', '.selected-tag .remove', function() {
+            const type = $(this).data('type');
+            const value = $(this).data('value');
+
+            selectedFilters[type] = selectedFilters[type].filter(item => item.id != value);
+            
+            // Uncheck the checkbox
+            $(`.multi-select-container[data-filter="${type}"] input[value="${value}"]`).prop('checked', false);
+            
+            updatePlaceholder(type);
+            table.ajax.reload();
+            updateClearButton();
+        });
+
+        // Clear all filters
+        $('#clearFiltersBtn').on('click', function() {
+            selectedFilters = { batch: [], location: [], status: [] };
+            
+            $('.multi-select-option input[type="checkbox"]').prop('checked', false);
+            $('.selected-tags').empty();
+            
+            updatePlaceholder('batch');
+            updatePlaceholder('location');
+            updatePlaceholder('status');
+            
+            table.ajax.reload();
+            updateClearButton();
+        });
+
+        function updateClearButton() {
+            const totalCount = selectedFilters.batch.length + 
+                             selectedFilters.location.length + 
+                             selectedFilters.status.length;
+            
+            const hasFilters = totalCount > 0;
+            
+            // Update count badge
+            const badge = $('#filterCountBadge');
+            if (hasFilters) {
+                badge.text(totalCount).show();
+                $('#clearFiltersBtn').show();
+            } else {
+                badge.hide();
+                $('#clearFiltersBtn').hide();
+            }
+
+            // Update selected filters display when section is closed
+            updateSelectedFiltersDisplay();
+        }
+
+        function updateSelectedFiltersDisplay() {
+            const displayContainer = $('#selectedFiltersDisplay');
+            const displayTags = displayContainer.find('.selected-tags');
+            
+            displayTags.empty();
+            
+            // Collect all selected filters
+            const allFilters = [
+                ...selectedFilters.batch.map(item => ({ ...item, type: 'batch' })),
+                ...selectedFilters.location.map(item => ({ ...item, type: 'location' })),
+                ...selectedFilters.status.map(item => ({ ...item, type: 'status' }))
+            ];
+
+            if (allFilters.length > 0) {
+                // Show selected filters always when there are filters
+                allFilters.forEach(item => {
+                    const tag = `
+                        <div class="selected-tag">
+                            <span>${item.name}</span>
+                            <span class="remove" data-type="${item.type}" data-value="${item.id}">×</span>
+                        </div>
+                    `;
+                    displayTags.append(tag);
+                });
+                displayContainer.show();
+            } else {
+                displayContainer.hide();
+            }
+        }
+
         const table = $('#alumniTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
                 url: "{{ route('alumni.directory.data') }}",
                 data: function(d) {
-                    d.batch = $('#filterBatch').val();
-                    d.location = $('#filterLocation').val();
+                    d.batch_years = selectedFilters.batch.map(item => item.id).join(',');
+                    d.locations = selectedFilters.location.map(item => item.id).join(',');
+                    d.statuses = selectedFilters.status.map(item => item.id).join(',');
                 }
             },
             columns: [{
@@ -174,6 +520,7 @@
             pagelength: 10,
             dom: 't'
         });
+
         table.on('draw', function() {
             let info = table.page.info();
 
@@ -209,25 +556,25 @@
             });
         });
 
-
         $('#searchInput').on('keyup', function() {
             table.search(this.value).draw();
-        });
-
-        $('#filterBatch, #filterLocation').on('input', function() {
-            table.ajax.reload();
         });
 
         $('#filterToggleBtn').on('click', function() {
             const section = $('#filterSection');
             const isVisible = section.is(':visible');
-            section.slideToggle();
+            section.slideToggle(300, function() {
+                updateSelectedFiltersDisplay();
+            });
 
             const icon = $(this).find('i');
+            const btnText = $('#filterBtnText');
             if (isVisible) {
                 icon.removeClass('fa-times').addClass('fa-filter');
+                btnText.text('Filter');
             } else {
                 icon.removeClass('fa-filter').addClass('fa-times');
+                btnText.text('Close Filters');
             }
         });
     });

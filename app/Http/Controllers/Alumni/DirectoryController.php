@@ -21,6 +21,55 @@ class DirectoryController extends Controller
         return view('alumni.directory.index', compact('breadCrum', 'title'));
     }
 
+    public function getFilterOptions()
+    {
+        try {
+            $alumniId = session('alumni.id');
+
+            // Get unique batch years
+            $batchYears = Alumnis::where('id', '!=', $alumniId)
+                ->whereNotNull('year_of_completion')
+                ->distinct()
+                ->orderBy('year_of_completion', 'desc')
+                ->pluck('year_of_completion')
+                ->toArray();
+
+            // Get unique locations (cities with states)
+            $locations = Alumnis::with(['city.state'])
+                ->where('id', '!=', $alumniId)
+                ->whereNotNull('city_id')
+                ->get()
+                ->map(function ($alumni) {
+                    if ($alumni->city && $alumni->city->state) {
+                        return [
+                            'id' => $alumni->city_id,
+                            'name' => $alumni->city->name . ', ' . $alumni->city->state->name
+                        ];
+                    }
+                    return null;
+                })
+                ->filter()
+                ->unique('id')
+                ->values()
+                ->toArray();
+
+            // Get unique statuses
+            $statuses = [
+                ['id' => 'active', 'name' => 'Active'],
+                ['id' => 'inactive', 'name' => 'Inactive'],
+            ];
+
+            return response()->json([
+                'batchYears' => $batchYears,
+                'locations' => $locations,
+                'statuses' => $statuses
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Filter options error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
     public function getData(Request $request)
     {
         try {
@@ -29,7 +78,30 @@ class DirectoryController extends Controller
             $query = Alumnis::with(['city', 'occupation'])
                 ->where('id', '!=', $alumniId);
 
-            // filters etc... (same code)
+            // Apply filters
+            if ($request->filled('batch_years') && $request->batch_years != '') {
+                $batchYears = is_array($request->batch_years) ? $request->batch_years : explode(',', $request->batch_years);
+                $batchYears = array_filter($batchYears); // Remove empty values
+                if (!empty($batchYears)) {
+                    $query->whereIn('year_of_completion', $batchYears);
+                }
+            }
+
+            if ($request->filled('locations') && $request->locations != '') {
+                $locations = is_array($request->locations) ? $request->locations : explode(',', $request->locations);
+                $locations = array_filter($locations); // Remove empty values
+                if (!empty($locations)) {
+                    $query->whereIn('city_id', $locations);
+                }
+            }
+
+            if ($request->filled('statuses') && $request->statuses != '') {
+                $statuses = is_array($request->statuses) ? $request->statuses : explode(',', $request->statuses);
+                $statuses = array_filter($statuses); // Remove empty values
+                if (!empty($statuses)) {
+                    $query->whereIn('status', $statuses);
+                }
+            }
 
             $alumniConnections = AlumniConnections::where('sender_id', $alumniId)
                 ->orWhere('receiver_id', $alumniId)

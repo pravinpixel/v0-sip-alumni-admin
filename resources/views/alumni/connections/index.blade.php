@@ -154,17 +154,19 @@
 <div class="modal fade" id="alumniProfileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header" style="background-color:#c41e3a;color:white;">
-                <h5 class="modal-title" id="profileModalLabel">Alumni Profile</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-            </div>
             <div class="modal-body" id="profileModalBody" style="padding:20px;">
-                <div class="text-center">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="modal-title" id="profileModalLabel">Alumni Profile</h5>
+                    <button type="button" class="btn-close btn-close-dark btn-sm" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="d-flex">
                     <img id="profileImage" src="" class="rounded-circle mb-3"
-                        style="width:100px;height:100px;object-fit:cover;">
-                    <h5 id="profileFullName" style="font-weight:700;"></h5>
-                    <p id="profileEmailMain" style="color:#666;"></p>
+                        style="width:70px;height:70px;object-fit:cover;">
+                    <div style="padding:10px 15px;">
+                        <h5 id="profileFullName" style="font-weight:700;"></h5>
+                        <p id="profileOccupationMain" style="color:#666;"></p>
+                    </div>
                 </div>
                 <hr>
                 <div class="row">
@@ -384,19 +386,19 @@
     // PROFILE MODAL AND ACTIONS
     function viewProfile(id) {
         $.ajax({
-            url: '/connections/profile/' + id,
+            url: "{{ route('alumni.connections.profile', '') }}/" + id,
             type: 'GET',
             success: function(data) {
                 // Fill modal fields (safe fallback values)
                 $('#profileImage').attr('src', data.image || '{{ asset("images/avatar/blank.png") }}');
                 $('#profileFullName').text(data.name || '-');
                 $('#profileFullName2').text(data.name || '-');
-                $('#profileEmailMain').text(data.email || '-');
                 $('#profileEmail2').text(data.email || '-');
                 $('#profileBatch').text(data.batch || '-');
                 $('#profileLocation').text(data.location || '-');
                 $('#profileContact').text(data.contact || '-');
                 $('#profileOccupation').text(data.occupation || '-');
+                $('#profileOccupationMain').text(data.occupation || '-');
 
                 // Show Bootstrap 5 modal
                 var alumniModalEl = document.getElementById('alumniProfileModal');
