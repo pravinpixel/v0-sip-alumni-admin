@@ -128,6 +128,10 @@ class ForumsController extends Controller
                 $post->is_pinned_by_user = PostPinned::where('post_id', $post->id)
                     ->where('alumni_id', $alumniId)
                     ->exists();
+                
+                $post->is_liked_by_user = PostLikes::where('post_id', $post->id)
+                    ->where('alumni_id', $alumniId)
+                    ->exists();
             });
 
             return response()->json([

@@ -17,7 +17,7 @@ class ForumPost extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $appends = ['reply_count'];
+    protected $appends = ['reply_count', 'likes_count', 'views_count'];
     protected $table = 'forum_post';
     protected $fillable = [
         'alumni_id',
@@ -46,6 +46,16 @@ class ForumPost extends Model
     public function getReplyCountAttribute()
     {
         return $this->replies()->count();
+    }
+
+    public function getLikesCountAttribute()
+    {
+        return $this->likes()->count();
+    }
+
+    public function getViewsCountAttribute()
+    {
+        return $this->views()->count();
     }
 
     public function likes()

@@ -262,7 +262,7 @@
                     'Unknown date';
 
                 html += `
-                    <div style="background: white; border: 3px solid ${post.is_pinned_by_user ? '#F7C744' : '#e5e7eb'}; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease; position: relative;"
+                    <div style="background: white; border: 1px solid ${post.is_pinned_by_user ? '#e5e7eb' : '#e5e7eb'}; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease; position: relative;"
                          onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'"
                          onmouseout="this.style.boxShadow='none'">
 
@@ -321,28 +321,37 @@
                         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0px; margin-bottom: 16px;border-top: 1px solid #e5e7eb;">
                             <div style="display: flex; align-items: center; gap: 20px;">
                                 <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="far fa-eye"></i>
                                     <span>${post.views_count || 0}</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
-                                    <i class="fas fa-heart"></i>
+                                    <i class="far fa-heart"></i>
                                     <span>${post.likes_count || 0}</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
-                                    <i class="fas fa-comment"></i>
+                                    <i class="far fa-comment"></i>
                                     <span>${post.reply_count || 0}</span>
                                 </div>
                             </div>
 
                             <div style="display: flex; align-items: center; gap: 16px;">
-                                <button style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; transition: all 0.2s; display: flex; align-items: center; gap: 6px;"
-                                        onmouseover="this.style.background='#f3f4f6'; this.style.color='#dc2626'"
+                                ${post.is_liked_by_user ? `
+                                    <button onclick="toggleLike(${post.id}, this)" 
+                                        style="border: none; color: #dc2626; background: #ffffffff; cursor: pointer; font-size: 14px; padding: 8px 16px; border-radius: 6px; font-weight: 600; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#F7C744';this.style.color='#000000ff';this.style.opacity='0.9'"
+                                        onmouseout="this.style.background='#ffffffff';this.style.color='#000000ff';this.style.opacity='1'">
+                                        <i class="fas fa-heart" style="color: #dc2626;"></i>
+                                        Unlike
+                                    </button>
+                                ` : `
+                                    <button onclick="toggleLike(${post.id}, this)" 
+                                        style="border: none; color: #756b80ff; background: #ffffffff; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#F7C744';this.style.color='#000000ff'"
                                         onmouseout="this.style.background='transparent'; this.style.color='#6b7280'">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                     <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                    </svg>
-                                    Like
-                                </button>
+                                        <i class="far fa-heart"></i>
+                                        Like
+                                    </button>
+                                `}
                                 <button 
                                          style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
                                             onmouseover="replyHover(this)"
@@ -519,6 +528,31 @@
             .catch(error => {
                 console.error('Error:', error);
                 showToast('Error updating pin status', 'error');
+            });
+        }
+
+        // Toggle like/unlike post
+        function toggleLike(postId, button) {
+            fetch("{{ route('alumni.like.post') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ post_id: postId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    loadForumPosts(); // Reload posts to update UI
+                } else {
+                    showToast(data.message || 'Failed to update like status', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Error updating like status', 'error');
             });
         }
 
