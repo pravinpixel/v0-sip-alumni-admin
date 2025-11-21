@@ -319,7 +319,7 @@
             success: function(data) {
                 filterOptions.batch = data.batchYears.map(year => ({ id: year, name: year }));
                 filterOptions.location = data.locations;
-                filterOptions.status = data.statuses;
+                filterOptions.status = data.connectionStatuses;
 
                 populateDropdown('batch', filterOptions.batch);
                 populateDropdown('location', filterOptions.location);
@@ -485,7 +485,7 @@
                 data: function(d) {
                     d.batch_years = selectedFilters.batch.map(item => item.id).join(',');
                     d.locations = selectedFilters.location.map(item => item.id).join(',');
-                    d.statuses = selectedFilters.status.map(item => item.id).join(',');
+                    d.connection_statuses = selectedFilters.status.map(item => item.id).join(',');
                 }
             },
             columns: [{

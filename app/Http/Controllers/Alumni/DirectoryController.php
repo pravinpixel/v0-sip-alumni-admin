@@ -23,7 +23,7 @@ class DirectoryController extends Controller
         $totalAlumni = Alumnis::where('id', '!=', $alumniId)->count();
         $alumni = Alumnis::find($alumniId);
         $isDirectoryRibbon = $alumni ? $alumni->is_directory_ribbon : 0;
-        
+
         return view('alumni.directory.index', compact('breadCrum', 'title', 'totalAlumni', 'isDirectoryRibbon'));
     }
 
@@ -35,6 +35,7 @@ class DirectoryController extends Controller
             // Get unique batch years
             $batchYears = Alumnis::where('id', '!=', $alumniId)
                 ->whereNotNull('year_of_completion')
+                ->where('status', 'active')
                 ->distinct()
                 ->orderBy('year_of_completion', 'desc')
                 ->pluck('year_of_completion')
@@ -43,6 +44,7 @@ class DirectoryController extends Controller
             // Get unique locations (cities with states)
             $locations = Alumnis::with(['city.state'])
                 ->where('id', '!=', $alumniId)
+                ->where('status', 'active')
                 ->whereNotNull('city_id')
                 ->get()
                 ->map(function ($alumni) {
@@ -59,16 +61,51 @@ class DirectoryController extends Controller
                 ->values()
                 ->toArray();
 
-            // Get unique statuses
-            $statuses = [
-                ['id' => 'active', 'name' => 'Active'],
-                ['id' => 'inactive', 'name' => 'Inactive'],
-            ];
+            // All other alumni
+            $allOtherAlumni = Alumnis::where('id', '!=', $alumniId)->where('status', 'active')->pluck('id')->toArray();
+
+            // All connections involving current alumni
+            $connections = AlumniConnections::where('sender_id', $alumniId)
+                ->orWhere('receiver_id', $alumniId)
+                ->get();
+
+            // Get connected IDs
+            $connectedIds = $connections->map(function ($c) use ($alumniId) {
+                return $c->sender_id == $alumniId ? $c->receiver_id : $c->sender_id;
+            })
+                ->unique()
+                ->toArray();
+
+            // Users with no connection
+            $notSharedExists = count(array_diff($allOtherAlumni, $connectedIds)) > 0;
+
+            // Extract existing statuses
+            $existingStatuses = $connections->pluck('status')->unique()->toArray();
+
+            $statuses = [];
+
+            // Add Not Shared only if applicable
+            if ($notSharedExists) {
+                $statuses[] = ['id' => 'not_shared', 'name' => 'Not Shared'];
+            }
+
+            // Convert DB statuses into readable display
+            foreach ($existingStatuses as $status) {
+                if ($status === 'pending') {
+                    $statuses[] = ['id' => 'pending', 'name' => 'Shared'];
+                }
+                if ($status === 'accepted') {
+                    $statuses[] = ['id' => 'accepted', 'name' => 'Connected'];
+                }
+                if ($status === 'rejected') {
+                    $statuses[] = ['id' => 'rejected', 'name' => 'Rejected'];
+                }
+            }
 
             return response()->json([
                 'batchYears' => $batchYears,
                 'locations' => $locations,
-                'statuses' => $statuses
+                'connectionStatuses' => $statuses
             ]);
         } catch (\Throwable $e) {
             Log::error('Filter options error: ' . $e->getMessage());
@@ -101,22 +138,62 @@ class DirectoryController extends Controller
                 }
             }
 
-            if ($request->filled('statuses') && $request->statuses != '') {
-                $statuses = is_array($request->statuses) ? $request->statuses : explode(',', $request->statuses);
-                $statuses = array_filter($statuses); // Remove empty values
-                if (!empty($statuses)) {
-                    $query->whereIn('status', $statuses);
-                }
-            }
-
             $alumniConnections = AlumniConnections::where('sender_id', $alumniId)
                 ->orWhere('receiver_id', $alumniId)
                 ->get()
-                ->groupBy(function ($conn) use ($alumniId) {
-                    return $conn->sender_id == $alumniId ? $conn->receiver_id : $conn->sender_id;
+                ->mapWithKeys(function ($conn) use ($alumniId) {
+                    $otherId = $conn->sender_id == $alumniId ? $conn->receiver_id : $conn->sender_id;
+                    return [$otherId => $conn->status];
                 })
-                ->map(fn($group) => $group->first()->status)
                 ->toArray();
+            $activeAlumniIds = Alumnis::where('status', 'active')
+                ->where('id', '!=', $alumniId)
+                ->pluck('id')
+                ->toArray();
+            $connectedIds = array_keys($alumniConnections);
+            $notSharedIds = array_diff($activeAlumniIds, $connectedIds);
+
+
+            if ($request->filled('connection_statuses') && $request->connection_statuses != '') {
+                $connectionStatuses = is_array($request->connection_statuses)
+                    ? $request->connection_statuses
+                    : explode(',', $request->connection_statuses);
+                $connectionStatuses = array_filter($connectionStatuses);
+                if (!empty($connectionStatuses)) {
+
+                    $query->where(function ($q) use (
+                        $connectionStatuses,
+                        $alumniConnections,
+                        $notSharedIds
+                    ) {
+
+                        foreach ($connectionStatuses as $status) {
+
+                            if ($status === 'not_shared') {
+                                if (!empty($notSharedIds)) {
+                                    $q->orWhereIn('id', $notSharedIds);
+                                }
+                            }
+
+                            if ($status === 'pending') {
+                                $pendingIds = array_keys(array_filter($alumniConnections, fn($s) => $s === 'pending'));
+                                if (!empty($pendingIds)) $q->orWhereIn('id', $pendingIds);
+                            }
+
+                            if ($status === 'accepted') {
+                                $acceptedIds = array_keys(array_filter($alumniConnections, fn($s) => $s === 'accepted'));
+                                if (!empty($acceptedIds)) $q->orWhereIn('id', $acceptedIds);
+                            }
+
+                            if ($status === 'rejected') {
+                                $rejectedIds = array_keys(array_filter($alumniConnections, fn($s) => $s === 'rejected'));
+                                if (!empty($rejectedIds)) $q->orWhereIn('id', $rejectedIds);
+                            }
+                        }
+                    });
+                }
+            }
+
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -143,7 +220,7 @@ class DirectoryController extends Controller
                 })
 
                 ->editColumn('alumni', function ($row) {
-                    $img = $row->image ? asset("/storage/' . $row->image . '") : asset('images/avatar/blank.png');
+                    $img = $row->image ? url("/storage/{$row->image}") : asset('images/avatar/blank.png');
                     $occ = $row->occupation->name ?? '—';
                     return '
             <div style="display:flex;align-items:center;gap:12px;">
