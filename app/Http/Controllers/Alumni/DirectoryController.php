@@ -82,7 +82,7 @@ class DirectoryController extends Controller
             $alumniId = session('alumni.id');
 
             $query = Alumnis::with(['city', 'occupation'])
-                ->where('id', '!=', $alumniId);
+                ->where('id', '!=', $alumniId)->where('status', 'active');
 
             // Apply filters
             if ($request->filled('batch_years') && $request->batch_years != '') {
@@ -143,7 +143,7 @@ class DirectoryController extends Controller
                 })
 
                 ->editColumn('alumni', function ($row) {
-                    $img = $row->image ? asset($row->image) : asset('images/avatar/blank.png');
+                    $img = $row->image ? asset("/storage/' . $row->image . '") : asset('images/avatar/blank.png');
                     $occ = $row->occupation->name ?? '—';
                     return '
             <div style="display:flex;align-items:center;gap:12px;">

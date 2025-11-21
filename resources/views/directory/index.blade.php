@@ -9,35 +9,87 @@
     </p>
     <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <!-- Search and Filter -->
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px;">
             <div style="flex: 1; position: relative;">
-                <input type="text" id="searchInput" placeholder="🔍 Search by name or email..."
-                    style="width: 100%; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                <input type="text" id="searchInput" placeholder="Search by name or email..."
+                    style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
             </div>
             <button id="filterToggleBtn"
-                style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 15px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px;">
-                <span>🔽 Filters</span>
+                style="background-color: #ba0028; color: white; border: none; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                <i class="fas fa-filter"></i>
+                <span id="filterBtnText">Filter</span>
             </button>
             <button id="exportBtn"
-                style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 15px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 6px;">
+                style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                <i class="fas fa-download"></i>
                 <span>Export</span>
             </button>
         </div>
 
         <!-- Filter Section -->
-        <div id="filterSection"
-            style="display: none; background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
-            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 200px;">
-                    <label style="font-weight: 600; font-size: 14px; color: #333;">Year</label>
-                    <input type="text" id="filterBatch" placeholder="e.g. 2022"
-                        style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;">
+        <div id="filterSection" style="display: none; margin-bottom: 20px;">
+            <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px;">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <!-- Year Filter Dropdown -->
+                    <div class="filter-dropdown" style="position: relative;">
+                        <button type="button" class="filter-dropdown-btn" data-filter="years"
+                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;">
+                            <span>Year of Completion</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span class="filter-count" data-filter="years" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
+                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                            </div>
+                        </button>
+                        <div class="filter-dropdown-menu" data-filter="years" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
+                            <!-- Options will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- City Filter Dropdown -->
+                    <div class="filter-dropdown" style="position: relative;">
+                        <button type="button" class="filter-dropdown-btn" data-filter="cities"
+                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;">
+                            <span>City</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span class="filter-count" data-filter="cities" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
+                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                            </div>
+                        </button>
+                        <div class="filter-dropdown-menu" data-filter="cities" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
+                            <!-- Options will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Occupation Filter Dropdown -->
+                    <div class="filter-dropdown" style="position: relative;">
+                        <button type="button" class="filter-dropdown-btn" data-filter="occupations"
+                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;">
+                            <span>Occupation</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span class="filter-count" data-filter="occupations" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
+                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                            </div>
+                        </button>
+                        <div class="filter-dropdown-menu" data-filter="occupations" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
+                            <!-- Options will be loaded here -->
+                        </div>
+                    </div>
                 </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <label style="font-weight: 600; font-size: 14px; color: #333;">City</label>
-                    <input type="text" id="filterLocation" placeholder="e.g. Chennai"
-                        style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;">
+            </div>
+        </div>
+
+        <!-- Active Filters Display (Outside Filter Section) -->
+        <div id="activeFiltersContainer" style="display: none; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <span style="font-weight: 600; font-size: 14px; color: #374151;">Active Filters:</span>
+                <div id="activeFiltersChips" style="display: flex; gap: 8px; flex-wrap: wrap; flex: 1;">
+                    <!-- Filter chips will be added here -->
                 </div>
+                <button id="clearAllFiltersBtn"
+                    style="background: transparent; border: none; color: #ba0028; cursor: pointer; font-size: 14px; font-weight: 500; text-decoration: underline;">
+                    Clear All Filters
+                </button>
             </div>
         </div>
 
@@ -119,7 +171,16 @@
 
 
 <script>
+    let selectedFilters = {
+        years: [],
+        cities: [],
+        occupations: []
+    };
+
     $(document).ready(function() {
+        // Load filter options
+        loadFilterOptions();
+
         const table = $('#directoryTable').DataTable({
             processing: true,
             serverSide: true,
@@ -127,8 +188,9 @@
                 url: "{{ route('admin.directory.data') }}",
                 type: 'GET',
                 data: function(d) {
-                    d.batch = $('#filterBatch').val();
-                    d.location = $('#filterLocation').val();
+                    d.years = selectedFilters.years;
+                    d.cities = selectedFilters.cities;
+                    d.occupations = selectedFilters.occupations;
                 }
             },
             columns: [{
@@ -228,17 +290,170 @@
             table.search(this.value).draw();
         });
 
-        $('#filterBatch, #filterLocation').on('input', function() {
-            table.ajax.reload();
-        });
-
         $('#filterToggleBtn').on('click', function() {
             const section = $('#filterSection');
             const isVisible = section.is(':visible');
             section.slideToggle();
-            $(this).find('span').text(isVisible ? '🔽 Filters' : '🔼 Close Filters');
+            $('#filterBtnText').text(isVisible ? 'Filter' : 'Close Filters');
         });
+
+        // Filter dropdown toggle
+        $('.filter-dropdown-btn').on('click', function(e) {
+            e.stopPropagation();
+            const filterType = $(this).data('filter');
+            const menu = $(`.filter-dropdown-menu[data-filter="${filterType}"]`);
+            
+            // Close other dropdowns
+            $('.filter-dropdown-menu').not(menu).hide();
+            
+            // Toggle current dropdown
+            menu.toggle();
+        });
+
+        // Close dropdowns when clicking outside
+        $(document).on('click', function() {
+            $('.filter-dropdown-menu').hide();
+        });
+
+        // Prevent dropdown from closing when clicking inside
+        $('.filter-dropdown-menu').on('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Clear all filters
+        $('#clearAllFiltersBtn').on('click', function() {
+            selectedFilters = {
+                years: [],
+                cities: [],
+                occupations: []
+            };
+            updateFilterDisplay();
+            table.ajax.reload();
+        });
+
+        // Apply filters when chips are updated
+        window.applyFilters = function() {
+            table.ajax.reload();
+        };
     });
+
+    function loadFilterOptions() {
+        $.ajax({
+            url: "{{ route('admin.directory.filter.options') }}",
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    // Populate Years
+                    populateFilterMenu('years', response.years, 'Year');
+                    
+                    // Populate Cities
+                    populateFilterMenu('cities', response.cities, 'City');
+                    
+                    // Populate Occupations
+                    populateFilterMenu('occupations', response.occupations, 'Occupation');
+                }
+            },
+            error: function(xhr) {
+                console.error('Error loading filter options:', xhr);
+            }
+        });
+    }
+
+    function populateFilterMenu(filterType, options, label) {
+        const menu = $(`.filter-dropdown-menu[data-filter="${filterType}"]`);
+        menu.empty();
+        
+        options.forEach(option => {
+            const isChecked = selectedFilters[filterType].includes(option);
+            const item = $(`
+                <label style="display: flex; align-items: center; padding: 10px 16px; cursor: pointer; transition: background 0.2s;"
+                    onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
+                    <input type="checkbox" value="${option}" ${isChecked ? 'checked' : ''}
+                        style="margin-right: 10px; width: 16px; height: 16px; cursor: pointer;">
+                    <span style="font-size: 14px; color: #374151;">${option}</span>
+                </label>
+            `);
+            
+            item.find('input').on('change', function() {
+                toggleFilter(filterType, option, this.checked);
+            });
+            
+            menu.append(item);
+        });
+    }
+
+    function toggleFilter(filterType, value, isChecked) {
+        if (isChecked) {
+            if (!selectedFilters[filterType].includes(value)) {
+                selectedFilters[filterType].push(value);
+            }
+        } else {
+            selectedFilters[filterType] = selectedFilters[filterType].filter(v => v !== value);
+        }
+        
+        updateFilterDisplay();
+        applyFilters();
+    }
+
+    function updateFilterDisplay() {
+        // Update count badges
+        ['years', 'cities', 'occupations'].forEach(filterType => {
+            const count = selectedFilters[filterType].length;
+            const badge = $(`.filter-count[data-filter="${filterType}"]`);
+            
+            if (count > 0) {
+                badge.text(count).css('display', 'flex');
+            } else {
+                badge.css('display', 'none');
+            }
+        });
+        
+        // Update active filters chips
+        const chipsContainer = $('#activeFiltersChips');
+        const activeContainer = $('#activeFiltersContainer');
+        chipsContainer.empty();
+        
+        let hasFilters = false;
+        
+        // Add chips for each filter type
+        const filterLabels = {
+            years: 'Year',
+            cities: 'City',
+            occupations: 'Occupation'
+        };
+        
+        Object.keys(selectedFilters).forEach(filterType => {
+            selectedFilters[filterType].forEach(value => {
+                hasFilters = true;
+                const chip = $(`
+                    <div style="background: #fbbf24; color: #000; padding: 6px 12px; border-radius: 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                        <span>${filterLabels[filterType]}: ${value}</span>
+                        <button onclick="removeFilter('${filterType}', '${value}')" 
+                            style="background: none; border: none; color: #000; cursor: pointer; padding: 0; font-size: 16px; line-height: 1; font-weight: 700;">
+                            ×
+                        </button>
+                    </div>
+                `);
+                chipsContainer.append(chip);
+            });
+        });
+        
+        if (hasFilters) {
+            activeContainer.show();
+        } else {
+            activeContainer.hide();
+        }
+    }
+
+    function removeFilter(filterType, value) {
+        selectedFilters[filterType] = selectedFilters[filterType].filter(v => v !== value);
+        
+        // Update checkbox in dropdown
+        $(`.filter-dropdown-menu[data-filter="${filterType}"] input[value="${value}"]`).prop('checked', false);
+        
+        updateFilterDisplay();
+        applyFilters();
+    }
     function viewConnections(id) {
         window.location.href = "{{ route('admin.directory.view.connections.page', '') }}/" + id;
     }

@@ -57,6 +57,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::prefix('directory')->controller(DirectoryController::class)->group(function () {
         Route::get('/', 'index')->name('admin.directory.index')->middleware('checkAccess:directory.view');
         Route::get('/get-data', [DirectoryController::class, 'getData'])->name('admin.directory.data');
+        Route::get('/filter-options', [DirectoryController::class, 'getFilterOptions'])->name('admin.directory.filter.options');
         Route::get('/connections/{id}', [DirectoryController::class, 'connectionViewPage'])->name('admin.directory.view.connections.page');
         Route::get('/connections-list/{id}', [DirectoryController::class, 'viewConnectionList'])->name('admin.directory.view.connections.list');
         Route::post('/update-status', 'updateStatus')->name('directory.update.status');
@@ -93,16 +94,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{id}', 'edit')->name('role.edit')->middleware('checkAccess:role.edit');
         Route::delete('/{id}', 'delete')->name('role.delete')->middleware('checkAccess:role.delete');
         Route::get('role_user/{id}', 'role_user')->name('role.role_user')->middleware('checkAccess:role.delete');
-    });
-
-    #..role ...
-    Route::prefix('settings')->controller(SettingController::class)->group(function () {
-        Route::get('/', 'index')->name('settings.index');
-        Route::post('/create', 'create')->name('settings.create');
-        // Route::post('/save', 'save')->name('role.save');
-        // Route::get('/{id}', 'edit')->name('role.edit')->middleware('checkAccess:role.edit');
-        // Route::delete('/{id}','delete')->name('role.delete')->middleware('checkAccess:role.delete');
-        // Route::get('role_user/{id}','role_user')->name('role.role_user')->middleware('checkAccess:role.delete');
     });
 
 

@@ -34,13 +34,23 @@ class DirectoryController extends Controller
         try {
             $query = Alumnis::with(['city', 'occupation'])->orderBy('id', 'desc');
 
-            // Apply filters
-            if ($request->filled('batch')) {
-                $query->where('year_of_completion', $request->batch);
+            // Apply filters - handle multiple selections
+            if ($request->filled('years')) {
+                $years = is_array($request->years) ? $request->years : explode(',', $request->years);
+                $query->whereIn('year_of_completion', $years);
             }
-            if ($request->filled('location')) {
-                $query->whereHas('city', function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->location . '%');
+            
+            if ($request->filled('cities')) {
+                $cities = is_array($request->cities) ? $request->cities : explode(',', $request->cities);
+                $query->whereHas('city', function ($q) use ($cities) {
+                    $q->whereIn('name', $cities);
+                });
+            }
+            
+            if ($request->filled('occupations')) {
+                $occupations = is_array($request->occupations) ? $request->occupations : explode(',', $request->occupations);
+                $query->whereHas('occupation', function ($q) use ($occupations) {
+                    $q->whereIn('name', $occupations);
                 });
             }
 
@@ -296,6 +306,49 @@ class DirectoryController extends Controller
         } catch (\Exception $e) {
             // Handle any errors during the mail sending process
             return $this->returnError($e->getMessage());
+        }
+    }
+
+    public function getFilterOptions()
+    {
+        try {
+            // Get unique years
+            $years = Alumnis::whereNotNull('year_of_completion')
+                ->distinct()
+                ->pluck('year_of_completion')
+                ->sort()
+                ->values();
+
+            // Get unique cities
+            $cities = Alumnis::with('city')
+                ->whereHas('city')
+                ->get()
+                ->pluck('city.name')
+                ->unique()
+                ->sort()
+                ->values();
+
+            // Get unique occupations
+            $occupations = Alumnis::with('occupation')
+                ->whereHas('occupation')
+                ->get()
+                ->pluck('occupation.name')
+                ->unique()
+                ->sort()
+                ->values();
+
+            return response()->json([
+                'success' => true,
+                'years' => $years,
+                'cities' => $cities,
+                'occupations' => $occupations
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching filter options: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error fetching filter options'
+            ], 500);
         }
     }
 }
