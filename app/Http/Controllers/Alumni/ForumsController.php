@@ -367,4 +367,50 @@ class ForumsController extends Controller
             ], 500);
         }
     }
+
+    public function getActivityData(Request $request)
+    {
+        try {
+            $alumniId = session('alumni.id');
+            
+            // Get all posts by the current user
+            $userPosts = ForumPost::with('alumni')
+                ->where('alumni_id', $alumniId)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            // Add additional data for each post
+            $userPosts->each(function ($post) use ($alumniId) {
+                $post->likes_count = PostLikes::where('post_id', $post->id)->count();
+                $post->reply_count = ForumReplies::where('forum_post_id', $post->id)->count();
+                $post->views_count = PostViews::where('post_id', $post->id)->count();
+            });
+
+            // Calculate statistics
+            $stats = [
+                'totalPosts' => $userPosts->count(),
+                'activePosts' => $userPosts->where('status', 'approved')->count(),
+                'pendingPosts' => $userPosts->where('status', 'pending')->count(),
+                'rejectedPosts' => $userPosts->where('status', 'rejected')->count(),
+                'archivedPosts' => $userPosts->whereIn('status', ['post_deleted', 'removed_by_admin'])->count(),
+                'totalLikes' => $userPosts->sum('likes_count'),
+                'totalViews' => $userPosts->sum('views_count'),
+                'totalComments' => $userPosts->sum('reply_count'),
+            ];
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'posts' => $userPosts,
+                    'stats' => $stats
+                ]
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching activity data: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching activity data.'
+            ], 500);
+        }
+    }
 }

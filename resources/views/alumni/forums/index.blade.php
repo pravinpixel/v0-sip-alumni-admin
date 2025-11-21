@@ -228,9 +228,6 @@
                         <i class="fas fa-inbox" style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;"></i>
                         <h3 style="font-size: 20px; margin-bottom: 8px; color: #374151;">No forum posts yet</h3>
                         <p style="margin-bottom: 20px; color: #6b7280;">Be the first to create a post and start the discussion!</p>
-                        <button onclick="openCreatePostModal()" style="background: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                            <i class="fas fa-plus"></i> Create First Post
-                        </button>
                     </div>
                 `;
                 return;

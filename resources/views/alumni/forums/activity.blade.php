@@ -64,7 +64,20 @@
         </div>
     </div>
 
+    <style>
+        .stat-card:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+
     <script>
+        // Global variables to store data
+        let allUserPosts = [];
+        let currentFilter = 'activePosts';
+        let currentStats = {};
+
         document.addEventListener("DOMContentLoaded", function () {
             loadActivityData();
         });
@@ -77,7 +90,7 @@
                 // 4 cards for Active Posts tab
                 html = `
                                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-                                    <div style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+                                    <div class="stat-card" style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Active Posts</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
@@ -86,7 +99,7 @@
                                         </div>
                                         <h2 style="font-size: 32px; font-weight: 700; color: #ef4444; margin: 0;">${stats.activePosts || 0}</h2>
                                     </div>
-                                    <div style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+                                    <div class="stat-card" style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Likes</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
@@ -95,16 +108,16 @@
                                         </div>
                                         <h2 style="font-size: 32px; font-weight: 700; color: #f59e0b; margin: 0;">${stats.totalLikes || 0}</h2>
                                     </div>
-                                    <div style="background: white; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px;">
+                                    <div class="stat-card" style="background: white; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Comments</span>
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Views</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
-                                                <i class="fas fa-comment" style="color: #3b82f6; font-size: 16px;"></i>
+                                                <i class="fas fa-eye" style="color: #3b82f6; font-size: 16px;"></i>
                                             </div>
                                         </div>
-                                        <h2 style="font-size: 32px; font-weight: 700; color: #3b82f6; margin: 0;">${stats.totalComments || 0}</h2>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #3b82f6; margin: 0;">${stats.totalViews || 0}</h2>
                                     </div>
-                                    <div style="background: white; border: 2px solid #a855f7; border-radius: 12px; padding: 20px;">
+                                    <div class="stat-card" style="background: white; border: 2px solid #a855f7; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Replies</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
@@ -119,7 +132,7 @@
                 // 3 cards for Post Status tab
                 html = `
                                 <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                                    <div style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+                                    <div class="stat-card" style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
@@ -128,7 +141,7 @@
                                         </div>
                                         <h2 style="font-size: 32px; font-weight: 700; color: #ef4444; margin: 0;">${stats.totalStatusPosts || 0}</h2>
                                     </div>
-                                    <div style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px;">
+                                    <div class="stat-card" style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Pending</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
@@ -137,7 +150,7 @@
                                         </div>
                                         <h2 style="font-size: 32px; font-weight: 700; color: #f59e0b; margin: 0;">${stats.pendingPosts || 0}</h2>
                                     </div>
-                                    <div style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px;">
+                                    <div class="stat-card" style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Rejected</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
@@ -209,125 +222,70 @@
                 }
             });
 
+            // Update current filter
+            currentFilter = tabName;
+            
+            // Clear search input
+            document.getElementById('searchInput').value = '';
+            
             // Load content based on tab
             loadActivityData(tabName);
         }
 
         function loadActivityData(filter = 'activePosts') {
-            const alumniId = '{{ session("alumni.id") }}';
+            // Show loading state
+            const container = document.getElementById('postsContainer');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; color: #6b7280;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 48px; margin-bottom: 20px;"></i>
+                    <p style="font-size: 16px;">Loading your activity...</p>
+                </div>
+            `;
 
-            fetch("{{ route('alumni.forums.data') }}")
+            fetch("{{ route('alumni.forums.activity.data') }}")
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success && data.data && data.data.posts) {
-                        const allPosts = data.data.posts;
+                    if (data.success && data.data) {
+                        // Store data globally
+                        allUserPosts = data.data.posts;
+                        currentStats = data.data.stats;
+                        currentFilter = filter;
 
-                        // Filter posts by current user
-                        let userPosts = allPosts.filter(post => post.alumni_id == alumniId);
-
-                        // If no user posts, show sample data
-                        if (userPosts.length === 0) {
-                            userPosts = [
-                                {
-                                    id: 1,
-                                    title: 'My Experience with Abacus Training',
-                                    description: 'I\'ve been teaching Abacus for over 5 years now, and I wanted to share some insights about effective teaching methods.',
-                                    labels: 'Abacus,Teaching,Experience',
-                                    status: 'approved',
-                                    created_at: '2024-03-25T15:30:00',
-                                    likes: 23,
-                                    reply_count: 5,
-                                    views_count: 156
-                                },
-                                {
-                                    id: 2,
-                                    title: 'Mental Math Techniques Workshop',
-                                    description: 'Join me for a comprehensive workshop on advanced mental math techniques that can help students improve their calculation speed.',
-                                    labels: 'Workshop,Mental Math,Training',
-                                    status: 'approved',
-                                    created_at: '2024-03-20T10:15:00',
-                                    likes: 45,
-                                    reply_count: 12,
-                                    views_count: 234
-                                },
-                                {
-                                    id: 3,
-                                    title: 'Introduction to Speed Mathematics',
-                                    description: 'This was my first post about speed mathematics techniques. Looking back, I\'ve learned so much since then!',
-                                    labels: 'Speed Math,Beginner,Archive',
-                                    status: 'archived',
-                                    created_at: '2024-01-15T14:20:00',
-                                    likes: 15,
-                                    reply_count: 8,
-                                    views_count: 98
-                                },
-                                {
-                                    id: 4,
-                                    title: 'Old Teaching Methods Comparison',
-                                    description: 'A comparison of traditional vs modern teaching methods that I wrote last year. Some interesting insights here.',
-                                    labels: 'Teaching,Comparison,Traditional',
-                                    status: 'archived',
-                                    created_at: '2024-02-10T11:45:00',
-                                    likes: 31,
-                                    reply_count: 15,
-                                    views_count: 187
-                                },
-                                {
-                                    id: 5,
-                                    title: 'Teaching Tips for Beginners',
-                                    description: 'Essential tips for new teachers starting their journey in education.',
-                                    labels: 'Tips,Beginners,Teaching',
-                                    status: 'pending',
-                                    created_at: '2024-03-27T14:30:00',
-                                    likes: 0,
-                                    reply_count: 0,
-                                    views_count: 0
-                                },
-                                {
-                                    id: 6,
-                                    title: 'Competition Preparation Guide',
-                                    description: 'A comprehensive guide to prepare students for math competitions.',
-                                    labels: 'Competition,Guide,Preparation',
-                                    status: 'rejected',
-                                    created_at: '2024-03-20T19:30:00',
-                                    likes: 0,
-                                    reply_count: 0,
-                                    views_count: 0
-                                }
-                            ];
-                        }
-
-                        // Calculate stats
-                        const stats = {
-                            totalPosts: userPosts.length,
-                            activePosts: userPosts.filter(post => post.status === 'approved').length,
-                            pendingPosts: userPosts.filter(post => post.status === 'pending').length,
-                            rejectedPosts: userPosts.filter(post => post.status === 'rejected').length,
-                            archivedPosts: userPosts.filter(post => post.status === 'archived').length,
-                            totalStatusPosts: userPosts.filter(post => post.status === 'pending' || post.status === 'rejected').length,
-                            totalLikes: userPosts.reduce((sum, post) => sum + (post.likes_count || 0), 0),
-                            totalViews: userPosts.reduce((sum, post) => sum + (post.views_count || 0), 0),
-                            totalComments: userPosts.reduce((sum, post) => sum + (post.reply_count || 0), 0)
-                        };
+                        // Update stats for Post Status tab
+                        currentStats.totalStatusPosts = currentStats.pendingPosts + currentStats.rejectedPosts;
 
                         // Render stat cards based on current tab
-                        renderStatsCards(filter, stats);
+                        renderStatsCards(filter, currentStats);
 
                         // Render posts based on filter
-                        let filteredPosts = userPosts;
+                        let filteredPosts = allUserPosts;
                         if (filter === 'activePosts') {
-                            filteredPosts = userPosts.filter(post => post.status === 'approved');
+                            filteredPosts = allUserPosts.filter(post => post.status === 'approved');
                         } else if (filter === 'postStatus') {
-                            filteredPosts = userPosts.filter(post => post.status === 'pending' || post.status === 'rejected');
+                            filteredPosts = allUserPosts.filter(post => post.status === 'pending' || post.status === 'rejected');
                         } else if (filter === 'archive') {
-                            filteredPosts = userPosts.filter(post => post.status === 'post_deleted' || post.status === 'removed_by_admin');
+                            filteredPosts = allUserPosts.filter(post => post.status === 'post_deleted' || post.status === 'removed_by_admin');
                         }
 
                         renderPosts(filteredPosts, filter);
+                    } else {
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 60px 20px; color: #dc2626;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 20px;"></i>
+                                <p style="font-size: 16px;">Failed to load activity data</p>
+                            </div>
+                        `;
                     }
                 })
                 .catch(error => {
                     console.error('Error loading activity data:', error);
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: #dc2626;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 48px; margin-bottom: 20px;"></i>
+                            <p style="font-size: 16px;">Error loading activity data</p>
+                            <p style="font-size: 14px; color: #6b7280; margin-top: 8px;">Please try again later</p>
+                        </div>
+                    `;
                 });
         }
 
@@ -370,12 +328,30 @@
                     }) :
                     'Unknown date';
 
-                const statusColor = post.status === 'approved' ? '#dcfce7' :
-                    post.status === 'pending' ? '#fef3c7' : '#f3f4f6';
-                const statusTextColor = post.status === 'approved' ? '#16a34a' :
-                    post.status === 'pending' ? '#d97706' : '#6b7280';
-                const statusText = post.status === 'approved' ? 'Active' :
-                    post.status === 'pending' ? 'Pending' : 'Archived';
+                // Status display logic
+                let statusColor, statusTextColor, statusText;
+                
+                if (post.status === 'approved') {
+                    statusColor = '#dcfce7';
+                    statusTextColor = '#16a34a';
+                    statusText = 'Active';
+                } else if (post.status === 'pending') {
+                    statusColor = '#fef3c7';
+                    statusTextColor = '#d97706';
+                    statusText = 'Pending';
+                } else if (post.status === 'post_deleted') {
+                    statusColor = '#d3d0d0ff';
+                    statusTextColor = '#1f1b1bff';
+                    statusText = 'Post Deleted';
+                } else if (post.status === 'removed_by_admin') {
+                    statusColor = '#fee2e2';
+                    statusTextColor = '#dc2626';
+                    statusText = 'Removed by Admin';
+                } else {
+                    statusColor = '#f3f4f6';
+                    statusTextColor = '#6b7280';
+                    statusText = 'Archived';
+                }
 
                 // Parse tags/labels
                 const tags = post.labels ? post.labels.split(',').filter(tag => tag.trim() !== '') : [];
@@ -417,7 +393,7 @@
                                                                                     <i class="fas fa-eye"></i> ${post.views_count || 0}
                                                                                 </span>
                                                                                 <span style="display: flex; align-items: center; gap: 6px;">
-                                                                                    <i class="fas fa-heart"></i> ${post.likes || 0}
+                                                                                    <i class="fas fa-heart"></i> ${post.likes_count || 0}
                                                                                 </span>
                                                                                 <span style="display: flex; align-items: center; gap: 6px;">
                                                                                     <i class="fas fa-comment"></i> ${post.reply_count || 0} replies
@@ -514,9 +490,30 @@
         }
 
         function filterPosts() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            // Implement search filtering logic here
-            console.log('Searching for:', searchTerm);
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            // Filter posts based on current tab
+            let filteredPosts = allUserPosts;
+            
+            // Apply tab filter first
+            if (currentFilter === 'activePosts') {
+                filteredPosts = allUserPosts.filter(post => post.status === 'approved');
+            } else if (currentFilter === 'postStatus') {
+                filteredPosts = allUserPosts.filter(post => post.status === 'pending' || post.status === 'rejected');
+            } else if (currentFilter === 'archive') {
+                filteredPosts = allUserPosts.filter(post => post.status === 'post_deleted' || post.status === 'removed_by_admin');
+            }
+            
+            // Apply search filter if search term exists
+            if (searchTerm) {
+                filteredPosts = filteredPosts.filter(post => {
+                    const title = (post.title || '').toLowerCase();
+                    return title.includes(searchTerm);
+                });
+            }
+            
+            // Render filtered posts
+            renderPosts(filteredPosts, currentFilter);
         }
 
         function escapeHtml(unsafe) {
