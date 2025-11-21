@@ -1,7 +1,7 @@
 @extends('alumni.layouts.index')
 
 @section('content')
-    <div style="max-width: 1400px; margin: 0 auto; padding: 20px;">
+    <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white">
         {{-- Back to Forum Link --}}
         <div style="margin-bottom: 20px;">
             <a href="{{ route('alumni.forums') }}"
@@ -111,6 +111,9 @@
             </div>
         </div>
     </div>
+
+    {{-- Include Create/Edit Post Modal --}}
+    @include('alumni.modals.create-post-modal', ['alumni' => session('alumni')])
 
     <style>
         .stat-card:hover {
@@ -545,14 +548,14 @@
                                                         </span>
                                                         <div style="display: flex; gap: 8px;">
                                                             ${post.status === 'rejected' ? `
-                                                                <button style="background: transparent; border: 2px solid #10b981; color: #10b981; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                <button onclick="openRepostModal(${post.id})" style="background: transparent; border: 2px solid #10b981; color: #10b981; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                                                                     onmouseover="this.style.background='#d1fae5'" onmouseout="this.style.background='transparent'"
                                                                     title="Resubmit">
                                                                     <i class="fas fa-redo"></i>
                                                                 </button>
                                                             ` : ''}
                                                             ${post.status === 'pending' ? `
-                                                                <button style="background: transparent; border: 2px solid #f59e0b; color: #f59e0b; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                <button onclick="openEditModal(${post.id})" style="background: transparent; border: 2px solid #f59e0b; color: #f59e0b; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                                                                     onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='transparent'"
                                                                     title="Edit post">
                                                                     <i class="fas fa-edit"></i>
@@ -808,6 +811,174 @@
                 notification.style.animation = 'slideOut 0.3s ease';
                 setTimeout(() => notification.remove(), 300);
             }, 3000);
+        }
+
+        // Edit and Repost Modal Functions
+        let currentEditPostId = null;
+        let isRepostMode = false;
+
+        function openEditModal(postId) {
+            currentEditPostId = postId;
+            isRepostMode = false;
+            
+            // Find the post data
+            const post = allUserPosts.find(p => p.id === postId);
+            if (!post) {
+                showNotification('Post not found', 'error');
+                return;
+            }
+            
+            // Update modal title and button
+            const modal = document.getElementById('createPostModal');
+            const modalTitle = modal.querySelector('h2');
+            const submitBtn = modal.querySelector('.btn-submit');
+            
+            modalTitle.textContent = 'Edit Post';
+            submitBtn.textContent = 'Save Changes';
+            submitBtn.onclick = updatePost;
+            
+            // Open modal and populate fields
+            openCreatePostModal();
+            
+            // Populate form fields
+            setTimeout(() => {
+                const form = document.getElementById('createPostForm');
+                form.querySelector('input[name="title"]').value = post.title || '';
+                form.querySelector('input[name="labels"]').value = post.labels || '';
+                
+                if (quill && post.description) {
+                    quill.root.innerHTML = post.description;
+                }
+            }, 100);
+        }
+
+        function openRepostModal(postId) {
+            currentEditPostId = postId;
+            isRepostMode = true;
+            
+            // Find the post data
+            const post = allUserPosts.find(p => p.id === postId);
+            if (!post) {
+                showNotification('Post not found', 'error');
+                return;
+            }
+            
+            // Update modal title and button
+            const modal = document.getElementById('createPostModal');
+            const modalTitle = modal.querySelector('h2');
+            const submitBtn = modal.querySelector('.btn-submit');
+            
+            modalTitle.textContent = 'Repost';
+            submitBtn.textContent = 'Resubmit Post';
+            submitBtn.onclick = updatePost;
+            
+            // Open modal and populate fields
+            openCreatePostModal();
+            
+            // Populate form fields
+            setTimeout(() => {
+                const form = document.getElementById('createPostForm');
+                form.querySelector('input[name="title"]').value = post.title || '';
+                form.querySelector('input[name="labels"]').value = post.labels || '';
+                
+                if (quill && post.description) {
+                    quill.root.innerHTML = post.description;
+                }
+            }, 100);
+        }
+
+        function updatePost() {
+            const form = document.getElementById('createPostForm');
+            const titleInput = form.querySelector('input[name="title"]');
+            const labelsInput = form.querySelector('input[name="labels"]');
+            const title = titleInput.value.trim();
+            const labels = labelsInput.value.trim();
+            const description = quill.getText().trim();
+
+            // Clear previous errors
+            form.querySelectorAll('.error-message').forEach(el => {
+                el.textContent = '';
+                el.style.display = 'none';
+            });
+            form.querySelectorAll('.form-input').forEach(el => el.classList.remove('input-error'));
+            document.getElementById('editor').classList.remove('editor-error');
+
+            // Validation
+            let hasError = false;
+
+            if (!title) {
+                showFieldError(titleInput, 'Post title is required');
+                hasError = true;
+            }
+
+            if (!description || description.length === 0) {
+                showFieldError(document.getElementById('editor'), 'Post description is required');
+                hasError = true;
+            }
+
+            if (!labels) {
+                showFieldError(labelsInput, 'At least one label is required');
+                hasError = true;
+            }
+
+            if (hasError) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
+            }
+
+            const submitBtn = event.target;
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Updating...';
+            submitBtn.disabled = true;
+
+            // Prepare form data
+            const formData = new FormData();
+            formData.append('post_id', currentEditPostId);
+            formData.append('title', title);
+            formData.append('description', quill.root.innerHTML);
+            formData.append('labels', labels);
+            
+            // If repost mode, set status to pending
+            if (isRepostMode) {
+                formData.append('status', 'pending');
+            }
+
+            fetch("{{ route('alumni.forums.update.post') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification(isRepostMode ? 'Post resubmitted successfully' : 'Post updated successfully', 'success');
+                    closeCreatePostModal();
+                    currentEditPostId = null;
+                    isRepostMode = false;
+                    
+                    // Reset modal
+                    const modal = document.getElementById('createPostModal');
+                    modal.querySelector('h2').textContent = 'Create New Post';
+                    modal.querySelector('.btn-submit').textContent = 'Submit Post';
+                    modal.querySelector('.btn-submit').onclick = submitPost;
+                    
+                    // Reload activity data
+                    loadActivityData(currentFilter);
+                } else {
+                    showNotification(data.message || 'Failed to update post', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                showNotification('Error updating post', 'error');
+            })
+            .finally(() => {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
         }
 
         // Close modal when clicking outside

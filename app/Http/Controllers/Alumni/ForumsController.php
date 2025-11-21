@@ -189,6 +189,61 @@ class ForumsController extends Controller
         }
     }
 
+    public function updatePost(Request $request)
+    {
+        try {
+            $alumniId = session('alumni.id');
+
+            $validator = Validator::make($request->all(), [
+                'post_id' => 'required',
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'labels' => 'nullable|string|max:255',
+                'status' => 'nullable|string',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation Error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $post = ForumPost::where('id', $request->post_id)
+                ->where('alumni_id', $alumniId)
+                ->first();
+
+            if (!$post) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Post not found or you do not have permission to update this post.'
+                ], 404);
+            }
+
+            $post->title = $request->title;
+            $post->description = $request->description;
+            $post->labels = $request->labels;
+            
+            if ($request->has('status')) {
+                $post->status = $request->status;
+            }
+            
+            $post->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Post updated successfully.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error updating forum post: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating the forum post.'
+            ], 500);
+        }
+    }
+
     public function createReply(Request $request)
     {
         try {

@@ -54,6 +54,7 @@ Route::middleware('alumni.auth')->group(function () {
         Route::get('/activity-data', [ForumsController::class, 'getActivityData'])->name('alumni.forums.activity.data');
         Route::get('/filter-options', [ForumsController::class, 'getFilterOptions'])->name('alumni.forums.filter-options');
         Route::post('/create-post', [ForumsController::class, 'createPost'])->name('alumni.create.post');
+        Route::post('/update-post', [ForumsController::class, 'updatePost'])->name('alumni.forums.update.post');
         Route::post('/create-reply', [ForumsController::class, 'createReply'])->name('alumni.create.reply');
         Route::post('/like', [ForumsController::class, 'toggleLike'])->name('alumni.like.post');
         Route::post('/pinned', [ForumsController::class, 'pinnedPost'])->name('alumni.pinned.post');
