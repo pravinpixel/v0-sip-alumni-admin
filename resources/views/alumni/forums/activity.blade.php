@@ -71,6 +71,28 @@
             </div>
         </div>
 
+        {{-- Remarks Modal --}}
+        <div id="remarksModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
+            <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                <div style="background: white; border-radius: 16px; max-width: 600px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); padding: 32px;">
+                    {{-- Close Button --}}
+                    <button onclick="closeRemarksModal()" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: #fee2e2; border: none; color: #dc2626; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px;"
+                        onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    {{-- Modal Content --}}
+                    <div>
+                        <h3 style="font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 20px 0;">Admin Remarks</h3>
+                        
+                        <div id="remarksContent" style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; color: #6b7280; font-size: 15px; line-height: 1.6; min-height: 80px;">
+                            {{-- Remarks will be loaded here --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Tabs and Search in One Row --}}
         <div style="background: white; border-radius: 12px; overflow: hidden;">
             <div
@@ -454,6 +476,17 @@
                                                                                 ${escapeHtml(description)}
                                                                             </p>
 
+                                                                            ${viewType === 'archive' && post.status === 'removed_by_admin' && post.remarks ? `
+                                                                                <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 6px; margin-bottom: 16px; display: flex; gap: 12px;">
+                                                                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                                                                        <span style="color: #b32626ff; font-weight: 600; font-size: 13px;">Removal Reason:</span>
+                                                                                    </div>
+                                                                                    <p style="color: #d64747ff; font-size: 13px; line-height: 1.5; margin: 0;">
+                                                                                        ${escapeHtml(post.remarks)}
+                                                                                    </p>
+                                                                                </div>
+                                                                            ` : ''}
+
                                                                             ${tags.length > 0 ? `
                                                                                 <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
                                                                                     ${tags.map(tag => `
@@ -536,39 +569,45 @@
                 }
 
                 html += `
-                                                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
-                                                    <div style="flex: 1;">
-                                                        <h3 onclick="openPostModal(${post.id})" style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0; cursor: pointer; transition: color 0.2s;"
-                                                            onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#111827'">${escapeHtml(title)}</h3>
-                                                        <p style="color: #9ca3af; font-size: 13px; margin: 0;">${date}</p>
-                                                    </div>
-                                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+                                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                                                        <div style="flex: 1;">
+                                                            <h3 onclick="openPostModal(${post.id})" style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0; cursor: pointer; transition: color 0.2s;"
+                                                                onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#111827'">${escapeHtml(title)}</h3>
+                                                            <p style="color: #9ca3af; font-size: 13px; margin: 0;">${date}</p>
+                                                        </div>
                                                         <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;">
                                                             ${statusText}
                                                         </span>
-                                                        <div style="display: flex; gap: 8px;">
-                                                            ${post.status === 'rejected' ? `
-                                                                <button onclick="openRepostModal(${post.id})" style="background: transparent; border: 2px solid #10b981; color: #10b981; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                                                                    onmouseover="this.style.background='#d1fae5'" onmouseout="this.style.background='transparent'"
-                                                                    title="Resubmit">
-                                                                    <i class="fas fa-redo"></i>
-                                                                </button>
-                                                            ` : ''}
-                                                            ${post.status === 'pending' ? `
-                                                                <button onclick="openEditModal(${post.id})" style="background: transparent; border: 2px solid #f59e0b; color: #f59e0b; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                                                                    onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='transparent'"
-                                                                    title="Edit post">
-                                                                    <i class="fas fa-edit"></i>
-                                                                </button>
-                                                            ` : ''}
-                                                            ${!isArchive ? `
-                                                                <button onclick="openDeleteModal(${post.id})" style="background: transparent; border: 2px solid #dc2626; color: #dc2626; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                                                                    onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
-                                                                    title="Delete post">
-                                                                    <i class="fas fa-trash"></i>
-                                                                </button>
-                                                            ` : ''}
-                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                                                        ${post.status === 'rejected' ? `
+                                                            <button onclick="openRemarksModal('${escapeHtml(post.remarks || 'No remarks provided').replace(/'/g, "\\'")}', ${post.id})" style="background: transparent; border: 2px solid #3b82f6; color: #3b82f6; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'"
+                                                                title="View Remarks">
+                                                                <i class="fas fa-file-alt"></i>
+                                                            </button>
+                                                            <button onclick="openRepostModal(${post.id})" style="background: transparent; border: 2px solid #10b981; color: #10b981; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                onmouseover="this.style.background='#d1fae5'" onmouseout="this.style.background='transparent'"
+                                                                title="Resubmit">
+                                                                <i class="fas fa-redo"></i>
+                                                            </button>
+                                                        ` : ''}
+                                                        ${post.status === 'pending' ? `
+                                                            <button onclick="openEditModal(${post.id})" style="background: transparent; border: 2px solid #f59e0b; color: #f59e0b; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='transparent'"
+                                                                title="Edit post">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                        ` : ''}
+                                                        ${!isArchive ? `
+                                                            <button onclick="openDeleteModal(${post.id})" style="background: transparent; border: 2px solid #dc2626; color: #dc2626; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
+                                                                title="Delete post">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        ` : ''}
                                                     </div>
                                                 </div>
                                             `;
@@ -981,16 +1020,36 @@
             });
         }
 
+        // Remarks Modal Functions
+        function openRemarksModal(remarks, postId) {
+            const modal = document.getElementById('remarksModal');
+            const remarksContent = document.getElementById('remarksContent');
+            
+            remarksContent.textContent = remarks || 'No remarks provided';
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRemarksModal() {
+            const modal = document.getElementById('remarksModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
         // Close modal when clicking outside
         document.addEventListener('click', function(event) {
             const postModal = document.getElementById('postDetailModal');
             const deleteModal = document.getElementById('deleteConfirmModal');
+            const remarksModal = document.getElementById('remarksModal');
             
             if (event.target === postModal) {
                 closePostModal();
             }
             if (event.target === deleteModal) {
                 closeDeleteModal();
+            }
+            if (event.target === remarksModal) {
+                closeRemarksModal();
             }
         });
     </script>
