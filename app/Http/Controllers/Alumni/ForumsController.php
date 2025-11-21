@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Alumni;
 use App\Http\Controllers\Controller;
 use App\Models\ForumReplies;
 use App\Models\ForumPost;
-use App\Models\MobileOtp;
 use App\Models\PostLikes;
 use App\Models\PostPinned;
+use App\Models\PostViews;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -233,6 +232,7 @@ class ForumsController extends Controller
     public function viewThread($id)
     {
         try {
+            $alumniId =  session('alumni.id');
             $forumPost = ForumPost::with(['alumni'])->findOrFail($id);
             // $replies = ForumReplies::with(['alumni', 'childReplies.alumni'])->where('forum_post_id', $id)->get();
             $replies = ForumReplies::with([
@@ -244,6 +244,24 @@ class ForumsController extends Controller
                 ->whereNull('parent_reply_id')
                 ->orderBy('created_at', 'ASC')
                 ->get();
+            
+            $view = PostViews::where('post_id', $id)
+                ->where('alumni_id', $alumniId)
+                ->first();
+
+            if (!$view) {
+                PostViews::create([
+                    'post_id' => $id,
+                    'alumni_id' => $alumniId
+                ]);
+            } else {
+                $view->update([
+                    'post_id' => $id,
+                    'alumni_id' => $alumniId,
+                    'updated_at' => now()
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'data' => [

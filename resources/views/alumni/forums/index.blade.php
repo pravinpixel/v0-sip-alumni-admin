@@ -593,6 +593,7 @@
                     }
 
                     populateThreadModal(data.data);
+                    loadForumPosts();
                     document.getElementById('threadModal').style.display = 'block';
                     document.body.style.overflow = 'hidden';
                 })
@@ -941,35 +942,6 @@
             }
 
             return div;
-        }
-
-        // Toast notification function (if not already defined)
-        function showToast(message, type = 'success') {
-            const toast = document.createElement('div');
-            const bgColor = type === 'success' ? '#10b981' : '#ef4444';
-
-            toast.style.cssText = `
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    background: ${bgColor};
-                    color: white;
-                    padding: 16px 24px;
-                    border-radius: 8px;
-                    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-                    z-index: 10000;
-                    font-size: 14px;
-                    font-weight: 600;
-                    animation: slideInRight 0.3s ease-out;
-                `;
-
-            toast.textContent = message;
-            document.body.appendChild(toast);
-
-            setTimeout(() => {
-                toast.style.animation = 'slideOutRight 0.3s ease-out';
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
         }
 
         // Add required animations

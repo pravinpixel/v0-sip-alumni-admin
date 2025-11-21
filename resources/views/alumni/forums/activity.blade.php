@@ -305,7 +305,7 @@
                             rejectedPosts: userPosts.filter(post => post.status === 'rejected').length,
                             archivedPosts: userPosts.filter(post => post.status === 'archived').length,
                             totalStatusPosts: userPosts.filter(post => post.status === 'pending' || post.status === 'rejected').length,
-                            totalLikes: userPosts.reduce((sum, post) => sum + (post.likes || 0), 0),
+                            totalLikes: userPosts.reduce((sum, post) => sum + (post.likes_count || 0), 0),
                             totalViews: userPosts.reduce((sum, post) => sum + (post.views_count || 0), 0),
                             totalComments: userPosts.reduce((sum, post) => sum + (post.reply_count || 0), 0)
                         };
@@ -320,7 +320,7 @@
                         } else if (filter === 'postStatus') {
                             filteredPosts = userPosts.filter(post => post.status === 'pending' || post.status === 'rejected');
                         } else if (filter === 'archive') {
-                            filteredPosts = userPosts.filter(post => post.status === 'archived');
+                            filteredPosts = userPosts.filter(post => post.status === 'post_deleted' || post.status === 'removed_by_admin');
                         }
 
                         renderPosts(filteredPosts, filter);
