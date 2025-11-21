@@ -204,7 +204,7 @@ class AlumniController extends Controller
 
             if (in_array("state", $required)) {
                 $states = [];
-                $states = States::select('id', 'name')->with('city')->get();
+                $states = States::select('id', 'name')->get();
                 $results['state'] = $states;
             }
             if (in_array("city", $required)) {
