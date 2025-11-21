@@ -413,4 +413,54 @@ class ForumsController extends Controller
             ], 500);
         }
     }
+
+    public function updateStatus(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'post_id' => 'required',
+                'status' => 'required|in:approved,pending,rejected,post_deleted,removed_by_admin',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation Error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $alumniId = session('alumni.id');
+            $post = ForumPost::where('id', $request->post_id)
+                ->where('alumni_id', $alumniId)
+                ->first();
+
+            if (!$post) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Post not found or you do not have permission to update this post.'
+                ], 404);
+            }
+
+            $status = $request->status;
+            if ($status == 'post_deleted') {
+                $post->status = 'post_deleted';
+            } else if ($status == 're_post') { 
+                $post->status = 'pending';
+            } else {
+                $post->status = $status;
+            }
+            $post->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'Status updated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error updating status: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while updating status.'
+            ], 500);
+        }
+    }
 }

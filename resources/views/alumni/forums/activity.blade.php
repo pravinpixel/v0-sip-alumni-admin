@@ -41,6 +41,36 @@
             </div>
         </div>
 
+        {{-- Delete Confirmation Modal --}}
+        <div id="deleteConfirmModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
+            <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                <div style="background: white; border-radius: 16px; max-width: 500px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); padding: 32px;">
+                    {{-- Close Button --}}
+                    <button onclick="closeDeleteModal()" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: transparent; border: none; color: #9ca3af; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px;"
+                        onmouseover="this.style.background='#f3f4f6'; this.style.color='#111827'" onmouseout="this.style.background='transparent'; this.style.color='#9ca3af'">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    {{-- Modal Content --}}
+                    <div>
+                        <h3 style="font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 12px 0;">Delete Post</h3>
+                        <p style="color: #6b7280; font-size: 15px; margin: 0 0 24px 0;">Are you sure you want to delete this post?</p>
+                        
+                        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                            <button onclick="closeDeleteModal()" style="padding: 10px 24px; background: white; border: 2px solid #e5e7eb; border-radius: 8px; color: #374151; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                                onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db'" onmouseout="this.style.background='white'; this.style.borderColor='#e5e7eb'">
+                                Cancel
+                            </button>
+                            <button onclick="confirmDeletePost()" style="padding: 10px 24px; background: #dc2626; border: none; border-radius: 8px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                                onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Tabs and Search in One Row --}}
         <div style="background: white; border-radius: 12px; border: 2px solid #e5e7eb; overflow: hidden;">
             <div
@@ -87,6 +117,28 @@
             transform: scale(1.05);
             opacity: 0.9;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
         }
     </style>
 
@@ -310,9 +362,9 @@
         function renderPosts(posts, viewType = 'activePosts') {
             const container = document.getElementById('postsContainer');
 
-            // Use simple layout for Post Status tab
+            // Use simple layout for Post Status tab only
             if (viewType === 'postStatus') {
-                renderSimplePosts(posts);
+                renderSimplePosts(posts, false);
                 return;
             }
 
@@ -383,11 +435,13 @@
                                                                                     <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">
                                                                                         ${statusText}
                                                                                     </span>
-                                                                                    <button style="background: transparent; border: none; color: #dc2626; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                                                                                        onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
-                                                                                        title="Delete post">
-                                                                                        <i class="fas fa-trash"></i>
-                                                                                    </button>
+                                                                                    ${viewType !== 'archive' ? `
+                                                                                        <button onclick="openDeleteModal(${post.id})" style="background: transparent; border: none; color: #dc2626; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                                            onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
+                                                                                            title="Delete post">
+                                                                                            <i class="fas fa-trash"></i>
+                                                                                        </button>
+                                                                                    ` : ''}
                                                                                 </div>
                                                                             </div>
 
@@ -426,7 +480,7 @@
             container.innerHTML = html;
         }
 
-        function renderSimplePosts(posts) {
+        function renderSimplePosts(posts, isArchive = false) {
             const container = document.getElementById('postsContainer');
 
             if (!posts || posts.length === 0) {
@@ -454,14 +508,35 @@
                     }) :
                     'Unknown date';
 
-                const statusColor = post.status === 'pending' ? '#fef3c7' : '#fee2e2';
-                const statusTextColor = post.status === 'pending' ? '#d97706' : '#dc2626';
-                const statusText = post.status === 'pending' ? 'Pending' : 'Rejected';
+                // Status display for Post Status tab
+                let statusColor, statusTextColor, statusText;
+                if (post.status === 'pending') {
+                    statusColor = '#fef3c7';
+                    statusTextColor = '#d97706';
+                    statusText = 'Pending';
+                } else if (post.status === 'rejected') {
+                    statusColor = '#fee2e2';
+                    statusTextColor = '#dc2626';
+                    statusText = 'Rejected';
+                } else if (post.status === 'post_deleted') {
+                    statusColor = '#fee2e2';
+                    statusTextColor = '#dc2626';
+                    statusText = 'Post Deleted';
+                } else if (post.status === 'removed_by_admin') {
+                    statusColor = '#fee2e2';
+                    statusTextColor = '#dc2626';
+                    statusText = 'Removed by Admin';
+                } else {
+                    statusColor = '#f3f4f6';
+                    statusTextColor = '#6b7280';
+                    statusText = 'Archived';
+                }
 
                 html += `
                                                 <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
                                                     <div style="flex: 1;">
-                                                        <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0;">${escapeHtml(title)}</h3>
+                                                        <h3 onclick="openPostModal(${post.id})" style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0; cursor: pointer; transition: color 0.2s;"
+                                                            onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#111827'">${escapeHtml(title)}</h3>
                                                         <p style="color: #9ca3af; font-size: 13px; margin: 0;">${date}</p>
                                                     </div>
                                                     <div style="display: flex; align-items: center; gap: 12px;">
@@ -469,19 +544,7 @@
                                                             ${statusText}
                                                         </span>
                                                         <div style="display: flex; gap: 8px;">
-                                                            ${post.status === 'pending' ? `
-                                                                <button style="background: transparent; border: 2px solid #3b82f6; color: #3b82f6; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                                                                    onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'"
-                                                                    title="View post">
-                                                                    <i class="fas fa-file-alt"></i>
-                                                                </button>
-                                                            ` : ''}
                                                             ${post.status === 'rejected' ? `
-                                                                <button style="background: transparent; border: 2px solid #3b82f6; color: #3b82f6; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                                                                    onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'"
-                                                                    title="View post">
-                                                                    <i class="fas fa-file-alt"></i>
-                                                                </button>
                                                                 <button style="background: transparent; border: 2px solid #10b981; color: #10b981; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                                                                     onmouseover="this.style.background='#d1fae5'" onmouseout="this.style.background='transparent'"
                                                                     title="Resubmit">
@@ -495,11 +558,13 @@
                                                                     <i class="fas fa-edit"></i>
                                                                 </button>
                                                             ` : ''}
-                                                            <button style="background: transparent; border: 2px solid #dc2626; color: #dc2626; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
-                                                                onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
-                                                                title="Delete post">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
+                                                            ${!isArchive ? `
+                                                                <button onclick="openDeleteModal(${post.id})" style="background: transparent; border: 2px solid #dc2626; color: #dc2626; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                    onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
+                                                                    title="Delete post">
+                                                                    <i class="fas fa-trash"></i>
+                                                                </button>
+                                                            ` : ''}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -655,11 +720,106 @@
             modalContent.innerHTML = html;
         }
 
+        // Delete Modal Functions
+        let postToDelete = null;
+
+        function openDeleteModal(postId) {
+            postToDelete = postId;
+            const modal = document.getElementById('deleteConfirmModal');
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteModal() {
+            postToDelete = null;
+            const modal = document.getElementById('deleteConfirmModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function confirmDeletePost() {
+            if (!postToDelete) return;
+
+            // Show loading state in the delete button
+            const deleteBtn = event.target;
+            const originalText = deleteBtn.innerHTML;
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            deleteBtn.disabled = true;
+
+            // Make API call to update post status to 'post_deleted'
+            fetch("{{ route('alumni.update.status') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    post_id: postToDelete,
+                    status: 'post_deleted'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeDeleteModal();
+                    // Reload the activity data
+                    loadActivityData(currentFilter);
+                    
+                    // Show success message
+                    showNotification('Post deleted successfully!', 'success');
+                } else {
+                    // Reset button state
+                    deleteBtn.innerHTML = originalText;
+                    deleteBtn.disabled = false;
+                    showNotification(data.message || 'Failed to delete post', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting post:', error);
+                // Reset button state
+                deleteBtn.innerHTML = originalText;
+                deleteBtn.disabled = false;
+                showNotification('An error occurred while deleting the post', 'error');
+            });
+        }
+
+        function showNotification(message, type) {
+            // Simple notification - you can replace with a toast library
+            const bgColor = type === 'success' ? '#10b981' : '#dc2626';
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${bgColor};
+                color: white;
+                padding: 16px 24px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 10001;
+                font-size: 14px;
+                font-weight: 500;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
         // Close modal when clicking outside
         document.addEventListener('click', function(event) {
-            const modal = document.getElementById('postDetailModal');
-            if (event.target === modal) {
+            const postModal = document.getElementById('postDetailModal');
+            const deleteModal = document.getElementById('deleteConfirmModal');
+            
+            if (event.target === postModal) {
                 closePostModal();
+            }
+            if (event.target === deleteModal) {
+                closeDeleteModal();
             }
         });
     </script>

@@ -57,6 +57,7 @@ Route::middleware('alumni.auth')->group(function () {
         Route::post('/create-reply', [ForumsController::class, 'createReply'])->name('alumni.create.reply');
         Route::post('/like', [ForumsController::class, 'toggleLike'])->name('alumni.like.post');
         Route::post('/pinned', [ForumsController::class, 'pinnedPost'])->name('alumni.pinned.post');
+        Route::post('/update-status', [ForumsController::class, 'updateStatus'])->name('alumni.update.status');
     });
     
     Route::get('/alumni/{id}', [CommonController::class, 'getAlumni']);
