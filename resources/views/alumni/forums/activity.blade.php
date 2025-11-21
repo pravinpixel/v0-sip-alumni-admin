@@ -72,9 +72,9 @@
         </div>
 
         {{-- Tabs and Search in One Row --}}
-        <div style="background: white; border-radius: 12px; border: 2px solid #e5e7eb; overflow: hidden;">
+        <div style="background: white; border-radius: 12px; overflow: hidden;">
             <div
-                style="display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 20px; border-bottom: 2px solid #e5e7eb;">
+                style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
                 <div
                     style="display: flex; gap: 0; background: #f3f4f6; border-radius: 8px; overflow: hidden; flex: 0 0 auto;">
                     <button id="activePostsTab" onclick="switchTab('activePosts')"
@@ -106,7 +106,7 @@
             </div>
 
             {{-- Posts Container --}}
-            <div id="postsContainer" style="padding: 20px;">
+            <div id="postsContainer">
                 {{-- Posts will be loaded here --}}
             </div>
         </div>
