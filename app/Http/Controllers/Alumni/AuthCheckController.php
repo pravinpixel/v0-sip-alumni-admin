@@ -112,16 +112,16 @@ class AuthCheckController extends Controller
             if ($alumni) {
                 // Store alumni data in session instead of using Auth
                 session([
-                'alumni' => [
-                    'id' => $alumni->id,
-                    'name' => $alumni->name,
-                    'email' => $alumni->email,
-                    'mobile_number' => $alumni->mobile_number,
-                    // add other fields you need
-                ],
-                'alumni_logged_in' => true
-            ]);
-            // session()->forget('verify_mobile');
+                    'alumni' => [
+                        'id' => $alumni->id,
+                        'name' => $alumni->name,
+                        'email' => $alumni->email,
+                        'mobile_number' => $alumni->mobile_number,
+                        // add other fields you need
+                    ],
+                    'alumni_logged_in' => true
+                ]);
+                // session()->forget('verify_mobile');
 
                 return response()->json([
                     'success' => true,
@@ -171,5 +171,16 @@ class AuthCheckController extends Controller
             'alumni_logged_in' => true
         ]);
         return $session;
+    }
+
+    public function logout(Request $request)
+    {
+        auth()->guard('alumni')->logout();
+        session()->forget('alumni');
+        session()->forget('alumni_logged_in');
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('alumni.login');
     }
 }
