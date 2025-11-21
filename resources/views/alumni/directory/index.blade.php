@@ -57,7 +57,6 @@
         border-radius: 6px;
         font-size: 14px;
         cursor: pointer;
-        background-color: #ffffff;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -66,7 +65,7 @@
     }
 
     .multi-select-display .placeholder {
-        color: #6b7280;
+        color: #111213ff;
         flex: 1;
         font-size: 14px;
         font-weight: 400;
@@ -79,6 +78,7 @@
 
     .multi-select-display:hover {
         border-color: #9ca3af;
+        background-color: #eebc4a;
     }
 
     .multi-select-display:focus-within {
@@ -198,10 +198,10 @@
                 onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
         </div>
         <button id="filterToggleBtn"
-            style="background: white; color: #374151; border: 1px solid #d1d5db; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; position: relative;"
-            onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+            style=" color: #374151; border: 1px solid #d1d5db; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; position: relative;"
+            onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
             <i class="fas fa-filter" style="font-size: 13px;"></i>
-            <span id="filterBtnText">Filter</span>
+            <span id="filterBtnText">Filter</i></span>
             <span id="filterCountBadge" style="display: none; background: #dc2626; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; margin-left: 4px;">0</span>
         </button>
         <button id="clearFiltersBtn"
@@ -213,7 +213,7 @@
 
     {{-- Filter Section --}}
     <div id="filterSection"
-        style="display: none; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        style="display: none; background: #fbf9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
             <div>
                 <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
@@ -222,7 +222,7 @@
                 <div class="multi-select-container" data-filter="batch">
                     <div class="multi-select-display">
                         <span class="placeholder">Select batch years</span>
-                        <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                        <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
                     </div>
                     <div class="multi-select-dropdown"></div>
                 </div>
@@ -518,6 +518,7 @@
             ordering: false,
             lengthChange: false,
             pagelength: 10,
+            scrollX: true,
             dom: 't'
         });
 
@@ -573,7 +574,6 @@
                 icon.removeClass('fa-times').addClass('fa-filter');
                 btnText.text('Filter');
             } else {
-                icon.removeClass('fa-filter').addClass('fa-times');
                 btnText.text('Close Filters');
             }
         });
