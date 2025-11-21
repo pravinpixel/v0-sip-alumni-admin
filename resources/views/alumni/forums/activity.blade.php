@@ -23,6 +23,24 @@
             {{-- Cards will be dynamically loaded based on active tab --}}
         </div>
 
+        {{-- Post Detail Modal --}}
+        <div id="postDetailModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 9999; overflow-y: auto;">
+            <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+                <div style="background: white; border-radius: 16px; max-width: 800px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+                    {{-- Close Button --}}
+                    <button onclick="closePostModal()" style="position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; border-radius: 50%; background: #fee2e2; border: none; color: #dc2626; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; z-index: 10;"
+                        onmouseover="this.style.background='#fecaca'" onmouseout="this.style.background='#fee2e2'">
+                        <i class="fas fa-times"></i>
+                    </button>
+
+                    {{-- Modal Content --}}
+                    <div id="modalContent" style="padding: 40px;">
+                        {{-- Content will be loaded here --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {{-- Tabs and Search in One Row --}}
         <div style="background: white; border-radius: 12px; border: 2px solid #e5e7eb; overflow: hidden;">
             <div
@@ -359,7 +377,8 @@
                 html += `
                                                                         <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 16px; position: relative;">
                                                                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                                                                                <h3 style="font-size: 18px; font-weight: 700; color: #dc2626; margin: 0; flex: 1;">${escapeHtml(title)}</h3>
+                                                                                <h3 onclick="openPostModal(${post.id})" style="font-size: 18px; font-weight: 700; color: #dc2626; margin: 0; flex: 1; cursor: pointer; transition: color 0.2s;" 
+                                                                                    onmouseover="this.style.color='#b91c1c'; this.style.textDecoration='underline'" onmouseout="this.style.color='#dc2626'; this.style.textDecoration='none'">${escapeHtml(title)}</h3>
                                                                                 <div style="display: flex; align-items: center; gap: 8px;">
                                                                                     <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">
                                                                                         ${statusText}
@@ -387,6 +406,7 @@
                                                                                     `).join('')}
                                                                                 </div>
                                                                             ` : ''}
+                                                                            <hr style="color: #45536eff;">
 
                                                                             <div style="display: flex; align-items: center; gap: 20px; color: #6b7280; font-size: 14px;">
                                                                                 <span style="display: flex; align-items: center; gap: 6px;">
@@ -525,6 +545,123 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
+        function openPostModal(postId) {
+            const modal = document.getElementById('postDetailModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            // Show modal
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Show loading state
+            modalContent.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 48px; color: #dc2626; margin-bottom: 20px;"></i>
+                    <p style="font-size: 16px; color: #6b7280;">Loading post details...</p>
+                </div>
+            `;
+            
+            // Fetch post details
+            fetch(`/view-thread/${postId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.post) {
+                        renderPostDetail(data.data.post, data.data.replies || []);
+                    } else {
+                        modalContent.innerHTML = `
+                            <div style="text-align: center; padding: 60px 20px;">
+                                <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #dc2626; margin-bottom: 20px;"></i>
+                                <p style="font-size: 16px; color: #6b7280;">Failed to load post details</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading post:', error);
+                    modalContent.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #dc2626; margin-bottom: 20px;"></i>
+                            <p style="font-size: 16px; color: #6b7280;">Error loading post details</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function closePostModal() {
+            const modal = document.getElementById('postDetailModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function renderPostDetail(post, replies) {
+            const modalContent = document.getElementById('modalContent');
+            
+            const title = post.title || 'Untitled Post';
+            const description = post.description || 'No description available';
+            const authorName = (post.alumni && post.alumni.full_name) ? post.alumni.full_name : 'Current User';
+            const authorInitials = authorName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            const date = post.created_at ? 
+                new Date(post.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) : 'N/A';
+            
+            const tags = post.labels ? post.labels.split(',').filter(tag => tag.trim() !== '') : [];
+            
+            let html = `
+                <div>
+                    <h2 style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 20px 0; padding-right: 40px;">${escapeHtml(title)}</h2>
+                    
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px;">
+                            ${authorInitials}
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; color: #111827; font-size: 15px;">${escapeHtml(authorName)}</div>
+                            <div style="color: #9ca3af; font-size: 13px;">${date}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="color: #374151; font-size: 15px; line-height: 1.7; margin-bottom: 20px;">
+                        ${description}
+                    </div>
+                    
+                    ${tags.length > 0 ? `
+                        <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+                            ${tags.map(tag => `
+                                <span style="background: #fbbf24; color: #000; padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 600;">
+                                    ${escapeHtml(tag.trim())}
+                                </span>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                    
+                    <div style="display: flex; align-items: center; gap: 24px; padding: 16px 0; border-top: 2px solid #e5e7eb; border-bottom: 2px solid #e5e7eb; color: #6b7280; font-size: 14px;">
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-eye"></i> ${post.views_count || 0} views
+                        </span>
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-heart"></i> ${post.likes_count || 0} likes
+                        </span>
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-comment"></i> ${replies.length} replies
+                        </span>
+                    </div>
+                </div>
+            `;
+            
+            modalContent.innerHTML = html;
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('postDetailModal');
+            if (event.target === modal) {
+                closePostModal();
+            }
+        });
     </script>
 
 @endsection
