@@ -13,31 +13,31 @@
             $quickStats = [
                 [
                     'title' => 'Connections Made',
-                    'value' => 24,
+                    'value' => $stats['connectionsMade'] ?? 0,
                     'icon' => 'fa-users',
                     'bgColor' => '#dc2626',
                     'description' => 'Total accepted invites'
                 ],
                 [
                     'title' => 'Pending Requests',
-                    'value' => 5,
+                    'value' => $stats['pendingRequests'] ?? 0,
                     'icon' => 'fa-clock',
                     'bgColor' => '#f59e0b',
                     'description' => 'Awaiting response'
                 ],
                 [
                     'title' => 'Posts Created',
-                    'value' => 12,
+                    'value' => $stats['postsCreated'] ?? 0,
                     'icon' => 'fa-file-alt',
                     'bgColor' => '#dc2626',
                     'description' => 'Community contributions'
                 ],
                 [
                     'title' => 'Total Engagement',
-                    'value' => 156,
+                    'value' => $stats['totalEngagement'] ?? 0,
                     'icon' => 'fa-heart',
                     'bgColor' => '#f59e0b',
-                    'description' => 'Likes & replies received'
+                    'description' => 'Likes received'
                 ]
             ];
         @endphp
@@ -67,37 +67,6 @@
         </div>
 
         {{-- Community Highlights --}}
-        @php
-            $trendingPosts = [
-                [
-                    'id' => 1,
-                    'title' => 'Future of AI in Education',
-                    'description' => 'Exploring how artificial intelligence is transforming the learning experience...',
-                    'author' => 'Rajesh Kumar',
-                    'views' => 245,
-                    'likes' => 42,
-                    'comments' => 18
-                ],
-                [
-                    'id' => 2,
-                    'title' => 'Career Transition Tips',
-                    'description' => 'Sharing my journey from software development to product management...',
-                    'author' => 'Priya Sharma',
-                    'views' => 189,
-                    'likes' => 35,
-                    'comments' => 12
-                ],
-                [
-                    'id' => 3,
-                    'title' => 'Alumni Meetup 2024',
-                    'description' => 'Planning our annual alumni gathering in Bangalore. Join us for networking...',
-                    'author' => 'Amit Patel',
-                    'views' => 156,
-                    'likes' => 28,
-                    'comments' => 9
-                ]
-            ];
-        @endphp
 
         <div style="background: white; border-radius: 16px; border: 2px solid #e5e7eb; padding: 32px;">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;">
@@ -105,7 +74,7 @@
                     <h2 style="font-size: 24px; font-weight: 700; color: #111827;">Community Highlights</h2>
                     <p style="font-size: 14px; color: #6b7280; margin-top: 4px;">Trending posts from the community</p>
                 </div>
-                <a href="/alumni/forums"
+                <a href="/forums"
                     style="display: inline-flex; align-items: center; padding: 10px 16px; background: white; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-weight: 500; color: #374151; text-decoration: none; transition: all 0.3s;"
                     onmouseover="this.style.backgroundColor='#f9fafb';" onmouseout="this.style.backgroundColor='white';">
                     View All
@@ -114,21 +83,29 @@
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
-                @foreach($trendingPosts as $post)
+                @forelse($topPosts as $post)
                     <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; padding: 24px; transition: all 0.3s;"
                         onmouseover="this.style.boxShadow='0 10px 25px rgba(0,0,0,0.1)';"
                         onmouseout="this.style.boxShadow='none';">
                         <h3 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 12px;">{{ $post['title'] }}
                         </h3>
                         <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px; line-height: 1.5;">
-                            {{ $post['description'] }}</p>
+                            {{ Str::limit($post['description'], 100) }}</p>
 
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
-                            <div
-                                style="height: 32px; width: 32px; border-radius: 50%; background: #d1d5db; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #374151;">
-                                {{ substr($post['author'], 0, 1) }}
-                            </div>
-                            <span style="font-size: 14px; color: #374151; font-weight: 500;">{{ $post['author'] }}</span>
+                            @if($post['show_profile'])
+                                <div
+                                    style="height: 32px; width: 32px; border-radius: 50%; background: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white;">
+                                    {{ $post['author_initials'] }}
+                                </div>
+                                <span style="font-size: 14px; color: #374151; font-weight: 500;">{{ $post['author'] }}</span>
+                            @else
+                                <div
+                                    style="height: 32px; width: 32px; border-radius: 50%; background: #d1d5db; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #6b7280;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <span style="font-size: 14px; color: #6b7280; font-weight: 500;">Alumni Member</span>
+                            @endif
                         </div>
 
                         <div
@@ -147,14 +124,20 @@
                             </div>
                         </div>
 
-                        <a href="/alumni/forums"
+                        <a href=""
                             style="width: 100%; display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; font-weight: 500; color: #374151; background: white; text-decoration: none; transition: all 0.3s;"
                             onmouseover="this.style.backgroundColor='#f9fafb';"
                             onmouseout="this.style.backgroundColor='white';">
                             View Thread
                         </a>
                     </div>
-                @endforeach
+                @empty
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #6b7280;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                        <p style="font-size: 16px; font-weight: 500;">No posts available yet</p>
+                        <p style="font-size: 14px; margin-top: 8px;">Be the first to create a post in the community!</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>

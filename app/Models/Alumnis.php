@@ -56,6 +56,11 @@ class Alumnis extends Model
         return $this->hasMany(PostPinned::class, 'alumni_id');
     }
 
+    public function posts()
+    {
+        return $this->hasMany(ForumPost::class, 'alumni_id');
+    }
+
     public function getImageUrlAttribute()
     {
         if (!empty($this->image) && Storage::disk('public')->exists($this->image)) {
