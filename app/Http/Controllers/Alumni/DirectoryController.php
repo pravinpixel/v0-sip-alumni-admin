@@ -280,6 +280,10 @@ class DirectoryController extends Controller
     public function sendRequest($receiverId)
     {
         $senderId = session('alumni.id');
+        
+        $receiver = Alumnis::find($receiverId);
+        $receiver->is_request_ribbon = 1;
+        $receiver->save();
 
         if ($senderId == $receiverId) {
             return back()->with('error', 'You cannot connect with yourself.');
@@ -311,7 +315,7 @@ class DirectoryController extends Controller
             'receiver_id' => $receiverId,
             'status' => 'pending',
         ]);
-
+    
         return back()->with('success', 'Connection request sent successfully!');
     }
 }
