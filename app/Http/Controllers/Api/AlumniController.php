@@ -71,9 +71,14 @@ class AlumniController extends Controller
                 'email'              => $request->email,
                 'mobile_number'      => $request->mobile_number,
                 'occupation_id'      => $occupation->id,
-                'status'             => 'active', // default
+                'status'             => 'active',
+                'image'              => asset('images/avatar/blank.png')
             ]);
             $otpRecord->delete();
+
+            Alumnis::where('is_directory_ribbon', '!=', 1)
+               ->orWhereNull('is_directory_ribbon')
+               ->update(['is_directory_ribbon' => 1]);
 
             return response()->json([
                 'success' => true,
