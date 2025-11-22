@@ -32,7 +32,6 @@ class DirectoryController extends Controller
         try {
             $alumniId = session('alumni.id');
 
-            // Get unique batch years
             $batchYears = Alumnis::where('id', '!=', $alumniId)
                 ->whereNotNull('year_of_completion')
                 ->where('status', 'active')
@@ -41,7 +40,6 @@ class DirectoryController extends Controller
                 ->pluck('year_of_completion')
                 ->toArray();
 
-            // Get unique locations (cities with states)
             $locations = Alumnis::with(['city.state'])
                 ->where('id', '!=', $alumniId)
                 ->where('status', 'active')
@@ -61,41 +59,30 @@ class DirectoryController extends Controller
                 ->values()
                 ->toArray();
 
-            // All other alumni
             $allOtherAlumni = Alumnis::where('id', '!=', $alumniId)->where('status', 'active')->pluck('id')->toArray();
-
-            // All connections involving current alumni
             $connections = AlumniConnections::where('sender_id', $alumniId)
                 ->orWhere('receiver_id', $alumniId)
                 ->get();
 
-            // Get connected IDs
             $connectedIds = $connections->map(function ($c) use ($alumniId) {
                 return $c->sender_id == $alumniId ? $c->receiver_id : $c->sender_id;
             })
                 ->unique()
                 ->toArray();
-
-            // Users with no connection
             $notSharedExists = count(array_diff($allOtherAlumni, $connectedIds)) > 0;
-
-            // Extract existing statuses
             $existingStatuses = $connections->pluck('status')->unique()->toArray();
 
             $statuses = [];
-
-            // Add Not Shared only if applicable
             if ($notSharedExists) {
                 $statuses[] = ['id' => 'not_shared', 'name' => 'Not Shared'];
             }
 
-            // Convert DB statuses into readable display
             foreach ($existingStatuses as $status) {
                 if ($status === 'pending') {
                     $statuses[] = ['id' => 'pending', 'name' => 'Shared'];
                 }
                 if ($status === 'accepted') {
-                    $statuses[] = ['id' => 'accepted', 'name' => 'Connected'];
+                    $statuses[] = ['id' => 'accepted', 'name' => 'Accepted'];
                 }
                 if ($status === 'rejected') {
                     $statuses[] = ['id' => 'rejected', 'name' => 'Rejected'];
