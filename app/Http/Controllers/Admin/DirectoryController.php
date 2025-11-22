@@ -229,6 +229,11 @@ class DirectoryController extends Controller
             $alumni = Alumnis::findOrFail($id);
             $status = strtolower($request->status);
             if ($status === 'blocked') {
+                $connections = AlumniConnections::where(function ($q) use ($id) {
+                    $q->where('sender_id', $id)
+                        ->orWhere('receiver_id', $id);
+                });
+                $connections->delete();
                 $alumni->status = 'blocked';
             } elseif ($status === 'unblocked') {
                 $alumni->status = 'active';

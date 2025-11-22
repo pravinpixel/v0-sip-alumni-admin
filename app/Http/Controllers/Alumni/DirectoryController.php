@@ -106,7 +106,8 @@ class DirectoryController extends Controller
             $alumniId = session('alumni.id');
 
             $query = Alumnis::with(['city', 'occupation'])
-                ->where('id', '!=', $alumniId)->where('status', 'active');
+                ->where('id', '!=', $alumniId)
+                ->where('status', 'active');
 
             // Apply filters
             if ($request->filled('batch_years') && $request->batch_years != '') {
@@ -206,8 +207,14 @@ class DirectoryController extends Controller
                     }
                 })
 
-                ->editColumn('alumni', function ($row) {
-                    $img = $row->image ? url("/storage/{$row->image}") : asset('images/avatar/blank.png');
+                ->editColumn('alumni', function ($row)  use ($alumniConnections) {
+                    $status = $alumniConnections[$row->id] ?? null;
+                   $isAccepted = $status === 'accepted';
+                   if(!$isAccepted){
+                       $img = asset('images/avatar/blank.png');
+                   } else {
+                       $img = $row->image ? url("/storage/{$row->image}") : asset('images/avatar/blank.png'); 
+                   }
                     $occ = $row->occupation->name ?? '—';
                     return '
             <div style="display:flex;align-items:center;gap:12px;">

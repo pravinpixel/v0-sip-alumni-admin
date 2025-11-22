@@ -87,7 +87,7 @@ class ConnectionsController extends Controller
             
             ->addColumn('alumni', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
-                $img = $alumni->image ? asset($alumni->image) : asset('images/avatar/blank.png');
+                $img = $alumni->image_url ?? asset('images/avatar/blank.png');
                 return '
                 <div style="display:flex;align-items:center;gap:12px;">
                     <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
@@ -159,7 +159,7 @@ class ConnectionsController extends Controller
             
             ->editColumn('alumni', function ($row) {
                 $alumni = $row->sender;
-                $img = $alumni->image ? asset($alumni->image) : asset('images/avatar/blank.png');
+                $img = $alumni->image_url ?? asset('images/avatar/blank.png');
                 return '
                     <div style="display:flex;align-items:center;gap:12px;">
                         <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
