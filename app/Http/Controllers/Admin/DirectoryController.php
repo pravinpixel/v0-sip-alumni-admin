@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\Admin\DirectoryExport;
 use App\Http\Controllers\Controller;
 use App\Mail\AlumniBlockedMail;
+use App\Mail\AlumniUnBlockedMail;
 use App\Mail\EmployeeEmail;
 use App\Models\AlumniConnections;
 use Illuminate\Http\Request;
@@ -245,8 +246,20 @@ class DirectoryController extends Controller
                         ->orWhere('receiver_id', $id);
                 });
                 $connections->delete();
+                $data = [
+                    'name' => $alumni->full_name,
+                    'remarks' => $remarks,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($alumni->email)->queue(new AlumniBlockedMail($data));
                 $alumni->status = 'blocked';
             } elseif ($status === 'unblocked') {
+                $alumni->remarks = null;
+                $data = [
+                    'name' => $alumni->full_name,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($alumni->email)->queue(new AlumniUnBlockedMail($data));
                 $alumni->status = 'active';
             } else {
                 return response()->json([

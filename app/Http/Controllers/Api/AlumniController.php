@@ -40,12 +40,12 @@ class AlumniController extends Controller
             }
             $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
 
-            // if (!$otpRecord || $otpRecord->is_verified == 0) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Please verify OTP before registration.'
-            //     ], 400);
-            // }
+            if (!$otpRecord || $otpRecord->is_verified == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please verify OTP before registration.'
+                ], 400);
+            }
             $cityId = $request->city_id;
 
             if ($request->city_id == "others") {
@@ -77,18 +77,18 @@ class AlumniController extends Controller
                 'status'             => 'active',
                 'image'              => asset('images/avatar/blank.png')
             ]);
-            // $otpRecord->delete();
+            $otpRecord->delete();
 
             Alumnis::where('is_directory_ribbon', '!=', 1)
                 ->orWhereNull('is_directory_ribbon')
                 ->update(['is_directory_ribbon' => 1]);
 
-            // $alumniData = [
-            //     'name' => $alumni->full_name,
-            //     'url' => env('APP_URL'),
-            //     'support_email' => env('SUPPORT_EMAIL'),
-            // ];
-            // Mail::to($alumni->email)->send(new AlumniWelcomeMail($alumniData));
+            $alumniData = [
+                'name' => $alumni->full_name,
+                'url' => env('APP_URL'),
+                'support_email' => env('SUPPORT_EMAIL'),
+            ];
+            Mail::to($alumni->email)->queue(new AlumniWelcomeMail($alumniData));
 
             // $adminData = [
             //     'name' => $alumni->name,
@@ -98,7 +98,7 @@ class AlumniController extends Controller
             //     'department' => $alumni->department,
             //     'support_email' => 'sipinfo@sipacademyindia.com'
             // ];
-            // Mail::to('admin@sipabacus.com')->send(new AdminAlumniRegistedMail($adminData));
+            // Mail::to('admin@sipabacus.com')->queue(new AdminAlumniRegistedMail($adminData));
 
 
             return response()->json([

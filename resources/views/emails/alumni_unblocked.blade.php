@@ -4,16 +4,12 @@
 
 <p>Dear {{ $data['name'] }},</p>
 
-<p>Your alumni profile has been <strong>unblocked by the admin</strong>.</p>
+<br>
 
-<p>You can now:</p>
-<ul>
-    <li>Log in to your alumni account</li>
-    <li>Connect with other alumni</li>
-    <li>Participate in forum discussions</li>
-    <li>Share and engage with posts</li>
-</ul>
+<p>Your alumni profile has been <strong>unblocked by the admin</strong>.You can now log in to your account,
+ connect with other alumni, and participate in forum discussions and posts.</p>
 
+<br>
 <p>We’re glad to have you back in the community!</p>
 
 <br>

@@ -10,7 +10,7 @@ use App\Http\Controllers\Alumni\CommonController;
 use App\Models\Cities;
 use App\Models\States;
 use Illuminate\Support\Facades\Auth;
-
+Route::middleware(['route.access:website'])->group(function () {
 Route::controller(AuthCheckController::class)->group(function () {
     Route::get('/',  'index')->name('alumni.login');
     Route::post('/send-otp', 'sendOtp')->name('send.otp');
@@ -68,3 +68,4 @@ Route::get('/view-thread/{id}', [ForumsController::class, 'viewThread'])->name('
 
 Route::get('/states', [CommonController::class, 'getStates'])->name('alumni.states');
 Route::get('/cities-by-state/{stateId}', [CommonController::class, 'getCitiesByState'])->name('alumni.cities');
+});

@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\ForumsController;
 
 
 Route::get('mail', [TestController::class, 'mail']);
+Route::middleware(['route.access:admin'])->group(function () {
 
 Route::controller(AuthController::class)->group(function () {
     Route::get('/', 'index')->name('index');
@@ -63,14 +64,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/update-status', 'updateStatus')->name('directory.update.status');
         Route::get('/view-profile/{id}', 'viewProfileDetails')->name('admin.directory.view.profile');
         Route::get('/export', [DirectoryController::class, 'export'])->name('admin.directory.export');
-
-        Route::get('create', 'create')->name('employee.create')->middleware('checkAccess:directory.create');
-        Route::post('save', 'save')->name('employee.save');
-        Route::post('update/{id}', 'update')->name('employee.update')->middleware('checkAccess:directory.edit');
-        Route::get('edit/{id}', 'get')->name('employee.get');
-        Route::delete('/{id}', 'delete')->name('employee.delete')->middleware('checkAccess:directory.delete');
-        Route::get('send-employee-mail/{id}', 'sendEmployeeMail')->name('employee.sendEmployeeMail');
-        Route::get('employee_task/{id}', 'employee_task')->name('employee.employee_task')->middleware('checkAccess:directory.delete');
     });
 
     Route::prefix('forums')->controller(ForumsController::class)->group(function () {
@@ -108,3 +101,5 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('/{id}', 'delete')->name('user.delete')->middleware('checkAccess:user.delete');
     });
 });
+});
+
