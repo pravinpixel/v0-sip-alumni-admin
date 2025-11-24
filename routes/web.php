@@ -70,6 +70,10 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/', 'index')->name('admin.forums.index')->middleware('checkAccess:forum.view');
         Route::get('/get-data', 'getData')->name('admin.forums.data');
         Route::get('/filter-options', 'getFilterOptions')->name('admin.forums.filter.options');
+        Route::get('/post-details/{id}', 'getPostDetails')->name('admin.forums.post.details');
+        Route::get('/comments/{id}', 'viewComments')->name('admin.forums.comments');
+        Route::get('/comments-data/{id}', 'getCommentsData')->name('admin.forums.comments.data');
+        Route::delete('/comment/{id}', 'deleteComment')->name('admin.forums.comment.delete');
         Route::post('/change-status', 'changeStatus')->name('forums.change.status');
         Route::get('/export', [ForumsController::class, 'export'])->name('admin.forums.export');
 

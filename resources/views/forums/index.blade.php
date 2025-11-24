@@ -98,31 +98,47 @@
     }
 </style>
 
-<!-- Profile Modal -->
-<div class="modal fade" id="viewPostModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:#c41e3a;color:white;">
-                <h5 class="modal-title">Alumni Profile</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+<!-- Post Details Modal -->
+<div id="postDetailsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
+    <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; border-radius: 12px; max-width: 600px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            <!-- Header -->
+            <div style="padding: 24px 32px; border-bottom: 1px solid #e5e7eb; position: relative;">
+                <button onclick="closePostModal()" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: transparent; border: none; color: #9ca3af; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px;"
+                    onmouseover="this.style.background='#f3f4f6'; this.style.color='#111827'" onmouseout="this.style.background='transparent'; this.style.color='#9ca3af'">
+                    ×
+                </button>
+                <h2 style="font-size: 28px; font-weight: 700; color: #ba0028; margin: 0;">Post Details</h2>
             </div>
-            <div class="modal-body" id="profileModalBody" style="padding:20px;">
-                <div class="text-center">
-                    <img id="profileImage" src="" class="rounded-circle mb-3" style="width:100px;height:100px;object-fit:cover;">
-                    <h5 id="profileName" style="font-weight:700;"></h5>
-                    <p id="profileEmail" style="color:#666;"></p>
+
+            <!-- Body -->
+            <div style="padding: 32px;">
+                <!-- Post Title -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Post Title</label>
+                    <div id="postTitle" style="background: #f9fafb; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 600; color: #111827;"></div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <p><strong>Batch:</strong> <span id="profileBatch"></span></p>
-                        <p><strong>Location:</strong> <span id="profileLocation"></span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Occupation:</strong> <span id="profileOccupation"></span></p>
-                        <p><strong>Company:</strong> <span id="profileCompany"></span></p>
+
+                <!-- Post Description -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Post Description</label>
+                    <div id="postDescription" style="background: #f9fafb; padding: 16px; border-radius: 8px; font-size: 15px; color: #374151; line-height: 1.6;"></div>
+                </div>
+
+                <!-- Labels -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Labels</label>
+                    <div id="postLabels" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                        <!-- Labels will be added here -->
                     </div>
                 </div>
+
+                <!-- View Comments Button -->
+                <button id="viewCommentsBtn" onclick="viewComments()" style="width: 100%; background: #ba0028; color: white; border: none; border-radius: 8px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s;"
+                    onmouseover="this.style.background='#9a0020'" onmouseout="this.style.background='#ba0028'">
+                    <i class="fas fa-comments"></i>
+                    <span id="commentsText">View Comments (0)</span>
+                </button>
             </div>
         </div>
     </div>
@@ -434,6 +450,73 @@
         updateFilterDisplay();
         applyFilters();
     }
+
+    function viewPost(postId) {
+        $.ajax({
+            url: "{{ route('admin.forums.post.details', '') }}/" + postId,
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    const post = response.post;
+                    
+                    // Set post title
+                    $('#postTitle').text(post.title || 'No Title');
+                    
+                    // Set post description
+                    $('#postDescription').text(post.description || 'No description available');
+                    
+                    // Set labels
+                    const labelsContainer = $('#postLabels');
+                    labelsContainer.empty();
+                    
+                    if (post.labels && post.labels.length > 0) {
+                        post.labels.forEach(label => {
+                            const labelBadge = $(`
+                                <span style="background: #fbbf24; color: #000; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;">
+                                    ${label}
+                                </span>
+                            `);
+                            labelsContainer.append(labelBadge);
+                        });
+                    } else {
+                        labelsContainer.html('<span style="color: #9ca3af; font-style: italic;">No labels</span>');
+                    }
+                    
+                    // Set comments count
+                    const commentsCount = post.comments_count || 0;
+                    $('#commentsText').text(`View Comments (${commentsCount})`);
+                    
+                    // Store post ID for comments
+                    $('#viewCommentsBtn').data('post-id', postId);
+                    
+                    // Show modal
+                    document.getElementById('postDetailsModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                }
+            },
+            error: function(xhr) {
+                alert('Error loading post details');
+            }
+        });
+    }
+
+    function closePostModal() {
+        document.getElementById('postDetailsModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function viewComments() {
+        const postId = $('#viewCommentsBtn').data('post-id');
+        window.location.href = "{{ route('admin.forums.comments', '') }}/" + postId;
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('postDetailsModal');
+        if (event.target === modal) {
+            closePostModal();
+        }
+    });
 
     function statusChange(id, status) {
         confirmBox("Are you sure you want to change the status?", function() {
