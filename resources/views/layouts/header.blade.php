@@ -4,6 +4,102 @@
     justify-content: space-between;
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Profile dropdown functionality
+    const profileToggle = document.getElementById('profileToggle');
+    const profileDropdown = document.getElementById('profileDropdown');
+    const profileChevron = document.getElementById('profileChevron');
+    
+    // Toggle dropdown on click
+    if (profileToggle) {
+      profileToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isVisible = profileDropdown.style.display === 'block';
+        
+        if (isVisible) {
+          profileDropdown.style.display = 'none';
+          if (profileChevron) profileChevron.style.transform = 'rotate(0deg)';
+        } else {
+          profileDropdown.style.display = 'block';
+          if (profileChevron) profileChevron.style.transform = 'rotate(180deg)';
+        }
+      });
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (profileToggle && profileDropdown && !profileToggle.contains(e.target) && !profileDropdown.contains(e.target)) {
+        profileDropdown.style.display = 'none';
+        if (profileChevron) profileChevron.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    // Sidebar toggle functionality with slide animation and content expansion
+    const sidebarToggleBtn = document.getElementById('kt_app_sidebar_mobile_toggle');
+    const sidebarToggleBtnDesktop = document.getElementById('sidebarToggleDesktop');
+    const sidebar = document.getElementById('kt_app_sidebar');
+    const header = document.getElementById('kt_app_header');
+    const wrapper = document.getElementById('kt_app_wrapper');
+    const body = document.body;
+    let sidebarHidden = false;
+    
+    // Add transition styles
+    if (sidebar) {
+      sidebar.style.transition = 'transform 0.3s ease-in-out';
+    }
+    if (header) {
+      header.style.transition = 'margin-left 0.3s ease-in-out';
+    }
+    if (wrapper) {
+      wrapper.style.transition = 'margin-left 0.3s ease-in-out';
+    }
+    
+    // Function to toggle sidebar with slide animation and expand content
+    function toggleSidebar() {
+      if (sidebar) {
+        const sidebarWidth = sidebar.offsetWidth;
+        
+        if (sidebarHidden) {
+          // Show sidebar - slide in from left
+          sidebar.style.transform = 'translateX(0)';
+          
+          // Restore margins for header and content
+          if (header) header.style.marginLeft = '';
+          if (wrapper) wrapper.style.marginLeft = '';
+          
+          sidebarHidden = false;
+        } else {
+          // Hide sidebar - slide out to left
+          sidebar.style.transform = `translateX(-${sidebarWidth}px)`;
+          
+          // Expand header and content to fill the space
+          if (header) header.style.marginLeft = '0';
+          if (wrapper) wrapper.style.marginLeft = '0';
+          
+          sidebarHidden = true;
+        }
+      }
+    }
+    
+    // Mobile toggle button
+    if (sidebarToggleBtn) {
+      sidebarToggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        toggleSidebar();
+      });
+    }
+    
+    // Desktop toggle button (hamburger icon in header)
+    if (sidebarToggleBtnDesktop) {
+      sidebarToggleBtnDesktop.addEventListener('click', function(e) {
+        e.preventDefault();
+        toggleSidebar();
+      });
+    }
+  });
+</script>
 <!--begin::Header-->
 <div id="kt_app_header" class="app-header">
   <!--begin::Header container-->
@@ -37,6 +133,18 @@
     <div class="d-flex align-items-stretch justify-content-between flex-lg-grow-1" id="kt_app_header_wrapper"
       style="background-color: white;">
 
+      <!--begin::Sidebar Toggle (Desktop)-->
+      <div class="d-flex align-items-center">
+        <button id="sidebarToggleDesktop" style="background: transparent; border: none; cursor: pointer; padding: 8px; margin-right: 16px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: background 0.2s;"
+          onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 7H3C2.4 7 2 6.6 2 6V4C2 3.4 2.4 3 3 3H21C21.6 3 22 3.4 22 4V6C22 6.6 21.6 7 21 7Z" fill="#374151" />
+            <path opacity="0.3" d="M21 14H3C2.4 14 2 13.6 2 13V11C2 10.4 2.4 10 3 10H21C21.6 10 22 10.4 22 11V13C22 13.6 21.6 14 21 14ZM22 20V18C22 17.4 21.6 17 21 17H3C2.4 17 2 17.4 2 18V20C2 20.6 2.4 21 3 21H21C21.6 21 22 20.6 22 20Z" fill="#374151" />
+          </svg>
+        </button>
+      </div>
+      <!--end::Sidebar Toggle-->
+
       <!--begin::Menu wrapper-->
       <div class="app-header-menu app-header-mobile-drawer align-items-stretch" data-kt-drawer="true"
         data-kt-drawer-name="app-header-menu" data-kt-drawer-activate="{default: true, lg: false}"
@@ -60,70 +168,35 @@
       <!--begin::Navbar-->
       <div class="app-navbar flex-shrink-0">
         <!--begin::User menu-->
-        <div class="app-navbar-item ms-1 ms-md-3" id="kt_header_user_menu_toggle">
-          <!--begin::Menu wrapper-->
-          <div class="cursor-pointer symbol symbol-30px symbol-md-40px"
-            data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent"
-            data-kt-menu-placement="bottom-end">
-            <img @if(Auth::user()->profile_image ?? '') style="background-image: url('{{ url('storage/' . Auth::user()->profile_image) ?? '' }}');
-            background-size: cover; /* or contain, or a specific size (e.g., 100% 100%) */" @else
-            src="{{ asset('images/avatar/blank.png') }}" @endif>
+        <div class="app-navbar-item ms-1 ms-md-3" style="position: relative;">
+          <!--begin::Profile Display-->
+          <div id="profileToggle" style="display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: background 0.2s;"
+            onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='transparent'">
+            <div style="width: 48px; height: 48px; border-radius: 50%; background: #ba0028; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 18px; flex-shrink: 0;">
+              @if(Auth::user()->profile_image ?? '')
+                <img src="{{ url('storage/' . Auth::user()->profile_image) }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Profile">
+              @else
+                {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 2)) }}
+              @endif
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-start;">
+              <span style="font-weight: 700; font-size: 16px; color: #111827; line-height: 1.2;">{{Auth::user()->name ?? 'Admin User'}}</span>
+              <span style="font-size: 14px; color: #9ca3af; line-height: 1.2;">{{Auth::user()->role->name ?? 'Super Admin'}}</span>
+            </div>
           </div>
+          <!--end::Profile Display-->
 
-
-          <!--begin::User account menu-->
-          <div
-            class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-color fw-semibold py-4 fs-6 w-275px"
-            data-kt-menu="true">
-            <!--begin::Menu item-->
-            <div class="menu-item px-3">
-              <div class="menu-content d-flex align-items-center px-3">
-                <!--begin::Avatar-->
-                <div class="symbol symbol-50px me-5">
-                  <img @if(Auth::user()->profile_image ?? '') style="background-image: url('{{ url('storage/' . Auth::user()->profile_image) ?? '' }}');
-                  background-size: cover; /* or contain, or a specific size (e.g., 100% 100%) */" @else
-                  src="{{ asset('images/avatar/blank.png') }}" @endif>
-                </div>
-                <!--end::Avatar-->
-                <!--begin::Username-->
-
-
-                <div class="d-flex flex-column">
-                  <div class="fw-bold d-flex align-items-center fs-5">{{Auth::user()->name ?? ''}}</div>
-                  <a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{Auth::user()->email ?? ''}}</a>
-                  <div class="badge badge-light-success fw-bold fs-8 px-2 py-1">{{Auth::user()->role->name ?? ''}}</div>
-                </div>
-                <!--end::Username-->
-              </div>
-            </div>
-            <!--end::Menu item-->
-            <!--begin::Menu separator-->
-            <div class="separator my-2"></div>
-            <!--end::Menu separator-->
-            <!--begin::Menu item-->
-            <div class="menu-item px-5">
-              <a href="{{url('profile')}}" class="menu-link px-5">My Profile</a>
-            </div>
-            <!--end::Menu item-->
-            <div class="menu-item px-5">
-              <a href="{{url('change-password')}}" class="menu-link px-5">Change Password</a>
-            </div>
-
-
-            <!--begin::Menu item-->
-            <div class="menu-item px-5">
-              <a class="menu-link px-5 icon_wrapper" href="{{route('logout')}}">Sign Out
-                <i class="fa fa-power-off"></i>
-              </a>
-            </div>
-            <!--end::Menu item-->
-
+          <!--begin::Dropdown Menu-->
+          <div id="profileDropdown" style="display: none; position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); min-width: 220px; z-index: 1000; overflow: hidden;">
+            <a href="{{route('logout')}}" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; text-decoration: none; color: #dc2626; transition: background 0.2s;"
+              onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
+              <i class="fas fa-sign-out-alt" style="color: #dc2626; width: 16px;"></i>
+              <span style="font-size: 14px; font-weight: 600;">Logout</span>
+            </a>
           </div>
-          <!--end::User account menu-->
-          <!--end::Menu wrapper-->
+          <!--end::Dropdown Menu-->
         </div>
         <!--end::User menu-->
-
       </div>
       <!--end::Navbar-->
     </div>
