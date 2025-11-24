@@ -36,7 +36,7 @@ if (!function_exists('sendsms')) {
     function sendsms($mobileno, $message){
 
     $message = urlencode($message);
-    $sender = 'SEDEMO'; 
+    $sender = 'SIPINT'; 
     $apikey = '864112os7wco63l6z6381357h53oh57jk8';
     $baseurl = 'https://instantalerts.co/api/web/send?apikey='.$apikey;
 
@@ -56,5 +56,5 @@ if (!function_exists('sendsms')) {
 }
 
 //call function
-sendsms(9585850324, 'Hello, This is a test message from spring edge');
+sendsms('9585850324', 'Hello, This is a test message from spring edge');
 }

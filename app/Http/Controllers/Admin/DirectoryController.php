@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\Admin\DirectoryExport;
 use App\Http\Controllers\Controller;
+use App\Mail\AlumniBlockedMail;
 use App\Mail\EmployeeEmail;
 use App\Models\AlumniConnections;
 use Illuminate\Http\Request;
@@ -20,6 +22,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpParser\Node\Scalar\MagicConst\Dir;
 use Yajra\DataTables\Facades\DataTables;
 
 class DirectoryController extends Controller
@@ -39,14 +44,14 @@ class DirectoryController extends Controller
                 $years = is_array($request->years) ? $request->years : explode(',', $request->years);
                 $query->whereIn('year_of_completion', $years);
             }
-            
+
             if ($request->filled('cities')) {
                 $cities = is_array($request->cities) ? $request->cities : explode(',', $request->cities);
                 $query->whereHas('city', function ($q) use ($cities) {
                     $q->whereIn('name', $cities);
                 });
             }
-            
+
             if ($request->filled('occupations')) {
                 $occupations = is_array($request->occupations) ? $request->occupations : explode(',', $request->occupations);
                 $query->whereHas('occupation', function ($q) use ($occupations) {
@@ -63,7 +68,11 @@ class DirectoryController extends Controller
                 })
 
                 ->editColumn('alumni', function ($row) {
-                    $img = $row->image ? url('storage/' . $row->image ?? '') : asset('images/avatar/blank.png');
+                    if ($row->status == 'blocked') {
+                        $img = asset('images/avatar/blank.png');
+                    } else {
+                        $img = $row->image ? url('storage/' . $row->image ?? '') : asset('images/avatar/blank.png');
+                    }
                     return '<div style="display:flex;align-items:center;gap:12px;">
                         <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
                     </div>';
@@ -208,7 +217,7 @@ class DirectoryController extends Controller
                 )
 
                 ->addColumn('status', function ($row) {
-                        return '<span style="background:#4caf50;color:#fff;padding:5px 10px;border-radius:12px;font-weight:600;font-size:12px;">
+                    return '<span style="background:#4caf50;color:#fff;padding:5px 10px;border-radius:12px;font-weight:600;font-size:12px;">
                     Contact Accepted
                 </span>';
                 })
@@ -229,6 +238,8 @@ class DirectoryController extends Controller
             $alumni = Alumnis::findOrFail($id);
             $status = strtolower($request->status);
             if ($status === 'blocked') {
+                $remarks = $request->remarks;
+                $alumni->remarks = $remarks;
                 $connections = AlumniConnections::where(function ($q) use ($id) {
                     $q->where('sender_id', $id)
                         ->orWhere('receiver_id', $id);
@@ -261,7 +272,7 @@ class DirectoryController extends Controller
     {
         try {
             $alumni = Alumnis::findOrFail($id);
-            if(!$alumni){
+            if (!$alumni) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Alumni not found'
@@ -292,27 +303,6 @@ class DirectoryController extends Controller
         }
     }
 
-    public function sendEmployeeMail(Request $request, $id)
-    {
-        try {
-            $employee = Employee::where('id', $id)
-                ->where('status', '1')
-                ->whereNull('deleted_at')
-                ->first();
-
-            if (!$employee) {
-                return $this->returnError('Employee not found, inactive, or deleted', 'Validation Error', 422);
-            }
-            if ($employee) {
-                $employee->notify(new EmployeeCreateNotification($employee));
-            }
-
-            return $this->returnSuccess([], "We have e-mailed password to the employee mail!");
-        } catch (\Exception $e) {
-            // Handle any errors during the mail sending process
-            return $this->returnError($e->getMessage());
-        }
-    }
 
     public function getFilterOptions()
     {
@@ -355,5 +345,10 @@ class DirectoryController extends Controller
                 'message' => 'Error fetching filter options'
             ], 500);
         }
+    }
+
+    public function export(Request $request)
+    {
+        return Excel::download(new DirectoryExport($request), 'alumni_directory.xlsx');
     }
 }

@@ -28,7 +28,8 @@ class Alumnis extends Model
         'occupation_id',
         'status',
         'is_request_ribbon',
-        'is_directory_ribbon'
+        'is_directory_ribbon',
+        'remarks',
     ];
 
     public function city()

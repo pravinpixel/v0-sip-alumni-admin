@@ -22,8 +22,10 @@
             </button>
             <button id="exportBtn"
                 style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                <a onclick="exportDirectory()">
                 <i class="fas fa-download"></i>
                 <span>Export</span>
+            </a>
             </button>
         </div>
 
@@ -160,6 +162,44 @@
             </div>
             <div class="modal-body text-center">
                 <img id="alumniProfileImage" src="" class="img-fluid rounded" alt="Profile Picture">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Block Alumni Modal -->
+<div id="blockAlumniModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
+    <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); padding: 32px;">
+            <button onclick="closeBlockModal()" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: transparent; border: none; color: #9ca3af; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px;"
+                onmouseover="this.style.background='#f3f4f6'; this.style.color='#111827'" onmouseout="this.style.background='transparent'; this.style.color='#9ca3af'">
+                <i class="fas fa-times"></i>
+            </button>
+
+            <div>
+                <h3 style="font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 12px 0;">Block Alumni</h3>
+                <p style="color: #6b7280; font-size: 15px; margin: 0 0 20px 0;">Please provide a reason for blocking this alumni.</p>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; font-weight: 600; font-size: 14px; color: #374151; margin-bottom: 8px;">
+                        Remarks <span style="color: #dc2626;">*</span>
+                    </label>
+                    <textarea id="blockRemarks" rows="4" placeholder="Enter reason for blocking..."
+                        style="width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; font-family: inherit; resize: vertical;"
+                        onfocus="this.style.borderColor='#ba0028'" onblur="this.style.borderColor='#d1d5db'"></textarea>
+                    <small id="remarksError" style="color: #dc2626; font-size: 12px; display: none; margin-top: 4px;">Remarks are required</small>
+                </div>
+                
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button onclick="closeBlockModal()" style="padding: 10px 24px; background: white; border: 2px solid #e5e7eb; border-radius: 8px; color: #374151; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db'" onmouseout="this.style.background='white'; this.style.borderColor='#e5e7eb'">
+                        Cancel
+                    </button>
+                    <button onclick="confirmBlock()" style="padding: 10px 24px; background: #dc2626; border: none; border-radius: 8px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+                        Block Alumni
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -337,6 +377,19 @@
         };
     });
 
+    function exportDirectory() {
+    let years = selectedFilters.years.join(',');
+    let cities = selectedFilters.cities.join(',');
+    let occupations = selectedFilters.occupations.join(',');
+
+    let url = "{{ route('admin.directory.export') }}" 
+                + "?years=" + years 
+                + "&cities=" + cities 
+                + "&occupations=" + occupations;
+
+    window.location.href = url;
+}
+
     function loadFilterOptions() {
         $.ajax({
             url: "{{ route('admin.directory.filter.options') }}",
@@ -458,26 +511,78 @@
         window.location.href = "{{ route('admin.directory.view.connections.page', '') }}/" + id;
     }
 
+    let alumniToBlock = null;
+
     function updateStatus(id, status) {
-        if (!confirm(`Are you sure you want to ${status === 'blocked' ? 'block' : 'unblock'} this alumni?`)) {
+        if (status === 'blocked') {
+            // Open modal for block with remarks
+            alumniToBlock = id;
+            document.getElementById('blockAlumniModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            document.getElementById('blockRemarks').value = '';
+            document.getElementById('remarksError').style.display = 'none';
+        } else {
+            // Unblock without remarks
+            if (!confirm('Are you sure you want to unblock this alumni?')) {
+                return;
+            }
+            
+            $.ajax({
+                url: "{{ route('directory.update.status') }}",
+                type: 'POST',
+                data: {
+                    id: id,
+                    status: status,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    showToast('User Unblocked Successfully.' || response.message);
+                    $('#directoryTable').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    const res = xhr.responseJSON;
+                    showToast(res && res.message ? res.message : 'An error occurred while updating status.', 'error');
+                }
+            });
+        }
+    }
+
+    function closeBlockModal() {
+        alumniToBlock = null;
+        document.getElementById('blockAlumniModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.getElementById('blockRemarks').value = '';
+        document.getElementById('remarksError').style.display = 'none';
+    }
+
+    function confirmBlock() {
+        const remarks = document.getElementById('blockRemarks').value.trim();
+        const errorEl = document.getElementById('remarksError');
+        
+        if (!remarks) {
+            errorEl.style.display = 'block';
             return;
         }
-
+        
+        if (!alumniToBlock) return;
+        
         $.ajax({
             url: "{{ route('directory.update.status') }}",
             type: 'POST',
             data: {
-                id: id,
-                status: status,
+                id: alumniToBlock,
+                status: 'blocked',
+                remarks: remarks,
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
-                alert(response.message);
+                showToast('User Blocked Successfully.' ||response.message);
+                closeBlockModal();
                 $('#directoryTable').DataTable().ajax.reload();
             },
             error: function(xhr) {
                 const res = xhr.responseJSON;
-                alert(res && res.message ? res.message : 'An error occurred while updating status.');
+                showToast(res && res.message ? res.message : 'An error occurred while blocking alumni.', 'error');
             }
         });
     }
@@ -485,6 +590,14 @@
     function viewProfilePic(imageUrl) {
         window.open(imageUrl, '_blank');
     }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('blockAlumniModal');
+        if (event.target === modal) {
+            closeBlockModal();
+        }
+    });
 </script>
 @endpush
 @endsection

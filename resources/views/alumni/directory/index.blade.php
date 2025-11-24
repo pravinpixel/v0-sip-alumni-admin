@@ -490,21 +490,15 @@
             },
             columns: [{
                     data: 'alumni',
-                    name: 'alumni',
-                    orderable: false,
-                    searchable: false
+                    name: 'full_name',
                 },
                 {
                     data: 'batch',
-                    name: 'batch',
-                    orderable: false,
-                    searchable: false
+                    name: 'year_of_completion',
                 },
                 {
                     data: 'location',
-                    name: 'location',
-                    orderable: false,
-                    searchable: false
+                    name: 'city_id',
                 },
                 {
                     data: 'action',
@@ -515,10 +509,11 @@
             ],
             paging: true,
             searching: true,
-            ordering: false,
+            ordering: true,
             lengthChange: false,
             pagelength: 10,
             scrollX: true,
+            order: [[0, 'desc']],
             dom: 't'
         });
 
