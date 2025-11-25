@@ -48,6 +48,7 @@
     /* Multi-select dropdown styles */
     .multi-select-container {
         position: relative;
+        cursor: pointer !important;
     }
 
     .multi-select-display {
@@ -56,12 +57,16 @@
         border: 1px solid #d1d5db;
         border-radius: 6px;
         font-size: 14px;
-        cursor: pointer;
+        cursor: pointer !important;
         display: flex;
         justify-content: space-between;
         align-items: center;
         min-height: 40px;
         transition: border-color 0.2s;
+    }
+
+    .multi-select-display * {
+        cursor: pointer !important;
     }
 
     .multi-select-display .placeholder {

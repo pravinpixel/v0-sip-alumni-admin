@@ -22,7 +22,7 @@ class DirectoryController extends Controller
         $alumniId = session('alumni.id');
         $breadCrum = ['Alumni', 'Directory'];
         $title = 'Alumni Directory';
-        $totalAlumni = Alumnis::where('id', '!=', $alumniId)->count();
+        $totalAlumni = Alumnis::where('id', '!=', $alumniId)->where('status', 'active')->count();
         $alumni = Alumnis::find($alumniId);
         $isDirectoryRibbon = $alumni ? $alumni->is_directory_ribbon : 0;
 

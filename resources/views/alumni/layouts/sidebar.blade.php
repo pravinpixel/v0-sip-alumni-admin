@@ -79,15 +79,15 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     /* Drawer Toggle Button */
     .drawer-toggle {
         position: absolute;
-        top: 50%;
+        top: 7%;
         right: -15px;
         transform: translateY(-50%);
         width: 30px;
-        height: 60px;
-        background: #dc2626;
-        border: none;
-        border-radius: 0 8px 8px 0;
-        color: white;
+        height: 30px;
+        background: #ffffffff;
+        border: 1px solid #ff0000ff;
+        border-radius: 20px;
+        color: black;
         font-size: 16px;
         cursor: pointer;
         display: flex;
@@ -99,7 +99,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     }
 
     .drawer-toggle:hover {
-        background: #b91c1c;
+        background: #d30f0fff;
         right: -18px;
     }
 
@@ -157,21 +157,33 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     .close-btn {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 32px;
-        height: 32px;
+        top: 15px;
+        right: 15px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        background: white;
+        background: rgba(255, 255, 255, 0.95);
         border: 2px solid #ef4444;
         color: #ef4444;
-        font-size: 20px;
+        font-size: 22px;
         font-weight: bold;
         cursor: pointer;
-        line-height: 26px;
+        line-height: 30px;
         text-align: center;
-        z-index: 1000;
+        z-index: 1002;
         display: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+        background: #ef4444;
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .close-btn:active {
+        transform: scale(0.95);
     }
 
     @media (max-width: 768px) {
