@@ -65,11 +65,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
-    <script src="{{ asset('js/common.js') }}"></script>
+    <script src="{{ asset('js/alumniCommon.js') }}"></script>
 
     <script>
         document.querySelector('input[name="number"]').addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+            // Clear error message when user starts typing
+            $("#number-error").text("");
         });
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -81,10 +83,30 @@
         function sendOtp(event) {
             event.preventDefault();
 
-            let formData = new FormData(document.getElementById('dynamic-form'));
-
+            // Clear previous errors
             $("#invalid-credential-error").text("");
             $("#number-error").text("");
+
+            // Get mobile number value
+            const mobileNumber = $('input[name="number"]').val().trim();
+
+            // Validate mobile number
+            if (mobileNumber === '') {
+                $("#number-error").text("Please enter a valid 10-digit mobile number");
+                return;
+            }
+
+            if (mobileNumber.length !== 10) {
+                $("#number-error").text("Please enter a valid 10-digit mobile number");
+                return;
+            }
+
+            if (!/^\d{10}$/.test(mobileNumber)) {
+                $("#number-error").text("Please enter a valid 10-digit mobile number");
+                return;
+            }
+
+            let formData = new FormData(document.getElementById('dynamic-form'));
 
             $('#dynamic-submit .indicator-label').hide();
             $('#dynamic-submit .indicator-progress').show();
@@ -118,12 +140,12 @@
                         }
 
                         if (res.error) {
-                            $("#invalid-credential-error").text(res.error);
+                            showToast(res.error, 'error');
                         }
                         return;
                     }
 
-                    alert("Unexpected error occurred.");
+                    showToast("Unexpected error occurred.");
                 },
 
                 complete: function() {
