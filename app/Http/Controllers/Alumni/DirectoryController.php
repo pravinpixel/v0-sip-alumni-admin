@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Alumni;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AlumniShareContact;
 use App\Models\AlumniConnections;
 use App\Models\Alumnis;
 use App\Models\MobileOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -315,6 +317,14 @@ class DirectoryController extends Controller
             'receiver_id' => $receiverId,
             'status' => 'pending',
         ]);
+
+        $sender = Alumnis::find($senderId);
+        $data = [
+            'name' => $receiver->full_name,
+            'requester' => $sender->full_name,
+            'support_email' => env('SUPPORT_EMAIL'),
+        ];
+        Mail::to($receiver->email)->queue(new AlumniShareContact($data));
     
         return back()->with('success', 'Connection request sent successfully!');
     }

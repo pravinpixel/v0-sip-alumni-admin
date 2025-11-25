@@ -101,8 +101,6 @@
 
                 success: function(response) {
                     if (response.success) {
-                        // Show success message
-                        alert('OTP sent successfully! OTP: ' + response.otp); // Remove in production
                         window.location.href = response.redirect;
                     }
                 },
