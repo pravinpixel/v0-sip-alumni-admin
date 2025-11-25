@@ -38,14 +38,14 @@ class AlumniController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-            // $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
+            $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
 
-            // if (!$otpRecord || $otpRecord->is_verified == 0) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Please verify OTP before registration.'
-            //     ], 400);
-            // }
+            if (!$otpRecord || $otpRecord->is_verified == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please verify OTP before registration.'
+                ], 400);
+            }
             $cityId = $request->city_id;
 
             if ($request->city_id == "others") {
@@ -77,7 +77,7 @@ class AlumniController extends Controller
                 'status'             => 'active',
                 'image'              => asset('images/avatar/blank.png')
             ]);
-            // $otpRecord->delete();
+            $otpRecord->delete();
 
             Alumnis::where('is_directory_ribbon', '!=', 1)
                 ->orWhereNull('is_directory_ribbon')
@@ -100,6 +100,9 @@ class AlumniController extends Controller
             // ];
             // Mail::to('admin@sipabacus.com')->queue(new AdminAlumniRegistedMail($adminData));
 
+           $smsNumber = '91' . $alumni->mobile_number;
+           $smsMessage = "Your alumni registration has been completed. Welcome to the SIP Alumni community!\nTeam - SIP Academy";
+           sendSms($smsNumber, $smsMessage);
 
             return response()->json([
                 'success' => true,
