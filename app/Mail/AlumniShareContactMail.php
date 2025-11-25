@@ -5,7 +5,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Bus\Queueable;
 
-class AlumniShareContact extends Mailable
+class AlumniShareContactMail extends Mailable
 {
     use Queueable, SerializesModels;
     public $data;

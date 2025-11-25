@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Alumni;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AlumniAcceptRequestMail;
 use App\Models\AlumniConnections;
 use App\Models\Alumnis;
 use App\Models\MobileOtp;
@@ -10,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
 
 class ConnectionsController extends Controller
@@ -203,8 +205,16 @@ class ConnectionsController extends Controller
     public function acceptConnection(Request $request)
     {
         $connection = AlumniConnections::find($request->id);
+        $sender = $connection->sender;
+        $receiver = $connection->receiver;
         if ($connection) {
             $connection->update(['status' => 'accepted']);
+            $data = [
+            'name' => $sender->full_name,
+            'alumni_name' => $receiver->full_name,
+            'support_email' => env('SUPPORT_EMAIL'),
+         ];
+            Mail::to($sender->email)->queue(new AlumniAcceptRequestMail($data));
             return response()->json(['success' => true, 'message' => 'Connection accepted']);
         }
         return response()->json(['success' => false, 'message' => 'Connection not found'], 404);

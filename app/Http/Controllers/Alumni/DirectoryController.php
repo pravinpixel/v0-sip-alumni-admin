@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Alumni;
 
 use App\Http\Controllers\Controller;
-use App\Mail\AlumniShareContact;
+use App\Mail\AlumniShareContactMail;
 use App\Models\AlumniConnections;
 use App\Models\Alumnis;
 use App\Models\MobileOtp;
@@ -324,7 +324,7 @@ class DirectoryController extends Controller
             'requester' => $sender->full_name,
             'support_email' => env('SUPPORT_EMAIL'),
         ];
-        Mail::to($receiver->email)->queue(new AlumniShareContact($data));
+        Mail::to($receiver->email)->queue(new AlumniShareContactMail($data));
     
         return back()->with('success', 'Connection request sent successfully!');
     }
