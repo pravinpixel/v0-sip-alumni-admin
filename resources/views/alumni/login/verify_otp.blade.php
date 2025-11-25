@@ -76,7 +76,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            text-decoration: underline;
         }
 
         .resend-btn:disabled {
@@ -123,18 +122,14 @@
                         Back
                     </a>
 
-                    <h3 class="text-center fw-bold mb-2">Verify OTP</h3>
-                    <p class="text-center text-muted mb-4">
-                        Enter the 6-digit code sent to <strong>{{ session('verify_mobile', 'your mobile') }}</strong>
+                    <h3 class="text-left fw-bold mb-2">Verify OTP</h3>
+                    <p class="text-left text-muted mb-4">
+                        Enter the 6-digit code sent to +91 <strong>{{ session('verify_mobile', 'your mobile') }}</strong>
                     </p>
 
                     <form id="otp-form">
                         @csrf
                         <input type="hidden" name="mobile" value="{{ session('verify_mobile') }}">
-
-                        <div class="text-center mb-3">
-                            <span id="otp-error" class="error-message"></span>
-                        </div>
 
                         <div class="otp-inputs">
                             <input type="text" class="otp-input" maxlength="1" name="otp1" required>
@@ -146,7 +141,7 @@
                         </div>
 
                         <div class="d-grid mt-4">
-                            <button type="button" id="verify-otp-btn" class="btn" style="background-color:oklch(0.52 0.24 22); color:white;">
+                            <button type="button" id="verify-otp-btn" class="btn" style="background-color:oklch(0.52 0.24 22); color:white; opacity: 0.5;" disabled>
                                 <span class="indicator-label">Verify OTP</span>
                                 <span class="indicator-progress" style="display:none;">
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
@@ -155,7 +150,6 @@
                         </div>
 
                         <div class="text-center mt-3">
-                            <p class="text-muted mb-2">Didn't receive OTP?</p>
                             <button type="button" id="resend-otp-btn" class="resend-btn">Resend OTP</button>
                             <span id="countdown" class="text-muted" style="display:none;"></span>
                         </div>
@@ -169,11 +163,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
     <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
-    <script src="{{ asset('js/common.js') }}"></script>
+    <script src="{{ asset('js/alumniCommon.js') }}"></script>
 
     <script>
         let resendTimer;
-        let countdown = 60;
+        let countdown = 30;
 
         document.addEventListener('DOMContentLoaded', function() {
             const inputs = document.querySelectorAll('.otp-input');
@@ -183,29 +177,42 @@
 
             // OTP input functionality
             inputs.forEach((input, index) => {
-                input.addEventListener('input', (e) => {
-                    const value = e.target.value;
-
+                input.addEventListener('keypress', (e) => {
                     // Only allow numbers
-                    if (!/^\d*$/.test(value)) {
-                        e.target.value = '';
+                    if (!/^\d$/.test(e.key)) {
+                        e.preventDefault();
                         return;
                     }
+                    
+                    if (input.value.length >= 1) {
+                        e.preventDefault();
+                        return;
+                    }
+                });
+
+                input.addEventListener('input', (e) => {
+                    let value = e.target.value;
+
+                    value = value.replace(/\D/g, '').slice(0, 1);
+                    e.target.value = value;
 
                     if (value.length === 1) {
                         input.classList.add('filled');
                         if (index < inputs.length - 1) {
                             inputs[index + 1].focus();
+                        } else {
+                            input.blur();
                         }
                     } else {
                         input.classList.remove('filled');
                     }
 
-                    // Auto-submit when all fields are filled
+                    checkOTPComplete();
+
                     if (index === inputs.length - 1 && value.length === 1) {
                         const allFilled = Array.from(inputs).every(input => input.value.length === 1);
                         if (allFilled) {
-                            verifyOTP();
+                            setTimeout(() => verifyOTP(), 100);
                         }
                     }
                 });
@@ -215,6 +222,7 @@
                         inputs[index - 1].focus();
                         inputs[index - 1].value = '';
                         inputs[index - 1].classList.remove('filled');
+                        checkOTPComplete();
                     }
                 });
 
@@ -227,26 +235,47 @@
                             inputs[i].classList.add('filled');
                         }
                     });
+                    
+                    checkOTPComplete();
+                    
                     if (pastedData.length === 6) {
-                        inputs[5].focus();
-                        setTimeout(verifyOTP, 100);
+                        inputs[5].blur(); 
+                        setTimeout(() => verifyOTP(), 100);
+                    } else if (pastedData.length > 0) {
+                        const nextEmptyIndex = pastedData.length;
+                        if (nextEmptyIndex < inputs.length) {
+                            inputs[nextEmptyIndex].focus();
+                        }
                     }
                 });
             });
 
-            // Verify OTP button
             $('#verify-otp-btn').on('click', function(e) {
                 verifyOTP();
             });
 
-            // Resend OTP button
             $('#resend-otp-btn').on('click', function(e) {
                 resendOTP();
             });
 
-            // Start countdown for resend
             startResendCountdown();
         });
+
+        function checkOTPComplete() {
+            const inputs = document.querySelectorAll('.otp-input');
+            const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+            const verifyBtn = document.getElementById('verify-otp-btn');
+            
+            if (allFilled) {
+                verifyBtn.disabled = false;
+                verifyBtn.style.opacity = '1';
+                verifyBtn.style.cursor = 'pointer';
+            } else {
+                verifyBtn.disabled = true;
+                verifyBtn.style.opacity = '0.5';
+                verifyBtn.style.cursor = 'not-allowed';
+            }
+        }
 
         function verifyOTP() {
             // Collect OTP
@@ -257,16 +286,15 @@
             });
 
             if (otp.length !== 6) {
-                showError('Please enter complete 6-digit OTP');
+                showToast('Please enter complete 6-digit OTP', 'error');
                 otpInputs[0].focus();
                 return;
             }
 
-            // Get mobile number from session or hidden field
             const mobile = '{{ session("verify_mobile") }}';
 
             if (!mobile) {
-                showError('Session expired. Please request OTP again.');
+                showToast('Session expired. Please request OTP again.', 'error');
                 setTimeout(() => {
                     window.location.href = '{{ url("/") }}';
                 }, 2000);
@@ -275,7 +303,6 @@
 
             $('#verify-otp-btn .indicator-label').hide();
             $('#verify-otp-btn .indicator-progress').show();
-            clearMessages();
 
             // Prepare form data
             const formData = new FormData();
@@ -301,9 +328,8 @@
                     console.log('Success Response:', response);
 
                     if (response.success) {
-                        showSuccess(response.message || 'OTP verified successfully!');
+                        showToast(response.message || 'OTP verified successfully!', 'success');
 
-                        // Redirect after successful verification
                         setTimeout(() => {
                             if (response.redirect) {
                                 window.location.href = response.redirect;
@@ -312,7 +338,7 @@
                             }
                         }, 1000);
                     } else {
-                        showError(response.error || response.message || 'Invalid OTP');
+                        showToast(response.error || response.message || 'Invalid OTP', 'error');
                         clearOTPFields();
                     }
                 },
@@ -320,32 +346,28 @@
                     console.log('Error Status:', xhr.status);
                     console.log('Error Response:', xhr.responseJSON);
 
-                    // Handle different HTTP status codes
                     switch (xhr.status) {
                         case 400:
-                            // Bad Request - Client side errors
-                            showError(xhr.responseJSON?.error || 'Invalid OTP. Please try again.');
+                            showToast(xhr.responseJSON?.error || 'Invalid OTP. Please try again.', 'error');
                             break;
 
                         case 422:
-                            // Validation Errors
                             const errors = xhr.responseJSON.errors;
                             if (errors && errors.otp) {
-                                showError(errors.otp[0]);
+                                showToast(errors.otp[0], 'error');
                             } else if (xhr.responseJSON.error) {
-                                showError(xhr.responseJSON.error);
+                                showToast(xhr.responseJSON.error, 'error');
                             } else {
-                                showError('Invalid OTP. Please try again.');
+                                showToast('Invalid OTP. Please try again.', 'error');
                             }
                             break;
 
                         case 500:
-                            // Server Errors
-                            showError('Server error. Please try again later.');
+                            showToast('Server error. Please try again later.', 'error');
                             break;
 
                         default:
-                            showError('Something went wrong. Please try again.');
+                            showToast('Something went wrong. Please try again.', 'error');
                     }
                     clearOTPFields();
                 },
@@ -358,7 +380,6 @@
 
         function resendOTP() {
             $('#resend-otp-btn').prop('disabled', true);
-            clearMessages();
 
             const formData = new FormData();
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
@@ -377,27 +398,26 @@
                     console.log('Resend Success:', response);
 
                     if (response.success) {
-                        showSuccess(response.message || 'OTP sent successfully!');
+                        showToast(response.message || 'OTP sent successfully!', 'success');
                         clearOTPFields();
                         startResendCountdown();
                     } else {
-                        showError(response.error || 'Failed to send OTP');
+                        showToast(response.error || 'Failed to send OTP', 'error');
                         $('#resend-otp-btn').prop('disabled', false);
                     }
                 },
                 error: function(xhr) {
                     console.log('Resend Error:', xhr.responseJSON);
 
-                    // Handle different HTTP status codes for resend
                     switch (xhr.status) {
                         case 400:
-                            showError(xhr.responseJSON?.error || 'Invalid mobile number');
+                            showToast(xhr.responseJSON?.error || 'Invalid mobile number', 'error');
                             break;
                         case 500:
-                            showError('Server error. Please try again later.');
+                            showToast('Server error. Please try again later.', 'error');
                             break;
                         default:
-                            showError('Failed to resend OTP. Please try again.');
+                            showToast('Failed to resend OTP. Please try again.', 'error');
                     }
                     $('#resend-otp-btn').prop('disabled', false);
                 }
@@ -434,18 +454,7 @@
                 input.classList.remove('filled');
             });
             inputs[0].focus();
-        }
-
-        function showError(message) {
-            $('#otp-error').removeClass('success-message').addClass('error-message').text(message);
-        }
-
-        function showSuccess(message) {
-            $('#otp-error').removeClass('error-message').addClass('success-message').text(message);
-        }
-
-        function clearMessages() {
-            $('#otp-error').removeClass('error-message success-message').text('');
+            checkOTPComplete();
         }
     </script>
     @show
