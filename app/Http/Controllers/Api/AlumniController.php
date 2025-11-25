@@ -133,6 +133,8 @@ class AlumniController extends Controller
 
         $mobile = $request->mobile_number;
         $otp = rand(100000, 999999);
+        $smsMobile = '91' . $mobile;
+        $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 5 minutes. Please don't share this code.\nTeam - SIP Academy";
 
         // Check existing OTP record
         $existingOtp = MobileOtp::where('mobile_number', $mobile)->first();
@@ -154,6 +156,7 @@ class AlumniController extends Controller
                 'otp' => $otp,
                 'expires_at' => now()->addMinutes(5)
             ]);
+            sendsms($smsMobile, $message);
 
             return response()->json([
                 'success' => true,
@@ -167,6 +170,7 @@ class AlumniController extends Controller
                 'otp' => $otp,
                 'expires_at' => now()->addMinutes(5)
             ]);
+            sendsms($smsMobile, $message);
 
             return response()->json([
                 'success' => true,

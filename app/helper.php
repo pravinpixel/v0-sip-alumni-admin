@@ -36,11 +36,12 @@ if (!function_exists('sendsms')) {
     function sendsms($mobileno, $message){
 
     $message = urlencode($message);
-    $sender = 'SIPINT'; 
+
+    $sender = 'SIPIND'; 
     $apikey = '864112os7wco63l6z6381357h53oh57jk8';
     $baseurl = 'https://instantalerts.co/api/web/send?apikey='.$apikey;
 
-    $url = $baseurl.'&sender='.$sender.'&to='.$mobileno.'&message='.$message;    
+    $url = $baseurl.'&sender='.$sender.'&to='.$mobileno.'&message='.$message;
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_POST, false);
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -52,9 +53,11 @@ if (!function_exists('sendsms')) {
     if(!$response){
         $response = file_get_contents($url);
     }
+
+    return $response;
     
 }
 
-//call function
-sendsms('9585850324', 'Hello, This is a test message from spring edge');
+    //call function
+    //  sendsms('919585850324', 'Hello, This is a test message from spring edge');
 }
