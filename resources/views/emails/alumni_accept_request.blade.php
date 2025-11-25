@@ -16,6 +16,6 @@
 <p>Warm regards,<br>
 <strong>Alumni Portal System</strong><br>
 Phone: 044-42023331 / 42605609<br>
-Email: {{ $data['support_email'] }}</p>
+Email: {{ $data['support_email'] }}</p> 
 
 @endsection
