@@ -46,6 +46,10 @@ class AuthCheckController extends Controller
                 ]
             );
 
+           $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 10 minutes. Please don't share this code.\nTeam - SIP Academy";
+           $smsNumber = '91' . $mobile;
+           sendsms($smsNumber, $message);
+
             // Store mobile in session
             session(['verify_mobile' => $mobile]);
 
@@ -55,7 +59,7 @@ class AuthCheckController extends Controller
                 'success' => true,
                 'message' => 'OTP sent successfully',
                 'redirect' => route('verify.otp.page'),
-                'otp' => $otp // Remove this in production
+                // 'otp' => $otp 
             ]);
         } catch (\Exception $e) {
             Log::error('Send OTP Error: ' . $e->getMessage());

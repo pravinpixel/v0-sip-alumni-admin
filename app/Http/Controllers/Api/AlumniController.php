@@ -38,14 +38,14 @@ class AlumniController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-            $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
+            // $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
 
-            if (!$otpRecord || $otpRecord->is_verified == 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please verify OTP before registration.'
-                ], 400);
-            }
+            // if (!$otpRecord || $otpRecord->is_verified == 0) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Please verify OTP before registration.'
+            //     ], 400);
+            // }
             $cityId = $request->city_id;
 
             if ($request->city_id == "others") {
@@ -77,7 +77,7 @@ class AlumniController extends Controller
                 'status'             => 'active',
                 'image'              => asset('images/avatar/blank.png')
             ]);
-            $otpRecord->delete();
+            // $otpRecord->delete();
 
             Alumnis::where('is_directory_ribbon', '!=', 1)
                 ->orWhereNull('is_directory_ribbon')
@@ -134,7 +134,7 @@ class AlumniController extends Controller
         $mobile = $request->mobile_number;
         $otp = rand(100000, 999999);
         $smsMobile = '91' . $mobile;
-        $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 5 minutes. Please don't share this code.\nTeam - SIP Academy";
+        $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 10 minutes. Please don't share this code.\nTeam - SIP Academy";
 
         // Check existing OTP record
         $existingOtp = MobileOtp::where('mobile_number', $mobile)->first();
@@ -161,7 +161,7 @@ class AlumniController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'OTP resent successfully',
-                'otp' => $otp // (remove in production)
+                // 'otp' => $otp 
             ], 200);
         } else {
             // First time send OTP
@@ -175,7 +175,7 @@ class AlumniController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'OTP sent successfully',
-                'otp' => $otp // (remove in production)
+                // 'otp' => $otp
             ], 200);
         }
     }
