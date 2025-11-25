@@ -211,12 +211,12 @@ class DirectoryController extends Controller
 
                 ->editColumn('alumni', function ($row)  use ($alumniConnections) {
                     $status = $alumniConnections[$row->id] ?? null;
-                   $isAccepted = $status === 'accepted';
-                   if(!$isAccepted){
-                       $img = asset('images/avatar/blank.png');
-                   } else {
-                       $img = $row->image ? url("/storage/{$row->image}") : asset('images/avatar/blank.png'); 
-                   }
+                    $isAccepted = $status === 'accepted';
+                    if (!$isAccepted) {
+                        $img = asset('images/avatar/blank.png');
+                    } else {
+                        $img = $row->image ? url("/storage/{$row->image}") : asset('images/avatar/blank.png');
+                    }
                     $occ = $row->occupation->name ?? '—';
                     return '
             <div style="display:flex;align-items:center;gap:12px;">
@@ -282,7 +282,7 @@ class DirectoryController extends Controller
     public function sendRequest($receiverId)
     {
         $senderId = session('alumni.id');
-        
+
         $receiver = Alumnis::find($receiverId);
         $receiver->is_request_ribbon = 1;
         $receiver->save();
@@ -291,7 +291,6 @@ class DirectoryController extends Controller
             return back()->with('error', 'You cannot connect with yourself.');
         }
 
-        // Check if existing connection exists
         $existing = AlumniConnections::where(function ($q) use ($senderId, $receiverId) {
             $q->where('sender_id', $senderId)->where('receiver_id', $receiverId);
         })
@@ -300,32 +299,31 @@ class DirectoryController extends Controller
             })
             ->first();
 
-        // If exists and rejected → update to pending (RESHARE)
-        if ($existing && $existing->status == 'rejected') {
-            $existing->update(['status' => 'pending']);
-            return back()->with('success', 'Reshare request sent successfully!');
-        }
-
-        // If exists in any other state
-        if ($existing) {
-            return back()->with('info', 'Connection already exists.');
-        }
-
-        // Otherwise create new
-        AlumniConnections::create([
-            'sender_id' => $senderId,
-            'receiver_id' => $receiverId,
-            'status' => 'pending',
-        ]);
-
         $sender = Alumnis::find($senderId);
         $data = [
             'name' => $receiver->full_name,
             'requester' => $sender->full_name,
             'support_email' => env('SUPPORT_EMAIL'),
         ];
+
+        if ($existing && $existing->status == 'rejected') {
+            $existing->update(['status' => 'pending']);
+            Mail::to($receiver->email)->queue(new AlumniShareContactMail($data));
+            return back()->with('success', 'Reshare request sent successfully!');
+        }
+
+        if ($existing) {
+            return back()->with('info', 'Connection already exists.');
+        }
+
+        AlumniConnections::create([
+            'sender_id' => $senderId,
+            'receiver_id' => $receiverId,
+            'status' => 'pending',
+        ]);
+
         Mail::to($receiver->email)->queue(new AlumniShareContactMail($data));
-    
+
         return back()->with('success', 'Connection request sent successfully!');
     }
 }

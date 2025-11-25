@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Alumni;
 
 use App\Http\Controllers\Controller;
 use App\Mail\AlumniAcceptRequestMail;
+use App\Mail\AlumniRejectRequestMail;
 use App\Models\AlumniConnections;
 use App\Models\Alumnis;
 use App\Models\MobileOtp;
@@ -223,8 +224,16 @@ class ConnectionsController extends Controller
     public function rejectConnection(Request $request)
     {
         $connection = AlumniConnections::find($request->id);
+        $sender = $connection->sender;
+        $receiver = $connection->receiver;
         if ($connection) {
-            $connection->delete();
+            $data = [
+            'name' => $sender->full_name,
+            'alumni_name' => $receiver->full_name,
+            'support_email' => env('SUPPORT_EMAIL'),
+         ];
+            Mail::to($sender->email)->queue(new AlumniRejectRequestMail($data));
+            $connection->update(['status' => 'rejected']);
             return response()->json(['success' => true, 'message' => 'Connection rejected']);
         }
         return response()->json(['success' => false, 'message' => 'Connection not found'], 404);
