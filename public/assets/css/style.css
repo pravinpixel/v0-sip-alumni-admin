@@ -341,3 +341,9 @@ html, body {
   height: 100% !important;
   max-height: 200px !important;
 }
+
+#searchInput:focus {
+        border-color: #ba0028 !important; /* Turns border red on focus */
+        outline: none; /* Remove default outline */
+        box-shadow: 0 0 0 2px rgba(255,0,0,0.2); /* Optional: subtle red glow */
+    }

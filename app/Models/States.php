@@ -12,4 +12,9 @@ class States extends Model
     protected $table = 'states';
 
     public $timestamps = false;
+
+    public function city()
+    {
+        return $this->hasMany(Cities::class, 'state_id');
+    }
 }
