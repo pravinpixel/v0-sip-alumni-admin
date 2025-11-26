@@ -212,10 +212,11 @@ class DirectoryController extends Controller
                 ->editColumn('alumni', function ($row)  use ($alumniConnections) {
                     $status = $alumniConnections[$row->id] ?? null;
                     $isAccepted = $status === 'accepted';
+                    $alumni = Alumnis::find($row->id);
                     if (!$isAccepted) {
                         $img = asset('images/avatar/blank.png');
                     } else {
-                        $img = $row->image ? url("/storage/{$row->image}") : asset('images/avatar/blank.png');
+                        $img = $alumni->image_url ?? asset('images/avatar/blank.png');
                     }
                     $occ = $row->occupation->name ?? '—';
                     return '

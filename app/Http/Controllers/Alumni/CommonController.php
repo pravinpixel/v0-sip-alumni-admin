@@ -73,11 +73,18 @@ class CommonController extends Controller
             }
 
             if ($request->hasFile('image')) {
-                if ($alumni->image && Storage::disk('public')->exists($alumni->image)) {
-                    Storage::disk('public')->delete($alumni->image);
+                if (!empty($alumni->image)) {
+                    $parsed = parse_url($alumni->image);
+                    $path = ltrim($parsed['path'], '/'); 
+                    $relativePath = preg_replace('/^public\/storage\//', '', $path);
+
+                    if (Storage::disk('public')->exists($relativePath)) {
+                        Storage::disk('public')->delete($relativePath);
+                    }
                 }
                 $imagePath = $request->file('image')->store('alumni_profiles', 'public');
-                $alumni->image = $imagePath;
+                $fullUrl = url('public/storage/' . $imagePath);
+                $alumni->image = $fullUrl;
             }
 
             $alumni->save();
