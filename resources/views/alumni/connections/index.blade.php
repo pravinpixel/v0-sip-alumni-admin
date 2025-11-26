@@ -229,26 +229,32 @@
             info: false, // disable default info (we'll render custom)
             lengthChange: false,
             pageLength: 10,
-            ordering: false,
+            ordering: true,
             dom: 't', // minimal DOM (table only)
+            order: [[5, 'desc']],
             columns: [{
                     data: 'alumni',
                     name: 'alumni',
-                    orderable: false
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'email',
                     name: 'email',
-                    orderable: false
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'batch',
-                    name: 'batch'
+                    name: 'batch',
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'location',
                     name: 'location',
-                    orderable: false
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'action',
@@ -256,6 +262,7 @@
                     orderable: false,
                     searchable: false
                 },
+                { data: 'created_at', name: 'created_at', visible: false },
             ],
             drawCallback: function(settings) {
                 // update counts badge (if you return counts via separate API, you can set here)
@@ -273,26 +280,32 @@
             info: false,
             lengthChange: false,
             pageLength: 10,
-            ordering: false,
+            ordering: true,
             dom: 't',
+            order: [[5, 'desc']],
             columns: [{
                     data: 'alumni',
                     name: 'alumni',
-                    orderable: false
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'email',
                     name: 'email',
-                    orderable: false
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'batch',
-                    name: 'batch'
+                    name: 'batch',
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'location',
                     name: 'location',
-                    orderable: false
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'action',
@@ -300,6 +313,7 @@
                     orderable: false,
                     searchable: false
                 },
+                { data: 'created_at', name: 'created_at', visible: false },
             ]
         });
 
@@ -329,13 +343,20 @@
 
             // Show/hide info ribbon based on tab and database state
             if ($(this).data('tab') === 'requests') {
-                // Show ribbon only if database says it should be shown (is_request_ribbon = 1)
-                if (ribbonState == 1) {
-                    $('#infoRibbon').slideDown();
-                }
-            } else {
-                $('#infoRibbon').slideUp();
-            }
+
+    // Check if requests table has records
+    const hasRequests = requestsTable.data().count() > 0;
+
+    if (ribbonState == 1 && hasRequests) {
+        $('#infoRibbon').slideDown();
+    } else {
+        $('#infoRibbon').slideUp();
+    }
+
+} else {
+    $('#infoRibbon').slideUp();
+}
+
 
             // redraw table in case of column width issues
             if ($(this).data('tab') === 'connections') {
@@ -359,13 +380,12 @@
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Update the data attribute so it stays closed
                         $('#infoRibbon').data('ribbon-state', 0);
-                        console.log('Ribbon preference saved');
+                        showToast('Ribbon Closed Successfully!', 'success');
                     }
                 },
                 error: function(xhr) {
-                    console.error('Failed to update ribbon preference:', xhr.responseText);
+                    showToast('Failed to close ribbon: ' + xhr.responseText, 'error');
                 }
             });
         });
@@ -460,7 +480,7 @@
                 alumniModal.show();
             },
             error: function() {
-                alert('Unable to load profile details.');
+                showToast('Unable to load profile details.', 'error');
             }
         });
     }
@@ -470,26 +490,26 @@
             url: '/connections/accept/' + id,
             type: 'POST',
             success: function(data) {
-                // reload both tables to reflect changes
+                showToast(data.message);
                 connectionsTable.ajax.reload(null, false);
                 requestsTable.ajax.reload(null, false);
             },
             error: function() {
-                alert('Unable to accept connection request.');
+                showToast('Unable to accept connection request.', 'error');
             }
         });
     }
 
     function rejectRequest(id) {
-        if (!confirm('Are you sure you want to reject this connection request?')) return;
         $.ajax({
             url: '/connections/reject/' + id,
             type: 'POST',
             success: function(data) {
+                showToast(data.message);
                 requestsTable.ajax.reload(null, false);
             },
             error: function() {
-                alert('Unable to reject connection request.');
+                showToast('Unable to reject connection request.', 'error');
             }
         });
     }

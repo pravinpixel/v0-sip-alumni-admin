@@ -110,7 +110,7 @@ class ConnectionsController extends Controller
             })
             ->addColumn('location', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
-                return ($alumni->city?->name ?? '-') . ', ' . ($alumni->city?->state?->name ?? '-');
+                return ($alumni->city?->state?->name ?? '-') . ', ' . ($alumni->city?->name ?? '-');
             })
             ->addColumn('action', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
@@ -174,7 +174,7 @@ class ConnectionsController extends Controller
             })
             ->addColumn('email', fn($row) => $row->sender->email)
             ->editColumn('batch', fn($row) => '<span style="background-color:#ffd966;padding:4px 10px;border-radius:12px;font-weight:600;font-size:12px;color:#333;">' . $row->sender->year_of_completion . '</span>')
-            ->addColumn('location', fn($row) => $row->sender->city?->name . ', ' . $row->sender->city?->state?->name)
+            ->addColumn('location', fn($row) => $row->sender->city?->state?->name . ', ' . $row->sender->city?->name)
             ->addColumn('action', function ($row) {
                 return '
                     <div style="display:flex;gap:8px;">
@@ -216,7 +216,8 @@ class ConnectionsController extends Controller
             'support_email' => env('SUPPORT_EMAIL'),
          ];
             Mail::to($sender->email)->queue(new AlumniAcceptRequestMail($data));
-            return response()->json(['success' => true, 'message' => 'Connection accepted']);
+            $message = ($sender->full_name . ' invite accepted.');
+            return response()->json(['success' => true, 'message' => $message]);
         }
         return response()->json(['success' => false, 'message' => 'Connection not found'], 404);
     }
@@ -234,7 +235,8 @@ class ConnectionsController extends Controller
          ];
             Mail::to($sender->email)->queue(new AlumniRejectRequestMail($data));
             $connection->update(['status' => 'rejected']);
-            return response()->json(['success' => true, 'message' => 'Connection rejected']);
+            $message = ($sender->full_name . ' invite rejected.');
+            return response()->json(['success' => true, 'message' => $message]);
         }
         return response()->json(['success' => false, 'message' => 'Connection not found'], 404);
     }
