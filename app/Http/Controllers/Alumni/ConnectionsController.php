@@ -106,7 +106,7 @@ class ConnectionsController extends Controller
             ->addColumn('batch', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
                 $year = $alumni->year_of_completion ?? '-';
-                return '<span style="background-color:#ffd966;padding:4px 10px;border-radius:12px;font-weight:600;font-size:12px;color:#333;">' . $year . '</span>';
+                return '<span style="color:#B1040E;padding:2px 12px;border-radius:20px;font-size:11px;font-weight:600; border: 1px solid #F7C744; background-color: color-mix(in oklab, #F7C744 20%, transparent)">' . $year . '</span>';
             })
             ->addColumn('location', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
@@ -173,7 +173,7 @@ class ConnectionsController extends Controller
                     </div>';
             })
             ->addColumn('email', fn($row) => $row->sender->email)
-            ->editColumn('batch', fn($row) => '<span style="background-color:#ffd966;padding:4px 10px;border-radius:12px;font-weight:600;font-size:12px;color:#333;">' . $row->sender->year_of_completion . '</span>')
+            ->editColumn('batch', fn($row) => '<span style="color:#B1040E;padding:2px 12px;border-radius:20px;font-size:11px;font-weight:600; border: 1px solid #F7C744; background-color: color-mix(in oklab, #F7C744 20%, transparent)">' . $row->sender->year_of_completion . '</span>')
             ->addColumn('location', fn($row) => $row->sender->city?->state?->name . ', ' . $row->sender->city?->name)
             ->addColumn('action', function ($row) {
                 return '

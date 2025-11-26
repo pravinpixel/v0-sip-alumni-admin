@@ -73,16 +73,14 @@
     </div>
 
     {{-- Tab Navigation --}}
-    <div style="display: flex; gap: 0; margin-bottom: 20px;">
+    <div style=" margin-bottom: 20px;">
         <button class="tab-btn active" data-tab="connections"
-            style="background-color: #dc2626; color: white; border: none; padding: 12px 28px; border-radius: 8px 8px 0 0; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s;">
-            Connections <span id="connectionsCount"
-                style="background-color: rgba(255,255,255,0.3); padding: 2px 10px; border-radius: 12px; margin-left: 8px; font-size: 12px;">0</span>
+            style="background-color: #dc2626; color: white; border: none; padding: 8px 40px; border-radius: 3px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s;">
+            Connections (<span id="connectionsCount">0</span>)
         </button>
         <button class="tab-btn" data-tab="requests"
-            style="background-color: #e5e7eb; color: #6b7280; border: none; padding: 12px 28px; border-radius: 8px 8px 0 0; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s;">
-            Requests <span id="requestsCount"
-                style="background-color: #dc2626; color: white; padding: 2px 10px; border-radius: 12px; margin-left: 8px; font-size: 12px;">0</span>
+            style="background-color: #e5e7eb; color: #6b7280; border: none; padding: 8px 40px; border-radius: 3px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s;">
+            Requests (<span id="requestsCount">0</span>)
         </button>
     </div>
 
