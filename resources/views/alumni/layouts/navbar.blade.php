@@ -36,9 +36,11 @@
     }
 
     .nav-link:hover {
-        background-color: #e5e7eb;
-        color: #374151;
-        border-bottom: 3px solid #fbbf24;
+        background-color: #f4f5f7ff;
+        color: #fd3324ff;
+    }
+    .nav-link:hover i {
+        scale: 1.1;
     }
 
     .nav-link.active {
@@ -51,6 +53,7 @@
 
     .nav-link.active i {
         color: white;
+        scale: 1;
     }
 
     @media (max-width: 768px) {

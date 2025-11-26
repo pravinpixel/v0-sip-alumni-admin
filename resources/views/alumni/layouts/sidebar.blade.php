@@ -26,7 +26,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     <div class="profile-info">
         <div class="info-item">
             <div>
-                <i class="fa fa-graduation-cap info-icon"></i>
+                <i class="bi bi-mortarboard info-icon"></i>
             </div>
             <div class="info-content">
                 <span class="info-label">Year of Completion</span>
@@ -35,7 +35,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         </div>
 
         <div class="info-item">
-            <i class="fa fa-map-marker info-icon"></i>
+            <i class="bi bi-geo-alt info-icon"></i>
             <div class="info-content">
                 <span class="info-label">Location</span>
                 <div class="info-value">{{ $state->name ?? '-' }}, {{ $city->name ?? '-' }}</div>
@@ -43,7 +43,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         </div>
 
         <div class="info-item">
-            <i class="fa fa-envelope info-icon"></i>
+            <i class="bi bi-envelope info-icon"></i>
             <div class="info-content">
                 <span class="info-label">Email Address</span>
                 <div class="info-value">{{ $alumni->email ?? '-' }}</div>
@@ -51,7 +51,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         </div>
 
         <div class="info-item">
-            <i class="fa fa-phone info-icon"></i>
+            <i class="bi bi-telephone info-icon"></i>
             <div class="info-content">
                 <span class="info-label">Contact Number</span>
                 <div class="info-value">{{ $alumni->mobile_number ?? '-' }}</div>
@@ -59,7 +59,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         </div>
 
         <div class="info-item">
-            <i class="fa fa-briefcase info-icon"></i>
+            <i class="bi bi-briefcase info-icon"></i>
             <div class="info-content">
                 <span class="info-label">Current Occupation</span>
                 <div class="info-value">{{ $occupation->name ?? '-' }}</div>
@@ -69,7 +69,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     <!-- Edit Profile Button -->
     <button class="edit-profile-btn" onclick="openEditProfileModal()">
-        <i class="fa fa-pencil"></i>
+        <i class="fa-regular fa-pen-to-square"></i>
         Edit Profile
     </button>
 </div>
