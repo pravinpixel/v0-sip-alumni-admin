@@ -26,6 +26,31 @@
         display: none !important;
     }
 
+    table.dataTable.order-column>tbody tr>.sorting_1,
+table.dataTable.order-column>tbody tr>.sorting_2,
+table.dataTable.order-column>tbody tr>.sorting_3,
+table.dataTable.display>tbody tr>.sorting_1,
+table.dataTable.display>tbody tr>.sorting_2,
+table.dataTable.display>tbody tr>.sorting_3 {
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+table.dataTable.stripe tbody tr.odd,
+table.dataTable.display tbody tr.odd,
+table.dataTable.stripe tbody tr.even,
+table.dataTable.display tbody tr.even {
+    background-color: transparent !important;
+}
+table.dataTable tbody tr > .sorting_1,
+table.dataTable tbody tr > .sorting_2,
+table.dataTable tbody tr > .sorting_3 {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+
+
     /* Custom sorting arrows using Font Awesome */
     #alumniTable thead th.sorting,
     #alumniTable thead th.sorting_asc,
@@ -60,27 +85,15 @@
         font-size: 12px;
     }
 
-    /* Alternating row colors - stronger selectors */
-    #alumniTable tbody tr.odd,
-    #alumniTable tbody tr:nth-child(odd) {
-        background-color: #f3f4f6 !important;
-    }
+    #alumniTable tbody tr,
+#alumniTable tbody td {
+    background: none !important;
+}
+#alumniTable tbody tr:hover td {
+    background: none !important;
+}
 
-    #alumniTable tbody tr.even,
-    #alumniTable tbody tr:nth-child(even) {
-        background-color: #ffffff !important;
-    }
 
-    /* Override DataTables stripe class */
-    table.dataTable.stripe tbody tr.odd,
-    table.dataTable.display tbody tr.odd {
-        background-color: #f3f4f6 !important;
-    }
-
-    table.dataTable.stripe tbody tr.even,
-    table.dataTable.display tbody tr.even {
-        background-color: #ffffff !important;
-    }
 
     /* CRITICAL: Remove sorted column background - all variations */
     table.dataTable.display tbody tr.odd > .sorting_1,
@@ -572,6 +585,8 @@
         const table = $('#alumniTable').DataTable({
             processing: true,
             serverSide: true,
+            stripeClasses: [],         
+            orderClasses: false,
             ajax: {
                 url: "{{ route('alumni.directory.data') }}",
                 data: function(d) {
@@ -604,20 +619,16 @@
             ordering: true,
             lengthChange: false,
             pagelength: 10,
-            scrollX: true,
             order: [[0, 'desc']],
             dom: 't',
-            createdRow: function(row, data, dataIndex) {
-                // Apply alternating row colors
-                if (dataIndex % 2 === 0) {
-                    $(row).css('background-color', '#ffffff');
-                } else {
-                    $(row).css('background-color', '#f3f4f6');
-                }
-            }
         });
 
         table.on('draw', function() {
+            // Force remove sorted column background colors
+            $('#alumniTable tbody td').css('background-color', '');
+            $('#alumniTable tbody tr.odd td').css('background-color', '');
+            $('#alumniTable tbody tr.even td').css('background-color', '');
+            
             let info = table.page.info();
 
             let html = `

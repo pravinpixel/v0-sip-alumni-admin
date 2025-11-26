@@ -1,6 +1,120 @@
 @extends('alumni.layouts.index')
 
 @section('content')
+<style>
+    /* Multi-select dropdown styles */
+    .multi-select-container {
+        position: relative;
+        cursor: pointer !important;
+    }
+
+    .multi-select-display {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 40px;
+        transition: all 0.2s;
+        background: white;
+    }
+
+    .multi-select-display * {
+        cursor: pointer !important;
+    }
+
+    .multi-select-display .placeholder {
+        color: #6b7280;
+        flex: 1;
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    .multi-select-display:hover {
+        border-color: #9ca3af;
+        background-color: #f9fafb;
+    }
+
+    .multi-select-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        margin-top: 4px;
+        max-height: 250px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .multi-select-dropdown.active {
+        display: block;
+    }
+
+    .multi-select-option {
+        padding: 10px 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background-color 0.2s;
+    }
+
+    .multi-select-option:hover {
+        background-color: #f3f4f6;
+    }
+
+    .multi-select-option input[type="checkbox"] {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        accent-color: #dc2626;
+    }
+
+    .multi-select-option label {
+        flex: 1;
+        font-size: 14px;
+        color: #374151;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .selected-tag {
+        background: #dc2626;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 13px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .selected-tag button {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        padding: 0;
+        font-weight: 700;
+    }
+
+    .selected-tag button:hover {
+        opacity: 0.8;
+    }
+</style>
+
     @include('alumni.modals.view-thread-modal')
     <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white">
         {{-- Header --}}
@@ -45,21 +159,19 @@
 
         {{-- Filter Section --}}
         <div id="filterSection"
-            style="display: none; background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            style="display: none; background: #fbf9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
                 <div>
                     <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
                         Date Range
                     </label>
-                    <select id="filterDateRange"
-                        style="width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; background: white; cursor: pointer;"
-                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
-                        <option value="">Select date range</option>
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="year">This Year</option>
-                    </select>
+                    <div class="multi-select-container" data-filter="dateRange">
+                        <div class="multi-select-display">
+                            <span class="placeholder">Select date range</span>
+                            <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                        </div>
+                        <div class="multi-select-dropdown"></div>
+                    </div>
                 </div>
                 <div>
                     <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
@@ -78,38 +190,45 @@
                     <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
                         Batch Year
                     </label>
-                    <select id="filterBatchYear"
-                        style="width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; background: white; cursor: pointer;"
-                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
-                        <option value="">Select batch years</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                        <option value="2021">2021</option>
-                        <option value="2020">2020</option>
-                    </select>
+                    <div class="multi-select-container" data-filter="batch">
+                        <div class="multi-select-display">
+                            <span class="placeholder">Select batch years</span>
+                            <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                        </div>
+                        <div class="multi-select-dropdown"></div>
+                    </div>
                 </div>
                 <div>
                     <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
                         Post Type
                     </label>
-                    <select id="filterPostType"
-                        style="width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; background: white; cursor: pointer;"
-                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
-                        <option value="">Select post type</option>
-                        <option value="discussion">Discussion</option>
-                        <option value="question">Question</option>
-                        <option value="announcement">Announcement</option>
-                        <option value="event">Event</option>
-                    </select>
+                    <div class="multi-select-container" data-filter="postType">
+                        <div class="multi-select-display">
+                            <span class="placeholder">Select post type</span>
+                            <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                        </div>
+                        <div class="multi-select-dropdown"></div>
+                    </div>
                 </div>
             </div>
+        </div>
+
+        {{-- Selected Filters Display --}}
+        <div id="selectedFiltersDisplay" style="display: none; margin-bottom: 20px;">
+            <div class="selected-tags" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
         </div>
 
         <div id="forumPostsContainer"></div>
     </div>
     <script>
+        let selectedFilters = {
+            dateRange: [],
+            batch: [],
+            postType: []
+        };
+
         document.addEventListener("DOMContentLoaded", function () {
+            initializeMultiSelect();
             loadForumPosts();
         });
 
@@ -143,11 +262,140 @@
         });
 
         // Filter change listeners
-        ['filterDateRange', 'filterSortBy', 'filterBatchYear', 'filterPostType'].forEach(id => {
+        ['filterDateRange', 'filterSortBy'].forEach(id => {
             document.getElementById(id).addEventListener('change', function() {
                 loadForumPosts();
             });
         });
+
+        // Initialize multi-select dropdowns
+        function initializeMultiSelect() {
+            const filterData = {
+                dateRange: ['Today', 'Last 7 Days', 'Last 30 Days'],
+                batch: ['2024', '2023', '2022', '2021', '2020', '2019', '2018'],
+                postType: ['Discussion', 'Question', 'Announcement', 'Event']
+            };
+
+            Object.keys(filterData).forEach(filterType => {
+                const container = document.querySelector(`.multi-select-container[data-filter="${filterType}"]`);
+                if (!container) return;
+
+                const display = container.querySelector('.multi-select-display');
+                const dropdown = container.querySelector('.multi-select-dropdown');
+
+                // Populate dropdown
+                filterData[filterType].forEach(value => {
+                    const option = document.createElement('div');
+                    option.className = 'multi-select-option';
+                    option.innerHTML = `
+                        <input type="checkbox" id="${filterType}-${value}" value="${value}">
+                        <label for="${filterType}-${value}">${value}</label>
+                    `;
+                    dropdown.appendChild(option);
+
+                    const checkbox = option.querySelector('input');
+                    checkbox.addEventListener('change', function() {
+                        toggleFilter(filterType, value, this.checked);
+                    });
+                });
+
+                // Toggle dropdown
+                display.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    dropdown.classList.toggle('active');
+                    // Close other dropdowns
+                    document.querySelectorAll('.multi-select-dropdown').forEach(d => {
+                        if (d !== dropdown) d.classList.remove('active');
+                    });
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function() {
+                document.querySelectorAll('.multi-select-dropdown').forEach(d => {
+                    d.classList.remove('active');
+                });
+            });
+        }
+
+        function toggleFilter(filterType, value, isChecked) {
+            if (isChecked) {
+                if (!selectedFilters[filterType].includes(value)) {
+                    selectedFilters[filterType].push(value);
+                }
+            } else {
+                selectedFilters[filterType] = selectedFilters[filterType].filter(v => v !== value);
+            }
+            updateSelectedFiltersDisplay();
+            loadForumPosts();
+        }
+
+        function updateSelectedFiltersDisplay() {
+            const container = document.getElementById('selectedFiltersDisplay');
+            const tagsContainer = container.querySelector('.selected-tags');
+            const clearBtn = document.getElementById('clearAllFiltersBtn');
+            tagsContainer.innerHTML = '';
+
+            let hasFilters = false;
+
+            const filterLabels = {
+                dateRange: 'Date',
+                batch: 'Batch',
+                postType: 'Type'
+            };
+
+            Object.keys(selectedFilters).forEach(filterType => {
+                selectedFilters[filterType].forEach(value => {
+                    hasFilters = true;
+                    const tag = document.createElement('div');
+                    tag.className = 'selected-tag';
+                    tag.innerHTML = `
+                        <span>${filterLabels[filterType]}: ${value}</span>
+                        <button onclick="removeFilter('${filterType}', '${value}')">×</button>
+                    `;
+                    tagsContainer.appendChild(tag);
+                });
+            });
+
+            container.style.display = hasFilters ? 'block' : 'none';
+            
+            // Show/hide clear all filters button
+            if (clearBtn) {
+                clearBtn.style.display = hasFilters ? 'flex' : 'none';
+            }
+        }
+
+        function removeFilter(filterType, value) {
+            selectedFilters[filterType] = selectedFilters[filterType].filter(v => v !== value);
+            
+            // Uncheck the checkbox
+            const checkbox = document.querySelector(`#${filterType}-${value}`);
+            if (checkbox) checkbox.checked = false;
+            
+            updateSelectedFiltersDisplay();
+            loadForumPosts();
+        }
+
+        function clearAllFilters() {
+            // Reset all multi-select filters
+            selectedFilters = {
+                dateRange: [],
+                batch: [],
+                postType: []
+            };
+
+            // Uncheck all checkboxes
+            document.querySelectorAll('.multi-select-option input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Reset single-select filter
+            document.getElementById('filterSortBy').value = 'created_at';
+
+            // Update display and reload posts
+            updateSelectedFiltersDisplay();
+            loadForumPosts();
+        }
 
         function loadForumPosts() {
             const container = document.getElementById('forumPostsContainer');
@@ -159,17 +407,27 @@
             const searchTerm = document.getElementById('searchInput').value;
             if (searchTerm) params.append('search', searchTerm);
 
-            const dateRange = document.getElementById('filterDateRange').value;
-            if (dateRange) params.append('date_range', dateRange);
-
             const sortBy = document.getElementById('filterSortBy').value;
             if (sortBy) params.append('sort_by', sortBy);
 
-            const batchYear = document.getElementById('filterBatchYear').value;
-            if (batchYear) params.append('batch_year', batchYear);
+            // Add multi-select filters
+            if (selectedFilters.dateRange.length > 0) {
+                selectedFilters.dateRange.forEach(range => {
+                    params.append('date_range[]', range);
+                });
+            }
 
-            const postType = document.getElementById('filterPostType').value;
-            if (postType) params.append('post_type', postType);
+            if (selectedFilters.batch.length > 0) {
+                selectedFilters.batch.forEach(year => {
+                    params.append('batch_year[]', year);
+                });
+            }
+
+            if (selectedFilters.postType.length > 0) {
+                selectedFilters.postType.forEach(type => {
+                    params.append('post_type[]', type);
+                });
+            }
 
             if (params.toString()) {
                 url += '?' + params.toString();
@@ -268,10 +526,17 @@
                         `}
 
                         <div style="margin-bottom: 16px; padding-right: 80px;">
-                            <h2 style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;">
+                            <a onclick="openThreadModal(${post.id})">
+                              <h2 
+                                style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;"
+                                onmouseover="this.style.textDecoration='underline';"
+                                onmouseout="this.style.textDecoration='none'; this.style.color='#dc2626';"
+                              >
                                 ${escapeHtml(title)}
-                            </h2>
+                              </h2>
+                            </a>
                         </div>
+
 
                         <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
                              ${escapeHtml(description)}

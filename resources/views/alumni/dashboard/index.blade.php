@@ -1,6 +1,39 @@
 @extends('alumni.layouts.index')
 
 @section('content')
+    <style>
+        .dashboard-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .community-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .community-posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .community-posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
     <div style="max-width: 1400px; margin: 0 auto; background: white; padding: 20px;">
         {{-- Header --}}
         <div style="margin-bottom: 32px;">
@@ -42,19 +75,27 @@
             ];
         @endphp
 
-        <div
-            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px;">
+        <div class="dashboard-stats-grid">
             @foreach($quickStats as $stat)
-                <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; padding: 24px; transition: all 0.3s; cursor: pointer;"
+                <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; padding: 24px; transition: all 0.3s; cursor: pointer; position: relative;"
                     onmouseover="this.style.boxShadow='0 10px 25px rgba(0,0,0,0.1)'; this.style.transform='translateY(-2px)';"
                     onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)';">
-                    <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 24px;">
+                    
+                    
+
+                    {{-- Icon --}}
+                    <div style="margin-bottom: 20px; display:flex">
                         <div
-                            style="background: {{ $stat['bgColor'] }}; padding: 12px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            style="background: {{ $stat['bgColor'] }}; padding: 12px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block;">
                             <i class="fas {{ $stat['icon'] }}" style="color: white; font-size: 20px;"></i>
                         </div>
-                        <i class="fas fa-trending-up" style="color: #10b981; font-size: 18px;"></i>
+                        {{-- Arrow in top-right corner --}}
+                        <div style="position: absolute; top: 20px; right: 20px;">
+                             <i class="fa-solid fa-arrow-trend-up" style="color: #10b981; font-size: 16px;"></i>
+                        </div>
                     </div>
+
+                    {{-- Content --}}
                     <div>
                         <h3 style="font-size: 36px; font-weight: 700; color: #111827; margin-bottom: 8px;">{{ $stat['value'] }}
                         </h3>
@@ -82,7 +123,7 @@
                 </a>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+            <div class="community-posts-grid">
                 @forelse($topPosts as $post)
                     <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; padding: 24px; transition: all 0.3s;"
                         onmouseover="this.style.boxShadow='0 10px 25px rgba(0,0,0,0.1)';"

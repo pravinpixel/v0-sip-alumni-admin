@@ -231,7 +231,7 @@ class DirectoryController extends Controller
 
                 ->addColumn('batch', function ($row) {
                     return '
-            <span style="color:#B1040E;padding:2px 12px;border-radius:20px;font-size:12px;font-weight:600; border: 1px solid #F7C744">
+            <span style="color:#B1040E;padding:2px 12px;border-radius:20px;font-size:11px;font-weight:600; border: 1px solid #F7C744; background-color: color-mix(in oklab, #F7C744 20%, transparent)">
                 ' . ($row->year_of_completion ?? '—') . '
             </span>';
                 })
@@ -246,21 +246,23 @@ class DirectoryController extends Controller
                     if (!$status) {
                         return '<form method="POST" action="' . route('alumni.send.request', $row->id) . '">' .
                             csrf_field() . '
-                <button style="background-color:#c41e3a;color:white;padding:7px 14px;border:none;border-radius:4px;font-size:12px;font-weight:600;">
+                <button style="background-color:#c41e3a;color:white;padding:6px 12px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">
                     Share Contact
                 </button></form>';
                     } elseif ($status == 'pending') {
-                        return '<button style="background-color:#fff3cd;color:#856404;padding:7px 14px;border:none;border-radius:4px;font-size:12px;font-weight:600;">Contact Shared</button>';
+                        return '<button style="background-color:#e5e7eb;color:#6b7280;padding:4px 12px;border:none;border-radius:16px;font-size:12px;font-weight:600;cursor:default;">Contact Shared</button>';
                     } elseif ($status == 'accepted') {
-                        return '<button style="background-color:#ff8c42;color:white;padding:7px 14px;border:none;border-radius:4px;font-size:12px;font-weight:600;">Contact Accepted</button>';
+                        return '<button style="background-color:#f59e0b;color:#000;padding:4px 12px;border:none;border-radius:16px;font-size:12px;font-weight:600;cursor:default;">Contact Accepted</button>';
                     } elseif ($status == 'rejected') {
-                        return '<div style="display:flex;align-items:center;gap:8px;">
-                        <span style="background-color:#f8d7da;color:#721c24;padding:7px 14px;border-radius:4px;font-size:12px;font-weight:600;">
+                        return '<div style="display:flex;align-items:center;gap:6px;">
+                        <span style="background-color:#fee2e2;color:#dc2626;padding:4px 8px;border-radius:16px;font-size:12px;font-weight:600;">
                             Contact Rejected
                         </span>
                         <form method="POST" action="' . route('alumni.send.request', $row->id) . '" style="margin:0;">' .
                             csrf_field() . '
-                            <button type="submit" style="background:white;color:#c41e3a;padding:7px 14px;border:1px solid #c41e3a;border-radius:4px;font-size:12px;font-weight:600;">↻ Reshare</button>
+                            <button type="submit" style="background:white;color:#dc2626;padding:6px;border:2px solid #dc2626;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                                <i class="fas fa-sync-alt"></i> Reshare
+                            </button>
                         </form>
                     </div>';
                     }
