@@ -108,23 +108,6 @@
 
         <div id="forumPostsContainer"></div>
     </div>
-    <style>
-        .toast-notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #10b981;
-            color: white;
-            padding: 16px 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            animation: slideInUp 0.3s ease;
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-    </style>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             loadForumPosts();

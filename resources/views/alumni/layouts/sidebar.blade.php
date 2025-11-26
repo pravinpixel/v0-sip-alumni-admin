@@ -25,7 +25,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     <!-- Profile Info -->
     <div class="profile-info">
         <div class="info-item">
-            <i class="fa fa-graduation-cap info-icon"></i>
+            <div>
+                <i class="fa fa-graduation-cap info-icon"></i>
+            </div>
             <div class="info-content">
                 <span class="info-label">Year of Completion</span>
                 <div class="info-value">{{ $alumni->year_of_completion ?? '-' }}</div>

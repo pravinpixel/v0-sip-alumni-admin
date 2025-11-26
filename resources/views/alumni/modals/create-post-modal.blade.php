@@ -272,34 +272,6 @@
         cursor: not-allowed;
     }
 
-    /* Toast Notification */
-    .toast-notification {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #10b981;
-        color: white;
-        padding: 16px 24px;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        animation: slideInUp 0.3s ease;
-        z-index: 3000;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    @keyframes slideInUp {
-        from {
-            transform: translateY(100px);
-            opacity: 0;
-        }
-
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
 </style>
 
 <!-- Quill Rich Text Editor CSS -->
@@ -357,22 +329,6 @@
                 quill.setContents([]);
             }
         }
-    }
-
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        toast.className = 'toast-notification';
-        toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
-        toast.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-            <span>${message}</span>
-        `;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.style.animation = 'slideOutDown 0.3s ease';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
     }
 
     function submitPost() {

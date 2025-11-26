@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Alumni;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AdminApprovalMail;
+use App\Mail\AlumniCreatePostMail;
+use App\Models\Alumnis;
 use App\Models\ForumReplies;
 use App\Models\ForumPost;
 use App\Models\PostLikes;
@@ -10,6 +13,7 @@ use App\Models\PostPinned;
 use App\Models\PostViews;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ForumsController extends Controller
@@ -152,6 +156,7 @@ class ForumsController extends Controller
     {
         try {
             $alumniId = session('alumni.id');
+            $alumni = Alumnis::find($alumniId);
 
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
@@ -175,6 +180,20 @@ class ForumsController extends Controller
                 'labels' => $request->labels,
                 'status' => 'pending',
             ]);
+            // Send email alumni
+            $data = [
+                'name' => $alumni->full_name,
+                'title' => $request->title,
+                'support_email' => env('SUPPORT_EMAIL'),
+            ];
+            Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
+
+            // Send email admin
+            // $dataAdmin = [
+            //     'name' => $alumni->full_name,
+            //     'support_email' => env('SUPPORT_EMAIL'),
+            // ];
+            // Mail::to($alumni->email)->queue(new AdminApprovalMail($dataAdmin));
 
             return response()->json([
                 'success' => true,

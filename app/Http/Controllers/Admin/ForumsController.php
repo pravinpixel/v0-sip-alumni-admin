@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AlumniApprovedPostMail;
 use App\Models\ForumPost;
 use App\Models\ForumReplies;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
 
 class ForumsController extends Controller
@@ -352,8 +354,17 @@ class ForumsController extends Controller
         try {
             $id = $request->id;
             $post = ForumPost::findOrFail($id);
+            $alumni = $post->alumni;
             if($request->status == 'approved'){
                 $post->status = 'approved';
+                if($alumni->notify_admin_approval == 1){
+                    $data = [
+                        'name' => $alumni->full_name,
+                        'title' => $post->title,
+                        'support_email' => env('SUPPORT_EMAIL'),
+                    ];
+                    Mail::to($alumni->email)->send(new AlumniApprovedPostMail($data));
+                }
             } elseif($request->status == 'rejected'){
                 $post->status = 'rejected';
             } elseif($request->status == 'removed_by_admin'){

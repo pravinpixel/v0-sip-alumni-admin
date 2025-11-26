@@ -109,10 +109,9 @@
 
         .info-item {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             gap: 12px;
-            padding: 12px 0;
-            border-bottom: 1px solid #f9fafb;
+            padding: 4px 0;
         }
 
         .info-item:last-child {
