@@ -12,10 +12,97 @@
         background: transparent !important;
         color: white !important;
         border: none !important;
+        position: relative !important;
+        padding-right: 30px !important;
+    }
+
+    /* Hide default DataTables sorting arrows */
+    table.dataTable thead th.sorting:before,
+    table.dataTable thead th.sorting_asc:before,
+    table.dataTable thead th.sorting_desc:before,
+    table.dataTable thead th.sorting:after,
+    table.dataTable thead th.sorting_asc:after,
+    table.dataTable thead th.sorting_desc:after {
+        display: none !important;
+    }
+
+    /* Custom sorting arrows using Font Awesome */
+    #alumniTable thead th.sorting,
+    #alumniTable thead th.sorting_asc,
+    #alumniTable thead th.sorting_desc {
+        cursor: pointer !important;
+    }
+
+    #alumniTable thead th.sorting::after {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: "\f0dc";
+        margin-left: 8px;
+        opacity: 0.5;
+        font-size: 12px;
+    }
+
+    #alumniTable thead th.sorting_asc::after {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: "\f0de";
+        margin-left: 8px;
+        opacity: 1;
+        font-size: 12px;
+    }
+
+    #alumniTable thead th.sorting_desc::after {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        content: "\f0dd";
+        margin-left: 8px;
+        opacity: 1;
+        font-size: 12px;
+    }
+
+    /* Alternating row colors - stronger selectors */
+    #alumniTable tbody tr.odd,
+    #alumniTable tbody tr:nth-child(odd) {
+        background-color: #f3f4f6 !important;
+    }
+
+    #alumniTable tbody tr.even,
+    #alumniTable tbody tr:nth-child(even) {
+        background-color: #ffffff !important;
+    }
+
+    /* Override DataTables stripe class */
+    table.dataTable.stripe tbody tr.odd,
+    table.dataTable.display tbody tr.odd {
+        background-color: #f3f4f6 !important;
+    }
+
+    table.dataTable.stripe tbody tr.even,
+    table.dataTable.display tbody tr.even {
+        background-color: #ffffff !important;
+    }
+
+    /* CRITICAL: Remove sorted column background - all variations */
+    table.dataTable.display tbody tr.odd > .sorting_1,
+    table.dataTable.order-column.stripe tbody tr.odd > .sorting_1,
+    table.dataTable.display tbody tr.even > .sorting_1,
+    table.dataTable.order-column.stripe tbody tr.even > .sorting_1,
+    table.dataTable tbody td.sorting_1,
+    table.dataTable tbody td.sorting_2,
+    table.dataTable tbody td.sorting_3,
+    table.dataTable.display tbody tr > .sorting_1,
+    table.dataTable.display tbody tr > .sorting_2,
+    table.dataTable.display tbody tr > .sorting_3,
+    #alumniTable tbody td {
+        background-color: inherit !important;
     }
 
     #alumniTable tbody tr:hover {
         background-color: #f9fafb !important;
+    }
+
+    #alumniTable tbody tr:hover td {
+        background-color: transparent !important;
     }
 
     /* Remove DataTables default elements */
@@ -519,7 +606,15 @@
             pagelength: 10,
             scrollX: true,
             order: [[0, 'desc']],
-            dom: 't'
+            dom: 't',
+            createdRow: function(row, data, dataIndex) {
+                // Apply alternating row colors
+                if (dataIndex % 2 === 0) {
+                    $(row).css('background-color', '#ffffff');
+                } else {
+                    $(row).css('background-color', '#f3f4f6');
+                }
+            }
         });
 
         table.on('draw', function() {
