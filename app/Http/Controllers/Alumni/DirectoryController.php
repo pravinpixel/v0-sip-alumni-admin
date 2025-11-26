@@ -230,7 +230,7 @@ class DirectoryController extends Controller
 
                 ->addColumn('batch', function ($row) {
                     return '
-            <span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">
+            <span style="color:#B1040E;padding:2px 12px;border-radius:20px;font-size:12px;font-weight:600; border: 1px solid #F7C744">
                 ' . ($row->year_of_completion ?? '—') . '
             </span>';
                 })

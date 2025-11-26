@@ -65,7 +65,7 @@ class Alumnis extends Model
     public function getImageUrlAttribute()
     {
         if (!empty($this->image) && Storage::disk('public')->exists($this->image)) {
-            return url('storage/' . $this->image);
+            return url('public/storage/' . $this->image);
         }
 
         return asset('images/avatar/blank.png');
