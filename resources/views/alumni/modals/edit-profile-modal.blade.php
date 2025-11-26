@@ -437,11 +437,13 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             })
             .then(data => {
                 if (data.success) {
-                    alert('✅ ' + data.message);
+                    showToast(data.message);
                     closeEditProfileModal();
-                    location.reload();
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
                 } else {
-                    alert('⚠️ ' + (data.message || 'Failed to update profile'));
+                    showToast(data.message, 'error');
                 }
             })
             .catch(err => console.error('Error:', err))

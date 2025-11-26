@@ -106,16 +106,16 @@
                 <thead>
                     <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Alumni <i class="fas fa-sort" style="margin-left: 8px; font-size: 12px;"></i>
+                            Alumni 
                         </th>
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Email <i class="fas fa-sort" style="margin-left: 8px; font-size: 12px;"></i>
+                            Email 
                         </th>
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Batch <i class="fas fa-sort" style="margin-left: 8px; font-size: 12px;"></i>
+                            Batch 
                         </th>
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Location <i class="fas fa-sort" style="margin-left: 8px; font-size: 12px;"></i>
+                            Location 
                         </th>
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">Action</th>
                     </tr>
@@ -138,16 +138,16 @@
                 <thead>
                     <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Alumni <i class="fas fa-sort" style="margin-left: 8px; font-size: 12px;"></i>
+                            Alumni 
                         </th>
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Email <i class="fas fa-sort" style="margin-left: 8px; font-size: 12px;"></i>
+                            Email 
                         </th>
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Batch <i class="fas fa-sort" style="margin-left: 8px; font-size: 12px;"></i>
+                            Batch 
                         </th>
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Location <i class="fas fa-sort" style="margin-left: 8px; font-size: 12px;"></i>
+                            Location 
                         </th>
                         <th style="padding: 16px; font-weight: 600; text-align: center; border: none;">Action</th>
                     </tr>
