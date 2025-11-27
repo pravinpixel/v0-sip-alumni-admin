@@ -485,7 +485,7 @@
 
     function acceptRequest(id) {
         $.ajax({
-            url: '/connections/accept/' + id,
+            url: "{{ route('alumni.connections.accept', '') }}/" + id,
             type: 'POST',
             success: function(data) {
                 showToast(data.message);
@@ -500,7 +500,7 @@
 
     function rejectRequest(id) {
         $.ajax({
-            url: '/connections/reject/' + id,
+            url: "{{ route('alumni.connections.reject', '') }}/" + id,
             type: 'POST',
             success: function(data) {
                 showToast(data.message);
