@@ -152,15 +152,15 @@
                         <div
                             style="display: flex; align-items: center; gap: 16px; font-size: 14px; color: #6b7280; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
                             <div style="display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-eye"></i>
+                                <i class="far fa-eye"></i>
                                 <span>{{ $post['views'] }}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-heart"></i>
+                                <i class="far fa-heart"></i>
                                 <span>{{ $post['likes'] }}</span>
                             </div>
                             <div style="display: flex; align-items: center; gap: 4px;">
-                                <i class="fas fa-comment"></i>
+                                <i class="far fa-comment"></i>
                                 <span>{{ $post['comments'] }}</span>
                             </div>
                         </div>
