@@ -231,7 +231,7 @@ class DirectoryController extends Controller
 
                 ->addColumn('batch', function ($row) {
                     return '
-            <span style="color:#B1040E;padding:2px 12px;border-radius:20px;font-size:11px;font-weight:600; border: 1px solid #F7C744; background-color: color-mix(in oklab, #F7C744 20%, transparent)">
+            <span style="color:#B1040E;padding:2px 12px;border-radius:20px;font-size:11px;font-weight:700; border: 1px solid #F7C744; background-color: color-mix(in oklab, #F7C744 20%, transparent)">
                 ' . ($row->year_of_completion ?? '—') . '
             </span>';
                 })
