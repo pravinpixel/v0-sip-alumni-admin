@@ -45,6 +45,7 @@ Route::middleware('alumni.auth')->group(function () {
 
     // Profile routes
     Route::prefix('profile')->group(function () {
+        Route::get('/view/{id}', [CommonController::class, 'getAlumni'])->name('alumni.profile.view');
         Route::post('/update/{id}', [CommonController::class, 'updateProfile'])->name('alumni.profile.update');
     });
     Route::prefix('forums')->group(function () {
@@ -61,7 +62,6 @@ Route::middleware('alumni.auth')->group(function () {
         Route::post('/update-status', [ForumsController::class, 'updateStatus'])->name('alumni.update.status');
     });
     
-    Route::get('/alumni/{id}', [CommonController::class, 'getAlumni']);
 });
 
 Route::get('/view-thread/{id}', [ForumsController::class, 'viewThread'])->name('alumni.view.thread');

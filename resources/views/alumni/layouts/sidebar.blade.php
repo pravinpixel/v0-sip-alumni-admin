@@ -448,7 +448,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             return;
         }
 
-        fetch(`/alumni/${alumniId}`)
+        fetch(`{{ route('alumni.profile.view', '') }}/${alumniId}`)
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
