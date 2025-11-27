@@ -16,7 +16,7 @@
         padding-right: 30px !important;
     }
 
-    /* Hide default DataTables sorting arrows */
+    /* Hide default DataTables arrows */
     table.dataTable thead th.sorting:before,
     table.dataTable thead th.sorting_asc:before,
     table.dataTable thead th.sorting_desc:before,
@@ -25,6 +25,18 @@
     table.dataTable thead th.sorting_desc:after {
         display: none !important;
     }
+
+    /* Bootstrap Icons for sorting */
+    #alumniTable thead th.sorting::after {
+        content: "⇅";
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+    }
+
 
     table.dataTable.order-column>tbody tr>.sorting_1,
 table.dataTable.order-column>tbody tr>.sorting_2,
@@ -51,38 +63,12 @@ table.dataTable tbody tr > .sorting_3 {
 
 
 
-    /* Custom sorting arrows using Font Awesome */
+    /* Sortable columns styling */
     #alumniTable thead th.sorting,
     #alumniTable thead th.sorting_asc,
     #alumniTable thead th.sorting_desc {
         cursor: pointer !important;
-    }
-
-    #alumniTable thead th.sorting::after {
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        content: "\f0dc";
-        margin-left: 8px;
-        opacity: 0.5;
-        font-size: 12px;
-    }
-
-    #alumniTable thead th.sorting_asc::after {
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        content: "\f0de";
-        margin-left: 8px;
-        opacity: 1;
-        font-size: 12px;
-    }
-
-    #alumniTable thead th.sorting_desc::after {
-        font-family: "Font Awesome 5 Free";
-        font-weight: 900;
-        content: "\f0dd";
-        margin-left: 8px;
-        opacity: 1;
-        font-size: 12px;
+        padding-right: 5px !important;
     }
 
     #alumniTable tbody tr,
@@ -384,15 +370,19 @@ table.dataTable tbody tr > .sorting_3 {
             <thead>
                 <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
                     <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                        Alumni 
-                    </th>
-                    <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                        Batch 
-                    </th>
-                    <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                        Location 
-                    </th>
-                    <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">Action</th>
+    Alumni 
+</th>
+
+<th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
+    Batch 
+</th>
+
+<th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
+    Location 
+</th>
+
+<th style="padding: 16px; font-weight: 600; text-align: left; border: none;">Action</th>
+
                 </tr>
             </thead>
             <tbody></tbody>
@@ -613,21 +603,43 @@ table.dataTable tbody tr > .sorting_3 {
                     orderable: false,
                     searchable: false
                 },
+                { data: 'created_at', name: 'created_at', visible: false },
             ],
             paging: true,
             searching: true,
             ordering: true,
             lengthChange: false,
             pagelength: 10,
-            order: [[0, 'desc']],
+            order: [[4, 'desc']],
             dom: 't',
         });
 
+        // Function to update sorting icons
+        function updateSortIcons() {
+            $('#alumniTable thead th').each(function() {
+                const $th = $(this);
+                
+                $th.find('.sort-icon').remove(); // Remove existing icons
+                
+                // Check specific sorting states first (before generic 'sorting')
+                if ($th.hasClass('sorting_asc')) {
+                    $th.append(' <i class="bi bi-arrow-up sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
+                } else if ($th.hasClass('sorting_desc')) {
+                    $th.append(' <i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
+                } else if ($th.hasClass('sorting')) {
+                    $th.append(' <i class="bi bi-arrow-down-up sort-icon" style="color:rgba(255,255,255,0.6);font-size:13px;margin-left:6px;"></i>');
+                }
+            });
+        }
+
+        // Update icons on table draw
         table.on('draw', function() {
             // Force remove sorted column background colors
             $('#alumniTable tbody td').css('background-color', '');
             $('#alumniTable tbody tr.odd td').css('background-color', '');
             $('#alumniTable tbody tr.even td').css('background-color', '');
+            
+            updateSortIcons();
             
             let info = table.page.info();
 
@@ -666,6 +678,16 @@ table.dataTable tbody tr > .sorting_3 {
         $('#searchInput').on('keyup', function() {
             table.search(this.value).draw();
         });
+
+        // Update icons after sorting
+        table.on('order.dt', function() {
+            updateSortIcons();
+        });
+
+        // Initial icon setup
+        setTimeout(function() {
+            updateSortIcons();
+        }, 500);
 
         $('#filterToggleBtn').on('click', function() {
             const section = $('#filterSection');
