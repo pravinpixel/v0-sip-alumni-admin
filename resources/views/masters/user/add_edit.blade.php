@@ -21,7 +21,7 @@
         <!-- Header Section -->
         <div style="margin-bottom: 2rem;">
             <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                <a href="{{url('user')}}" style="color: #6b7280; text-decoration: none; font-size: 1.5rem;">
+                <a href="{{ route('user.index') }}" style="color: #6b7280; text-decoration: none; font-size: 1.5rem;">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0;">
