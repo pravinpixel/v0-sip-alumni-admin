@@ -63,11 +63,11 @@
 
     {{-- Search Bar (Right Aligned) --}}
     <div style="display: flex; justify-content: flex-end; margin-bottom: 4px;">
-        <div style="position: relative; width: 350px;">
+        <div style="position: relative; width: 250px;">
             <i class="fas fa-search"
-                style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 15px;"></i>
             <input type="text" id="globalSearch" placeholder="Search connections..."
-                style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none;"
+                style="width: 100%; padding: 8px 16px 8px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none;"
                 onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
         </div>
     </div>
@@ -85,7 +85,7 @@
     </div>
 
     {{-- Info Ribbon (Only for Requests Tab) --}}
-    <div id="infoRibbon" data-ribbon-state="{{ $isRequestRibbon ?? 0 }}" style="display: none; background: #dbeafe; border: 1px solid #93c5fd; border-radius: 8px; padding: 14px 20px; margin-bottom: 20px; position: relative;">
+    <div id="infoRibbon" data-ribbon-state="{{ $isRequestRibbon ?? 0 }}" style="display: none; background: #dbeafe; border: 1px solid #93c5fd; border-radius: 8px; padding: 8px 20px; margin-bottom: 20px; position: relative;">
         <div style="display: flex; align-items: center; gap: 12px;">
             <i class="fas fa-info-circle" style="color: #3b82f6; font-size: 18px;"></i>
             <p style="color: #1e40af; font-size: 14px; margin: 0; flex: 1;">
