@@ -289,10 +289,10 @@ table.dataTable tbody tr > .sorting_3 {
                 onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
         </div>
         <button id="filterToggleBtn"
-            style=" color: #374151; border: 1px solid #d1d5db; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; position: relative;"
+            style=" color: #374151; border: 1px solid #d1d5db; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; position: relative;"
             onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
-            <i class="fas fa-filter" style="font-size: 13px;"></i>
-            <span id="filterBtnText">Filter</i></span>
+            <i class="bi bi-funnel" style="font-size: 18px;"></i>
+            <span id="filterBtnText">Filter<i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i></span>
             <span id="filterCountBadge" style="display: none; background: #dc2626; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; margin-left: 4px;">0</span>
         </button>
         <button id="clearFiltersBtn"
@@ -352,13 +352,13 @@ table.dataTable tbody tr > .sorting_3 {
 
     {{-- Info Banner --}}
     <div id="directoryRibbon" data-ribbon-state="{{ $isDirectoryRibbon ?? 0 }}"
-        style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 16px; margin-bottom: 24px; display: {{ ($isDirectoryRibbon ?? 0) == 1 ? 'flex' : 'none' }}; justify-content: space-between; align-items: center;">
-        <p style="color: #991b1b; font-size: 14px; margin: 0;">
+        style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 10px; margin-bottom: 14px; display: {{ ($isDirectoryRibbon ?? 0) == 1 ? 'flex' : 'none' }}; justify-content: space-between; align-items: center;">
+        <p style="color: #1a0505ff; font-size: 14px; margin: 0;">
             You can share your contact with alumni. Once they accept, you can view their profile and contact info in the
             Connections menu.
         </p>
         <button id="closeDirectoryRibbon"
-            style="background: transparent; border: none; color: #991b1b; cursor: pointer; font-size: 20px; padding: 0 8px; line-height: 1;">
+            style="background: transparent; border: none; color: #160606ff; cursor: pointer; font-size: 20px; padding: 0 8px; line-height: 1;">
             ×
         </button>
     </div>
@@ -627,7 +627,7 @@ table.dataTable tbody tr > .sorting_3 {
                 } else if ($th.hasClass('sorting_desc')) {
                     $th.append(' <i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
                 } else if ($th.hasClass('sorting')) {
-                    $th.append(' <i class="bi bi-arrow-down-up sort-icon" style="color:rgba(255,255,255,0.6);font-size:13px;margin-left:6px;"></i>');
+                    $th.append(' <i class="bi bi-arrow-down-up sort-icon" style="color:white;font-size:13px;margin-left:6px;"></i>');
                 }
             });
         }
@@ -699,10 +699,10 @@ table.dataTable tbody tr > .sorting_3 {
             const icon = $(this).find('i');
             const btnText = $('#filterBtnText');
             if (isVisible) {
-                icon.removeClass('fa-times').addClass('fa-filter');
-                btnText.text('Filter');
+                icon.removeClass('fa-times').addClass('bi-funnel');
+                $('#filterBtnText').html('Filter <i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i>');
             } else {
-                btnText.text('Close Filters');
+                $('#filterBtnText').html('Close Filters <i class="fa-solid fa-chevron-up" style="margin-left: 10px;"></i>');
             }
         });
 
