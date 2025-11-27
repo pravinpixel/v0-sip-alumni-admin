@@ -433,9 +433,38 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     function openEditProfileModal() {
         const modal = document.getElementById('editProfileModal');
         if (modal) {
+            // Reset form state
+            isMobileVerified = false;
+            selectedFile = null;
+            window.removeImage = false;
+            
+            // Reset verify button
+            const verifyBtn = document.getElementById('verifyMobileBtn');
+            if (verifyBtn) {
+                verifyBtn.textContent = 'Verify';
+                verifyBtn.style.background = '#dc2626';
+                verifyBtn.disabled = true;
+                verifyBtn.style.opacity = '0.5';
+                verifyBtn.style.cursor = 'not-allowed';
+            }
+            
+            // Reset save button
+            const saveBtn = document.querySelector('.btn-save');
+            if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
+                saveBtn.style.cursor = 'pointer';
+            }
+            
+            // Hide OTP section
+            const otpSection = document.getElementById('otpSection');
+            if (otpSection) {
+                otpSection.style.display = 'none';
+            }
+            
             modal.classList.add('open');
             loadStates(); // ✅ first load all states
-            loadAlumniData(); // ✅ then load user info
+            loadAlumniData(); // ✅ then load user info (this will reload original data)
         }
     }
 
@@ -470,6 +499,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         form.querySelector('[data-field="email"]').value = alumni.email || '';
         form.querySelector('[data-field="mobile_number"]').value = alumni.mobile_number || '';
         form.querySelector('[data-field="occupation_id"]').value = alumni.occupation?.id || '';
+
+        // Store original mobile number
+        originalMobileNumber = alumni.mobile_number || '';
 
         if (stateSelect) {
             stateSelect.value = alumni.city?.state?.id || '';

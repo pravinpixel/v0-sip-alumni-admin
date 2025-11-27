@@ -20,18 +20,21 @@ class AuthCheckController extends Controller
     {
         try {
             $request->validate([
-                'number' => 'required|digits:10'
+                'number' => 'required|digits:10',
+                'is_login' => 'boolean'
             ]);
 
             $mobile = $request->number;
 
             // Check if mobile exists
-            $alumni = Alumnis::where('mobile_number', $mobile)->first();
-            if (!$alumni) {
-                return response()->json([
-                    'success' => false,
-                    'error' => 'Mobile number not registered'
-                ], 400); // 400 Bad Request for invalid mobile
+            if($request->is_login == 1) {
+                $alumni = Alumnis::where('mobile_number', $mobile)->first();
+                if (!$alumni) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Mobile number not registered'
+                    ], 400); // 400 Bad Request for invalid mobile
+                }
             }
 
             // Generate new OTP

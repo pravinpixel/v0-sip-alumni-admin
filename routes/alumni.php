@@ -47,6 +47,7 @@ Route::middleware('alumni.auth')->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('/view/{id}', [CommonController::class, 'getAlumni'])->name('alumni.profile.view');
         Route::post('/update/{id}', [CommonController::class, 'updateProfile'])->name('alumni.profile.update');
+        Route::post('/edit-verify-otp', [CommonController::class, 'editVerifyOtp'])->name('alumni.edit.verify.otp');
     });
     Route::prefix('forums')->group(function () {
         Route::get('/', [ForumsController::class, 'index'])->name('alumni.forums');

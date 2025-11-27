@@ -72,7 +72,7 @@
 
                         <div style="display: flex; justify-content: flex-end; gap: 12px;">
                             <button
-                                onclick="cancelReply()"
+                                onclick="closeThreadModal()"
                                 style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
                                 onmouseover="this.style.background='#f3f4f6'"
                                 onmouseout="this.style.background='white'">

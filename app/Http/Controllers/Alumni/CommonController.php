@@ -43,7 +43,22 @@ class CommonController extends Controller
                 'city_id' => 'required|exists:cities,id',
                 'state_id' => 'required|exists:states,id',
                 'occupation_id' => 'required|string|max:255',
-                'image' => 'nullable|image:jpeg,png,jpg,gif|max:2048',
+                'image' => 'nullable|image:jpeg,png,jpg,gif,webp|max:2048',
+            ], [
+                'full_name.required' => 'Full name is required.',
+                'year_of_completion.required' => 'Year of completion is required.',
+                'year_of_completion.digits' => 'Year of completion must be 4 digits.',
+                'email.required' => 'Email is required.',
+                'email.email' => 'Invalid email format.',
+                'email.unique' => 'Email already exists.',
+                'mobile_number.required' => 'Mobile number is required.',
+                'mobile_number.digits' => 'Mobile number must be 10 digits.',
+                'mobile_number.unique' => 'Mobile number already exists.',
+                'city_id.required' => 'City is required.',
+                'state_id.required' => 'State is required.',
+                'occupation_id.required' => 'Occupation is required.',
+                'image.image' => 'Invalid image format.',
+                'image.max' => 'Image size should not exceed 2MB.',
             ]);
 
             if ($validator->fails()) {
@@ -99,6 +114,56 @@ class CommonController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update profile: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function editVerifyOtp(Request $request)
+    {
+        try {
+            Log::info('OTP Verification Request:', $request->all());
+            $alumniId = session('alumni.id');
+
+            $request->validate([
+                'otp' => 'required|digits:6',
+                'mobile' => 'required|digits:10'
+            ]);
+
+            $mobile = $request->mobile;
+            $otp = $request->otp;
+
+            // Verify OTP
+            $otpRecord = MobileOtp::where('mobile_number', $mobile)
+                ->where('otp', $otp)
+                ->where('expires_at', '>', now())
+                ->first();
+
+            if (!$otpRecord) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Invalid OTP or OTP has expired'
+                ], 400);
+            }
+
+            // OTP verified - Store alumni in session instead of Auth
+            $otpRecord->is_verified = 1;
+            $otpRecord->save();
+            $otpRecord->delete();
+
+            $alumni = Alumnis::find($alumniId);
+            $alumni->mobile_number = $mobile;
+            $alumni->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP verified successfully',
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error('OTP Verification Error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => 'Server error'
             ], 500);
         }
     }

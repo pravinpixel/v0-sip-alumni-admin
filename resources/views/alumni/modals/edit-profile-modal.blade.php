@@ -62,8 +62,33 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 </div>
                 <div class="form-group">
                     <label>Contact Number</label>
-                    <input type="text" class="form-input" data-field="mobile_number" value="{{ $alumni->mobile_number ?? '' }}">
-                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <input type="text" class="form-input" data-field="mobile_number" id="mobileNumberInput" 
+                                   value="{{ $alumni->mobile_number ?? '' }}" 
+                                   maxlength="10" 
+                                   placeholder="Enter 10 digit mobile number"
+                                   oninput="validateMobileNumber(this)">
+                            <small class="error-message" style="color:red;font-size:12px;display:block;margin-top:4px;"></small>
+                        </div>
+                        <button type="button" id="verifyMobileBtn" class="btn-verify" disabled onclick="sendOTP()" 
+                                style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.5; white-space: nowrap;">
+                            Verify
+                        </button>
+                    </div>
+                    <div id="otpSection" style="display: none; margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;">
+                        <label style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 8px; display: block;">Enter OTP</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="otpInput" class="form-input" maxlength="6" placeholder="Enter 6 digit OTP" 
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                                   style="flex: 1;">
+                            <button type="button" onclick="verifyOTP()" class="btn-verify" 
+                                    style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                                Verify OTP
+                            </button>
+                        </div>
+                        <small id="otpTimer" style="color: #6b7280; font-size: 12px; display: block; margin-top: 6px;"></small>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>Current Occupation</label>
@@ -329,12 +354,194 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
 <script>
     let selectedFile = null;
+    let originalMobileNumber = '';
+    let isMobileVerified = false;
+    let otpTimer = null;
 
     function closeEditProfileModal() {
         const modal = document.getElementById('editProfileModal');
         if (modal) {
             modal.classList.remove('open');
         }
+        
+        // Reset OTP section
+        document.getElementById('otpSection').style.display = 'none';
+        document.getElementById('otpInput').value = '';
+        if (otpTimer) clearInterval(otpTimer);
+        
+        // Reset verify button
+        const verifyBtn = document.getElementById('verifyMobileBtn');
+        verifyBtn.textContent = 'Verify';
+        verifyBtn.style.background = '#dc2626';
+        verifyBtn.disabled = true;
+        verifyBtn.style.opacity = '0.5';
+        verifyBtn.style.cursor = 'not-allowed';
+        
+        // Reset save button
+        const saveBtn = document.querySelector('.btn-save');
+        saveBtn.disabled = false;
+        saveBtn.style.opacity = '1';
+        saveBtn.style.cursor = 'pointer';
+        
+        // Reset verification flag
+        isMobileVerified = false;
+        selectedFile = null;
+        window.removeImage = false;
+    }
+
+    // Mobile number validation
+    function validateMobileNumber(input) {
+        // Allow only numbers
+        input.value = input.value.replace(/[^0-9]/g, '');
+        
+        const mobileNumber = input.value;
+        const verifyBtn = document.getElementById('verifyMobileBtn');
+        const saveBtn = document.querySelector('.btn-save');
+        
+        // Check if number changed and is 10 digits
+        if (mobileNumber.length === 10 && mobileNumber !== originalMobileNumber) {
+            verifyBtn.disabled = false;
+            verifyBtn.style.cursor = 'pointer';
+            verifyBtn.style.opacity = '1';
+            verifyBtn.style.background = '#dc2626';
+            verifyBtn.textContent = 'Verify';
+            isMobileVerified = false;
+            
+            // Disable save button until verified
+            saveBtn.disabled = true;
+            saveBtn.style.cursor = 'not-allowed';
+            saveBtn.style.opacity = '0.5';
+        } else if (mobileNumber === originalMobileNumber) {
+            // Same number - no verification needed
+            verifyBtn.disabled = true;
+            verifyBtn.style.cursor = 'not-allowed';
+            verifyBtn.style.opacity = '0.5';
+            isMobileVerified = true;
+            
+            // Enable save button
+            saveBtn.disabled = false;
+            saveBtn.style.cursor = 'pointer';
+            saveBtn.style.opacity = '1';
+        } else {
+            verifyBtn.disabled = true;
+            verifyBtn.style.cursor = 'not-allowed';
+            verifyBtn.style.opacity = '0.5';
+        }
+    }
+
+    // Send OTP
+    function sendOTP() {
+        const mobileNumber = document.getElementById('mobileNumberInput').value;
+        
+        if (mobileNumber.length !== 10) {
+            showToast('Please enter a valid 10 digit mobile number', 'error');
+            return;
+        }
+
+        const verifyBtn = document.getElementById('verifyMobileBtn');
+        verifyBtn.textContent = 'Sending...';
+        verifyBtn.disabled = true;
+
+        fetch('{{ route("send.otp") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ number: mobileNumber, is_login: 0 })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast(data.message || 'OTP sent successfully');
+                document.getElementById('otpSection').style.display = 'block';
+                startOTPTimer();
+            } else {
+                showToast(data.message || 'Failed to send OTP', 'error');
+                verifyBtn.disabled = false;
+            }
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            showToast('Failed to send OTP', 'error');
+            verifyBtn.disabled = false;
+        })
+        .finally(() => {
+            verifyBtn.textContent = 'Verify';
+        });
+    }
+
+    // Verify OTP
+    function verifyOTP() {
+        const mobileNumber = document.getElementById('mobileNumberInput').value;
+        const otp = document.getElementById('otpInput').value;
+
+        if (otp.length !== 6) {
+            showToast('Please enter a valid 6 digit OTP', 'error');
+            return;
+        }
+
+        fetch('{{ route("alumni.edit.verify.otp") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ 
+                mobile: mobileNumber,
+                otp: otp 
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Mobile number verified successfully');
+                isMobileVerified = true;
+                document.getElementById('otpSection').style.display = 'none';
+                
+                const verifyBtn = document.getElementById('verifyMobileBtn');
+                verifyBtn.textContent = 'Verified ✓';
+                verifyBtn.style.background = '#10b981';
+                verifyBtn.disabled = true;
+                
+                // Enable save button after verification
+                const saveBtn = document.querySelector('.btn-save');
+                saveBtn.disabled = false;
+                saveBtn.style.cursor = 'pointer';
+                saveBtn.style.opacity = '1';
+                
+                if (otpTimer) clearInterval(otpTimer);
+            } else {
+                showToast(data.message || 'Invalid OTP', 'error');
+            }
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            showToast('Failed to verify OTP', 'error');
+        });
+    }
+
+    // OTP Timer
+    function startOTPTimer() {
+        let timeLeft = 120; // 2 minutes
+        const timerEl = document.getElementById('otpTimer');
+        
+        if (otpTimer) clearInterval(otpTimer);
+        
+        otpTimer = setInterval(() => {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerEl.textContent = `OTP expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (timeLeft <= 0) {
+                clearInterval(otpTimer);
+                timerEl.textContent = 'OTP expired. Please request a new one.';
+                document.getElementById('otpSection').style.display = 'none';
+            }
+        }, 1000);
     }
 
     function changeProfileImage() {
@@ -374,6 +581,14 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     function saveProfile() {
         const form = document.getElementById('editProfileForm');
+        const mobileNumber = document.getElementById('mobileNumberInput').value;
+        
+        // Check if mobile number changed but not verified
+        if (mobileNumber !== originalMobileNumber && !isMobileVerified) {
+            showToast('Please verify your new mobile number before saving', 'error');
+            return;
+        }
+        
         const formData = new FormData();
 
         // Clear old error messages

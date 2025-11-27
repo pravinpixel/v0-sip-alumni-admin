@@ -28,10 +28,13 @@
     }
 
     .multi-select-display .placeholder {
-        color: #6b7280;
+        color: #000000ff;
         flex: 1;
         font-size: 14px;
         font-weight: 400;
+    }
+    .placeholder {
+        background-color: #ffffffff;
     }
 
     .multi-select-display:hover {
@@ -113,6 +116,89 @@
     .selected-tag button:hover {
         opacity: 0.8;
     }
+
+    /* Single-select dropdown styles - matching multi-select */
+    .single-select-container {
+        position: relative;
+        cursor: pointer !important;
+    }
+
+    .single-select-display {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer !important;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 40px;
+        transition: border-color 0.2s;
+        background: white;
+    }
+
+    .single-select-display * {
+        cursor: pointer !important;
+    }
+
+    .single-select-display .placeholder {
+        color: #111213ff;
+        flex: 1;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+
+    .single-select-display:hover {
+        border-color: #9ca3af;
+        background-color: #eebc4a;
+    }
+
+    .single-select-display:focus-within {
+        border-color: #dc2626;
+        outline: none;
+    }
+
+    .single-select-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        margin-top: 4px;
+        max-height: 250px;
+        overflow-y: auto;
+        z-index: 1000;
+        display: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .single-select-dropdown.active {
+        display: block;
+    }
+
+    .single-select-option {
+        margin: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #374151;
+        transition: background-color 0.2s;
+        border-radius: 4px;
+    }
+
+    .single-select-option:hover {
+        background-color: #f3f4f6;
+    }
+
+    .single-select-option.selected {
+        background-color: #fee2e2;
+        color: #dc2626;
+        font-weight: 600;
+    }
 </style>
 
     @include('alumni.modals.view-thread-modal')
@@ -154,6 +240,12 @@
                 onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
                 <i class="fas fa-filter"></i>
                 <span id="filterBtnText">Filter</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <button id="clearAllFiltersBtn" onclick="clearAllFilters()" 
+                style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; height: 42px; white-space: nowrap;"
+                onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
+                Clear All Filters
             </button>
         </div>
 
@@ -177,14 +269,13 @@
                     <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
                         Sort By
                     </label>
-                    <select id="filterSortBy"
-                        style="width: 100%; padding: 9px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; outline: none; background: white; cursor: pointer;"
-                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
-                        <option value="created_at">Latest</option>
-                        <option value="likes_count">Most Liked</option>
-                        <option value="reply_count">Most Commented</option>
-                        <option value="views_count">Most Viewed</option>
-                    </select>
+                    <div class="multi-select-container" data-filter="sortBy">
+                        <div class="multi-select-display">
+                            <span class="placeholder">Select sorting</span>
+                            <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
+                        </div>
+                        <div class="multi-select-dropdown"></div>
+                    </div>
                 </div>
                 <div>
                     <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
@@ -224,7 +315,8 @@
         let selectedFilters = {
             dateRange: [],
             batch: [],
-            postType: []
+            postType: [],
+            sortBy: []
         };
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -248,30 +340,24 @@
             const isVisible = section.style.display !== 'none';
             section.style.display = isVisible ? 'none' : 'block';
 
-            const icon = this.querySelector('i');
+            const icon = this.querySelector('.fa-chevron-up, .fa-chevron-down');
             const btnText = document.getElementById('filterBtnText');
             if (isVisible) {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-filter');
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
                 btnText.textContent = 'Filter';
             } else {
-                icon.classList.remove('fa-filter');
-                icon.classList.add('fa-times');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
                 btnText.textContent = 'Close Filters';
             }
-        });
-
-        // Filter change listeners
-        ['filterDateRange', 'filterSortBy'].forEach(id => {
-            document.getElementById(id).addEventListener('change', function() {
-                loadForumPosts();
-            });
         });
 
         // Initialize multi-select dropdowns
         function initializeMultiSelect() {
             const filterData = {
                 dateRange: ['Today', 'Last 7 Days', 'Last 30 Days'],
+                sortBy: ['Most Recent', 'Most Liked', 'Most Viewed', 'Most Commented'],
                 batch: ['2024', '2023', '2022', '2021', '2020', '2019', '2018'],
                 postType: ['Discussion', 'Question', 'Announcement', 'Event']
             };
@@ -311,10 +397,12 @@
             });
 
             // Close dropdowns when clicking outside
-            document.addEventListener('click', function() {
-                document.querySelectorAll('.multi-select-dropdown').forEach(d => {
-                    d.classList.remove('active');
-                });
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.multi-select-container')) {
+                    document.querySelectorAll('.multi-select-dropdown').forEach(d => {
+                        d.classList.remove('active');
+                    });
+                }
             });
         }
 
@@ -381,16 +469,14 @@
             selectedFilters = {
                 dateRange: [],
                 batch: [],
-                postType: []
+                postType: [],
+                sortBy: []
             };
 
             // Uncheck all checkboxes
             document.querySelectorAll('.multi-select-option input[type="checkbox"]').forEach(checkbox => {
                 checkbox.checked = false;
             });
-
-            // Reset single-select filter
-            document.getElementById('filterSortBy').value = 'created_at';
 
             // Update display and reload posts
             updateSelectedFiltersDisplay();
@@ -407,8 +493,12 @@
             const searchTerm = document.getElementById('searchInput').value;
             if (searchTerm) params.append('search', searchTerm);
 
-            const sortBy = document.getElementById('filterSortBy').value;
-            if (sortBy) params.append('sort_by', sortBy);
+            // Add sort by filter
+            if (selectedFilters.sortBy.length > 0) {
+                selectedFilters.sortBy.forEach(sort => {
+                    params.append('sort_by[]', sort);
+                });
+            }
 
             // Add multi-select filters
             if (selectedFilters.dateRange.length > 0) {

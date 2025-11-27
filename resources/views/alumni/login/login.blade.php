@@ -107,6 +107,7 @@
             }
 
             let formData = new FormData(document.getElementById('dynamic-form'));
+            formData.append('is_login', 1);
 
             $('#dynamic-submit .indicator-label').hide();
             $('#dynamic-submit .indicator-progress').show();
