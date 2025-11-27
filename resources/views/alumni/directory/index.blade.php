@@ -280,16 +280,16 @@ table.dataTable tbody tr > .sorting_3 {
     </div>
 
     {{-- Search and Filter --}}
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
         <div style="flex: 1; position: relative; max-width: 400px;">
             <i class="fas fa-search"
                 style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
             <input type="text" id="searchInput" placeholder="Search alumni..."
-                style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none;"
+                style="width: 100%; padding: 8px 16px 8px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none;"
                 onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
         </div>
         <button id="filterToggleBtn"
-            style=" color: #374151; border: 1px solid #d1d5db; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; position: relative;"
+            style=" color: #374151; border: 1px solid #d1d5db; padding: 4px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; position: relative;"
             onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
             <i class="bi bi-funnel" style="font-size: 18px;"></i>
             <span id="filterBtnText">Filter<i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i></span>
