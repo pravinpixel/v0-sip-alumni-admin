@@ -490,7 +490,7 @@
                                                                             ${tags.length > 0 ? `
                                                                                 <div style="display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;">
                                                                                     ${tags.map(tag => `
-                                                                                        <span style="background: #fbbf24; color: #000; padding: 4px 12px; border-radius: 14px; font-size: 12px; font-weight: 600;">
+                                                                                        <span style="background: #fbbf24; color: #000; padding: 4px 12px; border-radius: 14px; font-size: 10px; font-weight: 600;">
                                                                                             ${escapeHtml(tag.trim())}
                                                                                         </span>
                                                                                     `).join('')}
@@ -500,13 +500,13 @@
 
                                                                             <div style="display: flex; align-items: center; gap: 20px; color: #6b7280; font-size: 14px;">
                                                                                 <span style="display: flex; align-items: center; gap: 6px;">
-                                                                                    <i class="fas fa-eye"></i> ${post.views_count || 0}
+                                                                                    <i class="far fa-eye"></i> ${post.views_count || 0}
                                                                                 </span>
                                                                                 <span style="display: flex; align-items: center; gap: 6px;">
-                                                                                    <i class="fas fa-heart"></i> ${post.likes_count || 0}
+                                                                                    <i class="far fa-heart"></i> ${post.likes_count || 0}
                                                                                 </span>
                                                                                 <span style="display: flex; align-items: center; gap: 6px;">
-                                                                                    <i class="fas fa-comment"></i> ${post.reply_count || 0} replies
+                                                                                    <i class="far fa-comment"></i> ${post.reply_count || 0} replies
                                                                                 </span>
                                                                             </div>
                                                                         </div>
@@ -569,47 +569,48 @@
                 }
 
                 html += `
-                                                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+                                                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 6px;">
                                                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                                                         <div style="flex: 1;">
                                                             <h3 onclick="openPostModal(${post.id})" style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0; cursor: pointer; transition: color 0.2s;"
                                                                 onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#111827'">${escapeHtml(title)}</h3>
                                                             <p style="color: #9ca3af; font-size: 13px; margin: 0;">${date}</p>
                                                         </div>
-                                                        <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 6px 16px; border-radius: 6px; font-size: 13px; font-weight: 600;">
+                                                        <div> 
+                                                        <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 2px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;">
                                                             ${statusText}
                                                         </span>
-                                                    </div>
-                                                    
-                                                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                                                        ${post.status === 'rejected' ? `
-                                                            <button onclick="openRemarksModal('${escapeHtml(post.remarks || 'No remarks provided').replace(/'/g, "\\'")}', ${post.id})" style="background: transparent; border: 2px solid #3b82f6; color: #3b82f6; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                        <div style="display: flex; gap: 4px; justify-content: flex-end;">
+                                                            ${post.status === 'rejected' ? `
+                                                            <button onclick="openRemarksModal('${escapeHtml(post.remarks || 'No remarks provided').replace(/'/g, "\\'")}', ${post.id})" style="background: transparent; border: 1px solid #3b82f6; color: #3b82f6; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                                                                 onmouseover="this.style.background='#eff6ff'" onmouseout="this.style.background='transparent'"
                                                                 title="View Remarks">
                                                                 <i class="fas fa-file-alt"></i>
                                                             </button>
-                                                            <button onclick="openRepostModal(${post.id})" style="background: transparent; border: 2px solid #10b981; color: #10b981; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                            <button onclick="openRepostModal(${post.id})" style="background: transparent; border: 1px solid #10b981; color: #10b981; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                                                                 onmouseover="this.style.background='#d1fae5'" onmouseout="this.style.background='transparent'"
                                                                 title="Resubmit">
                                                                 <i class="fas fa-redo"></i>
                                                             </button>
                                                         ` : ''}
                                                         ${post.status === 'pending' ? `
-                                                            <button onclick="openEditModal(${post.id})" style="background: transparent; border: 2px solid #f59e0b; color: #f59e0b; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                            <button onclick="openEditModal(${post.id})" style="background: transparent; border: 1px solid #f59e0b; color: #f59e0b; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                                                                 onmouseover="this.style.background='#fef3c7'" onmouseout="this.style.background='transparent'"
                                                                 title="Edit post">
                                                                 <i class="fas fa-edit"></i>
                                                             </button>
                                                         ` : ''}
                                                         ${!isArchive ? `
-                                                            <button onclick="openDeleteModal(${post.id})" style="background: transparent; border: 2px solid #dc2626; color: #dc2626; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                            <button onclick="openDeleteModal(${post.id})" style="background: transparent; border: 1px solid #dc2626; color: #dc2626; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
                                                                 onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
                                                                 title="Delete post">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         ` : ''}
+                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> 
+                                            </div>
                                             `;
             });
 

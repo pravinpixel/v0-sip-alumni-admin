@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/post-details/{id}', 'getPostDetails')->name('admin.forums.post.details');
         Route::get('/comments/{id}', 'viewComments')->name('admin.forums.comments');
         Route::get('/comments-data/{id}', 'getCommentsData')->name('admin.forums.comments.data');
+        Route::get('/comment-replies/{id}', 'getCommentReplies')->name('admin.forums.comment.replies');
         Route::delete('/comment/{id}', 'deleteComment')->name('admin.forums.comment.delete');
         Route::post('/change-status', 'changeStatus')->name('forums.change.status');
         Route::get('/export', [ForumsController::class, 'export'])->name('admin.forums.export');

@@ -277,7 +277,12 @@ class ForumsController extends Controller
     {
         try {
             $post = ForumPost::findOrFail($postId);
-            $query = $post->replies()->with('alumni')->orderBy('created_at', 'desc');
+            // Only get parent comments (where parent_reply_id is null)
+            $query = $post->replies()
+                ->with('alumni')
+                ->whereNull('parent_reply_id')
+                ->withCount('childReplies')
+                ->orderBy('created_at', 'desc');
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -294,7 +299,7 @@ class ForumsController extends Controller
                     return '<span style="font-weight:600;color:#111827;">' . ($row->alumni->full_name ?? 'Unknown') . '</span>';
                 })
                 ->addColumn('comment', function ($row) {
-                    $comment = $row->reply ?? '';
+                    $comment = $row->message ?? '';
                     $truncated = strlen($comment) > 100 ? substr($comment, 0, 100) . '...' : $comment;
                     return '<span style="color:#374151;font-size:14px;">' . htmlspecialchars($truncated) . '</span>';
                 })
@@ -304,29 +309,58 @@ class ForumsController extends Controller
                         ->format('M j, Y, h:i A');
                 })
                 ->addColumn('threads', function ($row) {
-                    $repliesCount = $row->replies_count ?? 0;
-                    return '<div style="display:flex;align-items:center;gap:6px;">
-                        <i class="fas fa-reply" style="color:#6b7280;"></i>
-                        <span style="font-weight:600;color:#374151;">' . $repliesCount . ' Replies</span>
-                    </div>';
+                    $repliesCount = $row->child_replies_count ?? 0;
+                    if ($repliesCount > 0) {
+                        return '<button onclick="toggleReplies(' . $row->id . ')" class="btn btn-sm" style="display:flex;align-items:center;gap:6px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 12px;border-radius:6px;cursor:pointer;">
+                            <i class="fas fa-chevron-right" id="icon-' . $row->id . '" style="color:#6b7280;font-size:12px;"></i>
+                            <span style="font-weight:600;color:#374151;">' . $repliesCount . ' ' . ($repliesCount == 1 ? 'Reply' : 'Replies') . '</span>
+                        </button>';
+                    }
+                    return '<span style="color:#9ca3af;font-size:13px;">No replies</span>';
                 })
                 ->addColumn('action', function ($row) {
-                    return '<div class="dropdown">
-                        <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="deleteComment(' . $row->id . ')">
-                                <i class="fas fa-trash" style="color:#dc2626;"></i> Delete
-                            </a></li>
-                        </ul>
-                    </div>';
+                    return '<button onclick="deleteComment(' . $row->id . ')" class="btn btn-sm" style="background:white;border:1px solid #fecaca;color:#dc2626;padding:8px 16px;border-radius:6px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background=\'#fef2f2\'" onmouseout="this.style.background=\'white\'">
+                        <i class="fas fa-trash" style="font-size:13px;"></i>
+                        Delete
+                    </button>';
                 })
                 ->rawColumns(['alumni_profile', 'alumni_name', 'comment', 'threads', 'action'])
                 ->make(true);
         } catch (\Exception $e) {
             Log::error('Comments DataTable error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getCommentReplies($commentId)
+    {
+        try {
+            $replies = ForumReplies::with('alumni')
+                ->where('parent_reply_id', $commentId)
+                ->orderBy('created_at', 'asc')
+                ->get()
+                ->map(function($reply) {
+                    return [
+                        'id' => $reply->id,
+                        'message' => $reply->message,
+                        'alumni_name' => $reply->alumni->full_name ?? 'Unknown',
+                        'alumni_image' => $reply->alumni->image ? url('storage/' . $reply->alumni->image) : null,
+                        'created_at' => \Carbon\Carbon::parse($reply->created_at)
+                            ->setTimezone('Asia/Kolkata')
+                            ->format('M j, Y, h:i A')
+                    ];
+                });
+            
+            return response()->json([
+                'success' => true,
+                'replies' => $replies
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching replies: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch replies'
+            ], 500);
         }
     }
 

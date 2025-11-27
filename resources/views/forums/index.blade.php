@@ -127,7 +127,7 @@
 
                 <!-- Labels -->
                 <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Labels</label>
+                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px;">LABELS</label>
                     <div id="postLabels" style="display: flex; gap: 8px; flex-wrap: wrap;">
                         <!-- Labels will be added here -->
                     </div>
@@ -462,8 +462,11 @@
                     // Set post title
                     $('#postTitle').text(post.title || 'No Title');
                     
-                    // Set post description
-                    $('#postDescription').text(post.description || 'No description available');
+                    const description = post.description ?
+                    post.description.replace(/<\/?[^>]+>/g, "").substring(0, 200) +
+                    (post.description.length > 200 ? '...' : '') :
+                    'No description available';
+                    $('#postDescription').text(description);
                     
                     // Set labels
                     const labelsContainer = $('#postLabels');
@@ -472,7 +475,7 @@
                     if (post.labels && post.labels.length > 0) {
                         post.labels.forEach(label => {
                             const labelBadge = $(`
-                                <span style="background: #fbbf24; color: #000; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 600;">
+                                <span style="background: #fcd176; color: #000; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 500;">
                                     ${label}
                                 </span>
                             `);
