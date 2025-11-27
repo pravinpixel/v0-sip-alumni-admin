@@ -121,12 +121,12 @@ class ForumsController extends Controller
                 $query->where('labels', 'like', "%{$request->post_type}%");
             }
 
-            $sortBy = $request->get('sort_by', 'created_at');
-            $sortOrder = 'desc';
-            $query->orderBy($sortBy, $sortOrder);
+            $alumniId = session('alumni.id');
+            
+            // Get all posts first
             $forumPosts = $query->get();
 
-            $alumniId = session('alumni.id');
+            // Add pinned and liked status
             $forumPosts->each(function ($post) use ($alumniId) {
                 $post->is_pinned_by_user = PostPinned::where('post_id', $post->id)
                     ->where('alumni_id', $alumniId)
@@ -136,6 +136,15 @@ class ForumsController extends Controller
                     ->where('alumni_id', $alumniId)
                     ->exists();
             });
+
+            // Sort: Pinned posts first, then by selected sort option
+            $sortBy = $request->get('sort_by', 'created_at');
+            $sortOrder = 'desc';
+            
+            $forumPosts = $forumPosts->sortBy([
+                ['is_pinned_by_user', 'desc'], // Pinned posts first
+                [$sortBy, $sortOrder]          // Then by selected sort
+            ])->values();
 
             return response()->json([
                 'success' => true,

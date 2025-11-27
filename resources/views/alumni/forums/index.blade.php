@@ -971,7 +971,7 @@
             if (post.labels) {
                 post.labels.split(',').forEach(tag => {
                     const tagElement = document.createElement('span');
-                    tagElement.style.cssText = 'background: #F7C744; color: #000000; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;';
+                    tagElement.style.cssText = 'background: #F7C744; color: #000000; padding: 4px 12px; border-radius: 14px; font-size: 10px; font-weight: 600;';
                     tagElement.textContent = tag.trim();
                     tagsContainer.appendChild(tagElement);
                 });
