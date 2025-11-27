@@ -115,7 +115,7 @@
                     <h2 style="font-size: 24px; font-weight: 700; color: #111827;">Community Highlights</h2>
                     <p style="font-size: 14px; color: #6b7280; margin-top: 4px;">Trending posts from the community</p>
                 </div>
-                <a href="/forums"
+                <a href="{{ route('alumni.forums') }}"
                     style="display: inline-flex; align-items: center; padding: 10px 16px; background: white; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-weight: 500; color: #374151; text-decoration: none; transition: all 0.3s;"
                     onmouseover="this.style.backgroundColor='#f9fafb';" onmouseout="this.style.backgroundColor='white';">
                     View All
