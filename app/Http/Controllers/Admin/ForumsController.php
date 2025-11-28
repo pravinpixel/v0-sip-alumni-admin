@@ -392,7 +392,7 @@ class ForumsController extends Controller
                         'title' => $post->title,
                         'support_email' => env('SUPPORT_EMAIL'),
                     ];
-                    Mail::to($alumni->email)->send(new AlumniApprovedPostMail($data));
+                    Mail::to($alumni->email)->queue(new AlumniApprovedPostMail($data));
                 }
             } elseif($request->status == 'rejected'){
                 $post->status = 'rejected';
