@@ -366,7 +366,12 @@
                                 { key: "week", label: "Last 7 Days" },
                                 { key: "month", label: "Last 30 Days" }
                             ],
-                            sortBy: ['Most Recent', 'Most Liked', 'Most Viewed', 'Most Commented'],
+                            sortBy: [
+                                { key: "most_recent", label: "Most Recent" },
+                                { key: "most_liked", label: "Most Liked" },
+                                { key: "most_viewed", label: "Most Viewed" },
+                                { key: "most_commented", label: "Most Commented" }
+                            ],
                             batch: data.batchYears || [],
                             postType: [
                                 { key: "pinned", label: "Pinned Posts" },
@@ -386,7 +391,12 @@
                             { key: "week", label: "Last 7 Days" },
                             { key: "month", label: "Last 30 Days" }
                         ],
-                        sortBy: ['Most Recent', 'Most Liked', 'Most Viewed', 'Most Commented'],
+                        sortBy: [
+                                { key: "most_recent", label: "Most Recent" },
+                                { key: "most_liked", label: "Most Liked" },
+                                { key: "most_viewed", label: "Most Viewed" },
+                                { key: "most_commented", label: "Most Commented" }
+                            ],
                         batch: [],
                         postType: [
                                 { key: "pinned", label: "Pinned Posts" },
@@ -423,9 +433,14 @@
                     dropdown.appendChild(option);
 
                     const checkbox = option.querySelector('input');
-                    checkbox.addEventListener('change', function() {
-                        toggleFilter(filterType, value, this.checked);
+                    checkbox.addEventListener('change', function () {
+                        if (filterType === "sortBy") {
+                            handleSingleSelect(filterType, value, checkbox);
+                        } else {
+                            toggleFilter(filterType, value, checkbox.checked);
+                        }
                     });
+
                 });
 
 
@@ -449,6 +464,20 @@
                 }
             });
         }
+                        function handleSingleSelect(filterType, value, checkbox) {
+                    // Uncheck all checkboxes inside this group
+                    const group = document.querySelectorAll(`input[data-type="${filterType}"]`);
+                    group.forEach(cb => {
+                        if (cb !== checkbox) cb.checked = false;
+                    });
+
+                    // Reset filter and set selected one
+                    selectedFilters[filterType] = checkbox.checked ? [value] : [];
+
+                    updateSelectedFiltersDisplay();
+                    loadForumPosts();
+                }
+
 
                 function toggleFilter(filterType, value, isChecked) {
 
@@ -481,6 +510,7 @@
             const filterLabels = {
                 dateRange: 'Date',
                 batch: 'Batch',
+                sortBy: 'Sort',
                 postType: 'Type'
             };
 

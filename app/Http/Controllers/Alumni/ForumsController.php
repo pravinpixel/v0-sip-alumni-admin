@@ -97,6 +97,23 @@ class ForumsController extends Controller
                 }
             }
 
+            if ($request->has('sort_by') && !empty($request->sort_by)) {
+                switch ($request->sort_by) {
+                    case "most_recent":
+                        $query->orderBy('created_at', 'desc');
+                        break;
+                    case "most_liked":
+                        $query->orderBy('likes_count', 'desc');
+                        break;
+                    case "most_viewed":
+                        $query->orderBy('views_count', 'desc');
+                        break;
+                    case "most_commented":
+                        $query->orderBy('reply_count', 'desc');
+                        break;
+                }
+            }
+
             if ($request->has('batch_year') && !empty($request->batch_year)) {
                 $query->whereHas('alumni', function ($alumniQuery) use ($request) {
                     $alumniQuery->whereIn('year_of_completion', $request->batch_year);
@@ -105,20 +122,16 @@ class ForumsController extends Controller
 
             if ($request->has('post_type') && !empty($request->post_type)) {
                 $postTypes = $request->post_type;
-                if (in_array('pinned', $postTypes)) {
-                    $query->whereHas('pinned', function ($p) {
-                        $p->whereNotNull('id');
-                    });
-                }
-                if (in_array('regular', $postTypes)) {
+                if (in_array('pinned', $postTypes) && in_array('regular', $postTypes)) {
+                } elseif (in_array('pinned', $postTypes)) {
+                    $query->whereHas('pinned');
+                } elseif (in_array('regular', $postTypes)) {
                     $query->whereDoesntHave('pinned');
                 }
             }
 
             $alumniId = session('alumni.id');
-            
             $forumPosts = $query->get();
-
             $forumPosts->each(function ($post) use ($alumniId) {
                 $post->is_pinned_by_user = PostPinned::where('post_id', $post->id)
                     ->where('alumni_id', $alumniId)
