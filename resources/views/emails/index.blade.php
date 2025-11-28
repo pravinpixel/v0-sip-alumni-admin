@@ -14,8 +14,8 @@
                     
                     <!-- Header -->
                     <tr>
-                        <td align="center" style="padding:15px 0; border-bottom:1px solid #e5e5e5;">
-                            <h2 style="margin:0; color:#333;">SIP Abacus Alumni Portal</h2>
+                        <td align="center" style="padding:15px 0; border-bottom:1px solid #e5e5e5; background-color: #ec0505;">
+                            <h2 style="margin:0; color: #ffffffff;">SIP Abacus Alumni Portal</h2>
                         </td>
                     </tr>
 
@@ -23,6 +23,13 @@
                     <tr>
                         <td style="padding:20px;">
                             @yield('content')
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center" style="padding:15px 0; border-top:1px solid #e5e5e5; background-color: #ec0505 ;">
+                            <p style="margin:0; font-size:12px; color: #ffffffff;">&copy; {{ date('Y') }} SIP Abacus Alumni Portal. All rights reserved.</p>
                         </td>
                     </tr>
 

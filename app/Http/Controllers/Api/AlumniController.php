@@ -10,7 +10,9 @@ use App\Models\Alumnis;
 use App\Models\Cities;
 use App\Models\MobileOtp;
 use App\Models\Occupation;
+use App\Models\Role;
 use App\Models\States;
+use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
@@ -40,12 +42,12 @@ class AlumniController extends Controller
             }
             $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
 
-            if (!$otpRecord || $otpRecord->is_verified == 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please verify OTP before registration.'
-                ], 400);
-            }
+            // if (!$otpRecord || $otpRecord->is_verified == 0) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Please verify OTP before registration.'
+            //     ], 400);
+            // }
             $cityId = $request->city_id;
 
             if ($request->city_id == "others") {
@@ -77,7 +79,7 @@ class AlumniController extends Controller
                 'status'             => 'active',
                 'image'              => asset('images/avatar/blank.png')
             ]);
-            $otpRecord->delete();
+            // $otpRecord->delete();
 
             Alumnis::where('is_directory_ribbon', '!=', 1)
                 ->orWhereNull('is_directory_ribbon')
@@ -90,15 +92,20 @@ class AlumniController extends Controller
             ];
             Mail::to($alumni->email)->queue(new AlumniWelcomeMail($alumniData));
 
-            // $adminData = [
-            //     'name' => $alumni->name,
-            //     'email' => $alumni->email,
-            //     'mobile' => $alumni->mobile,
-            //     'year_of_passing' => $alumni->year,
-            //     'department' => $alumni->department,
-            //     'support_email' => 'sipinfo@sipacademyindia.com'
-            // ];
-            // Mail::to('admin@sipabacus.com')->queue(new AdminAlumniRegistedMail($adminData));
+            $role = Role::where('name', 'Super Admin')->first();
+            $admins = User::where('role_id', $role->id)->get();
+
+            $adminData = [
+                'name' => $alumni->full_name ?? '',
+                'email' => $alumni->email ?? '',
+                'mobile' => $alumni->mobile_number ?? '',
+                'year_of_passing' => $alumni->year_of_completion ?? '',
+                'department' => $alumni->occupation?->name ?? '',
+                'support_email' => env('SUPPORT_EMAIL'),
+            ];
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->queue(new AdminAlumniRegistedMail($adminData));
+            }
 
            $smsNumber = '91' . $alumni->mobile_number;
            $smsMessage = "Your alumni registration has been completed. Welcome to the SIP Alumni community!\nTeam - SIP Academy";

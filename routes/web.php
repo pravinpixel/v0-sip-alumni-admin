@@ -77,13 +77,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::delete('/comment/{id}', 'deleteComment')->name('admin.forums.comment.delete');
         Route::post('/change-status', 'changeStatus')->name('forums.change.status');
         Route::get('/export', [ForumsController::class, 'export'])->name('admin.forums.export');
-
-        Route::get('create', 'create')->name('organization.create')->middleware('checkAccess:forum.create');
-        Route::post('save', 'save')->name('organization.save');
-        Route::get('/export', 'export')->name('organization.export');
-        Route::post('update/{id}', 'update')->name('organization.update')->middleware('checkAccess:forum.edit');
-        Route::get('edit/{id}', 'get')->name('organization.get');
-        Route::delete('/{id}', 'delete')->name('organization.delete')->middleware('checkAccess:forum.delete');
     });
 
     #..role ...

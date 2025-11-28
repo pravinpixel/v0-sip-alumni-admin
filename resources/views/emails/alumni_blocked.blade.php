@@ -8,8 +8,7 @@
     your posts and connections will be removed from the platform.</p>
 <br>
 
-<p>Admin Remarks:</p>
-<p>{{ $data['remarks'] }}</p>
+<p>Admin Remarks:</p> <span>{{ $data['remarks'] }}</span>
 
 <br>
 

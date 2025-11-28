@@ -457,7 +457,7 @@
                                                                                 <h3 onclick="openPostModal(${post.id})" style="font-size: 18px; font-weight: 700; color: #dc2626; margin: 0; flex: 1; cursor: pointer; transition: color 0.2s;" 
                                                                                     onmouseover="this.style.color='#b91c1c'; this.style.textDecoration='underline'" onmouseout="this.style.color='#dc2626'; this.style.textDecoration='none'">${escapeHtml(title)}</h3>
                                                                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                                                                    <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">
+                                                                                    <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;">
                                                                                         ${statusText}
                                                                                     </span>
                                                                                     ${viewType !== 'archive' ? `
@@ -560,7 +560,7 @@
                     statusText = 'Post Deleted';
                 } else if (post.status === 'removed_by_admin') {
                     statusColor = '#fee2e2';
-                    statusTextColor = '#dc2626';
+                    statusTextColor = '#cb2431';
                     statusText = 'Removed by Admin';
                 } else {
                     statusColor = '#f3f4f6';
@@ -577,9 +577,11 @@
                                                             <p style="color: #9ca3af; font-size: 13px; margin: 0;">${date}</p>
                                                         </div>
                                                         <div> 
+                                                        <div style="margin-bottom: 10px; text-align: center;"> 
                                                         <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 2px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;">
                                                             ${statusText}
                                                         </span>
+                                                        </div>
                                                         <div style="display: flex; gap: 4px; justify-content: flex-end;">
                                                             ${post.status === 'rejected' ? `
                                                             <button onclick="openRemarksModal('${escapeHtml(post.remarks || 'No remarks provided').replace(/'/g, "\\'")}', ${post.id})" style="background: transparent; border: 1px solid #3b82f6; color: #3b82f6; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
