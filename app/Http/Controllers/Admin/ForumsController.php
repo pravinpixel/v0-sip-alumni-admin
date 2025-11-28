@@ -386,7 +386,8 @@ class ForumsController extends Controller
             $alumni = $post->alumni;
             if($request->status == 'approved'){
                 $post->status = 'approved';
-                if($alumni->notify_admin_approval == 1){
+                $post->remarks = null;
+                if($alumni->notify_admin_approval === 1){
                     $data = [
                         'name' => $alumni->full_name,
                         'title' => $post->title,
@@ -396,8 +397,10 @@ class ForumsController extends Controller
                 }
             } elseif($request->status == 'rejected'){
                 $post->status = 'rejected';
+                $post->remarks = $request->remarks;
             } elseif($request->status == 'removed_by_admin'){
                 $post->status = 'removed_by_admin';
+                $post->remarks = $request->remarks;
             }else{
                 return $this->returnError(false,'Invalid status provided');
             }

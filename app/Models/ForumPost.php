@@ -26,7 +26,8 @@ class ForumPost extends Model
         'labels',
         'likes',
         'views',
-        'status'
+        'status',
+        'remarks'
     ];
 
     protected $casts = [

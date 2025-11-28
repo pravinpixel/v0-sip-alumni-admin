@@ -144,6 +144,84 @@
     </div>
 </div>
 
+<!-- Reject Post Modal -->
+<div id="rejectPostModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
+    <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+                <!-- Body -->
+                <div style="padding: 32px;">
+                    <!-- Post Title Display -->
+                    <div style="margin-bottom: 20px;">
+                    <h2 style="font-size: 24px; font-weight: 700; color: #111827;">Reject Post</h2>
+                    <p style="font-size: 14px; color: #6b7280; margin-top: 12px;">Post: <span id="rejectPostTitle" style="font-weight: 400; color: #6b7280;;"></span></p>
+                </div>
+
+                <!-- Rejection Remarks -->
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-weight: 600; font-size: 14px; color: #111827; margin-bottom: 8px;">
+                        Rejection Remarks <span style="color: #dc2626;">*</span>
+                    </label>
+                    <textarea id="rejectionRemarks" rows="2" placeholder="Please provide a reason for rejecting this post..."
+                        style="width: 100%; padding: 12px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s;"
+                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'"></textarea>
+                    <span id="remarksError" style="display: none; color: #dc2626; font-size: 12px; margin-top: 4px;">Please provide rejection remarks</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button onclick="closeRejectModal()" style="background: white; color: #374151; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                        Cancel
+                    </button>
+                    <button id="rejectPostBtn" onclick="confirmRejectPost()" disabled
+                        style="background: #9ca3af; color: white; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: not-allowed; transition: background 0.2s; opacity: 0.6;">
+                        Reject Post
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Post Modal -->
+<div id="removePostModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
+    <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+            <!-- Header -->
+            
+            <!-- Body -->
+            <div style="padding: 32px;">
+                    <!-- Description -->
+                    <div style="margin-bottom: 20px;">
+                    <h2 style="font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 10px;">Remove Post</h2>
+                    <p style="font-size: 12px; color: #6b7280; margin: 0; line-height: 1.6;">
+                        Removing this post will make it no longer available to any of the alumni. Please provide a reason for removal.
+                    </p>
+                </div>
+
+                <!-- Removal Remarks -->
+                <div style="margin-bottom: 24px;">
+                    <textarea id="removalRemarks" rows="3" placeholder="Enter remarks for removing this post..."
+                        style="width: 100%; padding: 10px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s;"
+                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'"></textarea>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button onclick="closeRemoveModal()" style="background: white; color: #513737ff; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                        Cancel
+                    </button>
+                    <button id="removePostBtn" onclick="confirmRemovePost()" disabled
+                        style="background: #f12020ff; color: white; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: not-allowed; transition: background 0.2s; opacity: 0.6;">
+                        Remove Post
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
@@ -521,24 +599,220 @@
         }
     });
 
-    function statusChange(id, status) {
-        confirmBox("Are you sure you want to change the status?", function() {
-            $.ajax({
-                url: "{{ route('forums.change.status') }}",
-                type: 'POST',
-                data: {
-                    id: id,
-                    status: status,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(response) {
-                    $('#forumsTable').DataTable().ajax.reload();
-                },
-                error: function(xhr) {
-                    alert('An error occurred while updating the status.');
-                }
-            });
+    let currentRejectPostId = null;
+    let currentRejectPostTitle = '';
+    let currentRemovePostId = null;
+
+    // ===== UNIFIED API CALL FUNCTION =====
+    function updatePostStatus(postId, status, remarks = null) {
+        $.ajax({
+            url: "{{ route('forums.change.status') }}",
+            type: 'POST',
+            data: {
+                id: postId,
+                status: status,
+                remarks: remarks,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                $('#forumsTable').DataTable().ajax.reload();
+            },
+            error: function(xhr) {
+                alert('An error occurred while updating the status.');
+            }
         });
+    }
+
+    function statusChange(id, status) {
+        // If status is rejected, show the reject modal
+        if (status === 'rejected') {
+            openRejectModal(id);
+            return;
+        }
+
+        // If status is removed_by_admin, show the remove modal
+        if (status === 'removed_by_admin') {
+            openRemoveModal(id);
+            return;
+        }
+
+        // For other statuses (approved), show confirmation and call unified API
+        confirmBox("Are you sure you want to change the status?", function() {
+            updatePostStatus(id, status);
+        });
+    }
+
+    function openRejectModal(postId) {
+        // First, get the post details to show the title
+        $.ajax({
+            url: "{{ route('admin.forums.post.details', '') }}/" + postId,
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    currentRejectPostId = postId;
+                    currentRejectPostTitle = response.post.title || 'Untitled Post';
+                    
+                    // Set the post title in modal
+                    $('#rejectPostTitle').text(currentRejectPostTitle);
+                    
+                    // Clear previous remarks and error
+                    $('#rejectionRemarks').val('');
+                    $('#remarksError').hide();
+                    
+                    // Disable reject button initially
+                    updateRejectButtonState();
+                    
+                    // Show modal
+                    document.getElementById('rejectPostModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                }
+            },
+            error: function(xhr) {
+                alert('Error loading post details');
+            }
+        });
+    }
+
+    // Enable/disable reject button based on textarea input
+    $(document).on('input', '#rejectionRemarks', function() {
+        updateRejectButtonState();
+    });
+
+    function updateRejectButtonState() {
+        const remarks = $('#rejectionRemarks').val().trim();
+        const rejectBtn = $('#rejectPostBtn');
+        
+        if (remarks.length > 0) {
+            // Enable button
+            rejectBtn.prop('disabled', false);
+            rejectBtn.css({
+                'background': '#dc2626',
+                'cursor': 'pointer',
+                'opacity': '1'
+            });
+            rejectBtn.attr('onmouseover', "this.style.background='#b91c1c'");
+            rejectBtn.attr('onmouseout', "this.style.background='#dc2626'");
+        } else {
+            // Disable button
+            rejectBtn.prop('disabled', true);
+            rejectBtn.css({
+                'background': '#f11d1dff',
+                'cursor': 'not-allowed',
+                'opacity': '0.6'
+            });
+            rejectBtn.removeAttr('onmouseover');
+            rejectBtn.removeAttr('onmouseout');
+        }
+    }
+
+    function closeRejectModal() {
+        document.getElementById('rejectPostModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        currentRejectPostId = null;
+        currentRejectPostTitle = '';
+    }
+
+    function confirmRejectPost() {
+        const remarks = $('#rejectionRemarks').val().trim();
+        
+        // Validate remarks
+        if (!remarks) {
+            $('#remarksError').show();
+            $('#rejectionRemarks').css('border-color', '#dc2626');
+            return;
+        }
+        
+        // Hide error if validation passes
+        $('#remarksError').hide();
+        $('#rejectionRemarks').css('border-color', '#d1d5db');
+        
+        // Use unified API call
+        updatePostStatus(currentRejectPostId, 'rejected', remarks);
+        closeRejectModal();
+    }
+
+    // Close reject modal when clicking outside
+    document.addEventListener('click', function(event) {
+        const rejectModal = document.getElementById('rejectPostModal');
+        const removeModal = document.getElementById('removePostModal');
+        
+        if (event.target === rejectModal) {
+            closeRejectModal();
+        }
+        if (event.target === removeModal) {
+            closeRemoveModal();
+        }
+    });
+
+    // ===== REMOVE POST MODAL FUNCTIONS =====
+    
+    function openRemoveModal(postId) {
+        currentRemovePostId = postId;
+        
+        // Clear previous remarks
+        $('#removalRemarks').val('');
+        
+        // Disable remove button initially
+        updateRemoveButtonState();
+        
+        // Show modal
+        document.getElementById('removePostModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Enable/disable remove button based on textarea input
+    $(document).on('input', '#removalRemarks', function() {
+        updateRemoveButtonState();
+    });
+
+    function updateRemoveButtonState() {
+        const remarks = $('#removalRemarks').val().trim();
+        const removeBtn = $('#removePostBtn');
+        
+        if (remarks.length > 0) {
+            // Enable button
+            removeBtn.prop('disabled', false);
+            removeBtn.css({
+                'background': '#dc2626',
+                'cursor': 'pointer',
+                'opacity': '1'
+            });
+            removeBtn.attr('onmouseover', "this.style.background='#b91c1c'");
+            removeBtn.attr('onmouseout', "this.style.background='#dc2626'");
+        } else {
+            // Disable button
+            removeBtn.prop('disabled', true);
+            removeBtn.css({
+                'background': '#f73333ff',
+                'cursor': 'not-allowed',
+                'opacity': '0.6'
+            });
+            removeBtn.removeAttr('onmouseover');
+            removeBtn.removeAttr('onmouseout');
+        }
+    }
+
+    function closeRemoveModal() {
+        document.getElementById('removePostModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        currentRemovePostId = null;
+    }
+
+    function confirmRemovePost() {
+        const remarks = $('#removalRemarks').val().trim();
+        
+        // Validate remarks
+        if (!remarks) {
+            $('#removalRemarks').css('border-color', '#dc2626');
+            return;
+        }
+        
+        // Reset border
+        $('#removalRemarks').css('border-color', '#d1d5db');
+        
+        // Use unified API call
+        updatePostStatus(currentRemovePostId, 'removed_by_admin', remarks);
+        closeRemoveModal();
     }
 </script>
 @endpush

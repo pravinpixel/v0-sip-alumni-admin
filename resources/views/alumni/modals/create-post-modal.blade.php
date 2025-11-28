@@ -407,9 +407,6 @@
                 if (data.success) {
                     showToast('Post created successfully', 'success');
                     closeCreatePostModal();
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000);
                 } else {
                     showToast(data.message || 'Failed to create post', 'error');
                 }
