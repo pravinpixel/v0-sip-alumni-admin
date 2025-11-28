@@ -11,6 +11,8 @@ use App\Models\ForumPost;
 use App\Models\PostLikes;
 use App\Models\PostPinned;
 use App\Models\PostViews;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -197,12 +199,15 @@ class ForumsController extends Controller
             ];
             Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
 
-            // Send email admin
-            // $dataAdmin = [
-            //     'name' => $alumni->full_name,
-            //     'support_email' => env('SUPPORT_EMAIL'),
-            // ];
-            // Mail::to($alumni->email)->queue(new AdminApprovalMail($dataAdmin));
+            $role = Role::where('name', 'Super Admin')->first();
+            $admins = User::where('role_id', $role->id)->get();
+            $adminData = [
+                'name' => $alumni->full_name,
+                'support_email' => env('SUPPORT_EMAIL'),
+            ];
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->queue(new AdminApprovalMail($adminData));
+            }
 
             return response()->json([
                 'success' => true,
