@@ -47,25 +47,9 @@ class ForumsController extends Controller
                 ->values()
                 ->toArray();
 
-            // Get unique post types/labels
-            $postTypes = ForumPost::whereNotNull('labels')
-                ->where('labels', '!=', '')
-                ->pluck('labels')
-                ->flatMap(function ($labels) {
-                    return explode(',', $labels);
-                })
-                ->map(function ($label) {
-                    return trim($label);
-                })
-                ->unique()
-                ->filter()
-                ->values()
-                ->toArray();
-
             return response()->json([
                 'success' => true,
                 'batchYears' => $batchYears,
-                'postTypes' => $postTypes
             ]);
         } catch (\Exception $e) {
             Log::error('Error fetching filter options: ' . $e->getMessage());
@@ -115,20 +99,26 @@ class ForumsController extends Controller
 
             if ($request->has('batch_year') && !empty($request->batch_year)) {
                 $query->whereHas('alumni', function ($alumniQuery) use ($request) {
-                    $alumniQuery->where('year_of_completion', $request->batch_year);
+                    $alumniQuery->whereIn('year_of_completion', $request->batch_year);
                 });
             }
 
             if ($request->has('post_type') && !empty($request->post_type)) {
-                $query->where('labels', 'like', "%{$request->post_type}%");
+                $postTypes = $request->post_type;
+                if (in_array('pinned', $postTypes)) {
+                    $query->whereHas('pinned', function ($p) {
+                        $p->whereNotNull('id');
+                    });
+                }
+                if (in_array('regular', $postTypes)) {
+                    $query->whereDoesntHave('pinned');
+                }
             }
 
             $alumniId = session('alumni.id');
             
-            // Get all posts first
             $forumPosts = $query->get();
 
-            // Add pinned and liked status
             $forumPosts->each(function ($post) use ($alumniId) {
                 $post->is_pinned_by_user = PostPinned::where('post_id', $post->id)
                     ->where('alumni_id', $alumniId)
@@ -139,7 +129,6 @@ class ForumsController extends Controller
                     ->exists();
             });
 
-            // Sort: Pinned posts first, then by selected sort option
             $sortBy = $request->get('sort_by', 'created_at');
             $sortOrder = 'desc';
             
@@ -151,7 +140,7 @@ class ForumsController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'posts' => $forumPosts
+                    'posts' => $forumPosts,
                 ]
             ]);
         } catch (\Exception $e) {

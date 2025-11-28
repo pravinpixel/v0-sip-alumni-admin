@@ -68,4 +68,9 @@ class ForumPost extends Model
         return $this->hasMany(PostViews::class, 'post_id');
     }
 
+    public function pinned()
+    {
+        return $this->hasMany(PostPinned::class, 'post_id');
+    }
+
 }

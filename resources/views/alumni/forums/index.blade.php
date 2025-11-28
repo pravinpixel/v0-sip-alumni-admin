@@ -355,16 +355,49 @@
 
         // Initialize multi-select dropdowns
         function initializeMultiSelect() {
-            const filterData = {
-                dateRange: [
-        { key: "today", label: "Today" },
-        { key: "week", label: "Last 7 Days" },
-        { key: "month", label: "Last 30 Days" }
-    ],
-                sortBy: ['Most Recent', 'Most Liked', 'Most Viewed', 'Most Commented'],
-                batch: ['2024', '2023', '2022', '2021', '2020', '2019', '2018'],
-                postType: ['Discussion', 'Question', 'Announcement', 'Event']
-            };
+            // Fetch filter options from API
+            fetch("{{ route('alumni.forums.filter-options') }}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const filterData = {
+                            dateRange: [
+                                { key: "today", label: "Today" },
+                                { key: "week", label: "Last 7 Days" },
+                                { key: "month", label: "Last 30 Days" }
+                            ],
+                            sortBy: ['Most Recent', 'Most Liked', 'Most Viewed', 'Most Commented'],
+                            batch: data.batchYears || [],
+                            postType: [
+                                { key: "pinned", label: "Pinned Posts" },
+                                { key: "regular", label: "Regular Posts" }
+                            ],
+                        };
+                        
+                        populateFilters(filterData);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading filter options:', error);
+                    // Fallback to default data
+                    const filterData = {
+                        dateRange: [
+                            { key: "today", label: "Today" },
+                            { key: "week", label: "Last 7 Days" },
+                            { key: "month", label: "Last 30 Days" }
+                        ],
+                        sortBy: ['Most Recent', 'Most Liked', 'Most Viewed', 'Most Commented'],
+                        batch: [],
+                        postType: [
+                                { key: "pinned", label: "Pinned Posts" },
+                                { key: "regular", label: "Regular Posts" }
+                            ],
+                    };
+                    populateFilters(filterData);
+                });
+        }
+
+        function populateFilters(filterData) {
 
             Object.keys(filterData).forEach(filterType => {
                 const container = document.querySelector(`.multi-select-container[data-filter="${filterType}"]`);
