@@ -72,12 +72,7 @@ class ForumsController extends Controller
                 ->addColumn('alumni', function ($row) {
 
                     $alumni = $row->alumni;
-
-                    if (!$alumni) {
-                        return '—';
-                    }
-
-                    $img = $alumni->image_url ? url('storage/' . $alumni->image ?? '') : asset('images/avatar/blank.png');
+                    $img = $alumni->image_url ?? asset('images/avatar/blank.png');
 
                     return '
                     <div style="display:flex;align-items:center;gap:12px;">
