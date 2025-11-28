@@ -95,7 +95,7 @@ class ForumsController extends Controller
             }
 
             if ($request->has('date_range') && !empty($request->date_range)) {
-                $dateRange = $request->date_range;
+                $dateRange = $request->date_range[0];
                 switch ($dateRange) {
                     case 'today':
                         $query->whereDate('created_at', today());

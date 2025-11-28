@@ -356,7 +356,11 @@
         // Initialize multi-select dropdowns
         function initializeMultiSelect() {
             const filterData = {
-                dateRange: ['Today', 'Last 7 Days', 'Last 30 Days'],
+                dateRange: [
+        { key: "today", label: "Today" },
+        { key: "week", label: "Last 7 Days" },
+        { key: "month", label: "Last 30 Days" }
+    ],
                 sortBy: ['Most Recent', 'Most Liked', 'Most Viewed', 'Most Commented'],
                 batch: ['2024', '2023', '2022', '2021', '2020', '2019', '2018'],
                 postType: ['Discussion', 'Question', 'Announcement', 'Event']
@@ -370,12 +374,18 @@
                 const dropdown = container.querySelector('.multi-select-dropdown');
 
                 // Populate dropdown
-                filterData[filterType].forEach(value => {
+                filterData[filterType].forEach(item => {
+                    const value = item.key || item; 
+                    const label = item.label || item;
+
                     const option = document.createElement('div');
                     option.className = 'multi-select-option';
                     option.innerHTML = `
-                        <input type="checkbox" id="${filterType}-${value}" value="${value}">
-                        <label for="${filterType}-${value}">${value}</label>
+                        <input type="checkbox" 
+                            id="${filterType}-${value}" 
+                            value="${value}" 
+                            data-type="${filterType}">
+                        <label for="${filterType}-${value}">${label}</label>
                     `;
                     dropdown.appendChild(option);
 
@@ -384,6 +394,7 @@
                         toggleFilter(filterType, value, this.checked);
                     });
                 });
+
 
                 // Toggle dropdown
                 display.addEventListener('click', function(e) {
@@ -406,7 +417,13 @@
             });
         }
 
-        function toggleFilter(filterType, value, isChecked) {
+                function toggleFilter(filterType, value, isChecked) {
+
+            // Ensure key exists before use
+            if (!selectedFilters[filterType]) {
+                selectedFilters[filterType] = [];
+            }
+
             if (isChecked) {
                 if (!selectedFilters[filterType].includes(value)) {
                     selectedFilters[filterType].push(value);
@@ -414,9 +431,11 @@
             } else {
                 selectedFilters[filterType] = selectedFilters[filterType].filter(v => v !== value);
             }
+
             updateSelectedFiltersDisplay();
             loadForumPosts();
-        }
+            }
+
 
         function updateSelectedFiltersDisplay() {
             const container = document.getElementById('selectedFiltersDisplay');
