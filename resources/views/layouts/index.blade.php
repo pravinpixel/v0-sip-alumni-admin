@@ -82,7 +82,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
 
-      <div class="modal-header">
+      <div class="modal-header border-0">
         <h5 class="modal-title">Confirmation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
@@ -91,7 +91,7 @@
         <p id="globalConfirmMessage">Are you sure?</p>
       </div>
 
-      <div class="modal-footer">
+      <div class="modal-footer border-0">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
         <button type="button" class="btn btn-danger" id="globalConfirmYes">Yes</button>
       </div>

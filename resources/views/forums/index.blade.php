@@ -101,9 +101,9 @@
 <!-- Post Details Modal -->
 <div id="postDetailsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
     <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: white; border-radius: 12px; max-width: 600px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+        <div style="background: white; border-radius: 12px; max-width: 400px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
             <!-- Header -->
-            <div style="padding: 24px 32px; border-bottom: 1px solid #e5e7eb; position: relative;">
+            <div style="padding: 24px 32px; border-bottom: 1px solid #e5e7eb; position: relative; border: 0">
                 <button onclick="closePostModal()" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: transparent; border: none; color: #9ca3af; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px;"
                     onmouseover="this.style.background='#f3f4f6'; this.style.color='#111827'" onmouseout="this.style.background='transparent'; this.style.color='#9ca3af'">
                     ×
@@ -112,19 +112,20 @@
             </div>
 
             <!-- Body -->
-            <div style="padding: 32px;">
+            <div style="padding: 20px;">
                 <!-- Post Title -->
                 <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Post Title</label>
-                    <div id="postTitle" style="background: #f9fafb; padding: 16px; border-radius: 8px; font-size: 18px; font-weight: 600; color: #111827;"></div>
+                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px;">POST TITTLE</label>
+                    <div id="postTitle" style="background: #f9fafb; padding: 12px; border-radius: 8px; font-size: 18px; font-weight: 600; color: #111827; border: 1px solid #d1d5db;"></div>
                 </div>
+                <hr>
 
                 <!-- Post Description -->
                 <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">Post Description</label>
-                    <div id="postDescription" style="background: #f9fafb; padding: 16px; border-radius: 8px; font-size: 15px; color: #374151; line-height: 1.6;"></div>
+                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px;">POST DESCRIPTION</label>
+                    <div id="postDescription" style="background: #f9fafb; padding: 12px; border-radius: 8px; font-size: 15px; color: #374151; line-height: 1.6; border: 1px solid #d1d5db;"></div>
                 </div>
-
+                <hr>
                 <!-- Labels -->
                 <div style="margin-bottom: 24px;">
                     <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px;">LABELS</label>
@@ -132,9 +133,10 @@
                         <!-- Labels will be added here -->
                     </div>
                 </div>
+                <hr>
 
                 <!-- View Comments Button -->
-                <button id="viewCommentsBtn" onclick="viewComments()" style="width: 100%; background: #ba0028; color: white; border: none; border-radius: 8px; padding: 14px; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s;"
+                <button id="viewCommentsBtn" onclick="viewComments()" style="width: 100%; background: #ba0028; color: white; border: none; border-radius: 4px; padding: 10px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s;"
                     onmouseover="this.style.background='#9a0020'" onmouseout="this.style.background='#ba0028'">
                     <i class="fas fa-comments"></i>
                     <span id="commentsText">View Comments (0)</span>
@@ -553,7 +555,7 @@
                     if (post.labels && post.labels.length > 0) {
                         post.labels.forEach(label => {
                             const labelBadge = $(`
-                                <span style="background: #fcd176; color: #000; padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: 500;">
+                                <span style="background: #fcd176; color: #000; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500;">
                                     ${label}
                                 </span>
                             `);
