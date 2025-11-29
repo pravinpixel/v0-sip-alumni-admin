@@ -49,6 +49,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::group(['middleware' => ['auth']], function () {
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.view');
+    Route::get('dashboard/data', [DashboardController::class, 'getData'])->name('admin.dashboard.data');
     Route::get('profile', [ProfileController::class, 'index']);
     Route::post('profile-update', [ProfileController::class, 'update']);
     Route::get('change-password', [ProfileController::class, 'changePassword']);
