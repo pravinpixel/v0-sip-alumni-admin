@@ -62,6 +62,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/filter-options', [DirectoryController::class, 'getFilterOptions'])->name('admin.directory.filter.options');
         Route::get('/connections/{id}', [DirectoryController::class, 'connectionViewPage'])->name('admin.directory.view.connections.page');
         Route::get('/connections-list/{id}', [DirectoryController::class, 'viewConnectionList'])->name('admin.directory.view.connections.list');
+        Route::get('/connections-filter-options/{id}', [DirectoryController::class, 'getConnectionFilterOptions'])->name('admin.directory.view.connections.filter-options');
         Route::post('/update-status', 'updateStatus')->name('directory.update.status');
         Route::get('/view-profile/{id}', 'viewProfileDetails')->name('admin.directory.view.profile');
         Route::get('/export', [DirectoryController::class, 'export'])->name('admin.directory.export');

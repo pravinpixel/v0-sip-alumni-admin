@@ -1,7 +1,7 @@
 <style>
     .top-header {
         background: white;
-        padding: 15px 30px;
+        padding: 15px 30px 5px 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -13,7 +13,7 @@
     }
 
     .header-logo img {
-        height: 40px;
+        height: 60px;
         width: auto;
     }
 

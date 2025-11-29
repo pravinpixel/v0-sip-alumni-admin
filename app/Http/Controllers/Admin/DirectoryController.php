@@ -175,13 +175,28 @@ class DirectoryController extends Controller
 
             $query = Alumnis::whereIn('id', $connectedAlumniIds)->with(['city', 'occupation'])->orderBy('id', 'desc');
 
-            // Filters
+            // Multi-select Filters
             if ($request->filled('batch')) {
-                $query->where('year_of_completion', $request->batch);
+                $batches = is_array($request->batch) ? $request->batch : [$request->batch];
+                $query->whereIn('year_of_completion', $batches);
             }
+            
             if ($request->filled('location')) {
-                $query->whereHas('city', function ($q) use ($request) {
-                    $q->where('name', 'like', '%' . $request->location . '%');
+                $locations = is_array($request->location) ? $request->location : [$request->location];
+                $query->whereHas('city', function ($q) use ($locations) {
+                    $q->whereIn('name', $locations);
+                });
+            }
+            
+            // Search
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('full_name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhereHas('city', function($cityQuery) use ($search) {
+                          $cityQuery->where('name', 'like', "%{$search}%");
+                      });
                 });
             }
 
@@ -231,6 +246,53 @@ class DirectoryController extends Controller
         }
     }
 
+    public function getConnectionFilterOptions($id)
+    {
+        try {
+            // Get all connections for this alumni
+            $connections = AlumniConnections::where(function ($q) use ($id) {
+                $q->where('sender_id', $id)->orWhere('receiver_id', $id);
+            })
+            ->where('status', 'accepted')
+            ->get();
+
+            $connectedAlumniIds = $connections->map(function ($c) use ($id) {
+                return $c->sender_id == $id ? $c->receiver_id : $c->sender_id;
+            });
+
+            // Get unique batch years from connected alumni
+            $batches = Alumnis::whereIn('id', $connectedAlumniIds)
+                ->whereNotNull('year_of_completion')
+                ->distinct()
+                ->pluck('year_of_completion')
+                ->sort()
+                ->values()
+                ->toArray();
+
+            // Get unique locations from connected alumni
+            $locations = Alumnis::whereIn('id', $connectedAlumniIds)
+                ->with('city')
+                ->get()
+                ->pluck('city.name')
+                ->filter()
+                ->unique()
+                ->sort()
+                ->values()
+                ->toArray();
+
+            return response()->json([
+                'success' => true,
+                'batches' => $batches,
+                'locations' => $locations
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching connection filter options: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load filter options'
+            ], 500);
+        }
+    }
 
     public function updateStatus(Request $request)
     {
