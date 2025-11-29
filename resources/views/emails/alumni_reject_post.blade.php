@@ -12,7 +12,7 @@
 <p>Please find the remark provided by the Admin below:</p>
 
 <br>
-<p><strong>{{ $data['title']}} </strong>{{ $data['remarks']}}</p>
+<p><strong>Admin Remark: </strong>{{ $data['remarks']}}</p>
 
 <br>
 <p>You may revise and resubmit a new post if needed.</p>

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Alumni;
 
 use App\Http\Controllers\Controller;
 use App\Mail\AdminApprovalMail;
+use App\Mail\AdminPostDeleteMail;
+use App\Mail\AlumniCommentMail;
 use App\Mail\AlumniCreatePostMail;
+use App\Mail\AlumniPostDeleteMail;
 use App\Models\Alumnis;
 use App\Models\ForumReplies;
 use App\Models\ForumPost;
@@ -259,9 +262,27 @@ class ForumsController extends Controller
             $post->title = $request->title;
             $post->description = $request->description;
             $post->labels = $request->labels;
-            
+
             if ($request->has('status')) {
                 $post->status = $request->status;
+                $alumni = $post->alumni;
+                // Send email alumni
+                $data = [
+                    'name' => $alumni->full_name,
+                    'title' => $request->title,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
+
+                // $role = Role::where('name', 'Super Admin')->first();
+                $admins = User::whereNull('deleted_at')->get();
+                $adminData = [
+                    'name' => $alumni->full_name,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                foreach ($admins as $admin) {
+                    Mail::to($admin->email)->queue(new AdminApprovalMail($adminData));
+                }
             }
             
             $post->save();
@@ -298,6 +319,9 @@ class ForumsController extends Controller
                 ], 422);
             }
 
+            $post = ForumPost::findOrFail($request->forum_post_id);
+            $alumni = $post->alumni;
+
             $form = ForumReplies::create([
                 'forum_post_id' => $request->forum_post_id,
                 'alumni_id' => $alumniId,
@@ -305,6 +329,14 @@ class ForumsController extends Controller
                 'message' => $request->message,
                 'status' => 'pending',
             ]);
+            if ($alumni->notify_post_comments === 1) {
+                $data = [
+                    'name' => $alumni->full_name,
+                    'title' => $post->title,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($alumni->email)->queue(new AlumniCommentMail($data));
+            }
 
             return response()->json([
                 'success' => true,
@@ -532,10 +564,27 @@ class ForumsController extends Controller
                 ], 404);
             }
 
+            $alumni = Alumnis::where('id', $alumniId)->first();
             $status = $request->status;
             if ($status == 'post_deleted') {
                 $post->status = 'post_deleted';
-            } else if ($status == 're_post') { 
+                $data = [
+                    'name' => $alumni->full_name,
+                    'title' => $post->title,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($alumni->email)->queue(new AlumniPostDeleteMail($data));
+
+                $admins = User::whereNull('deleted_at')->get();
+                $adminData = [
+                    'alumni_name' => $alumni->full_name,
+                    'title' => $post->title,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                foreach ($admins as $admin) {
+                    Mail::to($admin->email)->queue(new AdminPostDeleteMail($adminData));
+                }
+            } else if ($status == 're_post') {
                 $post->status = 'pending';
             } else {
                 $post->status = $status;

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\AlumniApprovedPostMail;
+use App\Mail\AlumniPostRemoveMail;
+use App\Mail\AlumniRejectPostMail;
 use App\Models\ForumPost;
 use App\Models\ForumReplies;
 use Carbon\Carbon;
@@ -398,9 +400,25 @@ class ForumsController extends Controller
             } elseif($request->status == 'rejected'){
                 $post->status = 'rejected';
                 $post->remarks = $request->remarks;
+                if($alumni->notify_admin_approval === 1){
+                    $data = [
+                        'name' => $alumni->full_name,
+                        'title' => $post->title,
+                        'remarks' => $request->remarks,
+                        'support_email' => env('SUPPORT_EMAIL'),
+                    ];
+                    Mail::to($alumni->email)->queue(new AlumniRejectPostMail($data));
+                }
             } elseif($request->status == 'removed_by_admin'){
                 $post->status = 'removed_by_admin';
                 $post->remarks = $request->remarks;
+                $data = [
+                        'name' => $alumni->full_name,
+                        'title' => $post->title,
+                        'remarks' => $request->remarks,
+                        'support_email' => env('SUPPORT_EMAIL'),
+                    ];
+                Mail::to($alumni->email)->queue(new AlumniPostRemoveMail($data));
             }else{
                 return $this->returnError(false,'Invalid status provided');
             }
