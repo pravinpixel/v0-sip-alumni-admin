@@ -276,7 +276,7 @@
                                                 <i class="fas fa-check-circle" style="color: #9ca3af; font-size: 16px;"></i>
                                             </div>
                                         </div>
-                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.archivedPosts || 0}</h2>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.activePosts || 0}</h2>
                                     </div>
                                     <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
@@ -285,7 +285,7 @@
                                                 <i class="fas fa-clock" style="color: #9ca3af; font-size: 16px;"></i>
                                             </div>
                                         </div>
-                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">0</h2>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.pendingPosts || 0}</h2>
                                     </div>
                                     <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
@@ -294,7 +294,7 @@
                                                 <i class="fas fa-times-circle" style="color: #9ca3af; font-size: 16px;"></i>
                                             </div>
                                         </div>
-                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">0</h2>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.rejectedPosts || 0}</h2>
                                     </div>
                                 </div>
                             `;
@@ -673,7 +673,7 @@
             `;
             
             // Fetch post details
-            fetch(`/view-thread/${postId}`)
+            fetch("{{ route('alumni.view.thread', ':id') }}".replace(':id', postId))
                 .then(response => response.json())
                 .then(data => {
                     if (data.success && data.data && data.data.post) {
@@ -741,7 +741,7 @@
                     ${tags.length > 0 ? `
                         <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
                             ${tags.map(tag => `
-                                <span style="background: #fbbf24; color: #000; padding: 6px 14px; border-radius: 16px; font-size: 13px; font-weight: 600;">
+                                <span style="background: #fbbf24; color: #000; padding: 4px 10px; border-radius: 16px; font-size: 13px; font-weight: 600;">
                                     ${escapeHtml(tag.trim())}
                                 </span>
                             `).join('')}
@@ -750,13 +750,13 @@
                     
                     <div style="display: flex; align-items: center; gap: 24px; padding: 16px 0; border-top: 2px solid #e5e7eb; border-bottom: 2px solid #e5e7eb; color: #6b7280; font-size: 14px;">
                         <span style="display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-eye"></i> ${post.views_count || 0} views
+                            <i class="far fa-eye"></i> ${post.views_count || 0} views
                         </span>
                         <span style="display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-heart"></i> ${post.likes_count || 0} likes
+                            <i class="far fa-heart"></i> ${post.likes_count || 0} likes
                         </span>
                         <span style="display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-comment"></i> ${replies.length} replies
+                            <i class="far fa-comment"></i> ${replies.length} replies
                         </span>
                     </div>
                 </div>

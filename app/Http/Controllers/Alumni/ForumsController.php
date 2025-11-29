@@ -515,9 +515,9 @@ class ForumsController extends Controller
                 'pendingPosts' => $userPosts->where('status', 'pending')->count(),
                 'rejectedPosts' => $userPosts->where('status', 'rejected')->count(),
                 'archivedPosts' => $userPosts->whereIn('status', ['post_deleted', 'removed_by_admin'])->count(),
-                'totalLikes' => $userPosts->sum('likes_count'),
-                'totalViews' => $userPosts->sum('views_count'),
-                'totalComments' => $userPosts->sum('reply_count'),
+                'totalLikes' => $userPosts->where('status', 'approved')->sum('likes_count'),
+                'totalViews' => $userPosts->where('status', 'approved')->sum('views_count'),
+                'totalComments' => $userPosts->where('status', 'approved')->sum('reply_count'),
             ];
 
             return response()->json([

@@ -90,13 +90,27 @@ class DashboardController extends Controller
                 // Get reply count
                 $replyCount = ForumReplies::where('forum_post_id', $post->id)->count();
 
+                // Determine if we should show profile details
+                $showProfile = $post->alumni_id == $alumniId || $isConnected;
+                
+                // Get author name and initials
+                $authorName = $post->alumni->full_name ?? 'Unknown';
+                $authorInitials = $this->getInitials($authorName);
+                
+                // Get profile image - only if connected or own post
+                $profileImage = null;
+                if ($showProfile && $post->alumni) {
+                    $profileImage = $post->alumni->image_url;
+                }
+
                 return [
                     'id' => $post->id,
                     'title' => $post->title,
                     'description' => strip_tags($post->description),
-                    'author' => $post->alumni->full_name ?? 'Unknown',
-                    'author_initials' => $this->getInitials($post->alumni->full_name ?? 'U'),
-                    'show_profile' => $post->alumni_id == $alumniId || $isConnected,
+                    'author' => $authorName,
+                    'author_initials' => $authorInitials,
+                    'profile_image' => $profileImage,
+                    'show_profile' => $showProfile,
                     'views' => $post->views_count ?? 0,
                     'likes' => $post->likes_count,
                     'comments' => $replyCount

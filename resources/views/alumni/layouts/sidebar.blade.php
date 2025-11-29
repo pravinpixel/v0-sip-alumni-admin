@@ -81,8 +81,8 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     /* Drawer Toggle Button */
     .drawer-toggle {
         position: absolute;
-        top: 7%;
-        right: -15px;
+        top: 4%;
+        right: 0px;
         transform: translateY(-50%);
         width: 30px;
         height: 30px;
@@ -102,7 +102,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     .drawer-toggle:hover {
         background: #d30f0fff;
-        right: -18px;
+        right: 2px;
     }
 
     .drawer-toggle i {
@@ -150,7 +150,19 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     #sidebar.collapsed .edit-profile-btn i {
         font-size: 14px;
-        margin: 0;
+        margin-left: 10px;
+        color: #fa1717ff;
+    }
+    #sidebar.collapsed .edit-profile-btn {
+        background: #ffffffff;
+        border-radius: 6px;
+    }
+    #sidebar.collapsed .edit-profile-btn:hover {
+        background: #f1e5e5ff;
+    }
+
+    #sidebar.collapsed .edit-profile-btn:hover i {
+        color: #333;
     }
 
     #sidebar.collapsed .drawer-toggle {
@@ -206,12 +218,12 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     /* Ensure edit button is red, not yellow */
     .edit-profile-btn {
-        background: #dc2626 !important;
+        background: #dc2626;
         border: none !important;
     }
 
     .edit-profile-btn:hover {
-        background: #b91c1c !important;
+        background: #b91c1c;
     }
 
     /* Remove any yellow/orange tints */

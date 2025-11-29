@@ -125,30 +125,43 @@
 
             <div class="community-posts-grid">
                 @forelse($topPosts as $post)
-                    <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; padding: 24px; transition: all 0.3s;"
+                    <div style="background: white; border: 2px solid #e5e7eb; border-radius: 16px; padding: 24px; transition: all 0.3s; display: flex; flex-direction: column; height: 100%;"
                         onmouseover="this.style.boxShadow='0 10px 25px rgba(0,0,0,0.1)';"
                         onmouseout="this.style.boxShadow='none';">
-                        <h3 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 12px;">{{ $post['title'] }}
+                        
+                        {{-- Title - Fixed height --}}
+                        <h3 style="font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 12px; min-height: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ Str::limit(strip_tags($post['title']), 25 ) }}
                         </h3>
-                        <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px; line-height: 1.5;">
-                            {{ Str::limit($post['description'], 100) }}</p>
+                        
+                        {{-- Description - Fixed height --}}
+                        <p style="font-size: 14px; color: #6b7280; margin-bottom: 16px; line-height: 1.5; min-height: 60px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                            {{ Str::limit(strip_tags($post['description']), 120) }}
+                        </p>
 
+                        {{-- Author --}}
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
                             @if($post['show_profile'])
-                                <div
-                                    style="height: 32px; width: 32px; border-radius: 50%; background: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white;">
-                                    {{ $post['author_initials'] }}
-                                </div>
-                                <span style="font-size: 14px; color: #374151; font-weight: 500;">{{ $post['author'] }}</span>
+                                {{-- Show profile image if available, otherwise show initials --}}
+                                @if($post['profile_image'])
+                                    <img src="{{ $post['profile_image'] }}" alt="{{ $post['author'] }}"
+                                        style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid #dc2626;">
+                                @else
+                                    <div
+                                        style="height: 32px; width: 32px; border-radius: 50%; background: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;">
+                                        {{ $post['author_initials'] }}
+                                    </div>
+                                @endif
+                                <span style="font-size: 14px; color: #374151; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $post['author'] }}</span>
                             @else
-                                <div
-                                    style="height: 32px; width: 32px; border-radius: 50%; background: #d1d5db; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #6b7280;">
-                                    <i class="fas fa-user"></i>
-                                </div>
+                                {{-- Not connected - show default avatar --}}
+                                <img src="{{ asset('images/avatar/blank.png') }}" alt="Alumni Member"
+                                    style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid #d1d5db;">
                                 <span style="font-size: 14px; color: #6b7280; font-weight: 500;">Alumni Member</span>
                             @endif
                         </div>
 
+                        {{-- Stats --}}
                         <div
                             style="display: flex; align-items: center; gap: 16px; font-size: 14px; color: #6b7280; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
                             <div style="display: flex; align-items: center; gap: 4px;">
@@ -164,13 +177,16 @@
                                 <span>{{ $post['comments'] }}</span>
                             </div>
                         </div>
-
-                        <a href=""
-                            style="width: 100%; display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; font-weight: 500; color: #374151; background: white; text-decoration: none; transition: all 0.3s;"
-                            onmouseover="this.style.backgroundColor='#f9fafb';"
-                            onmouseout="this.style.backgroundColor='white';">
-                            View Thread
-                        </a>
+                        
+                        {{-- Button - Push to bottom --}}
+                        <div style="margin-top: auto;">
+                            <a href=""
+                                style="width: 100%; display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; font-weight: 500; color: #374151; background: white; text-decoration: none; transition: all 0.3s;"
+                                onmouseover="this.style.backgroundColor='#f9fafb';"
+                                onmouseout="this.style.backgroundColor='white';">
+                                View Thread
+                            </a>
+                        </div>
                     </div>
                 @empty
                     <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #6b7280;">

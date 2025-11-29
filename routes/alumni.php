@@ -61,11 +61,11 @@ Route::middleware('alumni.auth')->group(function () {
         Route::post('/like', [ForumsController::class, 'toggleLike'])->name('alumni.like.post');
         Route::post('/pinned', [ForumsController::class, 'pinnedPost'])->name('alumni.pinned.post');
         Route::post('/update-status', [ForumsController::class, 'updateStatus'])->name('alumni.update.status');
+        Route::get('/view-thread/{id}', [ForumsController::class, 'viewThread'])->name('alumni.view.thread');
     });
     
 });
 
-Route::get('/view-thread/{id}', [ForumsController::class, 'viewThread'])->name('alumni.view.thread');
 
 Route::get('/states', [CommonController::class, 'getStates'])->name('alumni.states');
 Route::get('/cities-by-state/{stateId}', [CommonController::class, 'getCitiesByState'])->name('alumni.cities');
