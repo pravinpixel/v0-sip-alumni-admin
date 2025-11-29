@@ -20,11 +20,7 @@ class DashboardController extends Controller
     {
         $alumniId = session('alumni.id');
         $alumni = Alumnis::findOrFail($alumniId);
-
-        // Get dashboard statistics
         $stats = $this->getDashboardStats($alumniId);
-        
-        // Get top 3 most liked posts
         $topPosts = $this->getTopPosts($alumniId);
 
         return view('alumni.dashboard.index', compact('alumni', 'stats', 'topPosts'));
@@ -32,7 +28,6 @@ class DashboardController extends Controller
 
     private function getDashboardStats($alumniId)
     {
-        // Connections Made (accepted connections)
         $connectionsMade = AlumniConnections::where(function($query) use ($alumniId) {
             $query->where('sender_id', $alumniId)
                   ->orWhere('receiver_id', $alumniId);
@@ -40,18 +35,18 @@ class DashboardController extends Controller
         ->where('status', 'accepted')
         ->count();
 
-        // Pending Requests (sent by user, still pending)
         $pendingRequests = AlumniConnections::where('sender_id', $alumniId)
             ->where('status', 'pending')
             ->count();
 
-        // Posts Created (active/approved posts)
         $postsCreated = ForumPost::where('alumni_id', $alumniId)
             ->where('status', 'approved')
             ->count();
+        $totalEngagement = PostLikes::whereHas('post', function ($q) use ($alumniId) {
+            $q->where('alumni_id', $alumniId)
+                ->where('status', 'approved');
+        })->count();
 
-        // Total Engagement (likes on user's active posts)
-        $totalEngagement = 0;
 
         return [
             'connectionsMade' => $connectionsMade,
@@ -63,7 +58,6 @@ class DashboardController extends Controller
 
     private function getTopPosts($alumniId)
     {
-        // Get top 3 most liked posts with author info
         $topPosts = ForumPost::with('alumni')
             ->where('status', 'approved')
             ->withCount('likes')
@@ -71,7 +65,6 @@ class DashboardController extends Controller
             ->limit(3)
             ->get()
             ->map(function($post) use ($alumniId) {
-                // Check if user is connected with post author
                 $isConnected = false;
                 if ($post->alumni_id != $alumniId) {
                     $isConnected = AlumniConnections::where(function($query) use ($alumniId, $post) {
@@ -87,22 +80,16 @@ class DashboardController extends Controller
                     ->exists();
                 }
 
-                // Get reply count
                 $replyCount = ForumReplies::where('forum_post_id', $post->id)->count();
-
-                // Determine if we should show profile details
-                $showProfile = $post->alumni_id == $alumniId || $isConnected;
-                
-                // Get author name and initials
+                $showProfileImage = $post->alumni_id == $alumniId || $isConnected;
+            
                 $authorName = $post->alumni->full_name ?? 'Unknown';
                 $authorInitials = $this->getInitials($authorName);
                 
-                // Get profile image - only if connected or own post
                 $profileImage = null;
-                if ($showProfile && $post->alumni) {
+                if ($showProfileImage && $post->alumni) {
                     $profileImage = $post->alumni->image_url;
                 }
-
                 return [
                     'id' => $post->id,
                     'title' => $post->title,
@@ -110,7 +97,7 @@ class DashboardController extends Controller
                     'author' => $authorName,
                     'author_initials' => $authorInitials,
                     'profile_image' => $profileImage,
-                    'show_profile' => $showProfile,
+                    'show_profile_image' => $showProfileImage,
                     'views' => $post->views_count ?? 0,
                     'likes' => $post->likes_count,
                     'comments' => $replyCount

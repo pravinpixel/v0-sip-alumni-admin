@@ -141,8 +141,8 @@
 
                         {{-- Author --}}
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
-                            @if($post['show_profile'])
-                                {{-- Show profile image if available, otherwise show initials --}}
+                            @if($post['show_profile_image'])
+                                {{-- Connected or Own Post - Show profile image if available, otherwise show initials --}}
                                 @if($post['profile_image'])
                                     <img src="{{ $post['profile_image'] }}" alt="{{ $post['author'] }}"
                                         style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid #dc2626;">
@@ -152,13 +152,14 @@
                                         {{ $post['author_initials'] }}
                                     </div>
                                 @endif
-                                <span style="font-size: 14px; color: #374151; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $post['author'] }}</span>
                             @else
-                                {{-- Not connected - show default avatar --}}
-                                <img src="{{ asset('images/avatar/blank.png') }}" alt="Alumni Member"
+                                {{-- Not connected - show default blank avatar --}}
+                                <img src="{{ asset('images/avatar/blank.png') }}" alt="{{ $post['author'] }}"
                                     style="height: 32px; width: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid #d1d5db;">
-                                <span style="font-size: 14px; color: #6b7280; font-weight: 500;">Alumni Member</span>
                             @endif
+                            
+                            {{-- Always show author name --}}
+                            <span style="font-size: 14px; color: #374151; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $post['author'] }}</span>
                         </div>
 
                         {{-- Stats --}}
