@@ -48,7 +48,7 @@
                         </div>
 
                         <div class="d-grid mt-2">
-                            <button type="button" id="dynamic-submit" class="btn" style="background-color:oklch(0.52 0.24 22); color:white;">
+                            <button type="submit" id="dynamic-submit" class="btn" style="background-color:oklch(0.52 0.24 22); color:white;">
                                 <span class="indicator-label">Send OTP</span>
                                 <span class="indicator-progress">
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
