@@ -181,7 +181,7 @@
                         
                         {{-- Button - Push to bottom --}}
                         <div style="margin-top: auto;">
-                            <a href=""
+                            <a href="{{ route('alumni.forums') }}?post={{ $post['id'] }}"
                                 style="width: 100%; display: inline-flex; align-items: center; justify-content: center; padding: 10px 16px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; font-weight: 500; color: #374151; background: white; text-decoration: none; transition: all 0.3s;"
                                 onmouseover="this.style.backgroundColor='#f9fafb';"
                                 onmouseout="this.style.backgroundColor='white';">

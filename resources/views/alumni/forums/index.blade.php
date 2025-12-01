@@ -322,6 +322,18 @@
         document.addEventListener("DOMContentLoaded", function () {
             initializeMultiSelect();
             loadForumPosts();
+            
+            // Check if there's a post ID in URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('post');
+            if (postId) {
+                // Wait a bit for the page to load, then open the modal
+                setTimeout(() => {
+                    openThreadModal(postId);
+                    // Clean up URL without reloading
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }, 500);
+            }
         });
 
         let searchTimeout;
@@ -999,7 +1011,12 @@
 
         window.openThreadModal = function (postId) {
             window.currentThreadPostId = postId;
-            const url = "{{ route('alumni.view.thread', ':id') }}".replace(':id', postId);
+
+            const url = "{{ route('alumni.view.thread', ['id' => 0]) }}"
+                .replace('/0', '/' + postId);
+
+            // Change URL without reload
+            history.pushState({}, "", "{{ route('alumni.view.thread', ['id' => 0]) }}".replace('/0', '/' + postId));
 
             fetch(url)
                 .then(res => res.json())
@@ -1011,6 +1028,7 @@
 
                     populateThreadModal(data.data);
                     loadForumPosts();
+
                     document.getElementById('threadModal').style.display = 'block';
                     document.body.style.overflow = 'hidden';
                 })
@@ -1019,6 +1037,7 @@
                     showToast("Error loading thread.", 'error');
                 });
         };
+
 
         function populateThreadModal(threadData) {
             const post = threadData.post;
@@ -1239,6 +1258,7 @@
         function closeThreadModal() {
             document.getElementById('threadModal').style.display = 'none';
             document.body.style.overflow = 'auto';
+            history.pushState({}, "", "{{ route('alumni.forums') }}");
             resetReplyState();
         }
 

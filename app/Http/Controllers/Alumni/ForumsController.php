@@ -42,6 +42,7 @@ class ForumsController extends Controller
                 ->whereHas('alumni', function ($query) {
                     $query->whereNotNull('year_of_completion');
                 })
+                ->where('status', 'approved')
                 ->get()
                 ->pluck('alumni.year_of_completion')
                 ->unique()
