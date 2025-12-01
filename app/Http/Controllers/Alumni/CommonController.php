@@ -98,8 +98,8 @@ class CommonController extends Controller
                     }
                 }
                 $imagePath = $request->file('image')->store('alumni_profiles', 'public');
-                $fullUrl = url('public/storage/' . $imagePath);
-                $alumni->image = $fullUrl;
+                // $fullUrl = url('public/storage/' . $imagePath);
+                $alumni->image = $imagePath;
             }
 
             $alumni->save();

@@ -61,6 +61,8 @@ return [
 
     'asset_url' => env('ASSET_URL'),
 
+    'storage_url' => env('STORAGE_URL'),
+
     'task_url' => env('TASK_URL'),
 
 
