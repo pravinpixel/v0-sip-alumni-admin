@@ -33,8 +33,8 @@
         font-size: 14px;
         font-weight: 400;
     }
-    .placeholder {
-        background-color: #ffffffff;
+    .multi-select-display span {
+        background: none;
     }
 
     .multi-select-display:hover {
@@ -526,13 +526,32 @@
                 postType: 'Type'
             };
 
+            const valueLabels = {
+                // Date Range
+                'today': 'Today',
+                'week': 'Last 7 Days',
+                'month': 'Last 30 Days',
+                // Sort By
+                'most_recent': 'Most Recent',
+                'most_liked': 'Most Liked',
+                'most_viewed': 'Most Viewed',
+                'most_commented': 'Most Commented',
+                // Post Type
+                'pinned': 'Pinned Posts',
+                'regular': 'Regular Posts'
+            };
+
             Object.keys(selectedFilters).forEach(filterType => {
                 selectedFilters[filterType].forEach(value => {
                     hasFilters = true;
                     const tag = document.createElement('div');
                     tag.className = 'selected-tag';
+                    
+                    // Get display label for the value
+                    const displayValue = valueLabels[value] || value;
+                    
                     tag.innerHTML = `
-                        <span>${filterLabels[filterType]}: ${value}</span>
+                        <span>${filterLabels[filterType]}: ${displayValue}</span>
                         <button onclick="removeFilter('${filterType}', '${value}')">×</button>
                     `;
                     tagsContainer.appendChild(tag);
