@@ -1,46 +1,48 @@
 <style>
-    /* 1. Sidebar Background Color (Light Blue/Grey from design) */
     .app-sidebar {
         background-color: #f0f4f9;
         color: #1f2937;
-        /* Default text color */
         box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
     }
 
-    /* 2. Default Link Styling */
     .menu-link {
         color: #1f2937 !important;
-        /* Dark text for inactive links */
         transition: all 0.2s ease-in-out;
     }
 
-    /* 3. Inactive Icon Color (Matches the dark text) */
     .menu-link .custom_icon {
         color: #1f2937 !important;
     }
 
-    /* 4. ACTIVE State: Dashboard (Red background, White text/icon) */
+    .menu-link:not(.active):hover {
+        background-color: #dc2626 !important;
+        color: white !important;
+        border-radius: 0.65rem;
+    }
+
+    .menu-link:not(.active):hover .custom_icon {
+        color: white !important;
+    }
+
+    .menu-link:not(.active):hover .menu-title {
+        color: white !important;
+    }
+
     .menu-link.active {
         background-color: #d11234 !important;
-        /* Deep red for active link */
         color: white !important;
-        /* White text when active */
         border-radius: 0.65rem;
-        /* Match the rounded corners in the design */
     }
 
     .menu-link.active .custom_icon {
         color: white !important;
-        /* White icon when active */
     }
 
     .menu-item {
-        /* Add some padding to match the spacing in the design */
         padding-top: 5px;
         padding-bottom: 5px;
     }
 
-    /* Override for bold text in the menu */
     .menu-title b {
         font-weight: 600 !important;
     }

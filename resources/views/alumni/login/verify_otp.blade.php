@@ -310,11 +310,6 @@
             formData.append('mobile', mobile);
             formData.append('otp', otp);
 
-            console.log('Sending OTP verification:', {
-                mobile: mobile,
-                otp: otp
-            });
-
             $.ajax({
                 url: '{{ route("verify.otp") }}',
                 type: 'POST',
@@ -325,10 +320,9 @@
                     'Accept': 'application/json'
                 },
                 success: function(response) {
-                    console.log('Success Response:', response);
 
                     if (response.success) {
-                        showToast(response.message || 'OTP verified successfully!', 'success');
+                        showToast('OTP verified successfully!', 'success');
 
                         setTimeout(() => {
                             if (response.redirect) {
@@ -338,14 +332,11 @@
                             }
                         }, 1000);
                     } else {
-                        showToast(response.error || response.message || 'Invalid OTP', 'error');
+                        showToast('Invalid OTP', 'error');
                         clearOTPFields();
                     }
                 },
                 error: function(xhr) {
-                    console.log('Error Status:', xhr.status);
-                    console.log('Error Response:', xhr.responseJSON);
-
                     switch (xhr.status) {
                         case 400:
                             showToast(xhr.responseJSON?.error || 'Invalid OTP. Please try again.', 'error');
@@ -398,7 +389,7 @@
                     console.log('Resend Success:', response);
 
                     if (response.success) {
-                        showToast(response.message || 'OTP sent successfully!', 'success');
+                        showToast('OTP sent successfully!', 'success');
                         clearOTPFields();
                         startResendCountdown();
                     } else {
