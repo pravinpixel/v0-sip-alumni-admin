@@ -16,17 +16,39 @@
                     style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
             </div>
             <button id="filterToggleBtn"
-                style="background-color: #ba0028; color: white; border: none; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                style="background-color: #ba0028; color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
+                onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
+                onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
                 <i class="fas fa-filter"></i>
                 <span id="filterBtnText">Filter</span>
             </button>
-            <button id="exportBtn"
-                style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;">
-                <a onclick="exportDirectory()">
-                <i class="fas fa-download"></i>
-                <span>Export</span>
-            </a>
-            </button>
+            <!-- Export Dropdown -->
+            <div style="position: relative;">
+                <button id="exportBtn"
+                    style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500; position: relative;"
+                    onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
+                    onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';"
+                    onclick="toggleExportDropdown()">
+                    <i class="fas fa-download"></i>
+                    <span>Export</span>
+                </button>
+                
+                <!-- Export Dropdown Menu -->
+                <div id="exportDropdown" style="display: none; position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; z-index: 1000;">
+                    <div onclick="exportDirectory('csv')" 
+                        style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f3f4f6; transition: background 0.2s;"
+                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                        <i class="fas fa-file-csv" style="color: #10b981; font-size: 16px;"></i>
+                        <span style="font-size: 12px; color: #374151; font-weight: 500;">Export as CSV</span>
+                    </div>
+                    <div onclick="exportDirectory('excel')" 
+                        style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s;"
+                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                        <i class="fas fa-file-excel" style="color: #059669; font-size: 16px;"></i>
+                        <span style="font-size: 12px; color: #374151; font-weight: 500;">Export as Excel</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Filter Section -->
@@ -36,7 +58,8 @@
                     <!-- Year Filter Dropdown -->
                     <div class="filter-dropdown" style="position: relative;">
                         <button type="button" class="filter-dropdown-btn" data-filter="years"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;">
+                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
+                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
                             <span>Year of Completion</span>
                             <div style="display: flex; align-items: center; gap: 6px;">
                                 <span class="filter-count" data-filter="years" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
@@ -51,7 +74,8 @@
                     <!-- City Filter Dropdown -->
                     <div class="filter-dropdown" style="position: relative;">
                         <button type="button" class="filter-dropdown-btn" data-filter="cities"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;">
+                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
+                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
                             <span>City</span>
                             <div style="display: flex; align-items: center; gap: 6px;">
                                 <span class="filter-count" data-filter="cities" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
@@ -66,7 +90,8 @@
                     <!-- Occupation Filter Dropdown -->
                     <div class="filter-dropdown" style="position: relative;">
                         <button type="button" class="filter-dropdown-btn" data-filter="occupations"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;">
+                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
+                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
                             <span>Occupation</span>
                             <div style="display: flex; align-items: center; gap: 6px;">
                                 <span class="filter-count" data-filter="occupations" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
@@ -377,18 +402,37 @@
         };
     });
 
-    function exportDirectory() {
-    let years = selectedFilters.years.join(',');
-    let cities = selectedFilters.cities.join(',');
-    let occupations = selectedFilters.occupations.join(',');
+    function toggleExportDropdown() {
+        const dropdown = document.getElementById('exportDropdown');
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
 
-    let url = "{{ route('admin.directory.export') }}" 
-                + "?years=" + years 
-                + "&cities=" + cities 
-                + "&occupations=" + occupations;
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const exportBtn = document.getElementById('exportBtn');
+        const dropdown = document.getElementById('exportDropdown');
+        
+        if (!exportBtn.contains(event.target) && !dropdown.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
 
-    window.location.href = url;
-}
+    function exportDirectory(format) {
+        // Close dropdown
+        document.getElementById('exportDropdown').style.display = 'none';
+        
+        let years = selectedFilters.years.join(',');
+        let cities = selectedFilters.cities.join(',');
+        let occupations = selectedFilters.occupations.join(',');
+
+        let url = "{{ route('admin.directory.export') }}" 
+                    + "?years=" + years 
+                    + "&cities=" + cities 
+                    + "&occupations=" + occupations
+                    + "&format=" + format;
+
+        window.location.href = url;
+    }
 
     function loadFilterOptions() {
         $.ajax({

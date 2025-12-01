@@ -16,7 +16,9 @@
                     style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
             </div>
             <button id="filterToggleBtn"
-                style="background-color: #ba0028; color: white; border: none; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                style="background-color: #ba0028; color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
+                onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
+                onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
                 <i class="fas fa-filter"></i>
                 <span id="filterBtnText">Filter</span>
             </button>
@@ -29,7 +31,8 @@
                     <!-- Status Filter Dropdown -->
                     <div class="filter-dropdown" style="position: relative;">
                         <button type="button" class="filter-dropdown-btn" data-filter="statuses"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;">
+                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
+                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
                             <span>Status</span>
                             <div style="display: flex; align-items: center; gap: 6px;">
                                 <span class="filter-count" data-filter="statuses" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>

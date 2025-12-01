@@ -424,6 +424,10 @@ class DirectoryController extends Controller
 
     public function export(Request $request)
     {
-        return Excel::download(new DirectoryExport($request), 'alumni_directory.xlsx');
+        if ($request->format == 'csv') {
+            return Excel::download(new DirectoryExport($request), 'alumni_directory.csv');
+        } else {
+            return Excel::download(new DirectoryExport($request), 'alumni_directory.xlsx');
+        };
     }
 }
