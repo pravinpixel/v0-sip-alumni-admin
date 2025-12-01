@@ -65,6 +65,18 @@ class ForumsController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search') && !empty($request->search['value'])) {
+                        $searchValue = $request->search['value'];
+                        $query->where(function ($q) use ($searchValue) {
+                            $q->where('status', 'like', "%{$searchValue}%")
+                                ->orWhereHas('alumni', function ($alumniQuery) use ($searchValue) {
+                                    $alumniQuery->where('full_name', 'like', "%{$searchValue}%")
+                                    ->orWhere('mobile_number', 'like', "%{$searchValue}%");
+                                });
+                        });
+                    }
+                })
                 ->addColumn('created_at', function ($row) {
                     return \Carbon\Carbon::parse($row->created_at)
                         ->setTimezone('Asia/Kolkata')

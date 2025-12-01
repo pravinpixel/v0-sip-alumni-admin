@@ -54,7 +54,7 @@
 
     <div class="app-sidebar-logo px-6 pt-6 pb-2" id="kt_app_sidebar_logo"
         style="height:130px; display:flex; justify-content:center; align-items:center;">>
-        <a href="{{ url('admin/') }}">
+        <a href="{{ route('dashboard.view') }}">
             <img alt="Logo" style="align-items: center;" src="{{ asset('images/logo/sip_logo.png') }}"
                 class="h-80px app-sidebar-logo-default theme-light-show" />
         </a>

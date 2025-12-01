@@ -291,7 +291,7 @@
             ],
 
             paging: true,
-            searching: false,
+            searching: true,
             ordering: false,
             pageLength: 10,
             lengthChange: false,
@@ -306,7 +306,7 @@
             let info = table.page.info();
 
             $(".dt-info-custom").html(
-                `Showing ${info.start + 1} to ${info.end} posts`
+                `Showing ${info.start + 1} to ${info.end} posts of ${info.recordsTotal}`
             );
 
             let paginationHtml = `

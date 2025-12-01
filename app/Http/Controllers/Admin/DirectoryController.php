@@ -62,6 +62,28 @@ class DirectoryController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search') && !empty($request->search['value'])) {
+                        $searchValue = $request->search['value'];
+
+                        $query->where(function ($q) use ($searchValue) {
+                            $q->where('full_name', 'like', "%{$searchValue}%")
+                                ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
+                                ->orWhere('status', 'like', "%{$searchValue}%")
+                                ->orWhere('email', 'like', "%{$searchValue}%")
+                                ->orWhere('mobile_number', 'like', "%{$searchValue}%")
+                                ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
+                                    $occQuery->where('name', 'like', "%{$searchValue}%");
+                                })
+                                ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
+                                    $cityQuery->where('name', 'like', "%{$searchValue}%")
+                                        ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
+                                            $stateQuery->where('name', 'like', "%{$searchValue}%");
+                                        });
+                                });
+                        });
+                    }
+                })
                 ->editColumn('created_at', function ($row) {
                     return '<span>' . \Carbon\Carbon::parse($row->created_at)
                         ->setTimezone('Asia/Kolkata')
@@ -94,7 +116,9 @@ class DirectoryController extends Controller
                     return $row->occupation->name ?? '-';
                 })
                 ->addColumn('connections', function ($row) {
-                    return '<button onclick="viewConnections(' . $row->id . ')" class="btn btn-sm btn-primary">View Profile</button>';
+                    return '<button onclick="viewConnections(' . $row->id . ')" class="btn btn-sm" style="border:1px solid #e5e7eb;font-weight:600;"
+                    onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#000000ff\'">
+                    <i class="fa fa-users"></i> View</button>';
                 })
                 ->addColumn('status', function ($row) {
                     $status = strtolower($row->status);
@@ -117,26 +141,33 @@ class DirectoryController extends Controller
 
                     if ($status == 'blocked') {
                         return '
-        <div class="dropdown d-inline-block ms-2">
+        <div class="dropdown d-inline-block ms-2"">
             <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
                 <i class="fas fa-ellipsis-v"></i>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewProfilePic(\'' . $imageUrl . '\')"><i class="fa-regular fa-eye me-2"></i>View Profile Pic</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="updateStatus(' . $row->id . ', \'unblocked\')">Unblock</a></li>
+            <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '" style="padding:4px; border:1px solid #e5e7eb;">
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewProfilePic(\'' . $imageUrl . '\')"
+                 onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'; this.style.borderRadius=\'4px\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#000000ff\'">
+                <i class="fa-regular fa-eye me-2"></i>View Profile Pic</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="updateStatus(' . $row->id . ', \'unblocked\')"
+                 onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'; this.style.borderRadius=\'4px\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#000000ff\'">
+                <i class="fa-solid fa-unlock me-2"></i>Unblock</a></li>
             </ul>
         </div>';
                     } else {
                         return '
-        <div class="dropdown d-inline-block ms-2">
+        <div class="dropdown d-inline-block ms-2"">
             <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
                 <i class="fas fa-ellipsis-v"></i>
             </button>
-            <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '">
-                <a class="dropdown-item" href="javascript:void(0)" onclick="viewProfilePic(\'' . $imageUrl . '\')">
+            <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '" style="padding:4px; border:1px solid #e5e7eb;">
+                <a class="dropdown-item" href="javascript:void(0)" onclick="viewProfilePic(\'' . $imageUrl . '\')"
+                onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'; this.style.borderRadius=\'4px\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#000000ff\'">
                 <i class="fa-regular fa-eye me-2"></i>View Profile Pic
             </a>
-                <li><a class="dropdown-item text-danger" href="javascript:void(0)" onclick="updateStatus(' . $row->id . ', \'blocked\')"><i class="fa-solid fa-ban me-2"></i>Block</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" onclick="updateStatus(' . $row->id . ', \'blocked\')" style="color: #ff0000ff;"
+                onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'; this.style.borderRadius=\'4px\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#ff0000ff\'">
+                <i class="fa-solid fa-ban me-2"></i>Block</a></li>
             </ul>
         </div>';
                     }
