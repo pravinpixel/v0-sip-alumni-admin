@@ -141,7 +141,7 @@
                         </div>
 
                         <div class="d-grid mt-4">
-                            <button type="button" id="verify-otp-btn" class="btn" style="background-color:oklch(0.52 0.24 22); color:white; opacity: 0.5;" disabled>
+                            <button type="submit" id="verify-otp-btn" class="btn" style="background-color:oklch(0.52 0.24 22); color:white; opacity: 0.5;" disabled>
                                 <span class="indicator-label">Verify OTP</span>
                                 <span class="indicator-progress" style="display:none;">
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>

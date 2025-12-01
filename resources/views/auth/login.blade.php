@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <title>@yield('title', config('app.name'))</title>
 
@@ -14,9 +15,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    
+
     @section('style')
-    <link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('plugins/global/plugins.bundle.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/style.bundle.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
     @show
 </head>
@@ -58,7 +60,7 @@
                         </div>
 
                         <div class="d-grid mt-10">
-                            <button type="button" id="dynamic-submit" class="btn" style="background-color:oklch(0.48 0.22 18.5); color:white;">
+                            <button type="submit" id="dynamic-submit" class="btn" style="background-color:oklch(0.48 0.22 18.5); color:white;">
                                 <span class="indicator-label">Log In</span>
                                 <span class="indicator-progress">
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
@@ -70,11 +72,53 @@
             </div>
         </div>
     </div>
+    <style>
+        .toast-notification {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            padding: 14px 20px;
+            color: #fff;
+            font-size: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 999999 !important;
+            /* IMPORTANT */
+            animation: slideInUp 0.3s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutDown {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            to {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+        }
+    </style>
 
     @section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
-    <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+    <script src="{{ asset('plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('js/scripts.bundle.js') }}"></script>
     <script src="{{ asset('js/common.js') }}"></script>
 
     <script>
@@ -97,9 +141,12 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: function(response) {
                     if (response) {
+                        showToast('Login successfully');
                         window.location.href = '{{ route("dashboard.view") }}';
                     }
                 },
@@ -128,4 +175,5 @@
     @show
 
 </body>
+
 </html>
