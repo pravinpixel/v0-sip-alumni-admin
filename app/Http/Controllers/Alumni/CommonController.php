@@ -24,7 +24,8 @@ class CommonController extends Controller
 
     public function showEditProfile($id)
     {
-        $alumni = Alumnis::with('city.state')->findOrFail($id);
+
+        $alumni = Alumnis::with('city.state')->find($id);
         $states = States::orderBy('name')->get(); // Fetch all states
 
         return view('alumni.modals.edit-profile-modal', compact('alumni', 'states'));

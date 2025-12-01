@@ -39,7 +39,7 @@
 
     .multi-select-display:hover {
         border-color: #9ca3af;
-        background-color: #f9fafb;
+        background-color: #eebc4a;
     }
 
     .multi-select-dropdown {
@@ -236,9 +236,9 @@
                     onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
             </div>
             <button id="filterToggleBtn"
-                style="background: white; color: #374151; border: 1px solid #d1d5db; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; height: 42px; white-space: nowrap;"
-                onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                <i class="fas fa-filter"></i>
+                style="color: #374151; border: 1px solid #d1d5db; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; height: 42px; white-space: nowrap;"
+                onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
+                <i class="bi bi-funnel" style="font-size: 18px;"></i>
                 <span id="filterBtnText">Filter</span>
                 <i class="fas fa-chevron-down"></i>
             </button>

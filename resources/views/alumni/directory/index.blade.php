@@ -198,7 +198,7 @@ table.dataTable tbody tr > .sorting_3 {
     }
 
     .multi-select-option {
-        margin: 10px;
+        padding: 6px;
         cursor: pointer;
         display: flex;
         align-items: center;
