@@ -42,12 +42,12 @@ class AlumniController extends Controller
             }
             $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
 
-            // if (!$otpRecord || $otpRecord->is_verified == 0) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Please verify OTP before registration.'
-            //     ], 400);
-            // }
+            if (!$otpRecord || $otpRecord->is_verified == 0) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please verify OTP before registration.'
+                ], 400);
+            }
             $cityId = $request->city_id;
 
             if ($request->city_id == "others") {
@@ -79,7 +79,7 @@ class AlumniController extends Controller
                 'status'             => 'active',
                 'image'              => asset('images/avatar/blank.png')
             ]);
-            // $otpRecord->delete();
+            $otpRecord->delete();
 
             Alumnis::where('is_directory_ribbon', '!=', 1)
                 ->orWhereNull('is_directory_ribbon')
