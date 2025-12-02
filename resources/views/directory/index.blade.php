@@ -558,14 +558,14 @@
     let alumniToBlock = null;
 
     function updateStatus(id, status) {
-        if (status === 'blocked') {
+        // if (status === 'blocked') {
             // Open modal for block with remarks
-            alumniToBlock = id;
-            document.getElementById('blockAlumniModal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            document.getElementById('blockRemarks').value = '';
-            document.getElementById('remarksError').style.display = 'none';
-        } else {
+            // alumniToBlock = id;
+            // document.getElementById('blockAlumniModal').style.display = 'block';
+            // document.body.style.overflow = 'hidden';
+            // document.getElementById('blockRemarks').value = '';
+            // document.getElementById('remarksError').style.display = 'none';
+        // } else {
             // Unblock without remarks
             confirmBox("Are you sure you want to unblock this user?", function() {
             
@@ -588,7 +588,7 @@
             });
         });
 
-        }
+        // }
     }
 
     function closeBlockModal() {

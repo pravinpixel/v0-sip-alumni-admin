@@ -14,6 +14,7 @@ use App\Models\Alumnis;
 use App\Models\Department;
 use App\Models\BranchLocation;
 use App\Models\Designation;
+use App\Models\ForumPost;
 use App\Models\Location;
 use App\Models\Role;
 use App\Models\Task;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 use PhpParser\Node\Scalar\MagicConst\Dir;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -332,16 +334,21 @@ class DirectoryController extends Controller
             $alumni = Alumnis::findOrFail($id);
             $status = strtolower($request->status);
             if ($status === 'blocked') {
-                $remarks = $request->remarks;
-                $alumni->remarks = $remarks;
                 $connections = AlumniConnections::where(function ($q) use ($id) {
                     $q->where('sender_id', $id)
                         ->orWhere('receiver_id', $id);
                 });
                 $connections->delete();
+                
+                $defaultRemark = "Your profile has been blocked. Therefore, your posts will not be visible to other alumni.";
+                ForumPost::where('alumni_id', $id)
+                    ->update(['status' => 'removed_by_admin'
+                            //   'remarks' => $defaultRemark
+                    ]);
+
                 $data = [
                     'name' => $alumni->full_name,
-                    'remarks' => $remarks,
+                    'remarks' => $defaultRemark,
                     'support_email' => env('SUPPORT_EMAIL'),
                 ];
                 Mail::to($alumni->email)->queue(new AlumniBlockedMail($data));

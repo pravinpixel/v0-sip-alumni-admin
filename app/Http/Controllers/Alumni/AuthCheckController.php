@@ -35,6 +35,12 @@ class AuthCheckController extends Controller
                         'error' => 'Mobile number not registered'
                     ], 400); // 400 Bad Request for invalid mobile
                 }
+                if($alumni->status == 'blocked') {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Your account has been blocked. Please contact admin.'
+                    ], 400);
+                }
             }
 
             // Generate new OTP
