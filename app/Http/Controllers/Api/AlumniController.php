@@ -141,6 +141,14 @@ class AlumniController extends Controller
             ], 422);
         }
 
+        $alumni = Alumnis::where('mobile_number', $request->mobile_number)->first();
+        if ($alumni) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mobile number already registered'
+            ], 400);
+        }
+
         $mobile = $request->mobile_number;
         $otp = rand(100000, 999999);
         $smsMobile = '91' . $mobile;
