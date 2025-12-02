@@ -5,7 +5,10 @@
 @push('styles')
     <style>
         .toggle-switch input:checked+.toggle-slider {
-            background-color: #16a34a;
+            background-color: #16a34a !important;
+        }
+        .toggle-slider {
+            background-color: #dc2626 !important;
         }
 
         .toggle-slider:before {
@@ -293,31 +296,12 @@
                     },
                     success: function (response) {
                         if (response.success) {
-                            Swal.fire({
-                                title: "Success!",
-                                text: response.message,
-                                icon: "success",
-                                confirmButtonText: "Ok",
-                                customClass: {
-                                    confirmButton: "btn btn-success"
-                                },
-                                timer: 2000,
-                            });
+                            showToast(response.message);
                             updateTableData();
                         }
                     },
                     error: function (xhr) {
-                        // Revert toggle on error
-                        toggle.prop('checked', !newStatus);
-                        Swal.fire({
-                            title: "Error!",
-                            text: xhr.responseJSON?.message || "Failed to update status",
-                            icon: "error",
-                            confirmButtonText: "Ok",
-                            customClass: {
-                                confirmButton: "btn btn-danger"
-                            }
-                        });
+                        showToast(xhr.responseJSON?.message || 'Failed to update status', 'error');
                     }
                 });
             });
@@ -325,43 +309,18 @@
             // Attach event listener to the "Delete" button
             $(document).on('click', '.deletestateBtn', function () {
                 var userId = $(this).data('user-id');
-
-                Swal.fire({
-                    text: "Are you sure you would like to delete?",
-                    icon: "warning",
-                    showCancelButton: true,
-                    buttonsStyling: false,
-                    confirmButtonText: "Yes, delete it!",
-                    cancelButtonText: "No, return",
-                    customClass: {
-                        confirmButton: "btn btn-danger",
-                        cancelButton: "btn btn-active-light"
-                    }
-                }).then(function (result) {
-                    if (result.isConfirmed) {
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                        $.ajax({
+                confirmBox("Are you sure you want to delete this user?", function() {
+                    $.ajax({
                             url: "{{ route('user.delete', ['id' => ':id']) }}".replace(':id', userId),
                             type: 'DELETE',
                             success: function (res) {
-                                Swal.fire({
-                                    title: "Deleted!",
-                                    text: res.message,
-                                    icon: "success",
-                                    confirmButtonText: "Ok, got it!",
-                                    customClass: {
-                                        confirmButton: "btn btn-success"
-                                    },
-                                    timer: 3000,
-                                });
+                                showToast(res.message);
                                 refreshTableContent();
+                            },
+                            error: function (xhr) {
+                                showToast(xhr.responseJSON?.message || 'Failed to delete user', 'error');
                             }
                         });
-                    }
                 });
             });
 

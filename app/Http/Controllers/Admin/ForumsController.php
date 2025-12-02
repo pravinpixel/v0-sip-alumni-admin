@@ -102,10 +102,9 @@ class ForumsController extends Controller
                 })
 
                 ->addColumn('view_post', function ($row) {
-                    return '<div onclick="viewPost(' . $row->id . ')" style="background-color: #f3f4f6; padding: 6px 12px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;" 
-                        onmouseover="this.style.background=\'#e5e7eb\'" onmouseout="this.style.background=\'#f3f4f6\'"> 
-                        <i class="fas fa-eye" style="color: #374151;"></i>
-                        <span style="font-weight: 600; color: #374151;">View</span>
+                    return '<div onclick="viewPost(' . $row->id . ')" style="background-color: #ffffffff; padding: 6px 12px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s; border: 1px solid #374151; font-weight: 600;" 
+                        onmouseover="this.style.background=\'#ba0028\', this.style.color=\'#fff\'" onmouseout="this.style.background=\'#ffffffff\', this.style.color=\'#374151\', this.style.border=\'1px solid #374151\'"> 
+                        <i class="fas fa-eye" style="color: #374151;"></i>View
                     </div>';
                 })
 

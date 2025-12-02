@@ -182,7 +182,7 @@
                 <!-- Action Buttons -->
                 <div
                     style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
-                    <button type="button" onclick="window.location='{{url('user')}}'"
+                    <button type="button" onclick="window.location='{{ route('user.index') }}'"
                         style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; color: #111827;">
                         Cancel
                     </button>
@@ -264,10 +264,10 @@
                 },
                 success: function (response) {
                     if (response.success) {
-                        toastr.success(response.message);
+                        showToast(response.message);
                         window.location.href = '{{ route("user.index") }}';
                     } else {
-                        toastr.error(response.error);
+                        showToast(response.error, 'error');
                     }
                 },
                 error: function (response) {
@@ -278,7 +278,7 @@
                             $('#' + key + '-error').text(value[0]);
                         });
                     } else {
-                        toastr.error(response.responseJSON.error)
+                        showToast(response.responseJSON.error || 'An error occurred', 'error');
                     }
                 }
             });

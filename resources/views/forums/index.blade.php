@@ -74,7 +74,7 @@
         </div>
 
         <!-- Alumni Table -->
-        <table id="forumsTable" class="display" style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: #f5f0f0ff; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;">
+        <table id="forumsTable" class="display" style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;">
             <thead>
                 <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
                     <th style="padding: 15px; text-align: left;">Created On</th>
