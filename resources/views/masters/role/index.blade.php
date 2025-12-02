@@ -5,7 +5,11 @@
 @push('styles')
     <style>
         .toggle-switch input:checked+.toggle-slider {
-                background-color: #16a34a;
+                background-color: #16a34a !important;
+            }
+
+            .toggle-slider {
+                background-color: #dc2626 !important;
             }
 
             .toggle-slider:before {
@@ -31,6 +35,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div style="padding: 2rem;">
+        <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Roles Management</h1>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+            Manage admin roles and permissions
+        </p>
         <!-- Main Card -->
         <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem;">
 
@@ -258,31 +266,14 @@
                     },
                     success: function (response) {
                         if (response.success) {
-                            Swal.fire({
-                                title: "Success!",
-                                text: response.message,
-                                icon: "success",
-                                confirmButtonText: "Ok",
-                                customClass: {
-                                    confirmButton: "btn btn-success"
-                                },
-                                timer: 2000,
-                            });
+                            showToast(response.message, 'success');
                             updateTableData();
                         }
                     },
                     error: function (xhr) {
                         // Revert toggle on error
                         toggle.prop('checked', !newStatus);
-                        Swal.fire({
-                            title: "Error!",
-                            text: xhr.responseJSON?.message || "Failed to update status",
-                            icon: "error",
-                            confirmButtonText: "Ok",
-                            customClass: {
-                                confirmButton: "btn btn-danger"
-                            }
-                        });
+                        showToast(xhr.responseJSON?.message || 'Failed to update status', 'error');
                     }
                 });
             });

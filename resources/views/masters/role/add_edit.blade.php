@@ -13,7 +13,7 @@
             <a href="{{ route('role.index') }}" style="color: #6b7280; text-decoration: none; font-size: 1.5rem;">
                 <i class="fas fa-arrow-left"></i>
             </a>
-            <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0;">
+            <h1 style="font-size: 3rem; font-weight: 700; color: #111827; margin: 0;">
                 @if(isset($role))
                     Edit Role
                 @else
@@ -21,7 +21,7 @@
                 @endif
             </h1>
         </div>
-        <p style="font-size: 0.875rem; color: #6b7280; margin-left: 3.5rem;">
+        <p style="font-size: 1.2rem; color: #6b7280; margin-left: 1.8rem;">
             @if(isset($role))
                 Update role details and permissions
             @else
@@ -39,35 +39,19 @@
             <!-- Basic Information -->
             <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 1.5rem 0;">Basic Information</h2>
             
-            <div style="display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; margin-bottom: 2rem; align-items: start;">
-                <!-- Role Name -->
-                <div>
-                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
-                        Role Name <span style="color: #dc2626;">*</span>
-                    </label>
-                    <input type="text" id="role_name" name="role_name" value="{{$role->name??''}}" 
-                        style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;" 
-                        placeholder="e.g., Content Moderator">
-                    <span class="field-error" id="role_name-error" style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
-                </div>
-
-                <!-- Status Toggle -->
-                <div style="padding-top: 2rem;">
-                    @if(!isset($role) || is_null($role->id))
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="status_create" name="status" value="1" checked>
-                        <label class="form-check-label" for="status_create">Active</label>
-                    </div>
-                    @endif
-
-                    @if(isset($role) && !is_null($role->id))
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="status_update" name="status" value="1" {{ $role->status ? 'checked' : '' }}>
-                        <label class="form-check-label" for="status_update">Active</label>
-                    </div>
-                    @endif
-                </div>
+            <!-- Role Name -->
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                    Role Name <span style="color: #dc2626;">*</span>
+                </label>
+                <input type="text" id="role_name" name="role_name" value="{{$role->name??''}}" 
+                    style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;" 
+                    placeholder="e.g., Content Moderator">
+                <span class="field-error" id="role_name-error" style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
             </div>
+
+            <!-- Hidden status field - default to active -->
+            <input type="hidden" name="status" value="1">
 
             <!-- Permissions Section -->
             <div style="border-top: 1px solid #e5e7eb; padding-top: 2rem;">
@@ -79,27 +63,32 @@
                         <div style="min-width: 150px;">
                             <span style="font-weight: 600; color: #111827;">User Management</span>
                         </div>
-                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="user.view" 
+                                <input type="checkbox" class="select-all-row" data-group="user" 
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">All</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="permissions[]" value="user.view" class="permission-user"
                                     @if(isset($role)) {{ $role->hasPermissionTo('user.view') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">View</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="user.create" 
+                                <input type="checkbox" name="permissions[]" value="user.create" class="permission-user"
                                     @if(isset($role)) {{ $role->hasPermissionTo('user.create') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Create</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="user.edit" 
+                                <input type="checkbox" name="permissions[]" value="user.edit" class="permission-user"
                                     @if(isset($role)) {{ $role->hasPermissionTo('user.edit') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Edit</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="user.delete" 
+                                <input type="checkbox" name="permissions[]" value="user.delete" class="permission-user"
                                     @if(isset($role)) {{ $role->hasPermissionTo('user.delete') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Delete</span>
@@ -114,27 +103,32 @@
                         <div style="min-width: 150px;">
                             <span style="font-weight: 600; color: #111827;">Role Management</span>
                         </div>
-                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="role.view" 
+                                <input type="checkbox" class="select-all-row" data-group="role" 
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">All</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="permissions[]" value="role.view" class="permission-role"
                                     @if(isset($role)) {{ $role->hasPermissionTo('role.view') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">View</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="role.create" 
+                                <input type="checkbox" name="permissions[]" value="role.create" class="permission-role"
                                     @if(isset($role)) {{ $role->hasPermissionTo('role.create') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Create</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="role.edit" 
+                                <input type="checkbox" name="permissions[]" value="role.edit" class="permission-role"
                                     @if(isset($role)) {{ $role->hasPermissionTo('role.edit') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Edit</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="role.delete" 
+                                <input type="checkbox" name="permissions[]" value="role.delete" class="permission-role"
                                     @if(isset($role)) {{ $role->hasPermissionTo('role.delete') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Delete</span>
@@ -149,27 +143,32 @@
                         <div style="min-width: 150px;">
                             <span style="font-weight: 600; color: #111827;">Directory</span>
                         </div>
-                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="directory.view" 
+                                <input type="checkbox" class="select-all-row" data-group="directory" 
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">All</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="permissions[]" value="directory.view" class="permission-directory"
                                     @if(isset($role)) {{ $role->hasPermissionTo('directory.view') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">View</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="directory.create" 
+                                <input type="checkbox" name="permissions[]" value="directory.create" class="permission-directory"
                                     @if(isset($role)) {{ $role->hasPermissionTo('directory.create') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Create</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="directory.edit" 
+                                <input type="checkbox" name="permissions[]" value="directory.edit" class="permission-directory"
                                     @if(isset($role)) {{ $role->hasPermissionTo('directory.edit') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Edit</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="directory.delete" 
+                                <input type="checkbox" name="permissions[]" value="directory.delete" class="permission-directory"
                                     @if(isset($role)) {{ $role->hasPermissionTo('directory.delete') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Delete</span>
@@ -184,33 +183,38 @@
                         <div style="min-width: 150px;">
                             <span style="font-weight: 600; color: #111827;">Forum</span>
                         </div>
-                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="forum.view" 
+                                <input type="checkbox" class="select-all-row" data-group="forum" 
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">All</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="permissions[]" value="forum.view" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.view') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">View</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="forum.create" 
+                                <input type="checkbox" name="permissions[]" value="forum.create" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.create') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Create</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="forum.edit" 
+                                <input type="checkbox" name="permissions[]" value="forum.edit" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.edit') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Edit</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="forum.delete" 
+                                <input type="checkbox" name="permissions[]" value="forum.delete" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.delete') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Delete</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                <input type="checkbox" name="permissions[]" value="forum.approve" 
+                                <input type="checkbox" name="permissions[]" value="forum.approve" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.approve') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Approve</span>
@@ -222,7 +226,7 @@
 
             <!-- Action Buttons -->
             <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; margin-top: 2rem;">
-                <button type="button" onclick="window.location='{{url('role')}}'" 
+                <button type="button" onclick="window.location='{{ route('role.index') }}'" 
                     style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; color: #111827;">
                     Cancel
                 </button>
@@ -246,18 +250,37 @@
 @parent
 <script>
     $(document).ready(function() {
-        $("#status_create, #status_update").on('change', function() {
-            if ($(this).is(':checked')) {
-                $(this).val(1);
-                $('label[for="' + $(this).attr('id') + '"]').text('Active');
-            } else {
-                $(this).val(0);
-                $('label[for="' + $(this).attr('id') + '"]').text('Inactive');
+        $('#dynamic-submit').on('click', function(e) {
+            saveUpdateRole(e);
+        });
+
+        // Select All for each row
+        $('.select-all-row').on('change', function() {
+            const group = $(this).data('group');
+            const isChecked = $(this).is(':checked');
+            $(`.permission-${group}`).prop('checked', isChecked);
+        });
+
+        // Update row select-all when individual checkboxes change
+        $('input[name="permissions[]"]').on('change', function() {
+            const classList = $(this).attr('class');
+            const groupMatch = classList.match(/permission-(\w+)/);
+            
+            if (groupMatch) {
+                const group = groupMatch[1];
+                const totalInGroup = $(`.permission-${group}`).length;
+                const checkedInGroup = $(`.permission-${group}:checked`).length;
+                
+                $(`.select-all-row[data-group="${group}"]`).prop('checked', totalInGroup === checkedInGroup);
             }
         });
 
-        $('#dynamic-submit').on('click', function(e) {
-            saveUpdateRole(e);
+        // Initialize row select-all checkboxes on page load
+        $('.select-all-row').each(function() {
+            const group = $(this).data('group');
+            const totalInGroup = $(`.permission-${group}`).length;
+            const checkedInGroup = $(`.permission-${group}:checked`).length;
+            $(this).prop('checked', totalInGroup === checkedInGroup && totalInGroup > 0);
         });
     });
 
@@ -275,10 +298,10 @@
             },
             success: function(response) {
                 if (response.success) {
-                    toastr.success(response.message);
+                    showToast(response.message);
                     window.location.href = '{{ route("role.index") }}';
                 } else {
-                    toastr.error(response.error);
+                    showToast(response.error, 'error');
                 }
             },
             error: function(response) {
@@ -289,7 +312,7 @@
                         $('#' + key + '-error').text(value[0]);
                     });
                 } else {
-                    toastr.error(response.responseJSON.error || 'An error occurred');
+                    showToast(response.responseJSON.error || 'An error occurred', 'error');
                 }
             }
         });
