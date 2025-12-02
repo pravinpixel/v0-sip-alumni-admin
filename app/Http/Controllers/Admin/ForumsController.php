@@ -282,10 +282,10 @@ class ForumsController extends Controller
         return view('forums.comments', ['postId' => $id]);
     }
 
-    public function getCommentsData($postId)
+    public function getCommentsData(Request $request, $postId)
     {
         try {
-            $post = ForumPost::findOrFail($postId);
+            $post = ForumPost::with(['alumni'])->findOrFail($postId);
             // Only get parent comments (where parent_reply_id is null)
             $query = $post->replies()
                 ->with('alumni')
@@ -295,6 +295,17 @@ class ForumsController extends Controller
 
             return DataTables::of($query)
                 ->addIndexColumn()
+                ->filter(function ($query) use ($request) {
+                    if ($request->has('search') && !empty($request->search['value'])) {
+                        $searchValue = $request->search['value'];
+                        $query->where(function ($q) use ($searchValue) {
+                            $q->where('message', 'like', '%' . $searchValue . '%');
+                            $q->orWhereHas('alumni', function ($alumniQuery) use ($searchValue) {
+                                $alumniQuery->where('full_name', 'like', '%' . $searchValue . '%');
+                            });
+                        });
+                    }
+                })
                 ->addColumn('alumni_profile', function ($row) {
                     $alumni = $row->alumni;
                     if (!$alumni) {
