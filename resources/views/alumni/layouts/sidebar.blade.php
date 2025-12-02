@@ -526,7 +526,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     // ✅ Load all states
     function loadStates() {
-        fetch(`{{ route('alumni.states') }}`)
+        fetch("{{ route('alumni.states') }}?t=" + Date.now(), { credentials: "include" })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {

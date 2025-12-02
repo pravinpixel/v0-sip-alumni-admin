@@ -10,19 +10,20 @@ class ViewServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        // Share alumni data with all views
         View::composer('*', function ($view) {
             $alumniSession = session('alumni');
-
+            
             if ($alumniSession && isset($alumniSession['id'])) {
                 $alumni = Alumnis::with(['city', 'occupation'])
                     ->find($alumniSession['id']);
-
-                if ($alumni && $alumni->status === 'blocked') {
-                    session()->forget('alumni'); // Clear session
-                    return redirect()->route('alumni.login')
-                        ->with('error', 'Your profile has been blocked. Please contact Admin.')
-                        ->send();
-                }
+                    if ($alumni && $alumni->status === 'blocked') {
+                        session()->flush();
+                        redirect()->route('alumni.login')
+                            ->with('error', 'Your account has been blocked.')
+                            ->send();
+                        exit;
+                    }
             } else {
                 $alumni = null;
             }
