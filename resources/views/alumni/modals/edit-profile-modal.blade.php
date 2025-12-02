@@ -525,16 +525,15 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     // OTP Timer
     function startOTPTimer() {
-        let timeLeft = 120; // 2 minutes
+        let timeLeft = 30; 
         const timerEl = document.getElementById('otpTimer');
         
         if (otpTimer) clearInterval(otpTimer);
         
         otpTimer = setInterval(() => {
             timeLeft--;
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerEl.textContent = `OTP expires in ${minutes}:${seconds.toString().padStart(2, '0')}`;
+            const seconds = timeLeft;
+            timerEl.textContent = `OTP expires in ${seconds} seconds`;
             
             if (timeLeft <= 0) {
                 clearInterval(otpTimer);

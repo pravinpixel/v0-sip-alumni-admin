@@ -49,6 +49,14 @@
     from { transform: translateY(0); opacity: 1; }
     to { transform: translateY(40px); opacity: 0; }
 }
+
+.modal-content {
+    padding: 20px;
+}
+
+.modal-header{
+    padding: 0 !important;
+}
 </style>
 
 
@@ -84,15 +92,15 @@
     <div class="modal-content">
 
       <div class="modal-header border-0">
-        <h5 class="modal-title">Confirmation</h5>
+        <h5 class="modal-title" style="font-size: 24px;">Confirmation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body" style="padding-left: 0; font-size: 14px;">
         <p id="globalConfirmMessage">Are you sure?</p>
       </div>
 
-      <div class="modal-footer border-0">
+      <div class="modal-footer border-0" style="padding: 0;">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
         <button type="button" class="btn btn-danger" id="globalConfirmYes">Yes</button>
       </div>
