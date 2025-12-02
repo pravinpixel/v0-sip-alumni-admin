@@ -14,6 +14,7 @@
     <meta property="og:site_name" content="test" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="" />
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/favicon.png') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
     @section('style')

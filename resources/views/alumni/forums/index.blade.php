@@ -1031,11 +1031,7 @@
         window.openThreadModal = function (postId) {
             window.currentThreadPostId = postId;
 
-            const url = "{{ route('alumni.view.thread', ['id' => 0]) }}"
-                .replace('/0', '/' + postId);
-
-            // Change URL without reload
-            history.pushState({}, "", "{{ route('alumni.view.thread', ['id' => 0]) }}".replace('/0', '/' + postId));
+            const url = "{{ route('alumni.view.thread', '') }}/" + postId;
 
             fetch(url)
                 .then(res => res.json())
@@ -1277,7 +1273,6 @@
         function closeThreadModal() {
             document.getElementById('threadModal').style.display = 'none';
             document.body.style.overflow = 'auto';
-            history.pushState({}, "", "{{ route('alumni.forums') }}");
             resetReplyState();
         }
 
@@ -1356,6 +1351,7 @@
                 minute: "2-digit"
             });
 
+            const showReplyButton = level < 1;
             div.innerHTML = `
                     <div style="display: flex; gap: 12px;">
                         <div style="width: 36px; height: 36px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
@@ -1369,6 +1365,7 @@
                                     <p style="margin: 0; color: #6b7280; font-size: 12px;">${date}</p>
                                 </div>
 
+                                ${showReplyButton ? `
                                 <button 
                                     onclick="setReplyTo(${reply.id}, '${escapeHtml(author)}')"
                                     style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;"
@@ -1376,6 +1373,7 @@
                                     onmouseout="this.style.background='transparent'">
                                     <i class="fas fa-reply"></i> Reply
                                 </button>
+                                ` : ''}
                             </div>
 
                             <p style="margin: 0; font-size: 14px; color: #374151; line-height: 1.6; word-wrap: break-word;">

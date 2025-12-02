@@ -13,6 +13,7 @@
     <meta property="og:site_name" content="SIP Academy Alumni" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="" />
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/favicon.png') }}">
     @section('style')
     <link rel="stylesheet" href="{{ asset('plugins/global/plugins.bundle.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/style.bundle.css') }}" />
