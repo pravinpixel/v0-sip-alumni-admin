@@ -568,11 +568,9 @@
                         labelsContainer.html('<span style="color: #9ca3af; font-style: italic;">No labels</span>');
                     }
                     
-                    // Set comments count
                     const commentsCount = post.comments_count || 0;
                     $('#commentsText').text(`View Comments (${commentsCount})`);
                     
-                    // Store post ID for comments
                     $('#viewCommentsBtn').data('post-id', postId);
                     
                     // Show modal
@@ -596,7 +594,6 @@
         window.location.href = "{{ route('admin.forums.comments', '') }}/" + postId;
     }
 
-    // Close modal when clicking outside
     document.addEventListener('click', function(event) {
         const modal = document.getElementById('postDetailsModal');
         if (event.target === modal) {
@@ -608,7 +605,6 @@
     let currentRejectPostTitle = '';
     let currentRemovePostId = null;
 
-    // ===== UNIFIED API CALL FUNCTION =====
     function updatePostStatus(postId, status, remarks = null) {
         $.ajax({
             url: "{{ route('forums.change.status') }}",
@@ -629,26 +625,22 @@
     }
 
     function statusChange(id, status) {
-        // If status is rejected, show the reject modal
         if (status === 'rejected') {
             openRejectModal(id);
             return;
         }
 
-        // If status is removed_by_admin, show the remove modal
         if (status === 'removed_by_admin') {
             openRemoveModal(id);
             return;
         }
 
-        // For other statuses (approved), show confirmation and call unified API
-        confirmBox("Are you sure you want to change the status?", function() {
+        confirmBox("Are you sure you want approve this post?", function() {
             updatePostStatus(id, status);
         });
     }
 
     function openRejectModal(postId) {
-        // First, get the post details to show the title
         $.ajax({
             url: "{{ route('admin.forums.post.details', '') }}/" + postId,
             type: 'GET',
@@ -657,17 +649,13 @@
                     currentRejectPostId = postId;
                     currentRejectPostTitle = response.post.title || 'Untitled Post';
                     
-                    // Set the post title in modal
                     $('#rejectPostTitle').text(currentRejectPostTitle);
                     
-                    // Clear previous remarks and error
                     $('#rejectionRemarks').val('');
                     $('#remarksError').hide();
                     
-                    // Disable reject button initially
                     updateRejectButtonState();
                     
-                    // Show modal
                     document.getElementById('rejectPostModal').style.display = 'block';
                     document.body.style.overflow = 'hidden';
                 }
@@ -727,7 +715,6 @@
             return;
         }
         
-        // Hide error if validation passes
         $('#remarksError').hide();
         $('#rejectionRemarks').css('border-color', '#d1d5db');
         
@@ -736,7 +723,6 @@
         closeRejectModal();
     }
 
-    // Close reject modal when clicking outside
     document.addEventListener('click', function(event) {
         const rejectModal = document.getElementById('rejectPostModal');
         const removeModal = document.getElementById('removePostModal');
@@ -749,23 +735,17 @@
         }
     });
 
-    // ===== REMOVE POST MODAL FUNCTIONS =====
     
     function openRemoveModal(postId) {
         currentRemovePostId = postId;
         
-        // Clear previous remarks
         $('#removalRemarks').val('');
         
-        // Disable remove button initially
         updateRemoveButtonState();
-        
-        // Show modal
         document.getElementById('removePostModal').style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
 
-    // Enable/disable remove button based on textarea input
     $(document).on('input', '#removalRemarks', function() {
         updateRemoveButtonState();
     });

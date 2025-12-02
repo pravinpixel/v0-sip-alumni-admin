@@ -567,9 +567,7 @@
             document.getElementById('remarksError').style.display = 'none';
         } else {
             // Unblock without remarks
-            if (!confirm('Are you sure you want to unblock this alumni?')) {
-                return;
-            }
+            confirmBox("Are you sure you want to unblock this user?", function() {
             
             $.ajax({
                 url: "{{ route('directory.update.status') }}",
@@ -588,6 +586,8 @@
                     showToast(res && res.message ? res.message : 'An error occurred while updating status.', 'error');
                 }
             });
+        });
+
         }
     }
 

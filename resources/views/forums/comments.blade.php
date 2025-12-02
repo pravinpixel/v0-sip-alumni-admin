@@ -173,7 +173,7 @@
                 }
             ],
             paging: true,
-            searching: false,
+            searching: true,
             ordering: false,
             pageLength: 10,
             lengthChange: false,
@@ -188,7 +188,7 @@
             let info = table.page.info();
 
             $(".dt-info-custom").html(
-                `Showing ${info.start + 1} to ${info.end} comments`
+                `Showing ${info.start + 1} to ${info.end} comments of ${info.recordsTotal}`
             );
 
             let paginationHtml = `
@@ -320,7 +320,7 @@
     }
 
     function deleteComment(commentId) {
-        if (confirm('Are you sure you want to delete this comment?')) {
+        confirmBox('Are you sure you want to delete this comment?', function() {
             $.ajax({
                 url: "{{ route('admin.forums.comment.delete', '') }}/" + commentId,
                 type: 'DELETE',
@@ -328,15 +328,16 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    alert('Comment deleted successfully');
+                    showToast('Comment deleted successfully');
                     $('#commentsTable').DataTable().ajax.reload();
-                    loadPostDetails(); // Reload to update comment count
+                    loadPostDetails(); 
                 },
                 error: function(xhr) {
-                    alert('Error deleting comment');
+                    showToast('Error deleting comment');
                 }
             });
-        }
+        });
+
     }
 </script>
 @endpush
