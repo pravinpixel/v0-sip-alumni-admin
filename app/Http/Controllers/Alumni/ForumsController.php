@@ -178,7 +178,7 @@ class ForumsController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
-                'labels' => 'nullable|string|max:255',
+                'labels' => 'required|string|max:255',
             ]);
 
             if ($validator->fails()) {
@@ -237,7 +237,7 @@ class ForumsController extends Controller
                 'post_id' => 'required',
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
-                'labels' => 'nullable|string|max:255',
+                'labels' => 'required|string|max:255',
                 'status' => 'nullable|string',
             ]);
 
