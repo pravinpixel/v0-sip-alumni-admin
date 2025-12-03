@@ -342,7 +342,7 @@ class DirectoryController extends Controller
                 
                 $defaultRemark = "Your profile has been blocked. Therefore, your posts will not be visible to other alumni.";
                 ForumPost::where('alumni_id', $id)
-                    ->update(['status' => 'removed_by_admin'
+                    ->update(['status' => 'removed_by_admin',
                             //   'remarks' => $defaultRemark
                     ]);
 

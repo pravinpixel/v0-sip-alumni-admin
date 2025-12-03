@@ -273,7 +273,7 @@
                 error: function(xhr) {
                     // Revert toggle on error
                     toggle.prop('checked', !newStatus);
-                    showToast(xhr.responseJSON?.message || 'Failed to update status', 'error');
+                    showToast(xhr.responseJSON?.error, 'error');
                 }
             });
         });

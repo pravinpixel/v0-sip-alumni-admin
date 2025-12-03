@@ -51,7 +51,7 @@ class AuthCheckController extends Controller
                 ['mobile_number' => $mobile],
                 [
                     'otp' => $otp,
-                    'expires_at' => now()->addMinutes(5)
+                    'expires_at' => now()->addSeconds(30)
                 ]
             );
 

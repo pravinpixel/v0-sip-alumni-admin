@@ -57,6 +57,8 @@ class AlumniController extends Controller
                 $city = Cities::firstOrCreate([
                     'name'     => $cityName,
                     'state_id' => $request->state_id
+                ], [
+                    'is_custom' => 1
                 ]);
 
                 $cityId = $city->id;
@@ -172,7 +174,7 @@ class AlumniController extends Controller
             // Update OTP (Resend)
             $existingOtp->update([
                 'otp' => $otp,
-                'expires_at' => now()->addMinutes(5)
+                'expires_at' => now()->addSeconds(30)
             ]);
             sendsms($smsMobile, $message);
 
@@ -186,7 +188,7 @@ class AlumniController extends Controller
             MobileOtp::create([
                 'mobile_number' => $mobile,
                 'otp' => $otp,
-                'expires_at' => now()->addMinutes(5)
+                'expires_at' => now()->addSeconds(30)
             ]);
             sendsms($smsMobile, $message);
 
@@ -258,11 +260,32 @@ class AlumniController extends Controller
             if (in_array("city", $required)) {
                 $city = [];
                 if ($request->state_id) {
-                    $city = Cities::select('id', 'name')->where('state_id', $request->state_id)->get();
+                    $normalCities = Cities::select('id', 'name')
+                        ->where('state_id', $request->state_id)
+                        ->where('is_custom', 0)
+                        ->orderBy('name')
+                        ->get();
+
+                    $customCities = Cities::select('id', 'name')
+                        ->where('state_id', $request->state_id)
+                        ->where('is_custom', 1)
+                        ->orderBy('name')
+                        ->get();
                 } else {
-                    $city = Cities::select('id', 'name')->get();
+                    $normalCities = Cities::select('id', 'name')
+                        ->where('is_custom', 0)
+                        ->orderBy('name')
+                        ->get();
+
+                    $customCities = Cities::select('id', 'name')
+                        ->where('is_custom', 1)
+                        ->orderBy('name')
+                        ->get();
                 }
-                $results['city'] = $city;
+                $results['city'] = [
+                    'normal' => $normalCities,
+                    'others' => $customCities
+                ];
             }
             if (in_array("occupation", $required)) {
                 $occupation = [];
