@@ -183,19 +183,33 @@ class DirectoryController extends Controller
                     });
                 }
             }
-
+            $connectionStatusMap = [];
+            foreach ($activeAlumniIds as $id) {
+                $connectionStatusMap[$id] = $alumniConnections[$id] ?? 'not_shared';
+            }
 
             return DataTables::of($query)
                 ->addIndexColumn()
+                ->filter(function ($query) use ($request, $connectionStatusMap) {
 
-                ->filter(function ($query) use ($request) {
                     if ($request->has('search') && !empty($request->search['value'])) {
-                        $searchValue = $request->search['value'];
-
-                        $query->where(function ($q) use ($searchValue) {
+                        $searchValue = strtolower($request->search['value']);
+                        $statusLookup = [
+                            'not shared' => 'not_shared',
+                            'shared'     => 'pending',
+                            'accepted'   => 'accepted',
+                            'rejected'   => 'rejected'
+                        ];
+                        $matchedStatus = null;
+                        foreach ($statusLookup as $key => $value) {
+                            if (strpos($searchValue, strtolower($key)) !== false) {
+                                $matchedStatus = $value;
+                                break;
+                            }
+                        }
+                        $query->where(function ($q) use ($searchValue, $connectionStatusMap, $matchedStatus) {
                             $q->where('full_name', 'like', "%{$searchValue}%")
                                 ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
-                                ->orWhere('status', 'like', "%{$searchValue}%")
                                 ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
                                     $occQuery->where('name', 'like', "%{$searchValue}%");
                                 })
@@ -204,7 +218,21 @@ class DirectoryController extends Controller
                                         ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
                                             $stateQuery->where('name', 'like', "%{$searchValue}%");
                                         });
-                                });
+                                })
+                                ->orWhereRaw("
+                                    CONCAT(
+                                        (SELECT name FROM states WHERE states.id =
+                                            (SELECT state_id FROM cities WHERE cities.id = alumnis.city_id LIMIT 1)
+                                        ),
+                                        ', ',
+                                        (SELECT name FROM cities WHERE cities.id = alumnis.city_id LIMIT 1)
+                                    ) LIKE ?
+                                ", ["%{$searchValue}%"]);
+                            if ($matchedStatus !== null) {
+                                $q->orWhereIn('id', array_keys(array_filter($connectionStatusMap, function ($status) use ($matchedStatus) {
+                                    return $status === $matchedStatus;
+                                })));
+                            }
                         });
                     }
                 })
