@@ -442,8 +442,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         document.body.style.overflow = '';
     }
 
-    function openEditProfileModal() {
+    async function openEditProfileModal() {
         const modal = document.getElementById('editProfileModal');
+        if(!modal) return;
         if (modal) {
             // Reset form state
             isMobileVerified = false;
@@ -474,9 +475,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 otpSection.style.display = 'none';
             }
             
+            await loadStates(); // first load all states
+            await loadAlumniData(); // then load user info (this will reload original data)
             modal.classList.add('open');
-            loadStates(); // ✅ first load all states
-            loadAlumniData(); // ✅ then load user info (this will reload original data)
         }
     }
 
@@ -517,14 +518,14 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
         if (stateSelect) {
             stateSelect.value = alumni.city?.state?.id || '';
-            loadCities(alumni.city?.state?.id, alumni.city?.id); // ✅ load cities based on selected state
+            loadCities(alumni.city?.state?.id, alumni.city?.id); // load cities based on selected state
         }
 
         const profileImg = document.querySelector('.modal-profile-img');
         if (profileImg) profileImg.src = alumni.image_url || "{{ asset('images/avatar/blank.png') }}";
     }
 
-    // ✅ Load all states
+    // Load all states
     function loadStates() {
         fetch("{{ route('alumni.states') }}?t=" + Date.now(), { credentials: "include" })
             .then(res => res.json())
@@ -539,7 +540,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             .catch(err => console.error('Error fetching states:', err));
     }
 
-    // ✅ Load cities when a specific state is selected
+    // Load cities when a specific state is selected
     function loadCities(stateId, selectedCityId = null) {
         if (!stateId) {
             populateSelect('citySelect', [], 'Select City');
@@ -575,7 +576,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         });
     }
 
-    // ✅ When user changes state, load its cities dynamically
+    // When user changes state, load its cities dynamically
     document.addEventListener('DOMContentLoaded', function() {
         const stateSelect = document.getElementById('stateSelect');
         if (stateSelect) {
