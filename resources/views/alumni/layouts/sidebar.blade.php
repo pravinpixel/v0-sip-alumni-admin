@@ -475,9 +475,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 otpSection.style.display = 'none';
             }
             
+            modal.classList.add('open');
             const dropdownData = await loadStates();
             const alumni = await loadAlumniData();
-            modal.classList.add('open');
         }
     }
 

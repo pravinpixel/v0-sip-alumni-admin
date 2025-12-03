@@ -289,7 +289,7 @@
             if (!quill) {
                 quill = new Quill('#editor', {
                     theme: 'snow',
-                    placeholder: 'Enter post description (max 250 characters)...',
+                    placeholder: 'Enter post description',
                     modules: {
                         toolbar: '#editorToolbar'
                     }
@@ -353,16 +353,16 @@
         if (!title) {
             showFieldError(titleInput, 'Post title is required');
             hasError = true;
-        } else if (title.length > 100) {
-            showFieldError(titleInput, 'Title must be 100 characters or less');
+        }
+
+        const invalidPattern = /[^A-Za-z0-9 ]/;
+        if (invalidPattern.test(title)) {
+            showFieldError(titleInput, 'Special characters are not allowed in the title');
             hasError = true;
         }
 
         if (!description || description.length === 0) {
             showFieldError(document.getElementById('editor'), 'Post description is required');
-            hasError = true;
-        } else if (description.length > MAX_DESCRIPTION_LENGTH) {
-            showFieldError(document.getElementById('editor'), `Description must be ${MAX_DESCRIPTION_LENGTH} characters or less`);
             hasError = true;
         }
 

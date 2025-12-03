@@ -363,7 +363,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         if (modal) {
             modal.classList.remove('open');
         }
-        
+        document.getElementById('mobileNumberInput').disabled = false;
         // Reset OTP section
         document.getElementById('otpSection').style.display = 'none';
         document.getElementById('otpInput').value = '';
@@ -456,6 +456,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             if (data.success) {
                 showToast(data.message || 'OTP sent successfully');
                 document.getElementById('otpSection').style.display = 'block';
+                document.getElementById('mobileNumberInput').disabled = true;
                 startOTPTimer();
             } else {
                 showToast(data.message || 'Failed to send OTP', 'error');
@@ -539,6 +540,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 clearInterval(otpTimer);
                 timerEl.textContent = 'OTP expired. Please request a new one.';
                 document.getElementById('otpSection').style.display = 'none';
+                document.getElementById('mobileNumberInput').disabled = false;
             }
         }, 1000);
     }
@@ -610,7 +612,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         const modal = document.getElementById('editProfileModal');
         const alumniId = modal.getAttribute('data-alumni-id');
         if (!alumniId) {
-            alert('❌ Alumni ID not found');
+            alert(' Alumni ID not found');
             return;
         }
 
@@ -642,7 +644,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                             }
                         }
                     } else {
-                        alert(`❌ ${data?.message || 'Server error'}`);
+                        alert(` ${data?.message || 'Server error'}`);
                     }
                     throw new Error(data?.message || `HTTP ${res.status}`);
                 }
