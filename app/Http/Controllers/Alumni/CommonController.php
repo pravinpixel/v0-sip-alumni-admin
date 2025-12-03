@@ -44,7 +44,7 @@ class CommonController extends Controller
                 'city_id' => 'required|exists:cities,id',
                 'state_id' => 'required|exists:states,id',
                 'occupation_id' => 'required|string|max:255',
-                'image' => 'nullable|image:jpeg,png,jpg,gif,webp|max:2048',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             ], [
                 'full_name.required' => 'Full name is required.',
                 'year_of_completion.required' => 'Year of completion is required.',
@@ -58,8 +58,8 @@ class CommonController extends Controller
                 'city_id.required' => 'City is required.',
                 'state_id.required' => 'State is required.',
                 'occupation_id.required' => 'Occupation is required.',
-                'image.image' => 'Invalid image format.',
                 'image.max' => 'Image size should not exceed 2MB.',
+                'image.mimes' => 'Invalid image format.',
             ]);
 
             if ($validator->fails()) {
@@ -88,7 +88,7 @@ class CommonController extends Controller
                 $alumni->image = null;
             }
 
-            if ($request->hasFile('image')) {
+            if ($request->hasFile('image')) {   
                 if (!empty($alumni->image)) {
                     $parsed = parse_url($alumni->image);
                     $path = ltrim($parsed['path'], '/'); 

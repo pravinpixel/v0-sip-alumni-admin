@@ -642,9 +642,12 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                                     errorEl.textContent = messages[0];
                                 }
                             }
+                            if(key === 'image') {
+                                   showToast(messages[0], 'error'); 
+                            }
                         }
                     } else {
-                        alert(` ${data?.message || 'Server error'}`);
+                        showToast(` ${data?.message || 'Server error'}`, 'error');
                     }
                     throw new Error(data?.message || `HTTP ${res.status}`);
                 }

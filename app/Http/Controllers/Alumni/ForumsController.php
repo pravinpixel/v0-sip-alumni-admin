@@ -89,14 +89,10 @@ class ForumsController extends Controller
                         $query->whereDate('created_at', today());
                         break;
                     case 'week':
-                        $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                        $query->where('created_at', '>=', now()->subDays(7));
                         break;
                     case 'month':
-                        $query->whereMonth('created_at', now()->month)
-                              ->whereYear('created_at', now()->year);
-                        break;
-                    case 'year':
-                        $query->whereYear('created_at', now()->year);
+                        $query->where('created_at', '>=', now()->subDays(30));
                         break;
                 }
             }

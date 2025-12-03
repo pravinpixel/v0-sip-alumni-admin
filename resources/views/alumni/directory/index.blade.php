@@ -293,7 +293,7 @@ table.dataTable tbody tr > .sorting_3 {
             onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
             <i class="bi bi-funnel" style="font-size: 18px;"></i>
             <span id="filterBtnText">Filter<i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i></span>
-            <span id="filterCountBadge" style="display: none; background: #dc2626; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; margin-left: 4px;">0</span>
+            <!-- <span id="filterCountBadge" style="display: none; background: #dc2626; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; margin-left: 4px;">0</span> -->
         </button>
         <button id="clearFiltersBtn"
             style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; white-space: nowrap;"
@@ -558,9 +558,19 @@ table.dataTable tbody tr > .sorting_3 {
             if (allFilters.length > 0) {
                 // Show selected filters always when there are filters
                 allFilters.forEach(item => {
+                    // Get filter type label
+                    let typeLabel = '';
+                    if (item.type === 'batch') {
+                        typeLabel = 'Batch: ';
+                    } else if (item.type === 'location') {
+                        typeLabel = 'Location: ';
+                    } else if (item.type === 'status') {
+                        typeLabel = 'Status: ';
+                    }
+                    
                     const tag = `
                         <div class="selected-tag">
-                            <span>${item.name}</span>
+                            <span>${typeLabel}${item.name}</span>
                             <span class="remove" data-type="${item.type}" data-value="${item.id}">×</span>
                         </div>
                     `;
