@@ -475,8 +475,8 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 otpSection.style.display = 'none';
             }
             
-            await loadStates(); // first load all states
-            await loadAlumniData(); // then load user info (this will reload original data)
+            const dropdownData = await loadStates();
+            const alumni = await loadAlumniData();
             modal.classList.add('open');
         }
     }
@@ -490,16 +490,15 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             return;
         }
 
-        fetch(`{{ route('alumni.profile.view', '') }}/${alumniId}`)
+        return fetch(`{{ route('alumni.profile.view', '') }}/${alumniId}`)
             .then(res => res.json())
             .then(data => {
-                if (data.success) {
-                    populateFormData(data.alumni);
-                } else {
-                    console.error('Failed to load alumni data:', data.message);
-                }
-            })
-            .catch(err => console.error('Error loading alumni data:', err));
+            if (data.success) {
+                populateFormData(data.alumni);
+                return data.alumni;  // RETURN DATA HERE ✔
+            }
+            return null;
+            });
     }
 
     function populateFormData(alumni) {
@@ -526,38 +525,61 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     }
 
     // Load all states
-    function loadStates() {
-        fetch("{{ route('alumni.states') }}?t=" + Date.now(), { credentials: "include" })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    populateSelect('stateSelect', data.states, 'Select State');
-                    populateSelect('occupationSelect', data.occupations, 'Select Occupation');
-                } else {
-                    console.error('Failed to load states:', data.message);
-                }
-            })
-            .catch(err => console.error('Error fetching states:', err));
-    }
+        function loadStates(retry = true) {
+            const url = "{{ route('alumni.states') }}?t=" + Date.now();
 
-    // Load cities when a specific state is selected
-    function loadCities(stateId, selectedCityId = null) {
-        if (!stateId) {
-            populateSelect('citySelect', [], 'Select City');
-            return;
+            return fetch(url, { credentials: "include" })
+                .then(res => {
+                    if (!res.ok) throw new Error('Failed to load states');
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        populateSelect('stateSelect', data.states, 'Select State');
+                        populateSelect('occupationSelect', data.occupations, 'Select Occupation');
+                        return data;
+                    } else {
+                        throw new Error(data.message || 'Failed to load states');
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading states:', err);
+
+                    if (retry) {
+                        return new Promise((resolve) => {
+                            setTimeout(() => {
+                                loadStates(false).then(resolve);
+                            }, 500);
+                        });
+                    } else {
+                        return { success: false };
+                }
+            });
         }
 
-        fetch(`{{ route('alumni.cities', '') }}/${stateId}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    populateSelect('citySelect', data.cities, 'Select City', selectedCityId);
-                } else {
-                    console.error('Failed to load cities:', data.message);
+
+        function loadCities(stateId, selectedCityId = null) {
+
+            return new Promise((resolve) => { 
+                if (!stateId) {
+                    populateSelect('citySelect', [], 'Select City');
+                    return resolve();
                 }
-            })
-            .catch(err => console.error('Error fetching cities:', err));
-    }
+
+                fetch(`{{ route('alumni.cities', '') }}/${stateId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            populateSelect('citySelect', data.cities, 'Select City', selectedCityId);
+                        }
+                        resolve();  
+                    })
+                    .catch(err => {
+                        console.error('City load error:', err);
+                        resolve();  
+                    });
+            });
+        }
     
 
     function populateSelect(selectId, items, placeholder, selectedValue = null) {

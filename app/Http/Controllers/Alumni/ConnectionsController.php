@@ -162,7 +162,7 @@ class ConnectionsController extends Controller
             
             ->editColumn('alumni', function ($row) {
                 $alumni = $row->sender;
-                $img = $alumni->image_url ?? asset('images/avatar/blank.png');
+                $img = asset('images/avatar/blank.png');
                 return '
                     <div style="display:flex;align-items:center;gap:12px;">
                         <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">

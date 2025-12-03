@@ -139,7 +139,7 @@ class DirectoryController extends Controller
 
                 ->addColumn('action', function ($row) {
                     $status = strtolower($row->status);
-                    $imageUrl = $row->image ? url('storage/' . $row->image) : asset('images/avatar/blank.png');
+                    $imageUrl = $row->image_url ?? asset('images/avatar/blank.png');
 
                     if ($status == 'blocked') {
                         return '
