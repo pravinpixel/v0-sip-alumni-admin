@@ -711,6 +711,9 @@
             const description = post.description || 'No description available';
             const authorName = (post.alumni && post.alumni.full_name) ? post.alumni.full_name : 'Current User';
             const authorInitials = authorName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            const hasConnection = post.has_connection || false;
+            const profilePicture = post.alumni?.image_url || '';
+            
             const date = post.created_at ? 
                 new Date(post.created_at).toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -725,9 +728,14 @@
                     <h2 style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 20px 0; padding-right: 40px;">${escapeHtml(title)}</h2>
                     
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
-                        <div style="width: 48px; height: 48px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px;">
-                            ${authorInitials}
-                        </div>
+                        ${hasConnection && profilePicture ? `
+                            <img src="${profilePicture}" alt="${escapeHtml(authorName)}" 
+                                style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626;">
+                        ` : `
+                            <div style="width: 48px; height: 48px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px;">
+                                ${authorInitials}
+                            </div>
+                        `}
                         <div>
                             <div style="font-weight: 600; color: #111827; font-size: 15px;">${escapeHtml(authorName)}</div>
                             <div style="color: #9ca3af; font-size: 13px;">${date}</div>
@@ -811,12 +819,12 @@
                     loadActivityData(currentFilter);
                     
                     // Show success message
-                    showNotification('Post deleted successfully!', 'success');
+                    showToast('Post deleted successfully!', 'success');
                 } else {
                     // Reset button state
                     deleteBtn.innerHTML = originalText;
                     deleteBtn.disabled = false;
-                    showNotification(data.message || 'Failed to delete post', 'error');
+                    showToast(data.message || 'Failed to delete post', 'error');
                 }
             })
             .catch(error => {
@@ -824,36 +832,11 @@
                 // Reset button state
                 deleteBtn.innerHTML = originalText;
                 deleteBtn.disabled = false;
-                showNotification('An error occurred while deleting the post', 'error');
+                showToast('An error occurred while deleting the post', 'error');
             });
         }
 
-        function showNotification(message, type) {
-            // Simple notification - you can replace with a toast library
-            const bgColor = type === 'success' ? '#10b981' : '#dc2626';
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${bgColor};
-                color: white;
-                padding: 16px 24px;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                z-index: 10001;
-                font-size: 14px;
-                font-weight: 500;
-                animation: slideIn 0.3s ease;
-            `;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
+        
 
         // Edit and Repost Modal Functions
         let currentEditPostId = null;
@@ -866,7 +849,7 @@
             // Find the post data
             const post = allUserPosts.find(p => p.id === postId);
             if (!post) {
-                showNotification('Post not found', 'error');
+                showToast('Post not found', 'error');
                 return;
             }
             
@@ -901,7 +884,7 @@
             // Find the post data
             const post = allUserPosts.find(p => p.id === postId);
             if (!post) {
-                showNotification('Post not found', 'error');
+                showToast('Post not found', 'error');
                 return;
             }
             
@@ -964,7 +947,7 @@
             }
 
             if (hasError) {
-                showNotification('Please fill in all required fields', 'error');
+                showToast('Please fill in all required fields', 'error');
                 return;
             }
 
@@ -996,7 +979,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    showNotification(isRepostMode ? 'Post resubmitted successfully' : 'Post updated successfully', 'success');
+                    showToast(isRepostMode ? 'Post resubmitted successfully' : 'Post updated successfully', 'success');
                     closeCreatePostModal();
                     currentEditPostId = null;
                     isRepostMode = false;
@@ -1010,12 +993,12 @@
                     // Reload activity data
                     loadActivityData(currentFilter);
                 } else {
-                    showNotification(data.message || 'Failed to update post', 'error');
+                    showToast(data.message || 'Failed to update post', 'error');
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
-                showNotification('Error updating post', 'error');
+                showToast('Error updating post', 'error');
             })
             .finally(() => {
                 submitBtn.textContent = originalText;

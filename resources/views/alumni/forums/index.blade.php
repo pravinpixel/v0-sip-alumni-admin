@@ -694,6 +694,9 @@
                     (post.user ? (post.user.full_name || 'Unknown') : 'Unknown');
 
                 const authorInitial = author.substring(0, 2).toUpperCase();
+                const hasConnection = post.has_connection || false;
+                const profilePicture = post.alumni?.image_url || '';
+                
                 const date = post.created_at ?
                     new Date(post.created_at).toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -756,9 +759,14 @@
                         ` : ''}
 
                         <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">
-                                ${authorInitial}
-                            </div>
+                            ${hasConnection && profilePicture ? `
+                                <img src="${profilePicture}" alt="${escapeHtml(author)}" 
+                                    style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626;">
+                            ` : `
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">
+                                    ${authorInitial}
+                                </div>
+                            `}
                             <div>
                                 <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 2px 0;">${escapeHtml(author)}</p>
                                 <p style="font-size: 12px; color: #6b7280; margin: 0;">${date}</p>
@@ -1070,8 +1078,22 @@
                 'No description available';
 
             const author = post.alumni?.full_name || 'Unknown';
+            const hasConnection = post.has_connection || false;
+            const profilePicture = post.alumni?.image_url || '';
+            
             document.getElementById('threadAuthor').textContent = author;
-            document.getElementById('threadAuthorAvatar').textContent = author.substring(0, 2).toUpperCase();
+            
+            // Update avatar to show profile picture if connected, otherwise show initials
+            const avatarElement = document.getElementById('threadAuthorAvatar');
+            if (hasConnection && profilePicture) {
+                avatarElement.innerHTML = `<img src="${profilePicture}" alt="${author}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                avatarElement.style.background = 'transparent';
+                avatarElement.style.border = '2px solid #dc2626';
+            } else {
+                avatarElement.textContent = author.substring(0, 2).toUpperCase();
+                avatarElement.style.background = '#dc2626';
+                avatarElement.style.border = 'none';
+            }
 
             const date = new Date(post.created_at).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -1116,6 +1138,9 @@
         function createCommentElement(reply) {
             const replyAuthor = reply.alumni?.full_name || 'Unknown';
             const replyInitial = replyAuthor.substring(0, 2).toUpperCase();
+            const hasConnection = reply.has_connection || false;
+            const profilePicture = reply.alumni?.image_url || '';
+            
             const replyDate = new Date(reply.created_at).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',
@@ -1131,9 +1156,14 @@
             commentElement.innerHTML = `
                 <div>
                     <div style="display: flex; gap: 12px;background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; transition: all 0.2s;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
-                            ${replyInitial}
-                        </div>
+                        ${hasConnection && profilePicture ? `
+                            <img src="${profilePicture}" alt="${escapeHtml(replyAuthor)}" 
+                                style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626; flex-shrink: 0;">
+                        ` : `
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                                ${replyInitial}
+                            </div>
+                        `}
                         <div style="flex: 1; min-width: 0;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                                 <div>
@@ -1343,6 +1373,9 @@
 
             const author = reply.alumni?.full_name || "Unknown";
             const initials = author.substring(0, 2).toUpperCase();
+            const hasConnection = reply.has_connection || false;
+            const profilePicture = reply.alumni?.image_url || '';
+            
             const date = new Date(reply.created_at).toLocaleDateString('en-US', {
                 year: "numeric",
                 month: "short",
@@ -1354,9 +1387,14 @@
             const showReplyButton = level < 1;
             div.innerHTML = `
                     <div style="display: flex; gap: 12px;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
-                            ${initials}
-                        </div>
+                        ${hasConnection && profilePicture ? `
+                            <img src="${profilePicture}" alt="${escapeHtml(author)}" 
+                                style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626; flex-shrink: 0;">
+                        ` : `
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
+                                ${initials}
+                            </div>
+                        `}
 
                         <div style="flex: 1; min-width: 0;">
                             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">

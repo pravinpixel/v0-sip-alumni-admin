@@ -8,6 +8,7 @@ use App\Mail\AdminPostDeleteMail;
 use App\Mail\AlumniCommentMail;
 use App\Mail\AlumniCreatePostMail;
 use App\Mail\AlumniPostDeleteMail;
+use App\Models\AlumniConnections;
 use App\Models\Alumnis;
 use App\Models\ForumReplies;
 use App\Models\ForumPost;
@@ -140,6 +141,17 @@ class ForumsController extends Controller
                 $post->is_liked_by_user = PostLikes::where('post_id', $post->id)
                     ->where('alumni_id', $alumniId)
                     ->exists();
+                
+                // Check if current user has connection with post author OR if it's their own post
+                $post->has_connection = ($post->alumni_id == $alumniId) || AlumniConnections::where(function($q) use ($alumniId, $post) {
+                    $q->where('sender_id', $alumniId)
+                      ->where('receiver_id', $post->alumni_id)
+                      ->where('status', 'accepted');
+                })->orWhere(function($q) use ($alumniId, $post) {
+                    $q->where('sender_id', $post->alumni_id)
+                      ->where('receiver_id', $alumniId)
+                      ->where('status', 'accepted');
+                })->exists();
             });
 
             $sortBy = $request->get('sort_by', 'created_at');
@@ -173,7 +185,7 @@ class ForumsController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
-                'description' => 'required|string',
+                'description' => 'required|string|max:250',
                 'labels' => 'required|string|max:255',
             ]);
 
@@ -353,6 +365,17 @@ class ForumsController extends Controller
         try {
             $alumniId =  session('alumni.id');
             $forumPost = ForumPost::with(['alumni'])->findOrFail($id);
+            
+            $forumPost->has_connection = ($forumPost->alumni_id == $alumniId) || AlumniConnections::where(function($q) use ($alumniId, $forumPost) {
+                $q->where('sender_id', $alumniId)
+                  ->where('receiver_id', $forumPost->alumni_id)
+                  ->where('status', 'accepted');
+            })->orWhere(function($q) use ($alumniId, $forumPost) {
+                $q->where('sender_id', $forumPost->alumni_id)
+                  ->where('receiver_id', $alumniId)
+                  ->where('status', 'accepted');
+            })->exists();
+            
             // $replies = ForumReplies::with(['alumni', 'childReplies.alumni'])->where('forum_post_id', $id)->get();
             $replies = ForumReplies::with([
                 'alumni',
@@ -363,6 +386,11 @@ class ForumsController extends Controller
                 ->whereNull('parent_reply_id')
                 ->orderBy('created_at', 'ASC')
                 ->get();
+            
+            // Add connection status for each reply
+            $replies->each(function ($reply) use ($alumniId) {
+                $this->addConnectionStatus($reply, $alumniId);
+            });
             
             $view = PostViews::where('post_id', $id)
                 ->where('alumni_id', $alumniId)
@@ -394,6 +422,27 @@ class ForumsController extends Controller
                 'success' => false,
                 'message' => 'An error occurred while fetching the forum thread.'
             ], 500);
+        }
+    }
+    
+    private function addConnectionStatus($reply, $alumniId)
+    {
+        if ($reply->alumni) {
+            $reply->has_connection = ($reply->alumni_id == $alumniId) || AlumniConnections::where(function($q) use ($alumniId, $reply) {
+                $q->where('sender_id', $alumniId)
+                  ->where('receiver_id', $reply->alumni_id)
+                  ->where('status', 'accepted');
+            })->orWhere(function($q) use ($alumniId, $reply) {
+                $q->where('sender_id', $reply->alumni_id)
+                  ->where('receiver_id', $alumniId)
+                  ->where('status', 'accepted');
+            })->exists();
+        }
+        
+        if ($reply->childReplies) {
+            $reply->childReplies->each(function ($childReply) use ($alumniId) {
+                $this->addConnectionStatus($childReply, $alumniId);
+            });
         }
     }
 

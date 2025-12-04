@@ -364,6 +364,9 @@
         if (!description || description.length === 0) {
             showFieldError(document.getElementById('editor'), 'Post description is required');
             hasError = true;
+        } else if (description.length > MAX_DESCRIPTION_LENGTH) {
+            showFieldError(document.getElementById('editor'), `Description must be less than ${MAX_DESCRIPTION_LENGTH} characters`);
+            hasError = true;
         }
 
         if (!labels) {
@@ -405,7 +408,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Post created successfully', 'success');
+                    showToast('Track Your post status in Your Activity');
                     closeCreatePostModal();
                 } else {
                     showToast(data.message || 'Failed to create post', 'error');
