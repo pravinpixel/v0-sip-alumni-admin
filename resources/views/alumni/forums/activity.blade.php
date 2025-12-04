@@ -224,17 +224,26 @@
                                 </div>
                             `;
             } else if (tabName === 'postStatus') {
-                // 3 cards for Post Status tab
+                // 4 cards for Post Status tab
                 html = `
-                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
                                     <div class="stat-card" style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total</span>
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Posts</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-file-alt" style="color: #ef4444; font-size: 16px;"></i>
                                             </div>
                                         </div>
                                         <h2 style="font-size: 32px; font-weight: 700; color: #ef4444; margin: 0;">${stats.totalStatusPosts || 0}</h2>
+                                    </div>
+                                    <div class="stat-card" style="background: white; border: 2px solid #008f58ff; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                            <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Approved</span>
+                                            <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-check" style="color: #008f58ff; font-size: 16px;"></i>
+                                            </div>
+                                        </div>
+                                        <h2 style="font-size: 32px; font-weight: 700; color: #008f58ff; margin: 0;">${stats.activePosts || 0}</h2>
                                     </div>
                                     <div class="stat-card" style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
                                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
@@ -347,7 +356,7 @@
                         currentFilter = filter;
 
                         // Update stats for Post Status tab
-                        currentStats.totalStatusPosts = currentStats.pendingPosts + currentStats.rejectedPosts;
+                        currentStats.totalStatusPosts = currentStats.pendingPosts + currentStats.rejectedPosts + currentStats.activePosts;
 
                         // Render stat cards based on current tab
                         renderStatsCards(filter, currentStats);
@@ -407,10 +416,10 @@
             let html = '';
             posts.forEach(post => {
                 const title = post.title || 'Untitled Post';
-                const description = post.description ?
-                    post.description.replace(/<\/?[^>]+>/g, "").substring(0, 150) +
-                    (post.description.length > 150 ? '...' : '') :
-                    'No description available';
+                const fullDescription = post.description ? post.description.replace(/<\/?[^>]+>/g, "") : 'No description available';
+                const description = fullDescription.length > 150 ? 
+                    fullDescription.substring(0, 150) + '...' : 
+                    fullDescription;
 
                 const date = post.created_at ?
                     new Date(post.created_at).toLocaleDateString('en-US', {
@@ -453,15 +462,21 @@
 
                 html += `
                                                                         <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 16px; position: relative;">
-                                                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                                                                                <h3 onclick="openPostModal(${post.id})" style="font-size: 18px; font-weight: 700; color: #dc2626; margin: 0; flex: 1; cursor: pointer; transition: color 0.2s;" 
-                                                                                    onmouseover="this.style.color='#b91c1c'; this.style.textDecoration='underline'" onmouseout="this.style.color='#dc2626'; this.style.textDecoration='none'">${escapeHtml(title)}</h3>
-                                                                                <div style="display: flex; align-items: center; gap: 8px;">
-                                                                                    <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;">
+                                                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 8px;">
+                                                                            <div style="flex: 1; min-width: 0;">
+                                                                                    <h3 onclick="openPostModal(${post.id})"
+                                                                                        style="font-size: 18px; font-weight: 700; color: #dc2626; margin: 0; cursor: pointer; 
+                                                                                            transition: color 0.2s; line-height: 1.4; word-wrap: break-word; padding-right: 8px; 
+                                                                                            overflow-wrap: break-word; word-break: break-word;">
+                                                                                        ${escapeHtml(title)}
+                                                                                    </h3>
+                                                                                </div>
+                                                                                <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                                                                                    <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 4px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; white-space: nowrap;">
                                                                                         ${statusText}
                                                                                     </span>
                                                                                     ${viewType !== 'archive' ? `
-                                                                                        <button onclick="openDeleteModal(${post.id})" style="background: transparent; border: none; color: #dc2626; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;"
+                                                                                        <button onclick="openDeleteModal(${post.id})" style="background: transparent; border: none; color: #dc2626; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"
                                                                                             onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='transparent'"
                                                                                             title="Delete post">
                                                                                             <i class="fas fa-trash"></i>
@@ -472,8 +487,9 @@
 
                                                                             <p style="color: #9ca3af; font-size: 13px; margin-bottom: 12px;">${date}</p>
 
-                                                                            <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px;">
-                                                                                ${escapeHtml(description)}
+                                                                            <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px; cursor: help;" 
+                                                                               title="${escapeHtml(fullDescription)}">
+                                                                                ${escapeHtml(fullDescription)}
                                                                             </p>
 
                                                                             ${viewType === 'archive' && post.status === 'removed_by_admin' && post.remarks ? `
@@ -570,15 +586,15 @@
 
                 html += `
                                                 <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-bottom: 6px;">
-                                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                                                        <div style="flex: 1;">
-                                                            <h3 onclick="openPostModal(${post.id})" style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0; cursor: pointer; transition: color 0.2s;"
-                                                                onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#111827'">${escapeHtml(title)}</h3>
+                                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 12px;">
+                                                        <div style="flex: 1; min-width: 0;">
+                                                            <h3 style="font-size: 16px; font-weight: 700; color: #111827; margin: 0 0 8px 0; transition: color 0.2s; line-height: 1.4; word-wrap: break-word; padding-right: 8px;"
+                                                                >${escapeHtml(title)}</h3>
                                                             <p style="color: #9ca3af; font-size: 13px; margin: 0;">${date}</p>
                                                         </div>
-                                                        <div> 
+                                                        <div style="flex-shrink: 0;"> 
                                                         <div style="margin-bottom: 10px; text-align: center;"> 
-                                                        <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 2px 10px; border-radius: 50px; font-size: 12px; font-weight: 600;">
+                                                        <span style="background: ${statusColor}; color: ${statusTextColor}; padding: 2px 10px; border-radius: 50px; font-size: 12px; font-weight: 600; white-space: nowrap;">
                                                             ${statusText}
                                                         </span>
                                                         </div>
@@ -725,7 +741,7 @@
             
             let html = `
                 <div>
-                    <h2 style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 20px 0; padding-right: 40px;">${escapeHtml(title)}</h2>
+                    <h2 style="font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 20px 0; padding-right: 60px; line-height: 1.4; word-wrap: break-word;">${escapeHtml(title)}</h2>
                     
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
                         ${hasConnection && profilePicture ? `
@@ -742,7 +758,7 @@
                         </div>
                     </div>
                     
-                    <div style="color: #374151; font-size: 15px; line-height: 1.7; margin-bottom: 20px;">
+                    <div style="color: #374151; font-size: 15px; line-height: 1.7; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word;">
                         ${description}
                     </div>
                     

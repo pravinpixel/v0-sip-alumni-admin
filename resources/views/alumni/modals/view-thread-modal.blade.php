@@ -58,8 +58,8 @@
                 </div>
 
                 <div style="display: flex; align-items: flex-start; gap: 12px;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
-                        DU
+                    <div id="currentUserAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                        <!-- Will be populated by JavaScript -->
                     </div>
                     <div style="flex: 1;">
                         <input

@@ -312,6 +312,11 @@
         <div id="forumPostsContainer"></div>
     </div>
     <script>
+        // Current user data
+        const currentUserName = "{{ $currentUser->full_name ?? 'User' }}";
+        const currentUserInitials = currentUserName.substring(0, 2).toUpperCase();
+        const currentUserImage = "{{ $currentUser->image_url ?? '' }}";
+        
         let selectedFilters = {
             dateRange: [],
             batch: [],
@@ -681,10 +686,10 @@
 
             posts.forEach((post, index) => {
                 const title = post.title || 'Untitled Post';
-                const description = post.description ?
-                    post.description.replace(/<\/?[^>]+>/g, "").substring(0, 200) +
-                    (post.description.length > 200 ? '...' : '') :
-                    'No description available';
+                const fullDescription = post.description ? post.description.replace(/<\/?[^>]+>/g, "") : 'No description available';
+                const description = fullDescription.length > 200 ? 
+                    fullDescription.substring(0, 200) + '...' : 
+                    fullDescription;
 
                 const tags = post.labels ?
                     post.labels.split(',').filter(tag => tag.trim() !== '') : [];
@@ -734,7 +739,7 @@
                         <div style="margin-bottom: 16px; padding-right: 80px;">
                             <a onclick="openThreadModal(${post.id})">
                               <h2 
-                                style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;"
+                                style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;overflow-wrap: break-word;"
                                 onmouseover="this.style.textDecoration='underline';"
                                 onmouseout="this.style.textDecoration='none'; this.style.color='#dc2626';"
                               >
@@ -744,7 +749,8 @@
                         </div>
 
 
-                        <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;">
+                        <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; cursor: help;" 
+                           title="${escapeHtml(fullDescription)}">
                              ${escapeHtml(description)}
                         </p>
 
@@ -829,9 +835,14 @@
                         {{-- Added reply input form that shows/hides on button click --}}
                         <div id="replyForm-${post.id}" style="display: none; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px;">
                             <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
-                                    DU
-                                </div>
+                                ${currentUserImage ? `
+                                    <img src="${currentUserImage}" alt="${currentUserName}" 
+                                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626; flex-shrink: 0;">
+                                ` : `
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                                        ${currentUserInitials}
+                                    </div>
+                                `}
                                 <input type="text" placeholder="Write your reply..."
                                     id="replyInput-${post.id}"
                                     style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
@@ -1070,6 +1081,18 @@
 
             // Reset reply state
             resetReplyState();
+            
+            // Set current user avatar in reply section
+            const avatarElement = document.getElementById('currentUserAvatar');
+            if (currentUserImage) {
+                avatarElement.innerHTML = `<img src="${currentUserImage}" alt="${currentUserName}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                avatarElement.style.background = 'transparent';
+                avatarElement.style.border = '2px solid #dc2626';
+            } else {
+                avatarElement.textContent = currentUserInitials;
+                avatarElement.style.background = '#dc2626';
+                avatarElement.style.border = 'none';
+            }
 
             document.getElementById('threadTitle').textContent = post.title || 'Untitled Post';
             document.getElementById('threadDescription').textContent = post.description ?
@@ -1084,15 +1107,15 @@
             document.getElementById('threadAuthor').textContent = author;
             
             // Update avatar to show profile picture if connected, otherwise show initials
-            const avatarElement = document.getElementById('threadAuthorAvatar');
+            const authorAvatarElement = document.getElementById('threadAuthorAvatar');
             if (hasConnection && profilePicture) {
-                avatarElement.innerHTML = `<img src="${profilePicture}" alt="${author}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-                avatarElement.style.background = 'transparent';
-                avatarElement.style.border = '2px solid #dc2626';
+                authorAvatarElement.innerHTML = `<img src="${profilePicture}" alt="${author}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+                authorAvatarElement.style.background = 'transparent';
+                authorAvatarElement.style.border = '2px solid #dc2626';
             } else {
-                avatarElement.textContent = author.substring(0, 2).toUpperCase();
-                avatarElement.style.background = '#dc2626';
-                avatarElement.style.border = 'none';
+                authorAvatarElement.textContent = author.substring(0, 2).toUpperCase();
+                authorAvatarElement.style.background = '#dc2626';
+                authorAvatarElement.style.border = 'none';
             }
 
             const date = new Date(post.created_at).toLocaleDateString('en-US', {

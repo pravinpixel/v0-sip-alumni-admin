@@ -26,8 +26,10 @@ class ForumsController extends Controller
 {
     public function index(Request $request)
     {
+        $alumniId = session('alumni.id');
+        $currentUser = Alumnis::find($alumniId);
         $forumPosts = ForumPost::with('alumni')->orderBy('created_at', 'desc')->get();
-        return view('alumni.forums.index', compact('forumPosts'));
+        return view('alumni.forums.index', compact('forumPosts', 'currentUser'));
     }
 
     public function activity(Request $request)
