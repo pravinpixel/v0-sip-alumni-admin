@@ -168,7 +168,6 @@ class ConnectionsController extends Controller
                         <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
                         <div>
                             <div style="font-weight:700;color:#333;font-size:14px;">' . $alumni->full_name . '</div>
-                            <div style="color:#999;font-size:12px;">' . $alumni->email . '</div>
                         </div>
                     </div>';
             })

@@ -730,13 +730,35 @@ table.dataTable tbody tr > .sorting_3 {
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Update the data attribute so it stays closed
                         $('#directoryRibbon').data('ribbon-state', 0);
-                        console.log('Directory ribbon preference saved');
+                        // showToast(response.message);
                     }
                 },
                 error: function(xhr) {
-                    console.error('Failed to update directory ribbon preference:', xhr.responseText);
+                    const res = xhr.responseJSON;
+                    showToast(res && res.message ? res.message : 'An error occurred while updating status.', 'error');
+                }
+            });
+        });
+        $(document).on("click", ".sendRequestBtn", function (e) {
+            e.preventDefault();
+            let url = $(this).data("url");
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                },
+                success: function (res) {
+                    if (res.success) {
+                        showToast(res.message);
+                    }
+
+                    $('#alumniTable').DataTable().ajax.reload(null, false);
+                },
+                error: function (xhr) {
+                    const res = xhr.responseJSON;
+                    showToast(res && res.message ? res.message : 'An error occurred while updating status.', 'error');
                 }
             });
         });

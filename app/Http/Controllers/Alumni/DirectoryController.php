@@ -272,11 +272,17 @@ class DirectoryController extends Controller
                     $status = $alumniConnections[$row->id] ?? null;
 
                     if (!$status) {
-                        return '<form method="POST" action="' . route('alumni.send.request', $row->id) . '">' .
-                            csrf_field() . '
-                <button style="background-color:#c41e3a;color:white;padding:6px 12px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">
-                    Share Contact
-                </button></form>';
+                    return '
+                        <button 
+                            class="sendRequestBtn" 
+                            data-url="'.route('alumni.send.request', $row->id).'"
+                            style="background-color:#c41e3a;color:white;padding:6px 12px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">
+                            Share Contact
+                        </button>
+                    ';
+
+
+
                     } elseif ($status == 'pending') {
                         return '<button style="background-color:#e5e7eb;color:#6b7280;padding:4px 12px;border:none;border-radius:16px;font-size:12px;font-weight:600;cursor:default;">Contact Shared</button>';
                     } elseif ($status == 'accepted') {
@@ -286,12 +292,14 @@ class DirectoryController extends Controller
                         <span style="background-color:#fee2e2;color:#dc2626;padding:4px 8px;border-radius:16px;font-size:12px;font-weight:600;">
                             Contact Rejected
                         </span>
-                        <form method="POST" action="' . route('alumni.send.request', $row->id) . '" style="margin:0;">' .
-                            csrf_field() . '
-                            <button type="submit" style="background:white;color:#dc2626;padding:6px;border:2px solid #dc2626;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
-                                <i class="fas fa-sync-alt"></i> Reshare
-                            </button>
-                        </form>
+                        <button 
+                        class="sendRequestBtn" 
+                        data-url="'.route('alumni.send.request', $row->id).'"
+                        style="background:white;color:#dc2626;padding:6px;border:2px solid #dc2626;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                        <i class="fas fa-sync-alt"></i> Reshare
+                    </button>
+
+
                     </div>';
                     }
 
@@ -312,49 +320,57 @@ class DirectoryController extends Controller
 
     public function sendRequest($receiverId)
     {
-        $senderId = session('alumni.id');
+        try {
+            $senderId = session('alumni.id');
 
-        $receiver = Alumnis::find($receiverId);
-        $receiver->is_request_ribbon = 1;
-        $receiver->save();
+            $receiver = Alumnis::find($receiverId);
+            $receiver->is_request_ribbon = 1;
+            $receiver->save();
 
-        if ($senderId == $receiverId) {
-            return back()->with('error', 'You cannot connect with yourself.');
-        }
+            if ($senderId == $receiverId) {
+                return returnError(false, 'You cannot send a request to yourself.');
+            }
 
-        $existing = AlumniConnections::where(function ($q) use ($senderId, $receiverId) {
-            $q->where('sender_id', $senderId)->where('receiver_id', $receiverId);
-        })
-            ->orWhere(function ($q) use ($senderId, $receiverId) {
-                $q->where('sender_id', $receiverId)->where('receiver_id', $senderId);
+            $existing = AlumniConnections::where(function ($q) use ($senderId, $receiverId) {
+                $q->where('sender_id', $senderId)->where('receiver_id', $receiverId);
             })
-            ->first();
+                ->orWhere(function ($q) use ($senderId, $receiverId) {
+                    $q->where('sender_id', $receiverId)->where('receiver_id', $senderId);
+                })
+                ->first();
 
-        $sender = Alumnis::find($senderId);
-        $data = [
-            'name' => $receiver->full_name,
-            'requester' => $sender->full_name,
-            'support_email' => env('SUPPORT_EMAIL'),
-        ];
+            $sender = Alumnis::find($senderId);
+            $data = [
+                'name' => $receiver->full_name,
+                'requester' => $sender->full_name,
+                'support_email' => env('SUPPORT_EMAIL'),
+            ];
 
-        if ($existing && $existing->status == 'rejected') {
-            $existing->update(['status' => 'pending']);
+            if ($existing && $existing->status == 'rejected') {
+                $existing->update([ 'sender_id' => $senderId, 'receiver_id' => $receiverId,'status' => 'pending']);
+                Mail::to($receiver->email)->queue(new AlumniShareContactMail($data));
+                return returnSuccess(true, 'Reshare request sent successfully!');
+            }
+
+            if ($existing) {
+                return returnError(false, 'You have already sent a request to this alumni.');
+            }
+
+            AlumniConnections::create([
+                'sender_id' => $senderId,
+                'receiver_id' => $receiverId,
+                'status' => 'pending',
+            ]);
+
             Mail::to($receiver->email)->queue(new AlumniShareContactMail($data));
-            return back()->with('success', 'Reshare request sent successfully!');
+
+            return returnSuccess(true, 'Shared request sent successfully!');
+        } catch (\Throwable $e) {
+            Log::error('Directory DataTable error: ' . $e->getMessage(), [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
-
-        if ($existing) {
-            return back()->with('info', 'Connection already exists.');
-        }
-
-        AlumniConnections::create([
-            'sender_id' => $senderId,
-            'receiver_id' => $receiverId,
-            'status' => 'pending',
-        ]);
-
-        Mail::to($receiver->email)->queue(new AlumniShareContactMail($data));
-
-        return back()->with('success', 'Connection request sent successfully!');
     }
 }

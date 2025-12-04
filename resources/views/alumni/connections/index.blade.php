@@ -147,7 +147,7 @@
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
                             Location 
                         </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: center; border: none;">Action</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">Action</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -379,7 +379,7 @@
                 success: function(response) {
                     if (response.success) {
                         $('#infoRibbon').data('ribbon-state', 0);
-                        showToast('Ribbon Closed Successfully!', 'success');
+                        // showToast('Ribbon Closed Successfully!', 'success');
                     }
                 },
                 error: function(xhr) {
