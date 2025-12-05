@@ -208,13 +208,14 @@ class ForumsController extends Controller
                 'status' => 'pending',
             ]);
             // Send email alumni
-            $data = [
-                'name' => $alumni->full_name,
-                'title' => $request->title,
-                'support_email' => env('SUPPORT_EMAIL'),
-            ];
-            Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
-
+            if ($alumni->notify_post_comments === 1) {
+                $data = [
+                    'name' => $alumni->full_name,
+                    'title' => $request->title,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
+            }
             // $role = Role::where('name', 'Super Admin')->first();
             $admins = User::whereNull('deleted_at')->get();
             $adminData = [
@@ -278,13 +279,14 @@ class ForumsController extends Controller
                 $post->status = $request->status;
                 $alumni = $post->alumni;
                 // Send email alumni
-                $data = [
-                    'name' => $alumni->full_name,
-                    'title' => $request->title,
-                    'support_email' => env('SUPPORT_EMAIL'),
-                ];
-                Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
-
+                if ($alumni->notify_post_comments === 1) {
+                    $data = [
+                        'name' => $alumni->full_name,
+                        'title' => $request->title,
+                        'support_email' => env('SUPPORT_EMAIL'),
+                    ];
+                    Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
+                }
                 // $role = Role::where('name', 'Super Admin')->first();
                 $admins = User::whereNull('deleted_at')->get();
                 $adminData = [
@@ -616,12 +618,14 @@ class ForumsController extends Controller
             $status = $request->status;
             if ($status == 'post_deleted') {
                 $post->status = 'post_deleted';
-                $data = [
-                    'name' => $alumni->full_name,
-                    'title' => $post->title,
-                    'support_email' => env('SUPPORT_EMAIL'),
-                ];
-                Mail::to($alumni->email)->queue(new AlumniPostDeleteMail($data));
+                if ($alumni->notify_admin_approval === 1) {
+                    $data = [
+                        'name' => $alumni->full_name,
+                        'title' => $post->title,
+                        'support_email' => env('SUPPORT_EMAIL'),
+                    ];
+                    Mail::to($alumni->email)->queue(new AlumniPostDeleteMail($data));
+                }
 
                 $admins = User::whereNull('deleted_at')->get();
                 $adminData = [
@@ -632,8 +636,6 @@ class ForumsController extends Controller
                 foreach ($admins as $admin) {
                     Mail::to($admin->email)->queue(new AdminPostDeleteMail($adminData));
                 }
-            } else if ($status == 're_post') {
-                $post->status = 'pending';
             } else {
                 $post->status = $status;
             }

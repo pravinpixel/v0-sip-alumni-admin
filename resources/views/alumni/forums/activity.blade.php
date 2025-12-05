@@ -487,7 +487,7 @@
 
                                                                             <p style="color: #9ca3af; font-size: 13px; margin-bottom: 12px;">${date}</p>
 
-                                                                            <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px; cursor: help;" 
+                                                                            <p style="color: #6b7280; font-size: 14px; line-height: 1.6; margin-bottom: 16px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;" 
                                                                                title="${escapeHtml(fullDescription)}">
                                                                                 ${escapeHtml(fullDescription)}
                                                                             </p>

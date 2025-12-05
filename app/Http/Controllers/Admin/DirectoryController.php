@@ -346,21 +346,24 @@ class DirectoryController extends Controller
                     ->update(['status' => 'removed_by_admin',
                             'remarks' => $defaultRemark
                     ]);
-
-                $data = [
-                    'name' => $alumni->full_name,
-                    'remarks' => $defaultRemark,
-                    'support_email' => env('SUPPORT_EMAIL'),
-                ];
-                Mail::to($alumni->email)->queue(new AlumniBlockedMail($data));
+                if ($alumni->notify_admin_approval === 1) {
+                    $data = [
+                        'name' => $alumni->full_name,
+                        'remarks' => $defaultRemark,
+                        'support_email' => env('SUPPORT_EMAIL'),
+                    ];
+                    Mail::to($alumni->email)->queue(new AlumniBlockedMail($data));
+                }
                 $alumni->status = 'blocked';
             } elseif ($status === 'unblocked') {
                 $alumni->remarks = null;
-                $data = [
-                    'name' => $alumni->full_name,
-                    'support_email' => env('SUPPORT_EMAIL'),
-                ];
-                Mail::to($alumni->email)->queue(new AlumniUnBlockedMail($data));
+                if ($alumni->notify_admin_approval === 1) {
+                    $data = [
+                        'name' => $alumni->full_name,
+                        'support_email' => env('SUPPORT_EMAIL'),
+                    ];
+                    Mail::to($alumni->email)->queue(new AlumniUnBlockedMail($data));
+                }
                 $alumni->status = 'active';
             } else {
                 return response()->json([

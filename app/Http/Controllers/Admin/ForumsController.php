@@ -434,13 +434,15 @@ class ForumsController extends Controller
             } elseif($request->status == 'removed_by_admin'){
                 $post->status = 'removed_by_admin';
                 $post->remarks = $request->remarks;
-                $data = [
+                if ($alumni->notify_admin_approval === 1) {
+                    $data = [
                         'name' => $alumni->full_name,
                         'title' => $post->title,
                         'remarks' => $request->remarks,
                         'support_email' => env('SUPPORT_EMAIL'),
                     ];
-                Mail::to($alumni->email)->queue(new AlumniPostRemoveMail($data));
+                    Mail::to($alumni->email)->queue(new AlumniPostRemoveMail($data));
+                }
             }else{
                 return $this->returnError(false,'Invalid status provided');
             }

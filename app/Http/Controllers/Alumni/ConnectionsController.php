@@ -209,12 +209,14 @@ class ConnectionsController extends Controller
         $receiver = $connection->receiver;
         if ($connection) {
             $connection->update(['status' => 'accepted']);
-            $data = [
-            'name' => $sender->full_name,
-            'alumni_name' => $receiver->full_name,
-            'support_email' => env('SUPPORT_EMAIL'),
-         ];
-            Mail::to($sender->email)->queue(new AlumniAcceptRequestMail($data));
+            if ($sender->notify_post_comments === 1) {
+                $data = [
+                    'name' => $sender->full_name,
+                    'alumni_name' => $receiver->full_name,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($sender->email)->queue(new AlumniAcceptRequestMail($data));
+            }
             $message = ($sender->full_name . ' invite accepted.');
             return response()->json(['success' => true, 'message' => $message]);
         }
@@ -227,13 +229,15 @@ class ConnectionsController extends Controller
         $sender = $connection->sender;
         $receiver = $connection->receiver;
         if ($connection) {
-            $data = [
-            'name' => $sender->full_name,
-            'alumni_name' => $receiver->full_name,
-            'support_email' => env('SUPPORT_EMAIL'),
-         ];
-            Mail::to($sender->email)->queue(new AlumniRejectRequestMail($data));
             $connection->update(['status' => 'rejected']);
+            if ($sender->notify_post_comments === 1) {
+                $data = [
+                    'name' => $sender->full_name,
+                    'alumni_name' => $receiver->full_name,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($sender->email)->queue(new AlumniRejectRequestMail($data));
+            }
             $message = ($sender->full_name . ' invite rejected.');
             return response()->json(['success' => true, 'message' => $message]);
         }

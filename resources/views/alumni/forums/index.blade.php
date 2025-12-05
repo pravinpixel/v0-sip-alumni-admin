@@ -749,9 +749,9 @@
                         </div>
 
 
-                        <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal; cursor: help;" 
+                        <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;" 
                            title="${escapeHtml(fullDescription)}">
-                             ${escapeHtml(description)}
+                             ${escapeHtml(fullDescription)}
                         </p>
 
                         ${tags.length > 0 ? `
@@ -1096,8 +1096,7 @@
 
             document.getElementById('threadTitle').textContent = post.title || 'Untitled Post';
             document.getElementById('threadDescription').textContent = post.description ?
-                post.description.replace(/<\/?[^>]+>/g, "").substring(0, 200) +
-                (post.description.length > 200 ? '...' : '') :
+                post.description.replace(/<\/?[^>]+>/g, "") :
                 'No description available';
 
             const author = post.alumni?.full_name || 'Unknown';
