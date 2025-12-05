@@ -548,7 +548,7 @@ class ForumsController extends Controller
             // Get all posts by the current user
             $userPosts = ForumPost::with('alumni')
                 ->where('alumni_id', $alumniId)
-                ->orderBy('created_at', 'desc')
+                ->orderBy('updated_at', 'desc')
                 ->get();
 
             // Add additional data for each post

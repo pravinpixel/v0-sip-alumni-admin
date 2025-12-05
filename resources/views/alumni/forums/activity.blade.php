@@ -421,12 +421,12 @@
                     fullDescription.substring(0, 150) + '...' : 
                     fullDescription;
 
-                const date = post.created_at ?
-                    new Date(post.created_at).toLocaleDateString('en-US', {
+                const date = post.updated_at ?
+                    new Date(post.updated_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
-                    }) + ' at ' + new Date(post.created_at).toLocaleTimeString('en-US', {
+                    }) + ' at ' + new Date(post.updated_at).toLocaleTimeString('en-US', {
                         hour: '2-digit',
                         minute: '2-digit'
                     }) :
@@ -549,12 +549,12 @@
             let html = '';
             posts.forEach(post => {
                 const title = post.title || 'Untitled Post';
-                const date = post.created_at ?
-                    'Posted: ' + new Date(post.created_at).toLocaleDateString('en-US', {
+                const date = post.updated_at ?
+                    'Posted: ' + new Date(post.updated_at).toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
-                    }) + ' at ' + new Date(post.created_at).toLocaleTimeString('en-US', {
+                    }) + ' at ' + new Date(post.updated_at).toLocaleTimeString('en-US', {
                         hour: '2-digit',
                         minute: '2-digit'
                     }) :
@@ -730,8 +730,8 @@
             const hasConnection = post.has_connection || false;
             const profilePicture = post.alumni?.image_url || '';
             
-            const date = post.created_at ? 
-                new Date(post.created_at).toLocaleDateString('en-US', {
+            const date = post.updated_at ? 
+                new Date(post.updated_at).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric'
