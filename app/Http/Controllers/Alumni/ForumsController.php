@@ -208,14 +208,14 @@ class ForumsController extends Controller
                 'status' => 'pending',
             ]);
             // Send email alumni
-            if ($alumni->notify_post_comments === 1) {
+            // if ($alumni->notify_post_comments === 1) {
                 $data = [
                     'name' => $alumni->full_name,
                     'title' => $request->title,
                     'support_email' => env('SUPPORT_EMAIL'),
                 ];
                 Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
-            }
+            // }
             // $role = Role::where('name', 'Super Admin')->first();
             $admins = User::whereNull('deleted_at')->get();
             $adminData = [
