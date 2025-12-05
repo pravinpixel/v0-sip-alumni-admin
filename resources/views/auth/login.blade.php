@@ -73,48 +73,6 @@
             </div>
         </div>
     </div>
-    <style>
-        .toast-notification {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            padding: 14px 20px;
-            color: #fff;
-            font-size: 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            z-index: 999999 !important;
-            /* IMPORTANT */
-            animation: slideInUp 0.3s ease;
-        }
-
-        @keyframes slideInUp {
-            from {
-                transform: translateY(40px);
-                opacity: 0;
-            }
-
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideOutDown {
-            from {
-                transform: translateY(0);
-                opacity: 1;
-            }
-
-            to {
-                transform: translateY(40px);
-                opacity: 0;
-            }
-        }
-    </style>
 
     @section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
