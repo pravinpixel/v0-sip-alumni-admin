@@ -58,19 +58,19 @@ Route::group(['middleware' => ['auth']], function () {
     #..directory ...
     Route::prefix('directory')->controller(DirectoryController::class)->group(function () {
         Route::get('/', 'index')->name('admin.directory.index')->middleware('checkAccess:directory.view');
-        Route::get('/get-data', [DirectoryController::class, 'getData'])->name('admin.directory.data');
+        Route::get('/get-data', [DirectoryController::class, 'getData'])->name('admin.directory.data')->middleware('checkAccess:directory.view');
         Route::get('/filter-options', [DirectoryController::class, 'getFilterOptions'])->name('admin.directory.filter.options');
         Route::get('/connections/{id}', [DirectoryController::class, 'connectionViewPage'])->name('admin.directory.view.connections.page');
         Route::get('/connections-list/{id}', [DirectoryController::class, 'viewConnectionList'])->name('admin.directory.view.connections.list');
         Route::get('/connections-filter-options/{id}', [DirectoryController::class, 'getConnectionFilterOptions'])->name('admin.directory.view.connections.filter-options');
-        Route::post('/update-status', 'updateStatus')->name('directory.update.status');
+        Route::post('/update-status', 'updateStatus')->name('directory.update.status')->middleware('checkAccess:directory.edit');
         Route::get('/view-profile/{id}', 'viewProfileDetails')->name('admin.directory.view.profile');
         Route::get('/export', [DirectoryController::class, 'export'])->name('admin.directory.export');
     });
 
     Route::prefix('forums')->controller(ForumsController::class)->group(function () {
         Route::get('/', 'index')->name('admin.forums.index')->middleware('checkAccess:forum.view');
-        Route::get('/get-data', 'getData')->name('admin.forums.data');
+        Route::get('/get-data', 'getData')->name('admin.forums.data')->middleware('checkAccess:forum.view');
         Route::get('/filter-options', 'getFilterOptions')->name('admin.forums.filter.options');
         Route::get('/post-details/{id}', 'getPostDetails')->name('admin.forums.post.details');
         Route::get('/comments/{id}', 'viewComments')->name('admin.forums.comments');

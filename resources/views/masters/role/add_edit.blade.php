@@ -155,24 +155,24 @@
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">View</span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <!-- <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                                 <input type="checkbox" name="permissions[]" value="directory.create" class="permission-directory"
                                     @if(isset($role)) {{ $role->hasPermissionTo('directory.create') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Create</span>
-                            </label>
+                            </label> -->
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                                 <input type="checkbox" name="permissions[]" value="directory.edit" class="permission-directory"
                                     @if(isset($role)) {{ $role->hasPermissionTo('directory.edit') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
-                                <span style="font-size: 0.875rem;">Edit</span>
+                                <span style="font-size: 0.875rem;">Block/UnBlock</span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <!-- <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                                 <input type="checkbox" name="permissions[]" value="directory.delete" class="permission-directory"
                                     @if(isset($role)) {{ $role->hasPermissionTo('directory.delete') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Delete</span>
-                            </label>
+                            </label> -->
                         </div>
                     </div>
                 </div>
@@ -195,30 +195,30 @@
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">View</span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <!-- <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                                 <input type="checkbox" name="permissions[]" value="forum.create" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.create') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Create</span>
-                            </label>
+                            </label> -->
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                                 <input type="checkbox" name="permissions[]" value="forum.edit" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.edit') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
-                                <span style="font-size: 0.875rem;">Edit</span>
+                                <span style="font-size: 0.875rem;">Approve/Reject</span>
                             </label>
                             <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                                 <input type="checkbox" name="permissions[]" value="forum.delete" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.delete') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
-                                <span style="font-size: 0.875rem;">Delete</span>
+                                <span style="font-size: 0.875rem;">Remove</span>
                             </label>
-                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <!-- <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                                 <input type="checkbox" name="permissions[]" value="forum.approve" class="permission-forum"
                                     @if(isset($role)) {{ $role->hasPermissionTo('forum.approve') ? 'checked' : '' }} @endif
                                     style="width: 18px; height: 18px; cursor: pointer;">
                                 <span style="font-size: 0.875rem;">Approve</span>
-                            </label>
+                            </label> -->
                         </div>
                     </div>
                 </div>

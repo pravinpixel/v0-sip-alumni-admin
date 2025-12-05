@@ -578,7 +578,7 @@
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(response) {
-                    showToast('User Unblocked Successfully.' || response.message);
+                    showToast(response.message);
                     $('#directoryTable').DataTable().ajax.reload();
                 },
                 error: function(xhr) {

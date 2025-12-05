@@ -134,41 +134,54 @@ class DirectoryController extends Controller
                 })
 
                 ->addColumn('action', function ($row) {
+
                     $status = strtolower($row->status);
                     $imageUrl = $row->image_url ?? asset('images/avatar/blank.png');
-
-                    if ($status == 'blocked') {
-                        return '
-        <div class="dropdown d-inline-block ms-2"">
-            <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '" style="padding:4px; border:1px solid #e5e7eb;">
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewProfilePic(\'' . $imageUrl . '\')"
-                 onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'; this.style.borderRadius=\'4px\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#000000ff\'">
-                <i class="fa-regular fa-eye me-2"></i>View Profile Pic</a></li>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="updateStatus(' . $row->id . ', \'unblocked\')"
-                 onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'; this.style.borderRadius=\'4px\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#000000ff\'">
-                <i class="fa-solid fa-unlock me-2"></i>Unblock</a></li>
-            </ul>
-        </div>';
-                    } else {
-                        return '
-        <div class="dropdown d-inline-block ms-2"">
-            <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" data-bs-toggle="dropdown" aria-expanded="false" style="padding:5px 8px; border:none;">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '" style="padding:4px; border:1px solid #e5e7eb;">
-                <a class="dropdown-item" href="javascript:void(0)" onclick="viewProfilePic(\'' . $imageUrl . '\')"
-                onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'; this.style.borderRadius=\'4px\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#000000ff\'">
-                <i class="fa-regular fa-eye me-2"></i>View Profile Pic
-            </a>
-                <li><a class="dropdown-item" href="javascript:void(0)" onclick="updateStatus(' . $row->id . ', \'blocked\')" style="color: #ff0000ff;"
-                onmouseover="this.style.backgroundColor=\'#ba0028\'; this.style.color=\'#fff\'; this.style.borderRadius=\'4px\'" onmouseout="this.style.backgroundColor=\'#fff\'; this.style.color=\'#ff0000ff\'">
-                <i class="fa-solid fa-ban me-2"></i>Block</a></li>
-            </ul>
-        </div>';
+                    $user = auth()->user();
+                    $action = '
+                    <div class="dropdown d-inline-block ms-2">
+                        <button class="btn btn-sm" type="button" id="actionMenu' . $row->id . '" 
+                            data-bs-toggle="dropdown" aria-expanded="false" 
+                            style="padding:5px 8px; border:none;">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="actionMenu' . $row->id . '" 
+                            style="padding:4px; border:1px solid #e5e7eb;">
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0)" 
+                                onclick="viewProfilePic(\'' . $imageUrl . '\')"
+                                onmouseover="this.style.backgroundColor=\'#ba0028\';this.style.color=\'#fff\';"
+                                onmouseout="this.style.backgroundColor=\'#fff\';this.style.color=\'#000\'">
+                                <i class="fa-regular fa-eye me-2"></i>View Profile Pic
+                                </a>
+                            </li>
+                    ';
+                    if ($user->can('directory.edit')) {
+                        if ($status == 'blocked') {
+                            $action .= '
+                                <li>
+                                    <a class="dropdown-item" href="javascript:void(0)" 
+                                    onclick="updateStatus(' . $row->id . ', \'unblocked\')"
+                                    onmouseover="this.style.backgroundColor=\'#ba0028\';this.style.color=\'#fff\';"
+                                    onmouseout="this.style.backgroundColor=\'#fff\';this.style.color=\'#000\'">
+                                    <i class="fa-solid fa-unlock me-2"></i>Unblock
+                                    </a>
+                                </li>';
+                        } else {
+                            $action .= '
+                                <li>
+                                    <a class="dropdown-item" href="javascript:void(0)" 
+                                    onclick="updateStatus(' . $row->id . ', \'blocked\')"
+                                    style="color:#ff0000;"
+                                    onmouseover="this.style.backgroundColor=\'#ba0028\';this.style.color=\'#fff\';"
+                                    onmouseout="this.style.backgroundColor=\'#fff\';this.style.color=\'#ff0000\';">
+                                    <i class="fa-solid fa-ban me-2"></i>Block
+                                    </a>
+                                </li>';
+                        }
                     }
+                    $action .= '</ul></div>';
+                    return $action;
                 })
                 ->rawColumns(['alumni', 'batch', 'location', 'action', 'full_name', 'mobile_number', 'created_at', 'connections', 'status'])
                 ->make(true);
@@ -351,6 +364,7 @@ class DirectoryController extends Controller
                     Mail::to($alumni->email)->queue(new AlumniBlockedMail($data));
                 }
                 $alumni->status = 'blocked';
+                $message = 'User Blocked Successfully.';
             } elseif ($status === 'unblocked') {
                 $alumni->remarks = null;
                 if ($alumni->notify_admin_approval === 1) {
@@ -361,6 +375,7 @@ class DirectoryController extends Controller
                     Mail::to($alumni->email)->queue(new AlumniUnBlockedMail($data));
                 }
                 $alumni->status = 'active';
+                $message = 'User Unblocked Successfully.';
             } else {
                 return response()->json([
                     'success' => false,
@@ -371,7 +386,7 @@ class DirectoryController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Status updated successfully!'
+                'message' => $message ?? 'Status updated successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([

@@ -171,53 +171,60 @@ class ForumsController extends Controller
 
                     // PENDING → Approved + Reject
                     if ($status === 'pending') {
+                        if (auth()->user()->can('forum.edit')) {
                         $actionMenu = '
-    <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'approved\')">
-        <i class="fas fa-check-circle" style="color:green;"></i> Approve
-    </a></li>
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'approved\')">
+                                <i class="fas fa-check-circle" style="color:green;"></i> Approve
+                            </a></li>
 
-    <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'rejected\')">
-        <i class="fas fa-times-circle" style="color:red;"></i> Reject
-    </a></li>
-     ';
+                            <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'rejected\')">
+                                <i class="fas fa-times-circle" style="color:red;"></i> Reject
+                            </a></li>
+                            ';
+                            }
                     }
 
                     // APPROVED → Remove
                     elseif ($status === 'approved') {
+                        if (auth()->user()->can('forum.delete')) {
                         $actionMenu = '
-    <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'removed_by_admin\')">
-        <i class="fas fa-trash" style="color:#d9534f;"></i> Remove
-    </a></li>
-     ';
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="statusChange(' . $row->id . ', \'removed_by_admin\')">
+                            <i class="fas fa-trash" style="color:#d9534f;"></i> Remove
+                        </a></li>
+                        ';
+                        }
                     }
 
                     // REJECTED → Approved + Reject (reject disabled)
                     elseif ($status === 'rejected') {
+                        if (auth()->user()->can('forum.edit')) {
                         $actionMenu = '
-    <li><a class="dropdown-item" disabled" href="#">
-        <i class="fas fa-check-circle" style="color:gray;"></i> Approve
-    </a></li>
+                        <li><a class="dropdown-item" disabled" href="#">
+                            <i class="fas fa-check-circle" style="color:gray;"></i> Approve
+                        </a></li>
 
-    <li><a class="dropdown-item" disabled" href="#">
-        <i class="fas fa-times-circle" style="color:gray;"></i> Reject
-    </a></li>
-     ';
+                        <li><a class="dropdown-item" disabled" href="#">
+                            <i class="fas fa-times-circle" style="color:gray;"></i> Reject
+                        </a></li>
+                        ';
+                        }
                     }
+                        if (empty(trim($actionMenu))) {
+                            return '';
+                        }
 
                     // Build dropdown only if actions exist
                     return '
-        <div class="dropdown">
-            <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
-                <i class="fas fa-ellipsis-v"></i>
-            </button>
-            <ul class="dropdown-menu">
-                ' . $actionMenu . '
-            </ul>
-        </div>
-    ';
+                        <div class="dropdown">
+                            <button class="btn btn-sm" type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                ' . $actionMenu . '
+                            </ul>
+                        </div>
+                    ';
                 })
-
-
 
                 ->rawColumns(['alumni', 'contact', 'view_post', 'status', 'action'])
                 ->make(true);
