@@ -91,7 +91,7 @@
                         <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Role ID</th>
                         <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Role Name
                         </th>
-                        <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Status</th>
+                        <th style="padding: 1rem 3rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Status</th>
                         @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
                         <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Actions</th>
                         @endif

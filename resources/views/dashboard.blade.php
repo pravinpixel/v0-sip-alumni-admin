@@ -51,20 +51,6 @@
                     <h1 style="font-size: 1.875rem; font-weight: 700; color: #111827; margin: 0;">Admin Dashboard</h1>
                     <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">Directory analytics and insights</p>
                 </div>
-
-                <div style="display: flex; gap: 0.75rem;">
-                    <div style="position: relative;">
-                        <input type="date" id="fromDate" value="${fromDate}"
-                            style="height: 2.75rem; width: 200px; padding: 0.75rem; padding-left: 2.5rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; background: white; cursor: pointer;">
-                        <i class="far fa-calendar-alt" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #6b7280; pointer-events: none;"></i>
-                    </div>
-
-                    <div style="position: relative;">
-                        <input type="date" id="toDate" value="${toDate}"
-                            style="height: 2.75rem; width: 200px; padding: 0.75rem; padding-left: 2.5rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; background: white; cursor: pointer;">
-                        <i class="far fa-calendar-alt" style="position: absolute; left: 0.75rem; top: 50%; transform: translateY(-50%); color: #6b7280; pointer-events: none;"></i>
-                    </div>
-                </div>
             </div>
 
             ${renderStatsCards(data.stats)}
@@ -74,12 +60,7 @@
 
         $('#dashboardContainer').html(html);
 
-        // Re-attach event listeners
-        $('#fromDate, #toDate').on('change', function() {
-            fromDate = $('#fromDate').val();
-            toDate = $('#toDate').val();
-            loadDashboardData();
-        });
+        
     }
 
     function renderStatsCards(stats) {

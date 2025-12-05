@@ -93,11 +93,7 @@ class DirectoryController extends Controller
                 })
 
                 ->editColumn('alumni', function ($row) {
-                    if ($row->status == 'blocked') {
-                        $img = asset('images/avatar/blank.png');
-                    } else {
                         $img = $row->image_url ?? asset('images/avatar/blank.png');
-                    }
                     return '<div style="display:flex;align-items:center;gap:12px;">
                         <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
                     </div>';

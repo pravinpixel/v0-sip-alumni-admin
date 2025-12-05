@@ -87,7 +87,7 @@
                             <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Email ID
                             </th>
                             <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Role</th>
-                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Status</th>
+                            <th style="padding: 1rem 3rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Status</th>
                             @if(auth()->user()->can('user.edit') || auth()->user()->can('user.delete'))
                                 <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Actions</th>
                             @endif
