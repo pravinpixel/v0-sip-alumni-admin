@@ -51,7 +51,7 @@
             </div>
 
             <!-- Hidden status field - default to active -->
-            <input type="hidden" name="status" value="1">
+            <input type="hidden" name="status" value="{{$role->status??1}}">
 
             <!-- Permissions Section -->
             <div style="border-top: 1px solid #e5e7eb; padding-top: 2rem;">

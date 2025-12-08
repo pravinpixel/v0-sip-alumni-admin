@@ -24,7 +24,7 @@ class RoleManagementController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%');
-
+                $q->orWhere('role_id', 'like', '%' . $search . '%');
             });
         }
 
@@ -85,7 +85,7 @@ class RoleManagementController extends Controller
                     return $this->returnError('This role is already in use by user');
                 }
                 $role->name = $request->input('role_name');
-                $role->status = $request->has('status') ? 1 : 0;
+                $role->status = $request->status;
                 $role->update();
 
                 if ($permissions) {
@@ -94,6 +94,7 @@ class RoleManagementController extends Controller
                 return $this->returnSuccess($role, "Role updated successfully");
             } else {
                 $role = new Role;
+                $role->role_id = generateRoleId();
                 $role->name = $request->input('role_name');
                 $role->status = $request->has('status') ? 1 : 0;
                 $role->save();

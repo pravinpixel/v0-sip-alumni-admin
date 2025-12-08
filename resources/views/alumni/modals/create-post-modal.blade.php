@@ -375,7 +375,6 @@
         }
 
         if (hasError) {
-            showToast('Please fill in all required fields', 'error');
             return;
         }
 
@@ -415,7 +414,6 @@
                 }
             })
             .catch(err => {
-                console.error('Error:', err);
                 showToast('Error creating post', 'error');
             })
             .finally(() => {

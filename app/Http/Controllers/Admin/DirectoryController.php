@@ -136,7 +136,11 @@ class DirectoryController extends Controller
                 ->addColumn('action', function ($row) {
 
                     $status = strtolower($row->status);
-                    $imageUrl = $row->image_url ?? asset('images/avatar/blank.png');
+                    if($status == 'active') {
+                        $imageUrl = $row->image_url ?? asset('images/avatar/blank.png');
+                    } else {
+                        $imageUrl = asset('images/avatar/blank.png');
+                    }
                     $user = auth()->user();
                     $action = '
                     <div class="dropdown d-inline-block ms-2">
@@ -210,14 +214,18 @@ class DirectoryController extends Controller
                 ->where('status', 'accepted')
                 ->get();
 
-            // Step 2: Extract connected alumni IDs (the OTHER user)
-            $connectedAlumniIds = $connections->map(function ($c) use ($id) {
+            $connectedAlumniIds = $connections
+            ->sortByDesc('updated_at')
+            ->map(function ($c) use ($id) {
                 return $c->sender_id == $id ? $c->receiver_id : $c->sender_id;
-            });
+            })->values();
 
-            $query = Alumnis::whereIn('id', $connectedAlumniIds)->with(['city', 'occupation'])->orderBy('id', 'desc');
+            $orderIds = $connectedAlumniIds->implode(',');
 
-            // Multi-select Filters
+            $query = Alumnis::whereIn('id', $connectedAlumniIds)
+                ->with(['city', 'occupation'])
+                ->orderByRaw("FIELD(id, $orderIds)");
+
             if ($request->filled('batch')) {
                 $batches = is_array($request->batch) ? $request->batch : [$request->batch];
                 $query->whereIn('year_of_completion', $batches);
@@ -246,7 +254,7 @@ class DirectoryController extends Controller
                 ->addIndexColumn()
 
                 ->editColumn('alumni', function ($row) {
-                    $img = $row->image ? url('storage/' . $row->image ?? '') : asset('images/avatar/blank.png');
+                    $img = $row->image_url ?? asset('images/avatar/blank.png');
 
                     return '
                     <div style="display:flex;align-items:center;gap:12px;">

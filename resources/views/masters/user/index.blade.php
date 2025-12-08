@@ -134,7 +134,7 @@
                                                 <i class="fas fa-ellipsis-v" style="color: #6b7280;"></i>
                                             </button>
                                             <div class="action-menu"
-                                                style="display: none; position: absolute; right: 2rem; top: 2.5rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
+                                                style="display: none; position: absolute; right: 7rem; bottom: 1.5rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
                                                 @can('user.edit')
                                                     <a href="{{ route('user.edit', ['id' => $data->id]) }}"
                                                         style="display: block; padding: 0.5rem 1rem; color: #111827; text-decoration: none; font-size: 0.875rem; border-radius: 0.375rem; transition: background 0.2s;"

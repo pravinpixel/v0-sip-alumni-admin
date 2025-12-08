@@ -61,20 +61,29 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
                 <div class="form-group">
-                    <label>Contact Number</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label>Contact Number</label>
+                        <button type="button" id="editCancelMobileBtn" class="btn-edit-cancel-mobile" onclick="toggleMobileEdit()" 
+                                    style="background: none; border: none; color: #dc2626; font-size: 11px; font-weight: 600; cursor: pointer; padding: 0 8px; text-decoration: underline;">
+                                Edit
+                            </button>
+                    </div>
                     <div style="display: flex; gap: 10px; align-items: flex-start;">
                         <div style="flex: 1;">
                             <input type="text" class="form-input" data-field="mobile_number" id="mobileNumberInput" 
                                    value="{{ $alumni->mobile_number ?? '' }}" 
                                    maxlength="10" 
                                    placeholder="Enter 10 digit mobile number"
-                                   oninput="validateMobileNumber(this)">
+                                   oninput="validateMobileNumber(this)"
+                                   readonly>
                             <small class="error-message" style="color:red;font-size:12px;display:block;margin-top:4px;"></small>
                         </div>
-                        <button type="button" id="verifyMobileBtn" class="btn-verify" disabled onclick="sendOTP()" 
-                                style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.5; white-space: nowrap;">
-                            Verify
-                        </button>
+                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">  
+                            <button type="button" id="verifyMobileBtn" class="btn-verify" disabled onclick="sendOTP()" 
+                                    style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.5; white-space: nowrap;">
+                                Verify
+                            </button>
+                        </div>
                     </div>
                     <div id="otpSection" style="display: none; margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;">
                         <label style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 8px; display: block;">Enter OTP</label>
@@ -350,6 +359,30 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         background: #f9fafb;
         border-color: #d1d5db;
     }
+
+    /* Edit/Cancel button styling */
+    .btn-edit-cancel-mobile {
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit-cancel-mobile:hover {
+        opacity: 0.8;
+    }
+
+    .btn-edit-cancel-mobile:active {
+        transform: scale(0.95);
+    }
+
+    /* Make readonly input look slightly different */
+    #mobileNumberInput[readonly] {
+        background-color: #f9fafb;
+        cursor: not-allowed;
+    }
+
+    #mobileNumberInput:not([readonly]) {
+        background-color: white;
+        cursor: text;
+    }
 </style>
 
 <script>
@@ -363,14 +396,23 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         if (modal) {
             modal.classList.remove('open');
         }
-        document.getElementById('mobileNumberInput').disabled = false;
+        
+        // Reset mobile input to readonly
+        const mobileInput = document.getElementById('mobileNumberInput');
+        mobileInput.readOnly = true;
+        
         // Reset OTP section
         document.getElementById('otpSection').style.display = 'none';
         document.getElementById('otpInput').value = '';
         if (otpTimer) clearInterval(otpTimer);
         
-        // Reset verify button
+        // Reset edit/cancel button
+        const editCancelBtn = document.getElementById('editCancelMobileBtn');
         const verifyBtn = document.getElementById('verifyMobileBtn');
+        if (editCancelBtn) {
+            editCancelBtn.textContent = 'Edit';
+            editCancelBtn.style.color = '#dc2626';
+        }
         verifyBtn.textContent = 'Verify';
         verifyBtn.style.background = '#dc2626';
         verifyBtn.disabled = true;
@@ -387,6 +429,55 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         isMobileVerified = false;
         selectedFile = null;
         window.removeImage = false;
+    }
+
+    // Toggle mobile number editing
+    function toggleMobileEdit() {
+        const mobileInput = document.getElementById('mobileNumberInput');
+        const editCancelBtn = document.getElementById('editCancelMobileBtn');
+        const verifyBtn = document.getElementById('verifyMobileBtn');
+        const saveBtn = document.querySelector('.btn-save');
+        
+        if (mobileInput.readOnly) {
+            // Enable editing mode
+            mobileInput.readOnly = false;
+            mobileInput.focus();
+            editCancelBtn.textContent = 'Cancel';
+            editCancelBtn.style.color = '#6b7280';
+            
+            // Reset verification state
+            isMobileVerified = false;
+            
+            // Disable save button until verified
+            saveBtn.disabled = true;
+            saveBtn.style.cursor = 'not-allowed';
+            saveBtn.style.opacity = '0.5';
+        } else {
+            // Cancel editing mode
+            mobileInput.readOnly = true;
+            mobileInput.value = originalMobileNumber;
+            editCancelBtn.textContent = 'Edit';
+            editCancelBtn.style.color = '#dc2626';
+            
+            // Reset verify button
+            verifyBtn.disabled = true;
+            verifyBtn.style.cursor = 'not-allowed';
+            verifyBtn.style.opacity = '0.5';
+            verifyBtn.textContent = 'Verify';
+            verifyBtn.style.background = '#dc2626';
+            
+            // Hide OTP section
+            document.getElementById('otpSection').style.display = 'none';
+            if (otpTimer) clearInterval(otpTimer);
+            
+            // Enable save button
+            saveBtn.disabled = false;
+            saveBtn.style.cursor = 'pointer';
+            saveBtn.style.opacity = '1';
+            
+            // Set verified to true since we're back to original
+            isMobileVerified = true;
+        }
     }
 
     // Mobile number validation

@@ -407,30 +407,39 @@ table.dataTable tbody tr > .sorting_3 {
             status: []
         };
 
-        // Load filter options
-        $.ajax({
-            url: "{{ route('alumni.directory.filter-options') }}",
-            method: 'GET',
-            success: function(data) {
-                filterOptions.batch = data.batchYears.map(year => ({ id: year, name: year }));
-                filterOptions.location = data.locations;
-                filterOptions.status = data.connectionStatuses;
+        // Function to load filter options
+        function loadFilterOptions() {
+            $.ajax({
+                url: "{{ route('alumni.directory.filter-options') }}",
+                method: 'GET',
+                success: function(data) {
+                    filterOptions.batch = data.batchYears.map(year => ({ id: year, name: year }));
+                    filterOptions.location = data.locations;
+                    filterOptions.status = data.connectionStatuses;
 
-                populateDropdown('batch', filterOptions.batch);
-                populateDropdown('location', filterOptions.location);
-                populateDropdown('status', filterOptions.status);
-            }
-        });
+                    populateDropdown('batch', filterOptions.batch);
+                    populateDropdown('location', filterOptions.location);
+                    populateDropdown('status', filterOptions.status);
+                }
+            });
+        }
+
+        // Load filter options on page load
+        loadFilterOptions();
 
         function populateDropdown(type, options) {
             const container = $(`.multi-select-container[data-filter="${type}"]`);
             const dropdown = container.find('.multi-select-dropdown');
             
+            // Get currently selected values
+            const selectedValues = selectedFilters[type].map(item => item.id);
+            
             dropdown.empty();
             options.forEach(option => {
+                const isChecked = selectedValues.includes(option.id.toString());
                 const optionHtml = `
                     <div class="multi-select-option" data-value="${option.id}">
-                        <input type="checkbox" id="${type}_${option.id}" value="${option.id}">
+                        <input type="checkbox" id="${type}_${option.id}" value="${option.id}" ${isChecked ? 'checked' : ''}>
                         <label for="${type}_${option.id}" style="cursor: pointer; margin: 0;">${option.name}</label>
                     </div>
                 `;
@@ -754,6 +763,7 @@ table.dataTable tbody tr > .sorting_3 {
                         showToast(res.message);
                     }
 
+                    loadFilterOptions();
                     $('#alumniTable').DataTable().ajax.reload(null, false);
                 },
                 error: function (xhr) {

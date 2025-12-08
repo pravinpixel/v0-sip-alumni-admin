@@ -451,8 +451,19 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             selectedFile = null;
             window.removeImage = false;
             
-            // Reset verify button
+            // Reset mobile input to readonly
+            const mobileInput = document.getElementById('mobileNumberInput');
+            if (mobileInput) {
+                mobileInput.readOnly = true;
+            }
+            
+            // Reset edit/cancel button
+            const editCancelBtn = document.getElementById('editCancelMobileBtn');
             const verifyBtn = document.getElementById('verifyMobileBtn');
+            if (editCancelBtn) {
+                editCancelBtn.textContent = 'Edit';
+                editCancelBtn.style.color = '#dc2626';
+            }
             if (verifyBtn) {
                 verifyBtn.textContent = 'Verify';
                 verifyBtn.style.background = '#dc2626';

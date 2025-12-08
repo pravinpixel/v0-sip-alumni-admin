@@ -1,5 +1,6 @@
 <?php
 use App\Helpers\AccessGuard;
+use App\Models\Role;
 
 if (!function_exists('access')) {
     function access()
@@ -60,4 +61,14 @@ if (!function_exists('sendsms')) {
 
     //call function
     //  sendsms('919585850324', 'Hello, This is a test message from spring edge');
+}
+
+if (!function_exists('generateRoleId')) {
+
+    function generateRoleId()
+    {
+        $last = Role::orderBy('id', 'desc')->first();
+        $nextId = $last ? $last->id + 1 : 1;
+        return 'ROLE' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+    }
 }
