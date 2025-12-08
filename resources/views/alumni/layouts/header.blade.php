@@ -67,7 +67,7 @@
     }
 
     .menu-toggle {
-        display: none;
+        display: none !important;
         background: transparent;
         border: none;
         font-size: 24px;
@@ -78,31 +78,58 @@
 
     @media (max-width: 768px) {
         .top-header {
-            padding: 12px 20px;
-            flex-direction: column;
-            gap: 12px;
+            padding: 12px 15px;
         }
 
         .header-logo img {
-            height: 32px;
+            height: 40px;
         }
 
         .user-info {
-            display: block;
+            display: none;
         }
 
         .user-avatar {
-            width: 50px !important;
-            height: 50px !important;
+            width: 40px !important;
+            height: 40px !important;
         }
 
         .menu-toggle {
-            display: block;
+            display: none !important;
+        }
+
+        .header-right {
+            gap: 8px;
         }
 
         .top-header>div:nth-child(2) {
             position: static !important;
             transform: none !important;
+        }
+
+        #profileDropdown {
+            top: 60px;
+            right: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .top-header {
+            padding: 10px 12px;
+        }
+
+        .header-logo img {
+            height: 35px;
+        }
+
+        .user-avatar {
+            width: 36px !important;
+            height: 36px !important;
+        }
+
+        .menu-toggle {
+            font-size: 20px;
+            padding: 6px;
         }
     }
 </style>

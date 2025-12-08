@@ -254,7 +254,7 @@
 
             .navbar {
                 padding: 12px 20px;
-                top: 60px;
+                top: 10px;
             }
 
             .content {
