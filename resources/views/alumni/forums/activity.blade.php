@@ -1,10 +1,205 @@
 @extends('alumni.layouts.index')
 
 @section('content')
-    <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white">
+<style>
+    /* Responsive Styles for Activity Page */
+    @media (max-width: 991px) {
+        .activity-container {
+            padding: 16px !important;
+        }
+
+        .activity-header h1 {
+            font-size: 28px !important;
+        }
+
+        .activity-header p {
+            font-size: 14px !important;
+        }
+
+        /* Stats cards - 2 columns on tablet */
+        #statsCardsContainer > div {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        .stat-card {
+            padding: 16px !important;
+        }
+
+        .stat-card h2 {
+            font-size: 28px !important;
+        }
+
+        .stat-card span {
+            font-size: 12px !important;
+        }
+
+        .tab-button {
+            padding: 10px 20px !important;
+            font-size: 13px !important;
+        }
+
+        .post-item {
+            padding: 16px !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .activity-container {
+            padding: 12px !important;
+        }
+
+        .activity-header h1 {
+            font-size: 24px !important;
+        }
+
+        .activity-header p {
+            font-size: 13px !important;
+        }
+
+        .back-link {
+            font-size: 13px !important;
+        }
+
+        /* Stats cards - 2 columns on small tablet */
+        #statsCardsContainer > div {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+        }
+
+        .stat-card {
+            padding: 14px !important;
+        }
+
+        .stat-card h2 {
+            font-size: 24px !important;
+        }
+
+        .stat-card span {
+            font-size: 11px !important;
+        }
+
+        .stat-card i {
+            font-size: 14px !important;
+        }
+
+        /* Tabs - horizontal scroll */
+        .tab-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            gap: 8px;
+        }
+
+        .tab-button {
+            padding: 8px 16px !important;
+            font-size: 12px !important;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .post-item {
+            padding: 14px !important;
+        }
+
+        .post-item h3 {
+            font-size: 16px !important;
+        }
+
+        .post-item p {
+            font-size: 13px !important;
+        }
+
+        #postDetailModal > div {
+            padding: 15px !important;
+        }
+
+        #postDetailModal .modal-content {
+            padding: 30px 20px !important;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .activity-container {
+            padding: 10px !important;
+        }
+
+        .activity-header h1 {
+            font-size: 20px !important;
+        }
+
+        .activity-header p {
+            font-size: 12px !important;
+        }
+
+        .back-link {
+            font-size: 12px !important;
+        }
+
+        /* Stats cards - 1 column on mobile */
+        #statsCardsContainer > div {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+        }
+
+        .stat-card {
+            padding: 12px !important;
+        }
+
+        .stat-card h2 {
+            font-size: 22px !important;
+        }
+
+        .stat-card span {
+            font-size: 11px !important;
+        }
+
+        .stat-card i {
+            font-size: 13px !important;
+        }
+
+        /* Tabs - horizontal scroll */
+        .tab-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-button {
+            padding: 6px 14px !important;
+            font-size: 11px !important;
+        }
+
+        .post-item {
+            padding: 12px !important;
+        }
+
+        .post-item h3 {
+            font-size: 15px !important;
+        }
+
+        .post-item p {
+            font-size: 12px !important;
+        }
+
+        #postDetailModal > div {
+            padding: 10px !important;
+        }
+
+        #postDetailModal .modal-content {
+            padding: 25px 15px !important;
+        }
+
+        #deleteConfirmModal .modal-content {
+            padding: 24px 16px !important;
+        }
+    }
+</style>
+
+    <div class="activity-container" style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white">
         {{-- Back to Forum Link --}}
         <div style="margin-bottom: 20px;">
             <a href="{{ route('alumni.forums') }}"
+                class="back-link"
                 style="color: #dc2626; text-decoration: none; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px;"
                 onmouseover="this.style.color='#b91c1c'" onmouseout="this.style.color='#dc2626'">
                 <i class="fas fa-arrow-left"></i>
@@ -13,7 +208,7 @@
         </div>
 
         {{-- Header --}}
-        <div style="margin-bottom: 30px;">
+        <div class="activity-header" style="margin-bottom: 30px;">
             <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Your Activity</h1>
             <p style="color: #6b7280; font-size: 15px;">Track your posts and engagement</p>
         </div>

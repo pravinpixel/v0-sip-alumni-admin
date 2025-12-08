@@ -2,6 +2,288 @@
 
 @section('content')
 <style>
+    /* Responsive Styles */
+    @media (max-width: 991px) {
+        /* Container and spacing */
+        div[style*="max-width: 1400px"] {
+            padding: 16px !important;
+        }
+
+        /* Header section */
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child h1 {
+            font-size: 28px !important;
+        }
+
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child p {
+            font-size: 14px !important;
+        }
+
+        /* Filter section */
+        #filterSection {
+            padding: 16px !important;
+        }
+
+        #filterSection > div {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        /* Post cards */
+        #forumPostsContainer > div {
+            padding: 18px !important;
+        }
+
+        #forumPostsContainer h2 {
+            font-size: 18px !important;
+        }
+
+        #forumPostsContainer p {
+            font-size: 14px !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        /* Container */
+        div[style*="max-width: 1400px"] {
+            padding: 12px !important;
+        }
+
+        /* Header - stack vertically */
+        div[style*="display: flex"][style*="justify-content: space-between"][style*="margin-bottom: 30px"] {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 16px !important;
+        }
+
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child h1 {
+            font-size: 24px !important;
+        }
+
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child p {
+            font-size: 13px !important;
+        }
+
+        /* Header buttons - full width */
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child {
+            width: 100%;
+            flex-direction: column !important;
+        }
+
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child a,
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child button {
+            width: 100%;
+            justify-content: center !important;
+        }
+
+        /* Search and filter row - stack vertically */
+        div[style*="display: flex"][style*="align-items: center"][style*="gap: 12px"][style*="margin-bottom: 20px"] {
+            flex-direction: column !important;
+            gap: 10px !important;
+        }
+
+        /* Search box - full width */
+        div[style*="flex: 1"][style*="position: relative"][style*="max-width: 400px"] {
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        #searchInput {
+            width: 100% !important;
+        }
+
+        /* Filter button - full width */
+        #filterToggleBtn,
+        #clearAllFiltersBtn {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+
+        /* Filter section */
+        #filterSection {
+            padding: 14px !important;
+        }
+
+        #filterSection > div {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+        }
+
+        /* Post cards */
+        #forumPostsContainer > div {
+            padding: 16px !important;
+        }
+
+        #forumPostsContainer h2 {
+            font-size: 17px !important;
+            padding-right: 60px !important;
+        }
+
+        #forumPostsContainer p {
+            font-size: 13px !important;
+        }
+
+        /* Post action buttons - wrap on small screens */
+        #forumPostsContainer > div > div:last-child {
+            flex-wrap: wrap !important;
+        }
+
+        #forumPostsContainer button {
+            font-size: 13px !important;
+            padding: 7px 14px !important;
+        }
+    }
+
+    @media (max-width: 575px) {
+        /* Container */
+        div[style*="max-width: 1400px"] {
+            padding: 10px !important;
+        }
+
+        /* Header */
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child h1 {
+            font-size: 20px !important;
+        }
+
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child p {
+            font-size: 12px !important;
+        }
+
+        /* Header buttons */
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child a,
+        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child button {
+            font-size: 13px !important;
+            padding: 9px 16px !important;
+        }
+
+        /* Search input */
+        #searchInput {
+            font-size: 13px !important;
+            padding: 10px 16px 10px 40px !important;
+            height: 38px !important;
+        }
+
+        /* Filter buttons */
+        #filterToggleBtn,
+        #clearAllFiltersBtn {
+            font-size: 13px !important;
+            padding: 10px 16px !important;
+            height: 38px !important;
+        }
+
+        /* Filter section */
+        #filterSection {
+            padding: 12px !important;
+        }
+
+        #filterSection label {
+            font-size: 12px !important;
+        }
+
+        /* Multi-select dropdowns */
+        .multi-select-display {
+            font-size: 13px !important;
+            padding: 8px 10px !important;
+            min-height: 36px !important;
+        }
+
+        .multi-select-display .placeholder {
+            font-size: 13px !important;
+        }
+
+        .multi-select-option {
+            padding: 8px 10px !important;
+            font-size: 13px !important;
+        }
+
+        .multi-select-option label {
+            font-size: 13px !important;
+        }
+
+        /* Selected tags */
+        .selected-tag {
+            font-size: 11px !important;
+            padding: 5px 10px !important;
+        }
+
+        /* Post cards */
+        #forumPostsContainer > div {
+            padding: 14px !important;
+            margin-bottom: 16px !important;
+        }
+
+        #forumPostsContainer h2 {
+            font-size: 16px !important;
+            padding-right: 50px !important;
+        }
+
+        #forumPostsContainer p {
+            font-size: 12px !important;
+        }
+
+        /* Post tags */
+        #forumPostsContainer span[style*="background: #F7C744"] {
+            font-size: 10px !important;
+            padding: 3px 10px !important;
+        }
+
+        /* Post author section */
+        #forumPostsContainer > div > div[style*="border-bottom"] img,
+        #forumPostsContainer > div > div[style*="border-bottom"] > div:first-child {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 13px !important;
+        }
+
+        #forumPostsContainer > div > div[style*="border-bottom"] p {
+            font-size: 13px !important;
+        }
+
+        /* Post stats */
+        #forumPostsContainer > div > div[style*="padding: 10px"] {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+        }
+
+        #forumPostsContainer > div > div[style*="padding: 10px"] > div:first-child {
+            width: 100%;
+        }
+
+        #forumPostsContainer > div > div[style*="padding: 10px"] > div:last-child {
+            width: 100%;
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+        }
+
+        /* Post action buttons */
+        #forumPostsContainer button {
+            font-size: 12px !important;
+            padding: 6px 12px !important;
+        }
+
+        /* Reply form */
+        div[id^="replyForm-"] {
+            padding: 16px !important;
+        }
+
+        div[id^="replyForm-"] input {
+            font-size: 13px !important;
+            padding: 10px 14px !important;
+        }
+
+        div[id^="replyForm-"] button {
+            font-size: 13px !important;
+            padding: 8px 16px !important;
+        }
+
+        /* Pin button */
+        button[onclick^="togglePin"] {
+            top: 12px !important;
+            right: 12px !important;
+            font-size: 16px !important;
+        }
+    }
+
     /* Multi-select dropdown styles */
     .multi-select-container {
         position: relative;

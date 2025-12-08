@@ -3,6 +3,159 @@
 
 @section('content')
 <style>
+    /* Responsive Styles */
+    @media (max-width: 991px) {
+        .search-filter-container {
+            gap: 10px !important;
+        }
+
+        .search-box {
+            min-width: 150px !important;
+        }
+
+        .filter-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+        }
+
+        #filterSection {
+            padding: 16px !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .search-filter-container {
+            gap: 8px !important;
+        }
+
+        .search-box {
+            width: 100% !important;
+            min-width: 100% !important;
+        }
+
+        .filter-grid {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+        }
+
+        #filterSection {
+            padding: 12px !important;
+        }
+
+        #filterToggleBtn,
+        #clearFiltersBtn {
+            font-size: 13px !important;
+            padding: 8px 14px !important;
+        }
+
+        .table-container {
+            border-radius: 8px !important;
+        }
+
+        #alumniTable thead th {
+            padding: 12px !important;
+            font-size: 13px !important;
+        }
+
+        #alumniTable tbody td {
+            padding: 12px !important;
+            font-size: 13px !important;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .search-filter-container {
+            flex-direction: column;
+            align-items: stretch !important;
+        }
+
+        #filterToggleBtn,
+        #clearFiltersBtn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        #filterSection {
+            padding: 10px !important;
+        }
+
+        #alumniTable thead th {
+            padding: 10px !important;
+            font-size: 12px !important;
+        }
+
+        #alumniTable tbody td {
+            padding: 10px !important;
+            font-size: 12px !important;
+        }
+
+        .multi-select-display {
+            font-size: 13px !important;
+            padding: 8px 10px !important;
+        }
+    }
+
+    /* Table horizontal scroll indicator */
+    .table-container::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-container::-webkit-scrollbar-track {
+        background: #f3f4f6;
+        border-radius: 0 0 12px 12px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
+    }
+
+    .table-container::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+
+    /* Pagination Responsive */
+    @media (max-width: 767px) {
+        .pagination-container {
+            padding: 8px 5px !important;
+        }
+
+        .pagination-info {
+            font-size: 12px !important;
+            width: 100%;
+            text-align: center;
+        }
+
+        .pagination-controls {
+            width: 100%;
+            justify-content: center !important;
+        }
+
+        .pagination-controls button {
+            font-size: 12px !important;
+            padding: 6px 12px !important;
+        }
+
+        .pagination-controls span {
+            font-size: 12px !important;
+            padding: 6px 12px !important;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .pagination-info {
+            font-size: 11px !important;
+        }
+
+        .pagination-controls button {
+            padding: 5px 10px !important;
+        }
+
+        .pagination-controls span {
+            padding: 5px 10px !important;
+        }
+    }
+
     /* Override DataTables default styles */
     #alumniTable thead tr {
         background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%) !important;
@@ -116,7 +269,15 @@ table.dataTable tbody tr > .sorting_3 {
     /* Ensure table wrapper has proper border radius */
     .dataTables_wrapper {
         border-radius: 12px !important;
-        overflow: hidden !important;
+        overflow: visible !important;
+    }
+
+    /* Force table container to allow horizontal scroll */
+    .table-container {
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        width: 100% !important;
+        display: block !important;
     }
 
     /* Style pagination */
@@ -280,8 +441,8 @@ table.dataTable tbody tr > .sorting_3 {
     </div>
 
     {{-- Search and Filter --}}
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px;">
-        <div style="flex: 1; position: relative; max-width: 400px;">
+    <div class="search-filter-container" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;">
+        <div class="search-box" style="flex: 1; position: relative; min-width: 200px;">
             <i class="fas fa-search"
                 style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
             <input type="text" id="searchInput" placeholder="Search alumni..."
@@ -293,7 +454,6 @@ table.dataTable tbody tr > .sorting_3 {
             onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
             <i class="bi bi-funnel" style="font-size: 18px;"></i>
             <span id="filterBtnText">Filter<i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i></span>
-            <!-- <span id="filterCountBadge" style="display: none; background: #dc2626; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; display: none; align-items: center; justify-content: center; margin-left: 4px;">0</span> -->
         </button>
         <button id="clearFiltersBtn"
             style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; white-space: nowrap;"
@@ -305,7 +465,7 @@ table.dataTable tbody tr > .sorting_3 {
     {{-- Filter Section --}}
     <div id="filterSection"
         style="display: none; background: #fbf9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div class="filter-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
             <div>
                 <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
                     Batch Year
@@ -366,27 +526,29 @@ table.dataTable tbody tr > .sorting_3 {
 
     {{-- Alumni Table --}}
     <div style="background: white; border: 2px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
-        <table id="alumniTable" class="display" style="width: 100%; margin: 0; border-collapse: collapse;">
-            <thead>
-                <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
-                    <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-    Alumni 
-</th>
+        <div class="table-container" style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
+            <table id="alumniTable" class="display" style="width: 100%; margin: 0; border-collapse: collapse; min-width: 700px;">
+                <thead>
+                    <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; min-width: 250px;">
+        Alumni 
+    </th>
 
-<th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-    Batch 
-</th>
+    <th style="padding: 16px; font-weight: 600; text-align: left; border: none; min-width: 120px;">
+        Batch 
+    </th>
 
-<th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-    Location 
-</th>
+    <th style="padding: 16px; font-weight: 600; text-align: left; border: none; min-width: 180px;">
+        Location 
+    </th>
 
-<th style="padding: 16px; font-weight: 600; text-align: left; border: none;">Action</th>
+    <th style="padding: 16px; font-weight: 600; text-align: left; border: none; min-width: 150px;">Action</th>
 
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
     <div id="customPaginationContainer" class="mt-10"></div>
 </div>
@@ -663,20 +825,26 @@ table.dataTable tbody tr > .sorting_3 {
             let info = table.page.info();
 
             let html = `
-          <div class="d-flex justify-content-between align-items-center" style="padding: 10px 5px;">
+          <div class="pagination-container d-flex justify-content-between align-items-center flex-wrap" style="padding: 10px 5px; gap: 10px;">
             
-            <div class="text-muted" style="font-size: 14px;">
+            <div class="pagination-info text-muted" style="font-size: 14px;">
                 Showing ${info.start + 1}-${info.end} of ${info.recordsTotal} alumni
             </div>
 
-            <div>
-                <button class="btn btn-light btn-sm me-2" id="prevPage" ${info.page === 0 ? "disabled" : ""}>‹ Previous</button>
+            <div class="pagination-controls d-flex align-items-center gap-2">
+                <button class="btn btn-light btn-sm" id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                    <span class="d-none d-sm-inline">‹ Previous</span>
+                    <span class="d-inline d-sm-none">‹</span>
+                </button>
 
-                <span class="px-3 py-1 bg-danger text-white rounded" style="font-weight:600;">
+                <span class="px-3 py-1 bg-danger text-white rounded" style="font-weight:600; font-size: 14px;">
                     ${info.page + 1}
                 </span>
 
-                <button class="btn btn-light btn-sm ms-2" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>Next ›</button>
+                <button class="btn btn-light btn-sm" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
+                    <span class="d-none d-sm-inline">Next ›</span>
+                    <span class="d-inline d-sm-none">›</span>
+                </button>
             </div>
 
            </div>

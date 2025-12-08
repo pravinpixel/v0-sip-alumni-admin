@@ -20,14 +20,27 @@
         background-color: #f9fafb !important;
     }
 
-    /* Small responsive tweak so table container doesn't hide the pagination area */
+    /* Table wrapper with scroll */
     .table-wrapper {
         background: white;
         border: 2px solid #e5e7eb;
         border-radius: 12px;
-        overflow: hidden;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         padding: 0;
-        /* keep original look */
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-wrapper::-webkit-scrollbar-track {
+        background: #f3f4f6;
+    }
+
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
     }
 
     /* Custom small styles for the custom pagination blocks */
@@ -51,19 +64,187 @@
         background-color: #dc2626 !important;
         color: white !important;
     }
+
+    /* Responsive Styles */
+    @media (max-width: 991px) {
+        .page-header h1 {
+            font-size: 28px !important;
+        }
+
+        .page-header p {
+            font-size: 14px !important;
+        }
+
+        .search-container {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .tab-btn {
+            padding: 8px 30px !important;
+            font-size: 13px !important;
+        }
+
+        #connectionsTable thead th,
+        #requestsTable thead th {
+            padding: 12px !important;
+            font-size: 13px !important;
+        }
+
+        #connectionsTable tbody td,
+        #requestsTable tbody td {
+            padding: 12px !important;
+            font-size: 13px !important;
+        }
+    }
+
+    @media (max-width: 767px) {
+        .page-header h1 {
+            font-size: 24px !important;
+        }
+
+        .page-header p {
+            font-size: 13px !important;
+        }
+
+        .search-container {
+            margin-bottom: 16px !important;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-btn {
+            padding: 8px 24px !important;
+            font-size: 12px !important;
+            white-space: nowrap;
+        }
+
+        .table-wrapper {
+            border-radius: 8px !important;
+        }
+
+        #connectionsTable,
+        #requestsTable {
+            min-width: 700px;
+        }
+
+        #connectionsTable thead th,
+        #requestsTable thead th {
+            padding: 10px !important;
+            font-size: 12px !important;
+        }
+
+        #connectionsTable tbody td,
+        #requestsTable tbody td {
+            padding: 10px !important;
+            font-size: 12px !important;
+        }
+
+        .custom-info {
+            padding: 10px 12px !important;
+            font-size: 12px !important;
+        }
+
+        .custom-pagination {
+            padding: 10px 12px !important;
+        }
+
+        .custom-pagination .btn {
+            font-size: 12px !important;
+            padding: 6px 12px !important;
+        }
+
+        .pagination-wrapper {
+            flex-direction: column !important;
+            gap: 10px;
+        }
+
+        .custom-info,
+        .custom-pagination {
+            text-align: center !important;
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .page-header {
+            padding: 15px !important;
+        }
+
+        .page-header h1 {
+            font-size: 20px !important;
+        }
+
+        .page-header p {
+            font-size: 12px !important;
+        }
+
+        .search-container input {
+            font-size: 13px !important;
+            padding: 6px 12px 6px 40px !important;
+        }
+
+        .tab-btn {
+            padding: 6px 20px !important;
+            font-size: 11px !important;
+        }
+
+        #connectionsTable,
+        #requestsTable {
+            min-width: 650px;
+        }
+
+        #connectionsTable thead th,
+        #requestsTable thead th {
+            padding: 8px !important;
+            font-size: 11px !important;
+        }
+
+        #connectionsTable tbody td,
+        #requestsTable tbody td {
+            padding: 8px !important;
+            font-size: 11px !important;
+        }
+
+        .custom-info {
+            font-size: 11px !important;
+        }
+
+        .custom-pagination .btn {
+            font-size: 11px !important;
+            padding: 5px 10px !important;
+        }
+
+        .custom-pagination span {
+            font-size: 11px !important;
+        }
+
+        #infoRibbon {
+            padding: 6px 15px !important;
+            font-size: 12px !important;
+        }
+
+        #infoRibbon i {
+            font-size: 16px !important;
+        }
+    }
 </style>
 
 <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white;">
-    {{-- Header with Search on Right --}}
     {{-- Header --}}
-    <div style="margin-bottom: 30px;">
+    <div class="page-header" style="margin-bottom: 30px;">
         <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">My Connections</h1>
         <p style="color: #6b7280; font-size: 15px;">Manage your alumni network and connection requests</p>
     </div>
 
     {{-- Search Bar (Right Aligned) --}}
     <div style="display: flex; justify-content: flex-end; margin-bottom: 4px;">
-        <div style="position: relative; width: 250px;">
+        <div class="search-container" style="position: relative; width: 250px;">
             <i class="fas fa-search"
                 style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 15px;"></i>
             <input type="text" id="globalSearch" placeholder="Search connections..."
@@ -73,7 +254,7 @@
     </div>
 
     {{-- Tab Navigation --}}
-    <div style=" margin-bottom: 20px;">
+    <div class="tab-container" style="margin-bottom: 20px;">
         <button class="tab-btn active" data-tab="connections"
             style="background-color: #dc2626; color: white; border: none; padding: 8px 40px; border-radius: 3px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.3s;">
             Connections (<span id="connectionsCount">0</span>)
@@ -123,7 +304,7 @@
         </div>
 
         <!-- custom info & pagination containers (below this table) -->
-        <div class="d-flex justify-content-between align-items-center mt-2 w-100">
+        <div class="pagination-wrapper d-flex justify-content-between align-items-center mt-2 w-100">
             <div id="connectionsInfo" class="custom-info"></div>
             <div id="connectionsPagination" class="custom-pagination"></div>
         </div>
@@ -155,7 +336,7 @@
         </div>
 
         <!-- custom info & pagination containers (below this table) -->
-        <div class="d-flex justify-content-between align-items-center mt-2 w-100">
+        <div class="pagination-wrapper d-flex justify-content-between align-items-center mt-2 w-100">
             <div id="requestsInfo" class="custom-info"></div>
             <div id="requestsPagination" class="custom-pagination"></div>
         </div>
