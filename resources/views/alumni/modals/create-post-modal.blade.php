@@ -450,11 +450,12 @@
         }
     }
 
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        const modal = document.getElementById('createPostModal');
-        if (event.target === modal) {
-            closeCreatePostModal();
-        }
-    });
+    // Close modal when clicking outside - DISABLED
+    // Uncomment below to enable closing modal by clicking outside
+    // window.addEventListener('click', function(event) {
+    //     const modal = document.getElementById('createPostModal');
+    //     if (event.target === modal) {
+    //         closeCreatePostModal();
+    //     }
+    // });
 </script>

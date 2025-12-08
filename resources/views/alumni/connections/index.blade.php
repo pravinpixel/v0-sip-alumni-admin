@@ -339,21 +339,17 @@
             $('.tab-content').hide();
             $('#' + $(this).data('tab')).show();
 
-            // Show/hide info ribbon based on tab and database state
+            const ribbonState = $('#infoRibbon').data('ribbon-state');
             if ($(this).data('tab') === 'requests') {
-
-    // Check if requests table has records
-    const hasRequests = requestsTable.data().count() > 0;
-
-    if (ribbonState == 1 && hasRequests) {
-        $('#infoRibbon').slideDown();
-    } else {
-        $('#infoRibbon').slideUp();
-    }
-
-} else {
-    $('#infoRibbon').slideUp();
-}
+                const hasRequests = requestsTable.page.info().recordsTotal > 0;
+                if (ribbonState == 1 && hasRequests) {
+                    $('#infoRibbon').slideDown();
+                } else {
+                    $('#infoRibbon').slideUp();
+                }
+            } else {
+                $('#infoRibbon').slideUp();
+            }
 
 
             // redraw table in case of column width issues
@@ -491,6 +487,16 @@
                 showToast(data.message);
                 connectionsTable.ajax.reload(null, false);
                 requestsTable.ajax.reload(null, false);
+                requestsTable.one('draw', function () {
+                    const totalRequests = requestsTable.page.info().recordsTotal;
+                    const ribbonState = $('#infoRibbon').data('ribbon-state');
+
+                    if (ribbonState == 1 && totalRequests > 0) {
+                        $('#infoRibbon').slideDown();
+                    } else {
+                        $('#infoRibbon').slideUp();
+                    }
+                });
             },
             error: function() {
                 showToast('Unable to accept connection request.', 'error');
@@ -505,6 +511,16 @@
             success: function(data) {
                 showToast(data.message);
                 requestsTable.ajax.reload(null, false);
+                requestsTable.one('draw', function () {
+                    const totalRequests = requestsTable.page.info().recordsTotal;
+                    const ribbonState = $('#infoRibbon').data('ribbon-state');
+
+                    if (ribbonState == 1 && totalRequests > 0) {
+                        $('#infoRibbon').slideDown();
+                    } else {
+                        $('#infoRibbon').slideUp();
+                    }
+                });
             },
             error: function() {
                 showToast('Unable to reject connection request.', 'error');

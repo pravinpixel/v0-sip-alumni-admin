@@ -208,14 +208,14 @@ class ForumsController extends Controller
                 'status' => 'pending',
             ]);
             // Send email alumni
-            // if ($alumni->notify_post_comments === 1) {
+            if ($alumni->notify_post_comments === 1) {
                 $data = [
                     'name' => $alumni->full_name,
                     'title' => $request->title,
                     'support_email' => env('SUPPORT_EMAIL'),
                 ];
                 Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
-            // }
+            }
             // $role = Role::where('name', 'Super Admin')->first();
             $admins = User::whereNull('deleted_at')->get();
             $adminData = [
@@ -564,7 +564,7 @@ class ForumsController extends Controller
                 'activePosts' => $userPosts->where('status', 'approved')->count(),
                 'pendingPosts' => $userPosts->where('status', 'pending')->count(),
                 'rejectedPosts' => $userPosts->where('status', 'rejected')->count(),
-                'archivedPosts' => $userPosts->whereIn('status', ['post_deleted', 'removed_by_admin'])->count(),
+                'archivedPosts' => $userPosts->count(),
                 'totalLikes' => $userPosts->where('status', 'approved')->sum('likes_count'),
                 'totalViews' => $userPosts->where('status', 'approved')->sum('views_count'),
                 'totalComments' => $userPosts->where('status', 'approved')->sum('reply_count'),

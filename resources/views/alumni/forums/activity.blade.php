@@ -780,7 +780,7 @@
                             <i class="far fa-heart"></i> ${post.likes_count || 0} likes
                         </span>
                         <span style="display: flex; align-items: center; gap: 8px;">
-                            <i class="far fa-comment"></i> ${replies.length} replies
+                            <i class="far fa-comment"></i> ${post.reply_count || 0} replies
                         </span>
                     </div>
                 </div>

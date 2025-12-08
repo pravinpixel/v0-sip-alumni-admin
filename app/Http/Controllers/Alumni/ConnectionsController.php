@@ -37,7 +37,7 @@ class ConnectionsController extends Controller
                 $q->where('sender_id', $alumniId)
                     ->orWhere('receiver_id', $alumniId);
             })
-            ->where('status', 'accepted');
+            ->where('status', 'accepted')->orderBy('created_at', 'DESC');
 
         return DataTables::of($query)
             ->addIndexColumn()
