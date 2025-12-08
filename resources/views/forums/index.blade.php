@@ -546,8 +546,7 @@
                     $('#postTitle').text(post.title || 'No Title');
                     
                     const description = post.description ?
-                    post.description.replace(/<\/?[^>]+>/g, "").substring(0, 200) +
-                    (post.description.length > 200 ? '...' : '') :
+                    post.description.replace(/<\/?[^>]+>/g, "") :
                     'No description available';
                     $('#postDescription').text(description);
                     

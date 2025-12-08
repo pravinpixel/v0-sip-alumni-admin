@@ -233,8 +233,7 @@
                     // Set post details
                     $('#postTitle').text(post.title || 'No Title');
                     const description = post.description ?
-                    post.description.replace(/<\/?[^>]+>/g, "").substring(0, 200) +
-                    (post.description.length > 200 ? '...' : '') :
+                    post.description.replace(/<\/?[^>]+>/g, "") :
                     'No description available';
                     $('#postDescription').text(description);
                     
@@ -320,7 +319,7 @@
     }
 
     function deleteComment(commentId) {
-        confirmBox('Are you sure you want to delete this comment?', function() {
+        confirmBox('By deleting this comment ?', function() {
             $.ajax({
                 url: "{{ route('admin.forums.comment.delete', '') }}/" + commentId,
                 type: 'DELETE',

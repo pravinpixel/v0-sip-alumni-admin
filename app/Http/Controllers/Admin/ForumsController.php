@@ -318,7 +318,7 @@ class ForumsController extends Controller
                         return '<div style="width:40px;height:40px;border-radius:50%;background:#e5e7eb;"></div>';
                     }
 
-                    $img = $alumni->image ? url('storage/' . $alumni->image) : asset('images/avatar/blank.png');
+                    $img = $alumni->image_url ?? asset('images/avatar/blank.png');
                     return '<img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">';
                 })
                 ->addColumn('alumni_name', function ($row) {
@@ -369,8 +369,8 @@ class ForumsController extends Controller
                     return [
                         'id' => $reply->id,
                         'message' => $reply->message,
-                        'alumni_name' => $reply->alumni->full_name ?? 'Unknown',
-                        'alumni_image' => $reply->alumni->image ? url('storage/' . $reply->alumni->image) : null,
+                        'alumni_name' => $reply->alumni?->full_name ?? '',
+                        'alumni_image' => $reply->alumni?->image_url ?? asset('images/avatar/blank.png'),
                         'created_at' => \Carbon\Carbon::parse($reply->created_at)
                             ->setTimezone('Asia/Kolkata')
                             ->format('M j, Y, h:i A')
