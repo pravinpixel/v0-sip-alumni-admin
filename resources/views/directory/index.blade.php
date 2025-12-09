@@ -543,7 +543,7 @@
     }
 
     function removeFilter(filterType, value) {
-        selectedFilters[filterType] = selectedFilters[filterType].filter(v => v !== value);
+        selectedFilters[filterType] = selectedFilters[filterType].filter(v => String(v) !== String(value));
         
         // Update checkbox in dropdown
         $(`.filter-dropdown-menu[data-filter="${filterType}"] input[value="${value}"]`).prop('checked', false);

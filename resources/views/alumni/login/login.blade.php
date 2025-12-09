@@ -120,7 +120,8 @@
                         </div>
 
                         <div class="fv-row mb-4">
-                            <label class="form-label text-dark fw-bold">Mobile Number</label>
+                            <p class="form-label text-dark fw-bold text-center fs-3 mb-4">Welcome to SIP Abacus Alumni Portal</p>
+                            <label class="form-label text-dark fs-7">Please enter your registered mobile number to receive an OTP and continue.</label>
                             <input type="text" name="number" placeholder="Enter 10-digit mobile number"
                                 autocomplete="off" class="form-control bg-transparent" maxlength="10"
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
