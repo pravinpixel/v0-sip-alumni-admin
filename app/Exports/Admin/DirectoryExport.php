@@ -57,7 +57,7 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
         return [
             'Created On',
             'Name',
-            'Batch',
+            'Year',
             'City & State',
             'Email',
             'Contact',

@@ -128,13 +128,7 @@ class DashboardController extends Controller
             ->where('status', 'approved')
             ->withCount(['likes', 'views', 'replies'])
             ->get()
-            ->map(function($post) {
-                // Calculate engagement score (likes * 3 + comments * 2 + views)
-                $engagementScore = ($post->likes_count * 3) + ($post->replies_count * 2) + $post->views_count;
-                $post->engagement_score = $engagementScore;
-                return $post;
-            })
-            ->sortByDesc('engagement_score')
+            ->sortByDesc('likes_count')
             ->take(3)
             ->map(function($post) {
                 // Check if post is pinned

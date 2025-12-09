@@ -68,12 +68,18 @@ class ForumsController extends Controller
                 ->filter(function ($query) use ($request) {
                     if ($request->has('search') && !empty($request->search['value'])) {
                         $searchValue = $request->search['value'];
-                        $query->where(function ($q) use ($searchValue) {
+                        $parsedDate = date('Y-m-d', strtotime($searchValue));
+                        $query->where(function ($q) use ($searchValue, $parsedDate) {
                             $q->where('status', 'like', "%{$searchValue}%")
                                 ->orWhereHas('alumni', function ($alumniQuery) use ($searchValue) {
                                     $alumniQuery->where('full_name', 'like', "%{$searchValue}%")
                                     ->orWhere('mobile_number', 'like', "%{$searchValue}%");
                                 });
+                            
+                            if ($parsedDate && $parsedDate !== '1970-01-01') {
+                                $q->orWhereDate('created_at', $parsedDate)
+                                    ->orWhereDate('updated_at', $parsedDate);
+                            }
                         });
                     }
                 })

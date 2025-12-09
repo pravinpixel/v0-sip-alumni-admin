@@ -169,8 +169,8 @@
                     </div>
                 </div>
                 
-                <h4 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0 0 1rem 0; min-height: 10px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${post.title}</h4>
-                <p style="font-size: 0.95rem; color: #9ca3af; margin: 0 0 1.5rem 0; line-height: 1.5; min-height: 60px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${post.description.substring(0, 80)}...</p>
+                <h4 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0 0 1rem 0; min-height: 10px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${post.title}</h4>
+                <p style="font-size: 0.95rem; color: #9ca3af; margin: 0 0 1.5rem 0; line-height: 1.5; min-height: 60px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">${post.description}</p>
                 
                 <div style="margin-top: auto;">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">

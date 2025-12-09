@@ -382,6 +382,7 @@
             };
             $('#filterFromDate').val('');
             $('#filterToDate').val('');
+            $('.filter-dropdown-menu input[type="checkbox"]').prop('checked', false);
             updateFilterDisplay();
             table.ajax.reload();
         });

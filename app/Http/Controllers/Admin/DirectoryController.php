@@ -67,8 +67,10 @@ class DirectoryController extends Controller
                 ->filter(function ($query) use ($request) {
                     if ($request->has('search') && !empty($request->search['value'])) {
                         $searchValue = $request->search['value'];
-
-                        $query->where(function ($q) use ($searchValue) {
+                        
+                        $parsedDate = date('Y-m-d', strtotime($searchValue));
+                        $keywords = preg_split('/[\s,]+/', $searchValue, -1, PREG_SPLIT_NO_EMPTY);
+                        $query->where(function ($q) use ($searchValue, $keywords, $parsedDate) {
                             $q->where('full_name', 'like', "%{$searchValue}%")
                                 ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
                                 ->orWhere('status', 'like', "%{$searchValue}%")
@@ -76,13 +78,18 @@ class DirectoryController extends Controller
                                 ->orWhere('mobile_number', 'like', "%{$searchValue}%")
                                 ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
                                     $occQuery->where('name', 'like', "%{$searchValue}%");
-                                })
-                                ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
-                                    $cityQuery->where('name', 'like', "%{$searchValue}%")
-                                        ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
-                                            $stateQuery->where('name', 'like', "%{$searchValue}%");
-                                        });
                                 });
+                            $q->orWhereHas('city', function ($cityQuery) use ($keywords) {
+                                foreach ($keywords as $word) {
+                                    $cityQuery->where('name', 'like', "%{$word}%")
+                                        ->orWhereHas('state', function ($stateQuery) use ($word) {
+                                            $stateQuery->where('name', 'like', "%{$word}%");
+                                        });
+                                }
+                            });
+                            if ($parsedDate && $parsedDate !== '1970-01-01') {
+                                $q->orWhereDate('created_at', $parsedDate);
+                            }
                         });
                     }
                 })
@@ -108,7 +115,7 @@ class DirectoryController extends Controller
                     return '<span style="font-weight:600; color:#333;">' . ($row->mobile_number ?? '—') . '</span>';
                 })
                 ->addColumn('location', function ($row) {
-                    return ($row->city?->state?->name ?? '-') . ', ' . ($row->city?->name ?? '-');
+                    return ($row->city?->name ?? '-') . ', ' . ($row->city?->state?->name ?? '-');
                 })
                 ->addColumn('occupation', function ($row) {
                     return $row->occupation->name ?? '-';
