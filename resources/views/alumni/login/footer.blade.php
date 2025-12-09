@@ -15,7 +15,7 @@
         filter: brightness(0) invert(1);
     }
 
-    footer p, footer div, footer a {
+    footer p, footer div {
         color: rgba(255, 255, 255, 0.9) !important;
     }
 
@@ -136,7 +136,7 @@
             <div>
                 <div style="color: #b0b0b0; font-size: 14px; line-height: 2;">
                     <p style="margin: 0;"><strong style="color: white;">Phone:</strong> 044-42023131/42605609</p>
-                    <p style="margin: 0;"><strong style="color: white;">Email:</strong> sipinfo@sipacademyindia.com</p>
+                    <p style="margin: 0;"><strong style="color: white;">Email:</strong> <a href="" style="color: #ffffffff; text-decoration: none;" onmouseover="this.style.color='#ecd608'" onmouseout="this.style.color='#ffffffff'"> sipinfo@sipacademyindia.com </a></p>
                 </div>
             </div>
 
@@ -144,17 +144,17 @@
             <div>
                 <p style="margin: 0 0 16px 0; font-weight: 600; font-size: 16px; color: white;">Follow Us</p>
                 <div style="display: flex;">
-                    <a href="#" style="align-items: center; transition: all 0.3s;"
+                    <a href="https://www.facebook.com/SIPabacusIndia/" style="align-items: center; transition: all 0.3s;"
                        onmouseover="this.style.transform='scale(1.1)'" 
                        onmouseout="this.style.transform='scale(1)'">
                         <img src="{{ asset('images/social/fb.png') }}" alt="Facebook" style="width: 30px; height: 30px; object-fit: contain;">
                     </a>
-                    <a href="#" style="align-items: center; transition: all 0.3s; margin-left: 10px;"
+                    <a href="https://www.instagram.com/sipabacusindia/" style="align-items: center; transition: all 0.3s; margin-left: 20px;"
                        onmouseover="this.style.transform='scale(1.1)'" 
                        onmouseout="this.style.transform='scale(1)'">
                         <img src="{{ asset('images/social/instra.png') }}" alt="Instagram" style="width: 30px; height: 30px; object-fit: contain;">
                     </a>
-                    <a href="#" style="align-items: center; transition: all 0.3s;"
+                    <a href="https://www.youtube.com/@sipabacusindia" style="align-items: center; transition: all 0.3s; margin-left: 10px;"
                        onmouseover="this.style.transform='scale(1.1)'" 
                        onmouseout="this.style.transform='scale(1)'">
                         <img src="{{ asset('images/social/youtube.png') }}" alt="YouTube" style="width: 60px; height: 30px; object-fit: contain;">
@@ -169,12 +169,12 @@
         <!-- Bottom Section -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
             <div style="color: #808080; font-size: 13px;">
-                <p style="margin: 0 0 4px 0;">Design & Developed by <a href="https://pixelstudios.in/" style=" text-decoration:none; transition: color 0.3s;"onmouseover="this.style.color='#ecd608'"onmouseout="this.style.color='#ffffff'">Pixel Studios.</a></p>
+                <p style="margin: 0 0 4px 0;">Design & Developed by <a href="https://pixelstudios.in/" style=" color: #ffffff; text-decoration:none; transition: color 0.3s;"onmouseover="this.style.color='#ecd608'"onmouseout="this.style.color='#ffffff'">Pixel Studios.</a></p>
                 <p style="margin: 0;">©2025 SIP Academy India Pvt. Ltd. | All rights reserved.</p>
             </div>
             <div>
-                <a href="https://sipabacus.com/in/privacy-policy" style="color: #b0b0b0; text-decoration: none; font-size: 13px; transition: color 0.3s;"
-                   onmouseover="this.style.color='#dc2626'" onmouseout="this.style.color='#b0b0b0'">
+                <a href="https://sipabacus.com/in/privacy-policy" style=" color: #ffffffff; text-decoration: none; font-size: 13px; transition: color 0.3s;"
+                   onmouseover="this.style.color='#ecd608'" onmouseout="this.style.color='#ffffffff'">
                     Privacy Policy
                 </a>
             </div>
