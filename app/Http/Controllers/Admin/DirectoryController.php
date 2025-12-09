@@ -220,11 +220,8 @@ class DirectoryController extends Controller
                 return $c->sender_id == $id ? $c->receiver_id : $c->sender_id;
             })->values();
 
-            $orderIds = $connectedAlumniIds->implode(',');
-
             $query = Alumnis::whereIn('id', $connectedAlumniIds)
-                ->with(['city', 'occupation'])
-                ->orderByRaw("FIELD(id, $orderIds)");
+                ->with(['city', 'occupation']);
 
             if ($request->filled('batch')) {
                 $batches = is_array($request->batch) ? $request->batch : [$request->batch];
