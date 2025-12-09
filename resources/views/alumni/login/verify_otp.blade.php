@@ -107,15 +107,143 @@
                 gap: 8px;
             }
         }
+
+        /* Page Layout - Make scrollable */
+        html {
+            height: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100%;
+            height: auto;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        #kt_app_root {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+            margin: auto auto;
+        }
+
+        .flex-grow-1 {
+            flex: 1 0 auto;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        footer {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        /* Responsive Styles for OTP Page */
+        /* Tablet */
+        @media (max-width: 991px) {
+            .mt-10 {
+                padding-top: 30px !important;
+            }
+
+            .mt-10 img {
+                width: 350px !important;
+            }
+
+            .log {
+                width: 90% !important;
+                max-width: 450px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 767px) {
+            .mt-10 {
+                padding-top: 20px !important;
+            }
+
+            .mt-10 img {
+                width: 280px !important;
+            }
+
+            .log {
+                width: calc(100% - 32px) !important;
+                max-width: 450px !important;
+                margin: 0 16px !important;
+                padding: 24px !important;
+            }
+
+            .w-450px {
+                width: 100% !important;
+            }
+
+            .back-btn {
+                font-size: 14px !important;
+            }
+
+            h3 {
+                font-size: 20px !important;
+            }
+
+            p {
+                font-size: 14px !important;
+            }
+        }
+
+        /* Small mobile */
+        @media (max-width: 480px) {
+            .mt-10 {
+                padding-top: 15px !important;
+            }
+
+            .mt-10 img {
+                width: 240px !important;
+            }
+
+            .log {
+                width: calc(100% - 24px) !important;
+                max-width: 450px !important;
+                margin: 0 12px !important;
+                padding: 20px 16px !important;
+            }
+
+            h3 {
+                font-size: 18px !important;
+            }
+
+            p {
+                font-size: 13px !important;
+            }
+
+            button[type="submit"] {
+                font-size: 14px !important;
+                padding: 12px !important;
+            }
+
+            .resend-btn {
+                font-size: 13px !important;
+            }
+        }
     </style>
     @show
 </head>
 
 <body id="kt_body" class="app-blank app-blank bgi-size-cover bgi-position-center bgi-no-repeat" style="background-color:#f8f8f8;">
 
-    <div class="d-flex flex-column flex-root min-vh-100" id="kt_app_root">
-        <div class="flex-grow-1 d-flex justify-content-center align-items-center">
-            <div class="bg-body d-flex flex-column align-items-center rounded-4 w-450px p-6 log">
+    <div class="d-flex flex-column flex-root" id="kt_app_root">
+        <div class="flex-grow-1 mb-10" style="margin-bottom: 0;">
+            <div class="mt-10">
+                <img src="{{ asset('images/logo/logo.png') }}" alt="logo" style="width:380px; height:auto;" class="d-block mx-auto">
+            </div>
+            <div class="d-flex justify-content-center">
+                <div class="bg-body d-flex flex-column align-items-center rounded-4 w-450px p-6 log">
                 <div class="w-100" style="max-width:450px;">
 
                     <a href="{{ url('/') }}" class="back-btn">
@@ -158,7 +286,9 @@
                 </div>
             </div>
         </div>
+        </div>
     </div>
+    @include('alumni.login.footer')
 
     @section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

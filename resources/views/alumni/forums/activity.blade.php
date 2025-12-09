@@ -83,19 +83,40 @@
             font-size: 14px !important;
         }
 
-        /* Tabs - horizontal scroll */
-        .tab-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            display: flex;
-            gap: 8px;
+        /* Tabs and search row - stack vertically */
+        div[style*="display: flex"][style*="justify-content: space-between"][style*="gap: 20px"][style*="margin-bottom: 20px"] {
+            flex-direction: column !important;
+            gap: 12px !important;
         }
 
-        .tab-button {
-            padding: 8px 16px !important;
-            font-size: 12px !important;
-            white-space: nowrap;
-            flex-shrink: 0;
+        /* Tabs container */
+        div[style*="display: flex"][style*="gap: 0"][style*="background: #f3f4f6"] {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Individual tab buttons */
+        #activePostsTab,
+        #postStatusTab,
+        #archiveTab {
+            padding: 10px 24px !important;
+            font-size: 13px !important;
+        }
+
+        /* Search bar - full width */
+        div[style*="flex: 0 0 350px"] {
+            flex: 1 1 100% !important;
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        div[style*="flex: 0 0 350px"] > div {
+            width: 100% !important;
+        }
+
+        #searchInput {
+            width: 100% !important;
         }
 
         .post-item {
@@ -138,7 +159,7 @@
 
         /* Stats cards - 1 column on mobile */
         #statsCardsContainer > div {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: repeat(2, 1fr) !important;
             gap: 10px !important;
         }
 
@@ -158,15 +179,53 @@
             font-size: 13px !important;
         }
 
-        /* Tabs - horizontal scroll */
-        .tab-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
+        /* Tabs and search row */
+        div[style*="display: flex"][style*="justify-content: space-between"][style*="gap: 20px"][style*="margin-bottom: 20px"] {
+            flex-direction: column !important;
+            gap: 10px !important;
         }
 
-        .tab-button {
-            padding: 6px 14px !important;
-            font-size: 11px !important;
+        /* Tabs container - horizontal scroll */
+        div[style*="display: flex"][style*="gap: 0"][style*="background: #f3f4f6"] {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        div[style*="display: flex"][style*="gap: 0"][style*="background: #f3f4f6"]::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        div[style*="display: flex"][style*="gap: 0"][style*="background: #f3f4f6"]::-webkit-scrollbar-thumb {
+            background: #dc2626;
+            border-radius: 4px;
+        }
+
+        /* Individual tab buttons - smaller on mobile */
+        #activePostsTab,
+        #postStatusTab,
+        #archiveTab {
+            padding: 8px 16px !important;
+            font-size: 12px !important;
+            flex-shrink: 0;
+        }
+
+        /* Search bar - full width */
+        div[style*="flex: 0 0 350px"] {
+            flex: 1 1 100% !important;
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        div[style*="flex: 0 0 350px"] > div {
+            width: 100% !important;
+        }
+
+        #searchInput {
+            width: 100% !important;
+            font-size: 13px !important;
+            padding: 9px 16px 9px 40px !important;
         }
 
         .post-item {
