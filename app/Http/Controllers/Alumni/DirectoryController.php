@@ -346,6 +346,7 @@ class DirectoryController extends Controller
                 $existing->update([ 'sender_id' => $senderId, 'receiver_id' => $receiverId,'status' => 'pending']);
                 if ($receiver->notify_post_comments === 1) {
                     Mail::to($receiver->email)->queue(new AlumniShareContactMail($data));
+                    Log::info('Reshared Mail Sent');
                 }
                 return returnSuccess(true, 'Reshare request sent successfully!');
             }
@@ -362,6 +363,7 @@ class DirectoryController extends Controller
 
             if ($receiver->notify_post_comments === 1) {
                 Mail::to($receiver->email)->queue(new AlumniShareContactMail($data));
+                Log::info('Shared Mail Sent');
             }
 
             return returnSuccess(true, 'Shared request sent successfully!');

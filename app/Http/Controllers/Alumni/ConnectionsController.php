@@ -228,6 +228,7 @@ class ConnectionsController extends Controller
                     'support_email' => env('SUPPORT_EMAIL'),
                 ];
                 Mail::to($sender->email)->queue(new AlumniAcceptRequestMail($data));
+                Log::info('Accepted Mail Sent');
             }
             $message = ($sender->full_name . ' invite accepted.');
             return response()->json(['success' => true, 'message' => $message]);
@@ -249,6 +250,7 @@ class ConnectionsController extends Controller
                     'support_email' => env('SUPPORT_EMAIL'),
                 ];
                 Mail::to($sender->email)->queue(new AlumniRejectRequestMail($data));
+                Log::info('Rejected Mail Sent');
             }
             $message = ($sender->full_name . ' invite rejected.');
             return response()->json(['success' => true, 'message' => $message]);
