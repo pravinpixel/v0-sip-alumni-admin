@@ -302,7 +302,9 @@ class ForumsController extends Controller
             $query = $post->replies()
                 ->with('alumni')
                 ->whereNull('parent_reply_id')
-                ->withCount('childReplies')
+                ->withCount(['childReplies' => function($query) {
+                    $query->withCount('childReplies');
+                }])
                 ->orderBy('created_at', 'desc');
 
             return DataTables::of($query)
@@ -341,11 +343,22 @@ class ForumsController extends Controller
                         ->format('M j, Y, h:i A');
                 })
                 ->addColumn('threads', function ($row) {
-                    $repliesCount = $row->child_replies_count ?? 0;
-                    if ($repliesCount > 0) {
+                    // Calculate total replies including nested ones
+                    $directRepliesCount = $row->child_replies_count ?? 0;
+                    $totalRepliesCount = $directRepliesCount;
+                    
+                    // Add nested replies count
+                    if ($directRepliesCount > 0) {
+                        $nestedCount = ForumReplies::whereIn('parent_reply_id', 
+                            ForumReplies::where('parent_reply_id', $row->id)->pluck('id')
+                        )->count();
+                        $totalRepliesCount += $nestedCount;
+                    }
+                    
+                    if ($totalRepliesCount > 0) {
                         return '<button onclick="toggleReplies(' . $row->id . ')" class="btn btn-sm" style="display:flex;align-items:center;gap:6px;background:#f3f4f6;border:1px solid #e5e7eb;padding:6px 12px;border-radius:6px;cursor:pointer;">
                             <i class="fas fa-chevron-right" id="icon-' . $row->id . '" style="color:#6b7280;font-size:12px;"></i>
-                            <span style="font-weight:600;color:#374151;">' . $repliesCount . ' ' . ($repliesCount == 1 ? 'Reply' : 'Replies') . '</span>
+                            <span style="font-weight:600;color:#374151;">' . $totalRepliesCount . ' ' . ($totalRepliesCount == 1 ? 'Reply' : 'Replies') . '</span>
                         </button>';
                     }
                     return '<span style="color:#9ca3af;font-size:13px;">No replies</span>';
@@ -367,11 +380,23 @@ class ForumsController extends Controller
     public function getCommentReplies($commentId)
     {
         try {
-            $replies = ForumReplies::with('alumni')
+            $replies = ForumReplies::with(['alumni', 'childReplies.alumni'])
                 ->where('parent_reply_id', $commentId)
                 ->orderBy('created_at', 'asc')
                 ->get()
                 ->map(function($reply) {
+                    $childReplies = $reply->childReplies->map(function($childReply) {
+                        return [
+                            'id' => $childReply->id,
+                            'message' => $childReply->message,
+                            'alumni_name' => $childReply->alumni?->full_name ?? '',
+                            'alumni_image' => $childReply->alumni?->image_url ?? asset('images/avatar/blank.png'),
+                            'created_at' => \Carbon\Carbon::parse($childReply->created_at)
+                                ->setTimezone('Asia/Kolkata')
+                                ->format('M j, Y, h:i A')
+                        ];
+                    });
+
                     return [
                         'id' => $reply->id,
                         'message' => $reply->message,
@@ -379,7 +404,9 @@ class ForumsController extends Controller
                         'alumni_image' => $reply->alumni?->image_url ?? asset('images/avatar/blank.png'),
                         'created_at' => \Carbon\Carbon::parse($reply->created_at)
                             ->setTimezone('Asia/Kolkata')
-                            ->format('M j, Y, h:i A')
+                            ->format('M j, Y, h:i A'),
+                        'child_replies' => $childReplies,
+                        'child_replies_count' => $childReplies->count()
                     ];
                 });
             

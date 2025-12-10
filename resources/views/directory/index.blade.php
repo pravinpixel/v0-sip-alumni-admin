@@ -392,6 +392,7 @@
                 cities: [],
                 occupations: []
             };
+            $('.filter-dropdown-menu input[type="checkbox"]').prop('checked', false);
             updateFilterDisplay();
             table.ajax.reload();
         });

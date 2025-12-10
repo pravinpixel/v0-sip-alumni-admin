@@ -181,7 +181,7 @@ class AlumniController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'OTP resent successfully',
-                // 'otp' => $otp 
+                'otp' => $otp 
             ], 200);
         } else {
             // First time send OTP
@@ -195,7 +195,7 @@ class AlumniController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'OTP sent successfully',
-                // 'otp' => $otp
+                'otp' => $otp
             ], 200);
         }
     }

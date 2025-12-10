@@ -284,7 +284,7 @@
                 success: function(response) {
                     if (response.success && response.replies.length > 0) {
                         const parentRow = $('button[onclick="toggleReplies(' + commentId + ')"]').closest('tr');
-                        let repliesHtml = '<tr id="replies-' + commentId + '" class="replies-row"><td colspan="6" style="background:#f9fafb;padding:0;"><div style="padding:20px 20px 20px 60px;"><div style="background:white;border-left:3px solid #dc2626;padding:15px;border-radius:6px;"><h4 style="font-size:14px;font-weight:600;color:#374151;margin-bottom:15px;">Replies to this comment:</h4>';
+                        let repliesHtml = '<tr id="replies-' + commentId + '" class="replies-row"><td colspan="6" style="background:#f9fafb;padding:0;"><div style="padding:20px 20px 20px 60px;"><div style="background:white;border-left:1px solid #dc2626;padding:15px;border-radius:6px;"><h4 style="font-size:14px;font-weight:600;color:#374151;margin-bottom:15px;">Replies to this comment:</h4>';
                         
                         response.replies.forEach(reply => {
                             const img = reply.alumni_image || "{{ asset('images/avatar/blank.png') }}";
@@ -304,6 +304,33 @@
                                     </div>
                                 </div>
                             `;
+                            
+                            // Add nested child replies if they exist
+                            if (reply.child_replies && reply.child_replies.length > 0) {
+                                repliesHtml += `<div style="margin-left:44px;border-left:2px solid #e5e7eb;padding-left:16px;">`;
+                                
+                                reply.child_replies.forEach(childReply => {
+                                    const childImg = childReply.alumni_image || "{{ asset('images/avatar/blank.png') }}";
+                                    const childName = childReply.alumni_name || 'Unknown';
+                                    const childMessage = childReply.message || '';
+                                    const childTime = childReply.created_at || '';
+                                    
+                                    repliesHtml += `
+                                        <div style="display:flex;gap:10px;padding:10px;border-bottom:1px solid #f3f4f6;background:#f9fafb;border-radius:4px;margin-bottom:8px;">
+                                            <img src="${childImg}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+                                            <div style="flex:1;">
+                                                <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:4px;">
+                                                    <span style="font-weight:600;color:#111827;font-size:12px;">${childName}</span>
+                                                    <span style="color:#6b7280;font-size:10px;">${childTime}</span>
+                                                </div>
+                                                <p style="color:#374151;font-size:12px;margin:0;line-height:1.4;">${childMessage}</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                                
+                                repliesHtml += `</div>`;
+                            }
                         });
                         
                         repliesHtml += '</div></div></td></tr>';
@@ -312,7 +339,7 @@
                     }
                 },
                 error: function(xhr) {
-                    alert('Error loading replies');
+                    showToast('Error loading replies', 'error');
                 }
             });
         }
@@ -332,7 +359,7 @@
                     loadPostDetails(); 
                 },
                 error: function(xhr) {
-                    showToast('Error deleting comment');
+                    showToast('Error deleting comment', 'error');
                 }
             });
         });
