@@ -390,6 +390,12 @@
 
     {{-- Include Create/Edit Post Modal --}}
     @include('alumni.modals.create-post-modal', ['alumni' => session('alumni')])
+    
+    {{-- Include View Thread Modal --}}
+    @include('alumni.modals.view-thread-modal')
+    
+    {{-- Include common thread modal JavaScript --}}
+    <script src="{{ asset('js/thread-modal-common.js') }}"></script>
 
     <style>
         .stat-card:hover {
@@ -422,6 +428,16 @@
     </style>
 
     <script>
+        // Configuration for common thread modal
+        window.viewThreadRoute = "{{ route('alumni.view.thread', ':id') }}";
+        window.createReplyRoute = "{{ route('alumni.create.reply') }}";
+        window.currentAlumni = @json(session('alumni'));
+        window.reloadPageData = function() {
+            if (typeof loadActivityData === 'function') {
+                loadActivityData();
+            }
+        };
+        
         // Global variables to store data
         let allUserPosts = [];
         let currentFilter = 'activePosts';
@@ -927,45 +943,14 @@
         }
 
         function openPostModal(postId) {
-            const modal = document.getElementById('postDetailModal');
-            const modalContent = document.getElementById('modalContent');
+            // Determine if replies should be enabled based on current tab
+            const canReply = currentFilter === 'activePosts';
             
-            // Show modal
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            // Set reply permissions for common thread modal
+            window.canReplyToComments = canReply;
             
-            // Show loading state
-            modalContent.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px;">
-                    <i class="fas fa-spinner fa-spin" style="font-size: 48px; color: #dc2626; margin-bottom: 20px;"></i>
-                    <p style="font-size: 16px; color: #6b7280;">Loading post details...</p>
-                </div>
-            `;
-            
-            // Fetch post details
-            fetch("{{ route('alumni.view.thread', ':id') }}".replace(':id', postId))
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.data && data.data.post) {
-                        renderPostDetail(data.data.post, data.data.replies || []);
-                    } else {
-                        modalContent.innerHTML = `
-                            <div style="text-align: center; padding: 60px 20px;">
-                                <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #dc2626; margin-bottom: 20px;"></i>
-                                <p style="font-size: 16px; color: #6b7280;">Failed to load post details</p>
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading post:', error);
-                    modalContent.innerHTML = `
-                        <div style="text-align: center; padding: 60px 20px;">
-                            <i class="fas fa-exclamation-circle" style="font-size: 48px; color: #dc2626; margin-bottom: 20px;"></i>
-                            <p style="font-size: 16px; color: #6b7280;">Error loading post details</p>
-                        </div>
-                    `;
-                });
+            // Use the view-thread-modal instead of postDetailModal
+            openThreadModal(postId, canReply);
         }
 
         function closePostModal() {
@@ -973,6 +958,10 @@
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
+
+        // Thread modal functions are now in common file: thread-modal-common.js
+
+
 
         function renderPostDetail(post, replies) {
             const modalContent = document.getElementById('modalContent');
