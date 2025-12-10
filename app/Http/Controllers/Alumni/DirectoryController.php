@@ -48,10 +48,10 @@ class DirectoryController extends Controller
                 ->whereNotNull('city_id')
                 ->get()
                 ->map(function ($alumni) {
-                    if ($alumni->city && $alumni->city->state) {
+                    if ($alumni->city && $alumni->city?->state) {
                         return [
-                            'id' => $alumni->city_id,
-                            'name' => $alumni->city->name . ', ' . $alumni->city->state->name
+                            'id' => $alumni->city?->state?->id,
+                            'name' => $alumni->city?->state?->name
                         ];
                     }
                     return null;
@@ -111,10 +111,9 @@ class DirectoryController extends Controller
                 ->where('id', '!=', $alumniId)
                 ->where('status', 'active');
 
-            // Apply filters
             if ($request->filled('batch_years') && $request->batch_years != '') {
                 $batchYears = is_array($request->batch_years) ? $request->batch_years : explode(',', $request->batch_years);
-                $batchYears = array_filter($batchYears); // Remove empty values
+                $batchYears = array_filter($batchYears); 
                 if (!empty($batchYears)) {
                     $query->whereIn('year_of_completion', $batchYears);
                 }
@@ -122,9 +121,11 @@ class DirectoryController extends Controller
 
             if ($request->filled('locations') && $request->locations != '') {
                 $locations = is_array($request->locations) ? $request->locations : explode(',', $request->locations);
-                $locations = array_filter($locations); // Remove empty values
+                $locations = array_filter($locations);
                 if (!empty($locations)) {
-                    $query->whereIn('city_id', $locations);
+                    $query->whereHas('city', function ($q) use ($locations) {
+                        $q->whereIn('state_id', $locations);
+                    });
                 }
             }
 

@@ -63,24 +63,24 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <label>Contact Number</label>
-                        <button type="button" id="editCancelMobileBtn" class="btn-edit-cancel-mobile" onclick="toggleMobileEdit()" 
-                                    style="background: none; border: none; color: #dc2626; font-size: 11px; font-weight: 600; cursor: pointer; padding: 0 8px; text-decoration: underline;">
-                                Edit
-                            </button>
+                        <button type="button" id="editCancelMobileBtn" class="btn-edit-cancel-mobile" onclick="toggleMobileEdit()"
+                            style="background: none; border: none; color: #dc2626; font-size: 11px; font-weight: 600; cursor: pointer; padding: 0 8px; text-decoration: underline;">
+                            Edit
+                        </button>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: flex-start;">
                         <div style="flex: 1;">
-                            <input type="text" class="form-input" data-field="mobile_number" id="mobileNumberInput" 
-                                   value="{{ $alumni->mobile_number ?? '' }}" 
-                                   maxlength="10" 
-                                   placeholder="Enter 10 digit mobile number"
-                                   oninput="validateMobileNumber(this)"
-                                   readonly>
+                            <input type="text" class="form-input" data-field="mobile_number" id="mobileNumberInput"
+                                value="{{ $alumni->mobile_number ?? '' }}"
+                                maxlength="10"
+                                placeholder="Enter 10 digit mobile number"
+                                oninput="validateMobileNumber(this)"
+                                readonly>
                             <small class="error-message" style="color:red;font-size:12px;display:block;margin-top:4px;"></small>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">  
-                            <button type="button" id="verifyMobileBtn" class="btn-verify" disabled onclick="sendOTP()" 
-                                    style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.5; white-space: nowrap;">
+                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                            <button type="button" id="verifyMobileBtn" class="btn-verify" disabled onclick="sendOTP()"
+                                style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.5; white-space: nowrap;">
                                 Verify
                             </button>
                         </div>
@@ -88,11 +88,11 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     <div id="otpSection" style="display: none; margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;">
                         <label style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 8px; display: block;">Enter OTP</label>
                         <div style="display: flex; gap: 10px;">
-                            <input type="text" id="otpInput" class="form-input" maxlength="6" placeholder="Enter 6 digit OTP" 
-                                   oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
-                                   style="flex: 1;">
-                            <button type="button" onclick="verifyOTP()" class="btn-verify" 
-                                    style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                            <input type="text" id="otpInput" class="form-input" maxlength="6" placeholder="Enter 6 digit OTP"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                style="flex: 1;">
+                            <button type="button" onclick="verifyOTP()" class="btn-verify"
+                                style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;">
                                 Verify OTP
                             </button>
                         </div>
@@ -401,18 +401,18 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         if (modal) {
             modal.classList.remove('open');
         }
-        
+
         // Reset mobile input to readonly
         const mobileInput = document.getElementById('mobileNumberInput');
         mobileInput.readOnly = true;
         mobileInput.disabled = false;
         mobileInput.value = originalMobileNumber;
-        
+
         // Reset OTP section
         document.getElementById('otpSection').style.display = 'none';
         document.getElementById('otpInput').value = '';
         if (otpTimer) clearInterval(otpTimer);
-        
+
         // Reset edit/cancel button
         const editCancelBtn = document.getElementById('editCancelMobileBtn');
         const verifyBtn = document.getElementById('verifyMobileBtn');
@@ -425,13 +425,13 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         verifyBtn.disabled = true;
         verifyBtn.style.opacity = '0.5';
         verifyBtn.style.cursor = 'not-allowed';
-        
+
         // Reset save button
         const saveBtn = document.querySelector('.btn-save');
         saveBtn.disabled = false;
         saveBtn.style.opacity = '1';
         saveBtn.style.cursor = 'pointer';
-        
+
         // Reset verification flag
         isMobileVerified = false;
         selectedFile = null;
@@ -444,17 +444,17 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         const editCancelBtn = document.getElementById('editCancelMobileBtn');
         const verifyBtn = document.getElementById('verifyMobileBtn');
         const saveBtn = document.querySelector('.btn-save');
-        
+
         if (mobileInput.readOnly) {
             // Enable editing mode
             mobileInput.readOnly = false;
             mobileInput.focus();
             editCancelBtn.textContent = 'Cancel';
             editCancelBtn.style.color = '#6b7280';
-            
+
             // Reset verification state
             isMobileVerified = false;
-            
+
             // Disable save button until verified
             saveBtn.disabled = true;
             saveBtn.style.cursor = 'not-allowed';
@@ -462,30 +462,30 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         } else {
             // Cancel editing mode
             mobileInput.readOnly = true;
-            mobileInput.disabled = false; 
+            mobileInput.disabled = false;
             mobileInput.value = originalMobileNumber;
             editCancelBtn.textContent = 'Edit';
             editCancelBtn.style.color = '#dc2626';
-            
+
             // Reset verify button
             verifyBtn.disabled = true;
             verifyBtn.style.cursor = 'not-allowed';
             verifyBtn.style.opacity = '0.5';
             verifyBtn.textContent = 'Verify';
             verifyBtn.style.background = '#dc2626';
-            
+
             // Hide OTP section
             document.getElementById('otpSection').style.display = 'none';
             document.getElementById('otpInput').value = '';
             if (otpTimer) clearInterval(otpTimer);
-            
+
             // Enable save button
             saveBtn.disabled = false;
             saveBtn.style.cursor = 'pointer';
             saveBtn.style.opacity = '1';
-            
+
             isMobileVerified = true;
-            
+
             const errorEl = mobileInput.parentElement.querySelector('.error-message');
             if (errorEl) {
                 errorEl.textContent = '';
@@ -497,11 +497,11 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     function validateMobileNumber(input) {
         // Allow only numbers
         input.value = input.value.replace(/[^0-9]/g, '');
-        
+
         const mobileNumber = input.value;
         const verifyBtn = document.getElementById('verifyMobileBtn');
         const saveBtn = document.querySelector('.btn-save');
-        
+
         // Check if number changed and is 10 digits
         if (mobileNumber.length === 10 && mobileNumber !== originalMobileNumber) {
             verifyBtn.disabled = false;
@@ -510,7 +510,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             verifyBtn.style.background = '#dc2626';
             verifyBtn.textContent = 'Verify';
             isMobileVerified = false;
-            
+
             // Disable save button until verified
             saveBtn.disabled = true;
             saveBtn.style.cursor = 'not-allowed';
@@ -521,7 +521,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             verifyBtn.style.cursor = 'not-allowed';
             verifyBtn.style.opacity = '0.5';
             isMobileVerified = true;
-            
+
             // Enable save button
             saveBtn.disabled = false;
             saveBtn.style.cursor = 'pointer';
@@ -536,7 +536,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     // Send OTP
     function sendOTP() {
         const mobileNumber = document.getElementById('mobileNumberInput').value;
-        
+
         if (mobileNumber.length !== 10) {
             showToast('Please enter a valid 10 digit mobile number', 'error');
             return;
@@ -547,34 +547,37 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         verifyBtn.disabled = true;
 
         fetch('{{ route("send.otp") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ number: mobileNumber, is_login: 0 })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                showToast(data.message || 'OTP sent successfully');
-                document.getElementById('otpSection').style.display = 'block';
-                document.getElementById('mobileNumberInput').disabled = true;
-                startOTPTimer();
-            } else {
-                showToast(data.message || 'Failed to send OTP', 'error');
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    number: mobileNumber,
+                    is_login: 0
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message || 'OTP sent successfully');
+                    document.getElementById('otpSection').style.display = 'block';
+                    document.getElementById('mobileNumberInput').disabled = true;
+                    startOTPTimer();
+                } else {
+                    showToast(data.message || 'Failed to send OTP', 'error');
+                    verifyBtn.disabled = false;
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                showToast('Failed to send OTP', 'error');
                 verifyBtn.disabled = false;
-            }
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            showToast('Failed to send OTP', 'error');
-            verifyBtn.disabled = false;
-        })
-        .finally(() => {
-            verifyBtn.textContent = 'Verify';
-        });
+            })
+            .finally(() => {
+                verifyBtn.textContent = 'Verify';
+            });
     }
 
     // Verify OTP
@@ -588,58 +591,58 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         }
 
         fetch('{{ route("alumni.edit.verify.otp") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({ 
-                mobile: mobileNumber,
-                otp: otp 
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    mobile: mobileNumber,
+                    otp: otp
+                })
             })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Mobile number verified successfully');
-                isMobileVerified = true;
-                document.getElementById('otpSection').style.display = 'none';
-                
-                const verifyBtn = document.getElementById('verifyMobileBtn');
-                verifyBtn.textContent = 'Verified ✓';
-                verifyBtn.style.background = '#10b981';
-                verifyBtn.disabled = true;
-                
-                // Enable save button after verification
-                const saveBtn = document.querySelector('.btn-save');
-                saveBtn.disabled = false;
-                saveBtn.style.cursor = 'pointer';
-                saveBtn.style.opacity = '1';
-                
-                if (otpTimer) clearInterval(otpTimer);
-            } else {
-                showToast(data.message || 'Invalid OTP', 'error');
-            }
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            showToast('Failed to verify OTP', 'error');
-        });
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Mobile number verified successfully');
+                    isMobileVerified = true;
+                    document.getElementById('otpSection').style.display = 'none';
+
+                    const verifyBtn = document.getElementById('verifyMobileBtn');
+                    verifyBtn.textContent = 'Verified ✓';
+                    verifyBtn.style.background = '#10b981';
+                    verifyBtn.disabled = true;
+
+                    // Enable save button after verification
+                    const saveBtn = document.querySelector('.btn-save');
+                    saveBtn.disabled = false;
+                    saveBtn.style.cursor = 'pointer';
+                    saveBtn.style.opacity = '1';
+
+                    if (otpTimer) clearInterval(otpTimer);
+                } else {
+                    showToast(data.message || 'Invalid OTP', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                showToast('Failed to verify OTP', 'error');
+            });
     }
 
     // OTP Timer
     function startOTPTimer() {
-        let timeLeft = 30; 
+        let timeLeft = 30;
         const timerEl = document.getElementById('otpTimer');
-        
+
         if (otpTimer) clearInterval(otpTimer);
-        
+
         otpTimer = setInterval(() => {
             timeLeft--;
             const seconds = timeLeft;
             timerEl.textContent = `OTP expires in ${seconds} seconds`;
-            
+
             if (timeLeft <= 0) {
                 clearInterval(otpTimer);
                 timerEl.textContent = 'OTP expired. Please request a new one.';
@@ -658,6 +661,16 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+                const maxSize = 2 * 1024 * 1024;
+                if (!allowedTypes.includes(file.type)) {
+                    showToast('Please select a valid image file', 'error');
+                    return;
+                }
+                if (file.size > maxSize) {
+                    showToast('Maximum image size allowed is 2 MB', 'error');
+                    return;
+                }
                 selectedFile = file;
                 const reader = new FileReader();
                 reader.onload = function(event) {
@@ -687,13 +700,13 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     function saveProfile() {
         const form = document.getElementById('editProfileForm');
         const mobileNumber = document.getElementById('mobileNumberInput').value;
-        
+
         // Check if mobile number changed but not verified
         if (mobileNumber !== originalMobileNumber && !isMobileVerified) {
             showToast('Please verify your new mobile number before saving', 'error');
             return;
         }
-        
+
         const formData = new FormData();
 
         // Clear old error messages
@@ -746,8 +759,8 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                                     errorEl.textContent = messages[0];
                                 }
                             }
-                            if(key === 'image') {
-                                   showToast(messages[0], 'error'); 
+                            if (key === 'image') {
+                                showToast(messages[0], 'error');
                             }
                         }
                     } else {
@@ -775,5 +788,4 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 saveBtn.disabled = false;
             });
     }
-    
 </script>

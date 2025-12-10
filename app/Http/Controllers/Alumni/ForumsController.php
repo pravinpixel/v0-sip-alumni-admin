@@ -564,7 +564,7 @@ class ForumsController extends Controller
                 'activePosts' => $userPosts->where('status', 'approved')->count(),
                 'pendingPosts' => $userPosts->where('status', 'pending')->count(),
                 'rejectedPosts' => $userPosts->where('status', 'rejected')->count(),
-                'archivedPosts' => $userPosts->count(),
+                'archivedPosts' => $userPosts->whereIn('status', ['removed_by_admin', 'post_deleted'])->count(),
                 'totalLikes' => $userPosts->where('status', 'approved')->sum('likes_count'),
                 'totalViews' => $userPosts->where('status', 'approved')->sum('views_count'),
                 'totalComments' => $userPosts->where('status', 'approved')->sum('reply_count'),
