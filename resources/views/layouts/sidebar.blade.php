@@ -97,7 +97,7 @@
 
                 @can('user.view')
                     <div class="menu-item">
-                        <a class="menu-link {{ (request()->is('admin/user') && !request()->is('admin/user/*')) ? 'active' : '' }}"
+                        <a class="menu-link {{ (request()->is('admin/user*')) ? 'active' : '' }}"
                             href="{{ url('admin/user') }}">
                             <i class="custom_icon fas fa-user"></i>
                             <span class="menu-title"><b>User</b></span>

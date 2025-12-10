@@ -169,7 +169,7 @@
                                 <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e7eb; transition: 0.3s; border-radius: 24px;"></span>
                                 <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%;"></span>
                             </label>
-                            <span id="status-label" style="font-size: 0.875rem; font-weight: 600; color: {{ isset($user) && $user->status == 1 ? '#10b981' : (!isset($user) ? '#10b981' : '#6b7280') }}; transition: color 0.3s;">
+                            <span id="status-label" style="font-size: 0.875rem; font-weight: 600; color: {{ isset($user) && $user->status == 1 ? '#16a34a' : (!isset($user) ? '#16a34a' : '#dc2626') }}; transition: color 0.3s;">
                                 {{ isset($user) && $user->status == 1 ? 'Active' : (!isset($user) ? 'Active' : 'Inactive') }}
                             </span>
                         </div>
@@ -187,7 +187,7 @@
                         Cancel
                     </button>
                     <button type="button" id="dynamic-submit"
-                        style="padding: 0.75rem 1.5rem; background: #dc2626; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                        style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-save"></i>
                         @if(isset($user))
                             Update User
@@ -207,7 +207,10 @@
     <style>
         /* Toggle Switch Styles */
         #status-toggle:checked + span {
-            background-color: #10b981;
+            background-color: #16a34a !important;
+        }
+        #status-toggle + span {
+            background-color: #dc2626 !important;
         }
         #status-toggle:checked + span + span {
             transform: translateX(24px);
@@ -236,10 +239,10 @@
             $('#status-toggle').on('change', function() {
                 if ($(this).is(':checked')) {
                     $('#status').val('1');
-                    $('#status-label').text('Active').css('color', '#10b981');
+                    $('#status-label').text('Active').css('color', '#16a34a');
                 } else {
                     $('#status').val('0');
-                    $('#status-label').text('Inactive').css('color', '#6b7280');
+                    $('#status-label').text('Inactive').css('color', '#dc2626');
                 }
             });
 

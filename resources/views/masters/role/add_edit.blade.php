@@ -224,6 +224,28 @@
                 </div>
             </div>
 
+                    <div>
+                        <label
+                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem; margin-top: 3rem;">
+                            Status
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem;">
+                            <label style="position: relative; display: inline-block; width: 48px; height: 24px;">
+                                <input type="checkbox" id="status-toggle" 
+                                    {{ isset($role) && $role->status == 1 ? 'checked' : (!isset($role) ? 'checked' : '') }}
+                                    style="opacity: 0; width: 0; height: 0;">
+                                <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e7eb; transition: 0.3s; border-radius: 24px;"></span>
+                                <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%;"></span>
+                            </label>
+                            <span id="status-label" style="font-size: 0.875rem; font-weight: 600; color: {{ isset($role) && $role->status == 1 ? '#16a34a' : (!isset($role) ? '#16a34a' : '#dc2626') }}; transition: color 0.3s;">
+                                {{ isset($role) && $role->status == 1 ? 'Active' : (!isset($role) ? 'Active' : 'Inactive') }}
+                            </span>
+                        </div>
+                        <input type="hidden" name="status" id="status" value="{{ isset($role) && $role->status == 1 ? '1' : (!isset($role) ? '1' : '0') }}">
+                        <span class="field-error" id="status-error"
+                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    </div>
+
             <!-- Action Buttons -->
             <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; margin-top: 2rem;">
                 <button type="button" onclick="window.location='{{ route('role.index') }}'" 
@@ -231,7 +253,7 @@
                     Cancel
                 </button>
                 <button type="button" id="dynamic-submit" 
-                    style="padding: 0.75rem 1.5rem; background: #dc2626; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                    style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-save"></i>
                     @if(isset($role))
                         Update Role
@@ -248,6 +270,18 @@
 
 @section('script')
 @parent
+<style>
+        /* Toggle Switch Styles */
+        #status-toggle:checked + span {
+            background-color: #16a34a !important;
+        }
+        #status-toggle + span {
+            background-color: #dc2626 !important;
+        }
+        #status-toggle:checked + span + span {
+            transform: translateX(24px);
+        }
+    </style>
 <script>
     $(document).ready(function() {
         $('#dynamic-submit').on('click', function(e) {
@@ -282,6 +316,19 @@
             const checkedInGroup = $(`.permission-${group}:checked`).length;
             $(this).prop('checked', totalInGroup === checkedInGroup && totalInGroup > 0);
         });
+        $('#status-toggle').on('change', function() {
+                if ($(this).is(':checked')) {
+                    $('#status').val('1');
+                    $('#status-label').text('Active').css('color', '#16a34a');
+                } else {
+                    $('#status').val('0');
+                    $('#status-label').text('Inactive').css('color', '#dc2626');
+                }
+            });
+
+            $('#dynamic-submit').on('click', function (e) {
+                saveUpdateUser(e);
+            });
     });
 
     function saveUpdateRole(event) {

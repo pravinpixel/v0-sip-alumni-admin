@@ -66,7 +66,7 @@
 
                     @can('user.create')
                         <button type="button" onclick="window.location='{{ route('user.create') }}'"
-                            style="padding: 0.75rem 1.5rem; background: #dc2626; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                            style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                             <i class="fas fa-plus"></i>
                             Create User
                         </button>
@@ -78,18 +78,16 @@
 
             <!-- Table Container -->
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;" id="kt_customers_table">
+                <table style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;" id="kt_customers_table">
                     <thead>
-                        <tr style="background: #dc2626; color: white;">
-                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">User ID</th>
-                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">User Name
-                            </th>
-                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Email ID
-                            </th>
-                            <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Role</th>
-                            <th style="padding: 1rem 3rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Status</th>
+                        <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
+                            <th style="padding: 15px; text-align: left;">User ID</th>
+                            <th style="padding: 15px; text-align: left;">User Name</th>
+                            <th style="padding: 15px; text-align: left;">Email ID</th>
+                            <th style="padding: 15px; text-align: left;">Role</th>
+                            <th style="padding: 15px; text-align: left;">Status</th>
                             @if(auth()->user()->can('user.edit') || auth()->user()->can('user.delete'))
-                                <th style="padding: 1rem; text-align: left; font-weight: 700; font-size: 0.875rem;">Actions</th>
+                                <th style="padding: 15px; text-align: left;">Actions</th>
                             @endif
                         </tr>
                     </thead>
@@ -101,7 +99,7 @@
                             </tr>
                         @else
                             @foreach($datas as $data)
-                                <tr style="border-bottom: 1px solid #f3f4f6;">
+                                <tr style="border-bottom: 1px solid #dedede;">
                                     <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">
                                         {{ $data->user_id }}</td>
                                     <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">{{$data->name}}</td>
@@ -160,11 +158,48 @@
                     </tbody>
                 </table>
             </div>
+            
+            <style>
+                /* Add padding to tbody cells */
+                #kt_customers_table tbody td {
+                    padding: 12px 15px;
+                    vertical-align: middle;
+                    box-sizing: border-box;
+                    border-bottom: 1px solid #dedede;
+                }
+            </style>
 
             <!-- Pagination -->
             <div style="margin-top: 1.5rem;">
-                <div id="paginationLinks">
-                    {{ $datas->links('pagination::bootstrap-4') }}
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div id="paginationInfo" style="color: #6b7280; font-size: 0.875rem;">
+                        Showing {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() ?? 0 }} of {{ $datas->total() }} users
+                    </div>
+                    <div id="paginationControls" style="display: flex; align-items: center; gap: 0.5rem;">
+                        @if ($datas->onFirstPage())
+                            <button disabled style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: #f9fafb; color: #9ca3af; border-radius: 0.375rem; font-size: 0.875rem; cursor: not-allowed;">
+                                ‹ Previous
+                            </button>
+                        @else
+                            <button onclick="goToPage({{ $datas->currentPage() - 1 }})" style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: white; color: #374151; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
+                                ‹ Previous
+                            </button>
+                        @endif
+                        
+                        <span style="margin: 0 1rem; font-weight: 500; color: #374151;">
+                            Page {{ $datas->currentPage() }} of {{ $datas->lastPage() }}
+                        </span>
+                        
+                        @if ($datas->hasMorePages())
+                            <button onclick="goToPage({{ $datas->currentPage() + 1 }})" style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: white; color: #374151; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
+                                Next ›
+                            </button>
+                        @else
+                            <button disabled style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: #f9fafb; color: #9ca3af; border-radius: 0.375rem; font-size: 0.875rem; cursor: not-allowed;">
+                                Next ›
+                            </button>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -215,11 +250,10 @@
                 }
             });
 
-            $(document).on('click', '#paginationLinks a', function (e) {
-                e.preventDefault();
-                var page = $(this).attr('href').split('page=')[1];
+            // Pagination function
+            window.goToPage = function(page) {
                 updateTableData(page);
-            });
+            };
 
             $(document).on('change', '[name="row-count-filter"]', function (e) {
                 if (eventListenersActive) {
@@ -273,7 +307,8 @@
                     success: function (response) {
                         console.log(response);
                         $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
-                        $('#paginationLinks').html($(response).find('#paginationLinks').html());
+                        $('#paginationInfo').html($(response).find('#paginationInfo').html());
+                        $('#paginationControls').html($(response).find('#paginationControls').html());
                     },
                     error: function () {
                         console.error('Error loading table data.');
