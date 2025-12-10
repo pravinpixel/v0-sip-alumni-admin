@@ -38,7 +38,7 @@ class DirectoryController extends Controller
                 ->whereNotNull('year_of_completion')
                 ->where('status', 'active')
                 ->distinct()
-                ->orderBy('year_of_completion', 'desc')
+                ->orderBy('year_of_completion', 'asc')
                 ->pluck('year_of_completion')
                 ->toArray();
 

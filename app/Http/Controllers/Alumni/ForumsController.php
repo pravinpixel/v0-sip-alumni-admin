@@ -388,7 +388,7 @@ class ForumsController extends Controller
             ])
                 ->where('forum_post_id', $id)
                 ->whereNull('parent_reply_id')
-                ->orderBy('created_at', 'ASC')
+                ->orderBy('created_at', 'desc')
                 ->get();
             
             // Add connection status for each reply

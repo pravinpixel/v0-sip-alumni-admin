@@ -1492,7 +1492,7 @@
                                     style="background: transparent; border: none; color: #2563eb; cursor: pointer; font-size: 13px; padding: 6px 0; font-weight: 600; transition: color 0.2s;"
                                     onmouseover="this.style.color='#1d4ed8'"
                                     onmouseout="this.style.color='#2563eb'">
-                                    View Thread ${reply.child_replies.length} <i class="fas fa-chevron-down"></i>
+                                    View Thread (${reply.child_replies.length}) <i class="fas fa-chevron-down"></i>
                                 </button>
                             ` : ''}
                         </div>
