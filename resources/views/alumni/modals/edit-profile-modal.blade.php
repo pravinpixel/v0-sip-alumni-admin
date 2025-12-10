@@ -421,7 +421,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             editCancelBtn.style.color = '#dc2626';
         }
         verifyBtn.textContent = 'Verify';
-        verifyBtn.style.background = '#dc2626';
         verifyBtn.disabled = true;
         verifyBtn.style.opacity = '0.5';
         verifyBtn.style.cursor = 'not-allowed';
@@ -436,6 +435,13 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         isMobileVerified = false;
         selectedFile = null;
         window.removeImage = false;
+
+        document.querySelectorAll('#editProfileModal .error-message').forEach(el => {
+            el.textContent = '';
+        });
+        document.querySelectorAll('#editProfileModal .form-input').forEach(input => {
+            input.style.borderColor = '#ddd';
+        });
     }
 
     // Toggle mobile number editing

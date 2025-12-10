@@ -271,7 +271,6 @@
         background: #9ca3af;
         cursor: not-allowed;
     }
-
 </style>
 
 <!-- Quill Rich Text Editor CSS -->
@@ -286,6 +285,7 @@
         const modal = document.getElementById('createPostModal');
         if (modal) {
             modal.classList.add('open');
+            clearAllPostFormErrors();
             if (!quill) {
                 quill = new Quill('#editor', {
                     theme: 'snow',
@@ -325,6 +325,7 @@
         if (modal) {
             modal.classList.remove('open');
             document.getElementById('createPostForm').reset();
+            clearAllPostFormErrors();
             if (quill) {
                 quill.setContents([]);
             }
@@ -447,6 +448,20 @@
             errorMsg.style.display = 'none';
         }
     }
+
+    function clearAllPostFormErrors() {
+        const form = document.getElementById('createPostForm');
+        form.querySelectorAll('.form-input').forEach(el => {
+            el.classList.remove('input-error');
+        });
+        form.querySelectorAll('.error-message').forEach(el => {
+            el.textContent = '';
+            el.style.display = 'none';
+        });
+        const editor = document.getElementById('editor');
+        editor.classList.remove('editor-error');
+    }
+
 
     // Close modal when clicking outside - DISABLED
     // Uncomment below to enable closing modal by clicking outside

@@ -187,7 +187,7 @@ class ForumsController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
-                'description' => 'required|string|max:250',
+                'description' => 'required|string',
                 'labels' => 'required|string|max:255',
             ]);
 
