@@ -25,13 +25,22 @@ class UserManagementController extends Controller
         $query = User::query();
         $roles = Role::all();
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $searchLower = strtolower(trim($search));
+            $statusMap = [
+            'active' => '1',
+            'inactive' => '0',
+        ];
+        $searchStatus = $statusMap[$searchLower] ?? null;
+            $query->where(function ($q) use ($search, $searchStatus) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('user_id', 'like', "%{$search}%")
                     ->orWhereHas('role', function ($roleQuery) use ($search) {
                         $roleQuery->where('name', 'like', "%{$search}%");
                     });
+                if ($searchStatus !== null) {
+                    $q->orWhere('status', $searchStatus);
+                }
             });
         }
         if ($status === '1' || $status === '0') {

@@ -68,9 +68,15 @@ class ForumsController extends Controller
                 ->filter(function ($query) use ($request) {
                     if ($request->has('search') && !empty($request->search['value'])) {
                         $searchValue = $request->search['value'];
+                    $statusMap = [
+                        'post deleted' => 'post_deleted',
+                        'removed by admin' => 'removed_by_admin',
+                    ];
+                    $searchLower = strtolower(trim($searchValue));
+                    $dbStatus = $statusMap[$searchLower] ?? $searchValue;
                         $parsedDate = date('Y-m-d', strtotime($searchValue));
-                        $query->where(function ($q) use ($searchValue, $parsedDate) {
-                            $q->where('status', 'like', "%{$searchValue}%")
+                        $query->where(function ($q) use ($searchValue, $parsedDate, $dbStatus) {
+                            $q->where('status', 'like', "%{$dbStatus}%")
                                 ->orWhereHas('alumni', function ($alumniQuery) use ($searchValue) {
                                     $alumniQuery->where('full_name', 'like', "%{$searchValue}%")
                                     ->orWhere('mobile_number', 'like', "%{$searchValue}%");
@@ -312,11 +318,15 @@ class ForumsController extends Controller
                 ->filter(function ($query) use ($request) {
                     if ($request->has('search') && !empty($request->search['value'])) {
                         $searchValue = $request->search['value'];
-                        $query->where(function ($q) use ($searchValue) {
+                        $parsedDate = date('Y-m-d', strtotime($searchValue));
+                        $query->where(function ($q) use ($searchValue, $parsedDate) {
                             $q->where('message', 'like', '%' . $searchValue . '%');
                             $q->orWhereHas('alumni', function ($alumniQuery) use ($searchValue) {
                                 $alumniQuery->where('full_name', 'like', '%' . $searchValue . '%');
                             });
+                            if ($parsedDate && $parsedDate !== '1970-01-01') {
+                                $q->orWhereDate('created_at', $parsedDate);
+                            }
                         });
                     }
                 })

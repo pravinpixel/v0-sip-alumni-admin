@@ -22,9 +22,18 @@ class RoleManagementController extends Controller
         $query = Role::query();
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
+            $searchLower = strtolower(trim($search));
+            $statusMap = [
+                'active' => '1',
+                'inactive' => '0',
+            ];
+            $searchStatus = $statusMap[$searchLower] ?? null;
+            $query->where(function ($q) use ($search, $searchStatus) {
                 $q->where('name', 'like', '%' . $search . '%');
                 $q->orWhere('role_id', 'like', '%' . $search . '%');
+                if ($searchStatus !== null) {
+                    $q->orWhere('status', $searchStatus);
+                }
             });
         }
 

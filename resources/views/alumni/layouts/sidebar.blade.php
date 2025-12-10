@@ -488,6 +488,12 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             
             const dropdownData = await loadStates();
             const alumni = await loadAlumniData();
+            
+            // Initialize modal state
+            if (typeof initializeModal === 'function') {
+                initializeModal();
+            }
+            
             modal.classList.add('open');
         }
     }

@@ -360,7 +360,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         border-color: #d1d5db;
     }
 
-    /* Edit/Cancel button styling */
     .btn-edit-cancel-mobile {
         transition: all 0.2s ease;
     }
@@ -373,7 +372,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         transform: scale(0.95);
     }
 
-    /* Make readonly input look slightly different */
     #mobileNumberInput[readonly] {
         background-color: #f9fafb;
         cursor: not-allowed;
@@ -391,6 +389,13 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     let isMobileVerified = false;
     let otpTimer = null;
 
+    // Initialize original mobile number when modal opens
+    function initializeModal() {
+        const mobileInput = document.getElementById('mobileNumberInput');
+        originalMobileNumber = mobileInput.value;
+        isMobileVerified = true; // Original number is considered verified
+    }
+
     function closeEditProfileModal() {
         const modal = document.getElementById('editProfileModal');
         if (modal) {
@@ -400,6 +405,8 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         // Reset mobile input to readonly
         const mobileInput = document.getElementById('mobileNumberInput');
         mobileInput.readOnly = true;
+        mobileInput.disabled = false;
+        mobileInput.value = originalMobileNumber;
         
         // Reset OTP section
         document.getElementById('otpSection').style.display = 'none';
@@ -455,6 +462,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         } else {
             // Cancel editing mode
             mobileInput.readOnly = true;
+            mobileInput.disabled = false; 
             mobileInput.value = originalMobileNumber;
             editCancelBtn.textContent = 'Edit';
             editCancelBtn.style.color = '#dc2626';
@@ -468,6 +476,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             
             // Hide OTP section
             document.getElementById('otpSection').style.display = 'none';
+            document.getElementById('otpInput').value = '';
             if (otpTimer) clearInterval(otpTimer);
             
             // Enable save button
@@ -475,8 +484,12 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             saveBtn.style.cursor = 'pointer';
             saveBtn.style.opacity = '1';
             
-            // Set verified to true since we're back to original
             isMobileVerified = true;
+            
+            const errorEl = mobileInput.parentElement.querySelector('.error-message');
+            if (errorEl) {
+                errorEl.textContent = '';
+            }
         }
     }
 
@@ -762,12 +775,5 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 saveBtn.disabled = false;
             });
     }
-
-
-    window.onclick = function(event) {
-        const modal = document.getElementById('editProfileModal');
-        if (event.target === modal) {
-            closeEditProfileModal();
-        }
-    }
+    
 </script>
