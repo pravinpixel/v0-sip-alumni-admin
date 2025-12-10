@@ -1,6 +1,7 @@
 <?php
 use App\Helpers\AccessGuard;
 use App\Models\Role;
+use App\Models\User;
 
 if (!function_exists('access')) {
     function access()
@@ -70,5 +71,14 @@ if (!function_exists('generateRoleId')) {
         $last = Role::orderBy('id', 'desc')->first();
         $nextId = $last ? $last->id + 1 : 1;
         return 'ROLE' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+    }
+}
+if (!function_exists('generateUserId')) {
+
+    function generateUserId()
+    {
+        $last = User::orderBy('id', 'desc')->first();
+        $nextId = $last ? $last->id + 1 : 1;
+        return 'USER' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
     }
 }

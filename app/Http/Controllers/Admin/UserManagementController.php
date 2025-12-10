@@ -26,7 +26,12 @@ class UserManagementController extends Controller
         $roles = Role::all();
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%');
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('user_id', 'like', "%{$search}%")
+                    ->orWhereHas('role', function ($roleQuery) use ($search) {
+                        $roleQuery->where('name', 'like', "%{$search}%");
+                    });
             });
         }
         if ($status === '1' || $status === '0') {
@@ -137,6 +142,7 @@ class UserManagementController extends Controller
             } else {
                 $user = new User();
                 $user->name = $request->input('user_name');
+                $user->user_id = generateUserId();
                 $user->email = $request->input('email');
                 $user->status = $request->input('status');
                 $user->password = bcrypt($request->input('password'));
@@ -144,7 +150,8 @@ class UserManagementController extends Controller
                 $user->role_id = $request->input('role_id');
                 $user->save();
                 if ($request->input('role_id')) {
-                    $user->assignRole($request->input('role_id'));
+                    $role = Role::find($request->input('role_id'));
+                    $user->assignRole($role->name);
                 }
                 return $this->returnSuccess($user, "User created successfully");
             }

@@ -103,7 +103,7 @@
                             @foreach($datas as $data)
                                 <tr style="border-bottom: 1px solid #f3f4f6;">
                                     <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">
-                                        USER{{ str_pad($serialNumberStart++, 3, '0', STR_PAD_LEFT) }}</td>
+                                        {{ $data->user_id }}</td>
                                     <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">{{$data->name}}</td>
                                     <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">{{$data->email ?? 'N/A'}}</td>
                                     <td style="padding: 1rem;">
