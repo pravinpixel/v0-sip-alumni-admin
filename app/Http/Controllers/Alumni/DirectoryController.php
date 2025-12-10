@@ -107,7 +107,7 @@ class DirectoryController extends Controller
         try {
             $alumniId = session('alumni.id');
 
-            $query = Alumnis::with(['city', 'occupation'])
+            $query = Alumnis::with(['city.state', 'occupation'])
                 ->where('id', '!=', $alumniId)
                 ->where('status', 'active');
 
@@ -219,15 +219,10 @@ class DirectoryController extends Controller
                                             $stateQuery->where('name', 'like', "%{$searchValue}%");
                                         });
                                 })
-                                ->orWhereRaw("
-                                    CONCAT(
-                                        (SELECT name FROM states WHERE states.id =
-                                            (SELECT state_id FROM cities WHERE cities.id = alumnis.city_id LIMIT 1)
-                                        ),
-                                        ', ',
-                                        (SELECT name FROM cities WHERE cities.id = alumnis.city_id LIMIT 1)
-                                    ) LIKE ?
-                                ", ["%{$searchValue}%"]);
+                            ->orWhereHas('city', function ($c) use ($searchValue) {
+                                $c->whereRaw("CONCAT(name, ', ', (SELECT name FROM states WHERE id = cities.state_id)) LIKE ?", ["%{$searchValue}%"]);
+                            });
+
                             if ($matchedStatus !== null) {
                                 $q->orWhereIn('id', array_keys(array_filter($connectionStatusMap, function ($status) use ($matchedStatus) {
                                     return $status === $matchedStatus;
@@ -265,7 +260,7 @@ class DirectoryController extends Controller
                 })
 
                 ->addColumn('location', function ($row) {
-                    return ($row->city?->state?->name ?? '-') . ', ' . ($row->city?->name ?? '-');
+                    return ($row->city?->name ?? '-') . ', ' . ($row->city?->state?->name ?? '-');
                 })
 
                 ->addColumn('action', function ($row) use ($alumniConnections, $alumniId) {

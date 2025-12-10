@@ -63,7 +63,13 @@ class ConnectionsController extends Controller
                                                     ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
                                                         $stateQuery->where('name', 'like', "%{$searchValue}%");
                                                     });
-                                       });
+                                       })
+                                       ->orWhereHas('city', function ($city) use ($searchValue) {
+                                            $city->whereRaw("
+                                                LOWER(CONCAT(cities.name, ', ', (SELECT name FROM states WHERE states.id = cities.state_id))) 
+                                                LIKE ?
+                                            ", ["%{$searchValue}%"]);
+                                        });
                                 });
                         })
                         // Search in receiver (when current user is sender)
@@ -81,7 +87,13 @@ class ConnectionsController extends Controller
                                                     ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
                                                         $stateQuery->where('name', 'like', "%{$searchValue}%");
                                                     });
-                                       });
+                                       })
+                                        ->orWhereHas('city', function ($city) use ($searchValue) {
+                                            $city->whereRaw("
+                                                LOWER(CONCAT(cities.name, ', ', (SELECT name FROM states WHERE states.id = cities.state_id))) 
+                                                LIKE ?
+                                            ", ["%{$searchValue}%"]);
+                                        });
                                 });
                         });
                     });
@@ -110,7 +122,7 @@ class ConnectionsController extends Controller
             })
             ->addColumn('location', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
-                return ($alumni->city?->state?->name ?? '-') . ', ' . ($alumni->city?->name ?? '-');
+                return ($alumni->city?->name ?? '-') . ', ' . ($alumni->city?->state?->name ?? '-');
             })
             ->addColumn('action', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
@@ -173,7 +185,7 @@ class ConnectionsController extends Controller
             })
             ->addColumn('email', fn($row) => $row->sender->email)
             ->editColumn('batch', fn($row) => '<span style="color:#B1040E;padding:2px 12px;border-radius:20px;font-size:11px;font-weight:700; border: 1px solid #F7C744; background-color: color-mix(in oklab, #F7C744 20%, transparent)">' . $row->sender->year_of_completion . '</span>')
-            ->addColumn('location', fn($row) => $row->sender->city?->state?->name . ', ' . $row->sender->city?->name)
+            ->addColumn('location', fn($row) => $row->sender->city?->name . ', ' . $row->sender->city?->state?->name)
             ->addColumn('action', function ($row) {
                 return '
                     <div style="display:flex;gap:8px;">
