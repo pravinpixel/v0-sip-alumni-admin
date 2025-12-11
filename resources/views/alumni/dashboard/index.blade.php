@@ -223,8 +223,8 @@
     <div style="max-width: 1400px; margin: 0 auto; background: white; padding: 20px;">
         {{-- Header --}}
         <div style="margin-bottom: 32px;">
-            <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Alumni Dashboard</h1>
-            <p style="color: #6b7280; font-size: 15px;">Welcome back! Here's your activity overview</p>
+            <h1 style=" font-weight: 700; color: #111827; margin-bottom: 8px;" class="main-title">Alumni Dashboard</h1>
+            <p style="color: #6b7280;" class="sub-title">Welcome back! Here's your activity overview</p>
         </div>
 
         {{-- Quick Stats --}}

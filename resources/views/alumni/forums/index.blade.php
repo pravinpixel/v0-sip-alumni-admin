@@ -9,14 +9,6 @@
             padding: 16px !important;
         }
 
-        /* Header section */
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child h1 {
-            font-size: 28px !important;
-        }
-
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child p {
-            font-size: 14px !important;
-        }
 
         /* Filter section */
         #filterSection {
@@ -55,13 +47,7 @@
             gap: 16px !important;
         }
 
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child h1 {
-            font-size: 24px !important;
-        }
 
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child p {
-            font-size: 13px !important;
-        }
 
         /* Header buttons - full width */
         div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child {
@@ -139,10 +125,6 @@
             padding: 10px !important;
         }
 
-        /* Header */
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child h1 {
-            font-size: 20px !important;
-        }
 
         div[style*="display: flex"][style*="justify-content: space-between"] > div:first-child p {
             font-size: 12px !important;
@@ -311,6 +293,7 @@
 
     .multi-select-display .placeholder {
         color: #000000ff;
+        opacity: 1;
         flex: 1;
         font-size: 14px;
         font-weight: 400;
@@ -492,8 +475,8 @@
         {{-- Header --}}
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
             <div>
-                <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Forum Posts</h1>
-                <p style="color: #6b7280; font-size: 15px;">Share and engage with the SIP Academy community</p>
+                <h1 style=" font-weight: 700; color: #111827; margin-bottom: 8px;" class="main-title">Forum Posts</h1>
+                <p style="color: #6b7280;" class="sub-title">Share and engage with the SIP Academy community</p>
             </div>
             <div style="display: flex; gap: 12px;">
                 <a href="{{ route('alumni.forums.activity') }}"
@@ -546,7 +529,7 @@
                     <div class="multi-select-container" data-filter="dateRange">
                         <div class="multi-select-display">
                             <span class="placeholder">Select date range</span>
-                            <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                            <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
                         </div>
                         <div class="multi-select-dropdown"></div>
                     </div>
@@ -570,7 +553,7 @@
                     <div class="multi-select-container" data-filter="batch">
                         <div class="multi-select-display">
                             <span class="placeholder">Select batch years</span>
-                            <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                            <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
                         </div>
                         <div class="multi-select-dropdown"></div>
                     </div>
@@ -582,7 +565,7 @@
                     <div class="multi-select-container" data-filter="postType">
                         <div class="multi-select-display">
                             <span class="placeholder">Select post type</span>
-                            <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                            <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
                         </div>
                         <div class="multi-select-dropdown"></div>
                     </div>

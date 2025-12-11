@@ -213,9 +213,22 @@
         .sidebar::-webkit-scrollbar-thumb:hover {
             background: #9ca3af;
         }
+        .main-title {
+            font-size: 32px;
+        }
+        .sub-title {
+            font-size: 15px;
+        }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            .main-title {
+                font-size: 18px !important;
+            }
+            .sub-title {
+                font-size: 10px !important;
+                margin-bottom: 0 !important;
+            }
             .header {
                 padding: 12px 20px;
                 height: 60px;

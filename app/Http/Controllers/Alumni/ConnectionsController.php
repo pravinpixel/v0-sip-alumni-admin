@@ -129,7 +129,7 @@ class ConnectionsController extends Controller
                 return '
         <button onclick="viewProfile(' . $alumni->id . ')" 
             class="btn btn-sm" 
-            style="background-color:#c41e3a;color:white;border:none;border-radius:4px;padding:6px 12px;font-size:12px;">
+            style="background-color:#c41e3a;color:white;border:none;border-radius:4px;padding:clamp(4px,1.5vw,8px) clamp(6px,2vw,12px);font-size:clamp(4px, 1.5vw, 12px);">
             👁 View Profile
         </button>';
             })

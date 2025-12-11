@@ -171,7 +171,7 @@
 
     /* Override DataTables default styles */
     #alumniTable thead tr {
-        background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%) !important;
+        background: linear-gradient(90deg, #e2001d 1%, #b1040e 55%, #f7c744 100%) !important;
     }
 
     #alumniTable thead th {
@@ -330,7 +330,8 @@ table.dataTable tbody tr > .sorting_3 {
     }
 
     .multi-select-display .placeholder {
-        color: #111213ff;
+        color: #111213ff !important;
+        opacity: 1 !important;
         flex: 1;
         font-size: 14px;
         font-weight: 400;
@@ -449,8 +450,8 @@ table.dataTable tbody tr > .sorting_3 {
 <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white">
     {{-- Header --}}
     <div style="margin-bottom: 30px;">
-        <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Alumni Directory</h1>
-        <p style="color: #6b7280; font-size: 15px;">Connect with {{ $totalAlumni}} alumni from SIP Academy</p>
+        <h1 style="font-weight: 700; color: #111827; margin-bottom: 8px;" class="main-title">Alumni Directory</h1>
+        <p style="color: #6b7280;" class="sub-title">Connect with {{ $totalAlumni}} alumni from SIP Academy</p>
     </div>
 
     {{-- Search and Filter --}}
@@ -463,7 +464,7 @@ table.dataTable tbody tr > .sorting_3 {
                 onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
         </div>
         <button id="filterToggleBtn"
-            style="background: #ffffff; color: #374151; border: 1px solid #d1d5db; padding: 4px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: all 0.2s ease;"
+            style="background: #fbf9fa; color: #374151; border: 1px solid #d1d5db; padding: 4px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: all 0.2s ease;"
             onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
             <i class="bi bi-funnel" style="font-size: 18px;"></i>
             <span id="filterBtnText">Filter<i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i></span>
@@ -486,7 +487,7 @@ table.dataTable tbody tr > .sorting_3 {
                 <div class="multi-select-container" data-filter="batch">
                     <div class="multi-select-display">
                         <span class="placeholder">Select batch years</span>
-                        <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
+                        <i class="fas fa-chevron-down" style="color: #000000ff; font-size: 11px;"></i>
                     </div>
                     <div class="multi-select-dropdown"></div>
                 </div>
@@ -498,7 +499,7 @@ table.dataTable tbody tr > .sorting_3 {
                 <div class="multi-select-container" data-filter="location">
                     <div class="multi-select-display">
                         <span class="placeholder">Select locations</span>
-                        <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                        <i class="fas fa-chevron-down" style="color: #000000ff; font-size: 11px;"></i>
                     </div>
                     <div class="multi-select-dropdown"></div>
                 </div>
@@ -510,7 +511,7 @@ table.dataTable tbody tr > .sorting_3 {
                 <div class="multi-select-container" data-filter="status">
                     <div class="multi-select-display">
                         <span class="placeholder">Select status</span>
-                        <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 11px;"></i>
+                        <i class="fas fa-chevron-down" style="color: #000000ff; font-size: 11px;"></i>
                     </div>
                     <div class="multi-select-dropdown"></div>
                 </div>
@@ -542,7 +543,7 @@ table.dataTable tbody tr > .sorting_3 {
         <div class="table-container" style="overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%;">
             <table id="alumniTable" class="display" style="width: 100%; margin: 0; border-collapse: collapse; min-width: 700px;">
                 <thead>
-                    <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
+                    <tr style="background: linear-gradient(90deg, #e2001d 0%, #b1040e 66%, #f7c744 100%); color: white;">
                         <th style="padding: 16px; font-weight: 600; text-align: left; border: none; min-width: 250px;">
         Alumni 
     </th>

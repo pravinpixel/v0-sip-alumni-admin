@@ -5,7 +5,7 @@
     /* Override DataTables default styles */
     #connectionsTable thead tr,
     #requestsTable thead tr {
-        background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%) !important;
+        background: linear-gradient(90deg, #e2001d 0%, #f7c744 48%, #b1040e 100%) !important;
     }
 
     #connectionsTable thead th,
@@ -237,9 +237,9 @@
 
 <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white;">
     {{-- Header --}}
-    <div class="page-header" style="margin-bottom: 30px;">
-        <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">My Connections</h1>
-        <p style="color: #6b7280; font-size: 15px;">Manage your alumni network and connection requests</p>
+    <div class="" style="margin-bottom: 30px;">
+        <h1 style="font-weight: 700; color: #111827; margin-bottom: 8px;" class="main-title">My Connections</h1>
+        <p style="color: #6b7280;" class="sub-title">Manage your alumni network and connection requests</p>
     </div>
 
     {{-- Search Bar (Right Aligned) --}}

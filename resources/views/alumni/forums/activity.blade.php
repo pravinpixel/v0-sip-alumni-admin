@@ -8,13 +8,6 @@
             padding: 16px !important;
         }
 
-        .activity-header h1 {
-            font-size: 28px !important;
-        }
-
-        .activity-header p {
-            font-size: 14px !important;
-        }
 
         /* Stats cards - 2 columns on tablet */
         #statsCardsContainer > div {
@@ -49,13 +42,6 @@
             padding: 12px !important;
         }
 
-        .activity-header h1 {
-            font-size: 24px !important;
-        }
-
-        .activity-header p {
-            font-size: 13px !important;
-        }
 
         .back-link {
             font-size: 13px !important;
@@ -145,13 +131,6 @@
             padding: 10px !important;
         }
 
-        .activity-header h1 {
-            font-size: 20px !important;
-        }
-
-        .activity-header p {
-            font-size: 12px !important;
-        }
 
         .back-link {
             font-size: 12px !important;
@@ -268,8 +247,8 @@
 
         {{-- Header --}}
         <div class="activity-header" style="margin-bottom: 30px;">
-            <h1 style="font-size: 32px; font-weight: 700; color: #111827; margin-bottom: 8px;">Your Activity</h1>
-            <p style="color: #6b7280; font-size: 15px;">Track your posts and engagement</p>
+            <h1 style=" font-weight: 700; color: #111827; margin-bottom: 8px;" class="main-title">Your Activity</h1>
+            <p style="color: #6b7280;" class="sub-title">Track your posts and engagement</p>
         </div>
 
         {{-- Dynamic Stats Cards --}}
