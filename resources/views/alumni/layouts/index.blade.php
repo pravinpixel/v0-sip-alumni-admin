@@ -268,10 +268,6 @@
             .sidebar {
                 width: 100%;
             }
-
-            .content {
-                padding: 15px;
-            }
         }
     </style>
 </head>

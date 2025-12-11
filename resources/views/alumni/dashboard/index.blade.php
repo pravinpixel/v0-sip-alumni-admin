@@ -191,7 +191,7 @@
             .post-description {
                 font-size: 11px !important;
                 min-height: 45px !important;
-                -webkit-line-clamp: 2 !important;
+                -webkit-line-clamp: 3 !important;
             }
 
             .post-author {
@@ -256,7 +256,7 @@
                     'value' => $stats['totalEngagement'] ?? 0,
                     'icon' => 'fa-heart',
                     'bgColor' => '#f59e0b',
-                    'description' => 'Likes received'
+                    'description' => 'Likes & replies received'
                 ]
             ];
         @endphp
@@ -287,7 +287,7 @@
                         </h3>
                         <p style="font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 4px;">{{ $stat['title'] }}
                         </p>
-                        <p style="font-size: 13px; color: #6b7280;">{{ $stat['description'] }}</p>
+                        <p style="font-size: 13px; color: #6b7280; margin-bottom: 0;">{{ $stat['description'] }}</p>
                     </div>
                 </div>
             @endforeach
@@ -299,7 +299,7 @@
             <div class="community-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
                 <div>
                     <h2 class="community-title" style="font-size: 24px; font-weight: 700; color: #111827;">Community Highlights</h2>
-                    <p class="community-subtitle" style="font-size: 14px; color: #6b7280; margin-top: 4px;">Trending posts from the community</p>
+                    <p class="community-subtitle" style="font-size: 14px; color: #6b7280; margin-top: 4px; margin-bottom: 0;">Trending posts from the community</p>
                 </div>
                 <a href="{{ route('alumni.forums') }}"
                     class="view-all-btn"

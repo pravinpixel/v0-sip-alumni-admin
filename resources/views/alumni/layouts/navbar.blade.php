@@ -9,6 +9,8 @@
         margin: 0;
         box-sizing: border-box;
         border-radius: 8px;
+        display: flex;        
+        justify-content: space-around;
     }
 
     .nav-link {
@@ -113,15 +115,15 @@
         .alumni-navbar {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
-            padding: 8px;
-            gap: 6px;
+            padding: 6px;
+            gap: 2px;
         }
 
         .nav-link {
             white-space: nowrap;
-            font-size: 11px;
-            padding: 6px 10px;
-            gap: 5px;
+            font-size: 7px;
+            padding: 6px 8px;
+            gap: 4px;
             flex: 0 0 auto;
         }
         

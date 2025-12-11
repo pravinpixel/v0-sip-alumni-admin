@@ -10,7 +10,8 @@
         }
 
         .search-box {
-            min-width: 150px !important;
+            min-width: 250px !important;
+            max-width: none !important;
         }
 
         .filter-grid {
@@ -31,6 +32,7 @@
         .search-box {
             width: 100% !important;
             min-width: 100% !important;
+            max-width: none !important;
         }
 
         .filter-grid {
@@ -67,12 +69,23 @@
         .search-filter-container {
             flex-direction: column;
             align-items: stretch !important;
+            gap: 12px !important;
+        }
+
+        .search-box {
+            min-width: 100% !important;
+        }
+
+        #searchInput {
+            padding: 10px 16px 10px 40px !important;
+            font-size: 14px !important;
         }
 
         #filterToggleBtn,
         #clearFiltersBtn {
             width: 100%;
             justify-content: center;
+            padding: 10px 16px !important;
         }
 
         #filterSection {
@@ -349,7 +362,7 @@ table.dataTable tbody tr > .sorting_3 {
         margin-top: 4px;
         max-height: 250px;
         overflow-y: auto;
-        z-index: 1000;
+        z-index: 1;
         display: none;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
@@ -441,8 +454,8 @@ table.dataTable tbody tr > .sorting_3 {
     </div>
 
     {{-- Search and Filter --}}
-    <div class="search-filter-container" style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap;">
-        <div class="search-box" style="flex: 1; position: relative; min-width: 200px;">
+    <div class="search-filter-container" style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+        <div class="search-box" style="flex: 1; position: relative; min-width: 300px; max-width: 450px;">
             <i class="fas fa-search"
                 style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
             <input type="text" id="searchInput" placeholder="Search alumni..."
@@ -450,13 +463,13 @@ table.dataTable tbody tr > .sorting_3 {
                 onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
         </div>
         <button id="filterToggleBtn"
-            style=" color: #374151; border: 1px solid #d1d5db; padding: 4px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; position: relative;"
+            style="background: #ffffff; color: #374151; border: 1px solid #d1d5db; padding: 4px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: all 0.2s ease;"
             onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
             <i class="bi bi-funnel" style="font-size: 18px;"></i>
             <span id="filterBtnText">Filter<i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i></span>
         </button>
         <button id="clearFiltersBtn"
-            style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; white-space: nowrap;"
+            style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 4px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; white-space: nowrap;"
             onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
             Clear All Filters
         </button>
