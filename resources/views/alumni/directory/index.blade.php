@@ -366,6 +366,7 @@ table.dataTable tbody tr > .sorting_3 {
         z-index: 1;
         display: none;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 10px;
     }
 
     .multi-select-dropdown.active {
@@ -373,7 +374,7 @@ table.dataTable tbody tr > .sorting_3 {
     }
 
     .multi-select-option {
-        padding: 6px;
+        padding: 2px 4px;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -470,7 +471,7 @@ table.dataTable tbody tr > .sorting_3 {
             <span id="filterBtnText">Filter<i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i></span>
         </button>
         <button id="clearFiltersBtn"
-            style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 4px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; white-space: nowrap;"
+            style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 7px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; white-space: nowrap;"
             onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
             Clear All Filters
         </button>
@@ -615,8 +616,8 @@ table.dataTable tbody tr > .sorting_3 {
                 const isChecked = selectedValues.includes(option.id.toString());
                 const optionHtml = `
                     <div class="multi-select-option" data-value="${option.id}">
-                        <input type="checkbox" id="${type}_${option.id}" value="${option.id}" ${isChecked ? 'checked' : ''}>
-                        <label for="${type}_${option.id}" style="cursor: pointer; margin: 0;">${option.name}</label>
+                        <input type="checkbox" id="${type}_${option.id}" class="form-check-input border border-danger" value="${option.id}" ${isChecked ? 'checked' : ''}>
+                        <label for="${type}_${option.id}" style="cursor: pointer; margin: 0;" class="fw-bold">${option.name}</label>
                     </div>
                 `;
                 dropdown.append(optionHtml);

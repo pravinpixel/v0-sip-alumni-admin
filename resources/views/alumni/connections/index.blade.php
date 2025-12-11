@@ -347,11 +347,11 @@
 
 <!-- Profile modal (fields fixed to avoid duplicate IDs) -->
 <div class="modal fade" id="alumniProfileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-body" id="profileModalBody" style="padding:20px;">
+            <div class="modal-body" id="profileModalBody">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="modal-title" id="profileModalLabel">Alumni Profile</h5>
+                    <h3 class="modal-title text-danger" id="profileModalLabel">Alumni Profile</h3>
                     <button type="button" class="btn-close btn-close-dark btn-sm" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
@@ -359,21 +359,21 @@
                     <img id="profileImage" src="" class="rounded-circle mb-3"
                         style="width:70px;height:70px;object-fit:cover;">
                     <div style="padding:10px 15px;">
-                        <h5 id="profileFullName" style="font-weight:700;"></h5>
+                        <h5 id="profileFullName" class="fw-bolder"></h5>
                         <p id="profileOccupationMain" style="color:#666;"></p>
                     </div>
                 </div>
                 <hr>
                 <div class="row">
                     <div class="col-md-6">
-                        <p><strong>Full Name</strong> <br> <span id="profileFullName2"></span></p>
-                        <p><strong>City & State</strong> <br><span id="profileLocation"></span></p>
-                        <p><strong>Contact Number</strong> <br><span id="profileContact"></span></p>
+                        <p>Full Name <br> <span id="profileFullName2" class="fw-bolder"></span></p>
+                        <p>City & State <br><span id="profileLocation" class="fw-bolder"></span></p>
+                        <p>Contact Number <br><span id="profileContact" class="fw-bolder"></span></p>
                     </div>
                     <div class="col-md-6">
-                        <p><strong>Year of Completion</strong><br> <span id="profileBatch"></span></p>
-                        <p><strong>Email Address</strong> <br><span id="profileEmail2"></span></p>
-                        <p><strong>Current Occupation/Field of Study</strong><br> <span id="profileOccupation"></span></p>
+                        <p>Year of Completion<br> <span id="profileBatch" class="fw-bolder"></span></p>
+                        <p>Email Address <br><span id="profileEmail2" class="fw-bolder"></span></p>
+                        <p>Current Occupation/Field of Study<br> <span id="profileOccupation" class="fw-bolder"></span></p>
                     </div>
                 </div>
 
@@ -645,7 +645,7 @@
                 $('#profileEmail2').text(data.email || '-');
                 $('#profileBatch').text(data.batch || '-');
                 $('#profileLocation').text(data.location || '-');
-                $('#profileContact').text(data.contact || '-');
+                $('#profileContact').text(data.contact ? '+91 ' + data.contact : '-');
                 $('#profileOccupation').text(data.occupation || '-');
                 $('#profileOccupationMain').text(data.occupation || '-');
 

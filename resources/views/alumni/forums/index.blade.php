@@ -321,6 +321,7 @@
         z-index: 1;
         display: none;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 10px;
     }
 
     .multi-select-dropdown.active {
@@ -328,7 +329,7 @@
     }
 
     .multi-select-option {
-        padding: 10px 12px;
+        padding: 2px 4px;
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -723,9 +724,10 @@
                     option.innerHTML = `
                         <input type="checkbox" 
                             id="${filterType}-${value}" 
-                            value="${value}" 
+                            value="${value}"
+                            class="form-check-input border border-danger" 
                             data-type="${filterType}">
-                        <label for="${filterType}-${value}">${label}</label>
+                        <label for="${filterType}-${value}" class="fw-bold">${label}</label>
                     `;
                     dropdown.appendChild(option);
 
@@ -982,13 +984,25 @@
                 const hasConnection = post.has_connection || false;
                 const profilePicture = post.alumni?.image_url || '';
                 
-                const date = post.created_at ?
-                    new Date(post.created_at).toLocaleDateString('en-US', {
+                const date = post.created_at
+                ? (() => {
+                    const d = new Date(post.created_at);
+
+                    const formattedDate = d.toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'short',
-                        day: 'numeric'
-                    }) :
-                    'Unknown date';
+                        day: 'numeric',
+                    });
+
+                    const formattedTime = d.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    });
+
+                    return `${formattedDate} at ${formattedTime}`;
+                })()
+                : 'Unknown date';
 
                 html += `
                     <div style="background: white; border: 1px solid ${post.is_pinned_by_user ? '#e5e7eb' : '#e5e7eb'}; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease; position: relative;"
@@ -998,17 +1012,18 @@
                         ${post.is_pinned_by_user ? `
                             <div style="position: absolute; top: 16px; right: 16px; display: flex; align-items: center; gap: 8px;">
                                 <div style="background: #F7C744; color: #000; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                                    <i class="fas fa-thumbtack"></i> Pinned
+                                    <i class="fas fa-thumbtack mt-1"></i>
+                                    <span class="fw-bold">Pinned</span>
                                 </div>
                                 <button onclick="togglePin(${post.id}, this)" 
-                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 18px; padding: 4px;"
+                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 18px; padding: 10px;"
                                     title="Unpin this post">
                                     <i class="fas fa-thumbtack"></i>
                                 </button>
                             </div>
                         ` : `
                             <button onclick="togglePin(${post.id}, this)" 
-                                style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 18px; padding: 4px;"
+                                style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 18px; padding: 10px;"
                                 onmouseover="this.style.color='#6b7280'"
                                 onmouseout="this.style.color='#9ca3af'"
                                 title="Pin this post">
@@ -1047,15 +1062,16 @@
                         <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
                             ${hasConnection && profilePicture ? `
                                 <img src="${profilePicture}" alt="${escapeHtml(author)}" 
-                                    style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626;">
+                                    style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626;">
                             ` : `
-                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700;">
+                                <div style="width: 30px; height: 30px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
                                     ${authorInitial}
                                 </div>
                             `}
-                            <div>
-                                <p style="font-size: 14px; font-weight: 600; color: #111827; margin: 0 0 2px 0;">${escapeHtml(author)}</p>
-                                <p style="font-size: 12px; color: #6b7280; margin: 0;">${date}</p>
+                            <div style="display: flex; gap: 8px;">
+                                <p style="font-size: 14px; color: #6b7280; margin: 0;">${escapeHtml(author)}</p>
+                                <span style="color:#6b7280;">•</span>
+                                <p style="font-size: 14px; color: #6b7280; margin: 0;">${date}</p>
                             </div>
                         </div>
 

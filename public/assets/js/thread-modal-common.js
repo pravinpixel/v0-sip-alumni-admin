@@ -94,13 +94,25 @@ function renderThreadData(post, replies) {
     
     document.getElementById('threadAuthor').textContent = authorName;
     
-    const date = new Date(post.created_at).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    const date = post.created_at
+                ? (() => {
+                    const d = new Date(post.created_at);
+
+                    const formattedDate = d.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    });
+
+                    const formattedTime = d.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    });
+
+                    return `${formattedDate} at ${formattedTime}`;
+                })()
+                : 'Unknown date';
     document.getElementById('threadDate').textContent = date;
     
     // Author avatar
@@ -150,13 +162,25 @@ function createCommentElement(reply) {
     const hasConnection = reply.has_connection || false;
     const profilePicture = reply.alumni?.image_url || '';
     
-    const replyDate = new Date(reply.created_at).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    const replyDate = reply.created_at
+                ? (() => {
+                    const d = new Date(reply.created_at);
+
+                    const formattedDate = d.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    });
+
+                    const formattedTime = d.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    });
+
+                    return `${formattedDate} at ${formattedTime}`;
+                })()
+                : 'Unknown date';
 
     const commentElement = document.createElement('div');
     commentElement.setAttribute('data-reply-id', reply.id);
@@ -371,13 +395,25 @@ function renderChildComment(reply, level = 0) {
     const hasConnection = reply.has_connection || false;
     const profilePicture = reply.alumni?.image_url || '';
     
-    const date = new Date(reply.created_at).toLocaleDateString('en-US', {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
+    const date = reply.created_at
+                ? (() => {
+                    const d = new Date(reply.created_at);
+
+                    const formattedDate = d.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    });
+
+                    const formattedTime = d.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    });
+
+                    return `${formattedDate} at ${formattedTime}`;
+                })()
+                : 'Unknown date';
 
     const showReplyButton = level < 1 && window.canReplyToComments !== false;
     div.innerHTML = `
