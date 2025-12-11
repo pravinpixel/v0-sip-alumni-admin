@@ -601,7 +601,7 @@
         // Configuration for common thread modal
         window.viewThreadRoute = "{{ route('alumni.view.thread', ':id') }}";
         window.createReplyRoute = "{{ route('alumni.create.reply') }}";
-        window.currentAlumni = @json(session('alumni'));
+        window.currentAlumni = @json($currentUser);
         window.canReplyToComments = true; // Forums index allows replies
         window.reloadPageData = function() {
             if (typeof loadForumPosts === 'function') {

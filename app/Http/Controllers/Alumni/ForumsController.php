@@ -34,7 +34,8 @@ class ForumsController extends Controller
 
     public function activity(Request $request)
     {
-        return view('alumni.forums.activity');
+        $alumni = Alumnis::find(session('alumni.id'));
+        return view('alumni.forums.activity', compact('alumni'));
     }
 
     public function getFilterOptions()

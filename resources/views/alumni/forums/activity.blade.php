@@ -431,7 +431,7 @@
         // Configuration for common thread modal
         window.viewThreadRoute = "{{ route('alumni.view.thread', ':id') }}";
         window.createReplyRoute = "{{ route('alumni.create.reply') }}";
-        window.currentAlumni = @json(session('alumni'));
+        window.currentAlumni = @json($alumni);
         window.reloadPageData = function() {
             if (typeof loadActivityData === 'function') {
                 loadActivityData();
