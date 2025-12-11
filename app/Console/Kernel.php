@@ -22,6 +22,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('app:ialert-customer-followup-reminder')->dailyAt('15:00')->timezone('Asia/Kolkata');
         $schedule->command('app:ialert-payment-commited-reminder')->dailyAt('15:00')->timezone('Asia/Kolkata');
         $schedule->command('app:ialert-wcr-reminder')->dailyAt('15:00')->timezone('Asia/Kolkata');
+        $schedule->command('queue:work --stop-when-empty')
+            ->everyMinute()
+            ->withoutOverlapping();
 
     }
 

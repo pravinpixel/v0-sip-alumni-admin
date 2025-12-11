@@ -10,7 +10,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Storage;
 
 class Alumnis extends Model
 {
@@ -18,6 +18,7 @@ class Alumnis extends Model
     use SoftDeletes;
 
     protected $table = 'alumnis';
+    protected $appends = ['image_url'];
     protected $fillable = [
         'full_name',
         'year_of_completion',
@@ -25,7 +26,10 @@ class Alumnis extends Model
         'email',
         'mobile_number',
         'occupation_id',
-        'status'
+        'status',
+        'is_request_ribbon',
+        'is_directory_ribbon',
+        'remarks',
     ];
 
     public function city()
@@ -33,4 +37,37 @@ class Alumnis extends Model
         return $this->belongsTo(Cities::class, 'city_id');
     }
 
+    public function occupation()
+    {
+        return $this->belongsTo(Occupation::class, 'occupation_id');
+    }
+
+    public function sendconnections()
+    {
+        return $this->hasMany(AlumniConnections::class, 'sender_id');
+    }
+
+    public function receiveconnections()
+    {
+        return $this->hasMany(AlumniConnections::class, 'receiver_id');
+    }
+
+    public function pinned()
+    {
+        return $this->hasMany(PostPinned::class, 'alumni_id');
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(ForumPost::class, 'alumni_id');
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if($this->image) {
+            $url = config('app.storage_url');
+            return $url . 'public/storage/' . $this->image;
+        }
+        return asset('images/avatar/blank.png');
+    }
 }

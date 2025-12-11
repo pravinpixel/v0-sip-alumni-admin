@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <title>@yield('title', config('app.name'))</title>
 
@@ -13,10 +14,12 @@
     <meta property="og:site_name" content="test" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="" />
+    <link rel="icon" type="image/png" href="{{ asset('images/logo/favicon.png') }}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-    
+
     @section('style')
-    <link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('plugins/global/plugins.bundle.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/style.bundle.css') }}" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
     @show
 </head>
@@ -58,7 +61,7 @@
                         </div>
 
                         <div class="d-grid mt-10">
-                            <button type="button" id="dynamic-submit" class="btn" style="background-color:oklch(0.48 0.22 18.5); color:white;">
+                            <button type="submit" id="dynamic-submit" class="btn" style="background-color:oklch(0.48 0.22 18.5); color:white;">
                                 <span class="indicator-label">Log In</span>
                                 <span class="indicator-progress">
                                     <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
@@ -73,8 +76,8 @@
 
     @section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
-    <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
+    <script src="{{ asset('plugins/global/plugins.bundle.js') }}"></script>
+    <script src="{{ asset('js/scripts.bundle.js') }}"></script>
     <script src="{{ asset('js/common.js') }}"></script>
 
     <script>
@@ -97,9 +100,12 @@
                 data: formData,
                 contentType: false,
                 processData: false,
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 success: function(response) {
                     if (response) {
+                        showToast('Login successfully');
                         window.location.href = '{{ route("dashboard.view") }}';
                     }
                 },
@@ -128,4 +134,5 @@
     @show
 
 </body>
+
 </html>

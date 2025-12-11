@@ -1,218 +1,206 @@
 @extends('layouts.index')
 
-@section('title', 'Task Master | Usha Fire')
+@section('title', 'Role Management')
 
-@section('style')
-@parent
+@push('styles')
 <style>
-    .loading-cursor {
-        cursor: wait !important;
+    .toggle-switch input:checked+.toggle-slider {
+        background-color: #16a34a !important;
     }
 
-    .del {
-        margin-top: 10% !important;
+    .toggle-slider {
+        background-color: #dc2626 !important;
     }
 
-    .let {
-        font-size: 120% !important;
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
 
+    .toggle-switch input:checked+.toggle-slider:before {
+        transform: translateX(20px);
     }
 </style>
-@endsection
+@endpush
+
 @section('content')
 
-<div id="pageLoader" class="page-loader">
-    <div class="loader"></div>
-</div>
 <meta name="csrf-token" content="{{ csrf_token() }}">
-<div id="successMessage" class="alert alert-success" style="display: none;">
-    <strong>Success:</strong> Role has been successfully updated.
-</div>
 
-<div class="app-main flex-column flex-row-fluid" id="kt_app_main">
-    <div class="d-flex flex-column flex-column-fluid">
-        <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
-            <div id="kt_app_toolbar_container" class="app-container container-xxl d-flex flex-stack">
-                <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
-                    <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">Roles</h1>
-                    <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                        <li class="breadcrumb-item text-muted">
-                            <a href="{{url('dashboard')}}" class="text-muted text-hover-primary">Dashboard</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
-                        </li>
+<div style="padding: 2rem;">
+    <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Roles Management</h1>
+    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+        Manage admin roles and permissions
+    </p>
+    <!-- Main Card -->
+    <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem;">
 
-                        <li class="breadcrumb-item text-muted">
-                            <a href="{{url('/role')}}" class="text-muted text-hover-primary">Roles</a>
-                        </li>
-                    </ul>
-                </div>
-                <!--end::Page title-->
-                <!--begin::Actions-->
-                <div class="d-flex align-items-center gap-2 gap-lg-3">
-                    <!--begin::Filter menu-->
-                    <div class="m-0">
-                        <!--begin::Menu toggle-->
-                        <!--end::Menu 1-->
-                    </div>
-                    <!--end::Filter menu-->
-                </div>
-                <!--end::Actions-->
+        <!-- Search and Actions Bar -->
+        <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;">
+            <!-- Search Input -->
+            <div style="position: relative; flex: 1; max-width: 600px;">
+                <i class="fas fa-search"
+                    style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                <input type="text" id="searchInput"
+                    style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                    placeholder="Search by role ID or name...">
             </div>
-            <!--end::Toolbar container-->
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <button type="button" id="filter_btn"
+                    style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-filter" style="color: #6b7280;"></i>
+                    Filter
+                </button>
+
+                @can('role.create')
+                <button type="button" onclick="window.location='{{ route('role.create') }}'"
+                    style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-plus"></i>
+                    Create Role
+                </button>
+                @endcan
+            </div>
         </div>
-        <!--end::Toolbar-->
-        <!--begin::Content-->
-        <div id="kt_app_content" class="app-content flex-column-fluid">
-            <!--begin::Content container-->
-            <div id="kt_app_content_container" class="app-container container-xxl">
-                <!--begin::Card-->
-                <div class="card">
-                    <!--begin::Card header-->
-                    <div class="card-header border-0 pt-6">
-                        <!--begin::Card title-->
-                        <div class="card-title">
-                            <!--begin::Search-->
-                            <div class="d-flex align-items-center position-relative my-1">
-                                <!--begin::Svg Icon | path: icons/duotune/general/gen021.svg-->
-                                <span class="svg-icon svg-icon-1 position-absolute ms-6">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <rect opacity="0.5" x="17.0365" y="15.1223" width="8.15546" height="2" rx="1" transform="rotate(45 17.0365 15.1223)" fill="currentColor" />
-                                        <path d="M11 19C6.55556 19 3 15.4444 3 11C3 6.55556 6.55556 3 11 3C15.4444 3 19 6.55556 19 11C19 15.4444 15.4444 19 11 19ZM11 5C7.53333 5 5 7.53333 5 11C5 14.4667 7.53333 17 11 17C14.4667 17 17 14.4667 17 11C17 7.53333 14.4667 5 11 5Z" fill="currentColor" />
-                                    </svg>
+
+        <!-- Filter Section (Hidden by default) -->
+        <div id="filter_section"
+            style="display: none; margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
+            <select data-kt-ecommerce-order-filter="status"
+                style="padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; background: white;">
+                <option value="all">All Status</option>
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
+            </select>
+        </div>
+
+        <!-- Table Container -->
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;" id="kt_customers_table">
+                <thead>
+                    <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
+                        <th style="padding: 15px; text-align: left;">Role ID</th>
+                        <th style="padding: 15px; text-align: left;">Role Name</th>
+                        <th style="padding: 15px; text-align: left;">Status</th>
+                        @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
+                        <th style="padding: 15px; text-align: left;">Actions</th>
+                        @endif
+                    </tr>
+                </thead>
+                <tbody>
+                    @if($datas->isEmpty())
+                    <tr>
+                        <td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">No results found.
+                        </td>
+                    </tr>
+                    @else
+                    @foreach($datas as $data)
+                    <tr style="border-bottom: 1px solid #dedede;">
+                        <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">
+                            {{$data->role_id}}</td>
+                        <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">{{$data->name}}</td>
+                        <td style="padding: 1rem;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <label class="toggle-switch"
+                                    style="position: relative; display: inline-block; width: 44px; height: 24px;">
+                                    <input type="checkbox" class="status-toggle" data-role-id="{{$data->id}}"
+                                        {{$data->status == 1 ? 'checked' : ''}} style="opacity: 0; width: 0; height: 0;">
+                                    <span class="toggle-slider"
+                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.4s; border-radius: 24px;"></span>
+                                </label>
+                                <span
+                                    style="padding: 0.375rem 0.75rem; background: {{$data->status == 1 ? '#dcfce7' : '#fee2e2'}}; color: {{$data->status == 1 ? '#16a34a' : '#dc2626'}}; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600;">
+                                    {{$data->status == 1 ? 'Active' : 'Inactive'}}
                                 </span>
-                                <!--end::Svg Icon-->
-                                <input type="text" id="searchInput" class="form-control form-control-solid w-250px ps-15" placeholder="Search" />
                             </div>
-                            <!--end::Search-->
-                        </div>
-                        <!--begin::Card title-->
-                        <!--begin::Card toolbar-->
-                        <div class="card-toolbar">
-                            <!--begin::Toolbar-->
-                            <div class="d-flex justify-content-end" data-kt-customer-table-toolbar="base">
-                                        <div class="w-150px me-3">
-                                            <div style="margin-top: 10px;"><label for="overdue_count">Total Records:</label>
-                                            <span style="color: green;">{{$total_count ?? ''}}</span></div>
-                                        </div>
-                                        <div class="w-100px me-3">
-                                                <!--begin::Select2-->
-                                                <select class="form-select form-select-solid" name="row-count-filter" data-control="select2" data-hide-search="true" data-placeholder="">
-                                                        <option value="10">10</option>
-                                                        <option value="25">25</option>
-                                                        <option value="50">50</option>
-                                                        <option value="100">100</option>
-                                                </select>
-                                                <!--end::Select2-->
-                                        </div>
-                                <!--begin::Filter-->
-                                <div class="w-150px me-3">
-                                    <select class="form-select form-select-solid" data-control="select2" data-hide-search="true" data-placeholder="Status" data-kt-ecommerce-order-filter="status">
-                                        <option value="all">All</option>
-                                        <option value="1">Active</option>
-                                        <option value="0">Inactive</option>
-                                    </select>
-                                    <!--end::Select2-->
-                                </div>
-                                @if(auth()->user()->can('role.create'))
-                                <button type="button" class="btn btn-primary float-end" onclick="window.location='{{url('/role/add_edit')}}'">
-                                    <span class="svg-icon svg-icon-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                            <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="currentColor" />
-                                            <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="currentColor" />
-                                        </svg>
-                                    </span>
-                                    Add Role
+                        </td>
+                        @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
+                        <td style="padding: 1rem; position: relative;">
+                            <button class="action-menu-btn"
+                                style="background: none; border: none; cursor: pointer; padding: 0.5rem;">
+                                <i class="fas fa-ellipsis-v" style="color: #6b7280;"></i>
+                            </button>
+                            <div class="action-menu"
+                                style="display: none; position: absolute; right: 10rem; bottom: 1.5rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
+                                @can('role.edit')
+                                <a href="{{ route('role.edit', ['id' => $data->id]) }}"
+                                    style="display: block; padding: 0.5rem 1rem; color: #111827; text-decoration: none; font-size: 0.875rem; border-radius: 0.375rem; transition: background 0.2s;"
+                                    onmouseover="this.style.background='#f3f4f6'"
+                                    onmouseout="this.style.background='transparent'">
+                                    <i class="fas fa-edit" style="margin-right: 0.5rem;"></i>Edit
+                                </a>
+                                @endcan
+                                @can('role.delete')
+                                <button type="button" class="deletestateBtn" data-role-id="{{ $data->id }}"
+                                    style="display: block; width: 100%; text-align: left; padding: 0.5rem 1rem; background: none; border: none; color: #dc2626; cursor: pointer; font-size: 0.875rem; border-radius: 0.375rem; transition: background 0.2s;"
+                                    onmouseover="this.style.background='#fee2e2'"
+                                    onmouseout="this.style.background='transparent'">
+                                    <i class="fas fa-trash" style="margin-right: 0.5rem;"></i>Delete
                                 </button>
-                                @endif
+                                @endcan
                             </div>
-                            <!--end::Group actions-->
-                        </div>
-                        <!--end::Card toolbar-->
-                    </div>
-                    <!--end::Card header-->
-                    <!--begin::Card body-->
-                    <div class="card-body pt-0">
-                        <!--begin::Table-->
-                        <table class="table align-middle table-row-dashed fs-6 gy-5" id="kt_customers_table">
-                            <!--begin::Table head-->
-                            <thead>
-                                <!--begin::Table row-->
-                                <tr class="text-start text-gray-400 fw-bold fs-7 text-uppercase gs-0">
-                                    <th class="min-w-120px">S.No</th>
-                                    <th class="min-w-125px">role</th>
-                                    <th class="min-w-125px">Status</th>
-                                    @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
-                                    <th class="min-w-125px">Actions</th>
-                                    @endif
-                                </tr>
-                                <!--end::Table row-->
-                            </thead>
-                            <!--end::Table head-->
-                            <!--begin::Table body-->
-                            <tbody class="fw-semibold text-gray-600">
-                            @if($datas->isEmpty())
-                                <tr>
-                                    <td colspan="6" class="text-center">No results found.</td>
-                                </tr>
-                            @else
+                        </td>
+                        @endif
+                    </tr>
+                    @endforeach
+                    @endif
+                </tbody>
+            </table>
+        </div>
+        
+        <style>
+            /* Add padding to tbody cells */
+            #kt_customers_table tbody td {
+                padding: 12px 15px;
+                vertical-align: middle;
+                box-sizing: border-box;
+                border-bottom: 1px solid #dedede;
+            }
+        </style>
 
-                            @foreach($datas as $data)
-                                <tr>
-                                    <td>
-                                        {{ $serialNumberStart++ }}
-                                    </td>
-                                    <td>
-                                        {{$data->name}}
-                                    </td>
-                                    <td>
-                                        @if($data->status==1)
-
-                                        <div class="badge badge-light-success">Active</div>
-                                        @else
-                                        <div class="badge badge-light-danger"> InActive</div>
-                                        @endif
-                                    </td>
-                                    <!--end::Status=-->
-                                    <!--begin::IP Address=-->
-                                    @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
-                                    <td class="td">
-                                        @can('role.edit')
-                                        <a href="{{ route('role.edit', ['id' => $data->id]) }}" class="btn btn-icon btn-active-primary btn-light-primary mx-1 w-30px h-30px editbranchbtn">
-                                            <i class="fa fa-edit"></i>
-                                        </a>
-                                        @endcan
-                                        @can('role.delete')
-                                        <!-- Delete Button -->
-                                        <button type="button" class="btn btn-icon btn-active-danger btn-light-danger mx-1 w-30px h-30px deletestateBtn" data-role-id="{{ $data->id }}">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                        @endcan
-                                    </td>
-                                    @endif
-                                </tr>
-                                @endforeach
-                                @endif
-
-                            </tbody>
-                            <!--end::Table body-->
-                        </table>
-                        <!--end::Table-->
-                        <div class="row">
-                            <div id="paginationLinks" class="col-lg-12 col-md-12 col-sm-12">
-                               {{ $datas->links('pagination::bootstrap-4') }}
-                            </div>
-                        </div>
-                    </div>
-                    <!--end::Card body-->
+        <!-- Pagination -->
+        <div style="margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div id="paginationInfo" style="color: #6b7280; font-size: 0.875rem;">
+                    Showing {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() ?? 0 }} of {{ $datas->total() }} roles
+                </div>
+                <div id="paginationControls" style="display: flex; align-items: center; gap: 0.5rem;">
+                    @if ($datas->onFirstPage())
+                        <button disabled style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: #f9fafb; color: #9ca3af; border-radius: 0.375rem; font-size: 0.875rem; cursor: not-allowed;">
+                            ‹ Previous
+                        </button>
+                    @else
+                        <button onclick="goToPage({{ $datas->currentPage() - 1 }})" style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: white; color: #374151; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
+                            ‹ Previous
+                        </button>
+                    @endif
+                    
+                    <span style="margin: 0 1rem; font-weight: 500; color: #374151;">
+                        Page {{ $datas->currentPage() }} of {{ $datas->lastPage() }}
+                    </span>
+                    
+                    @if ($datas->hasMorePages())
+                        <button onclick="goToPage({{ $datas->currentPage() + 1 }})" style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: white; color: #374151; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
+                            Next ›
+                        </button>
+                    @else
+                        <button disabled style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: #f9fafb; color: #9ca3af; border-radius: 0.375rem; font-size: 0.875rem; cursor: not-allowed;">
+                            Next ›
+                        </button>
+                    @endif
                 </div>
             </div>
-            <!--end::Content container-->
         </div>
-        <!--end::Content-->
     </div>
-    <!--end::Content wrapper-->
 </div>
 
 @endsection
@@ -221,22 +209,42 @@
 @parent
 <script>
     $(document).ready(function() {
+        // Three-dot menu toggle
+        $(document).on('click', '.action-menu-btn', function(e) {
+            e.stopPropagation();
+            $('.action-menu').not($(this).siblings('.action-menu')).hide();
+            $(this).siblings('.action-menu').toggle();
+        });
+
+        // Close menu when clicking outside
+        $(document).on('click', function() {
+            $('.action-menu').hide();
+        });
+
+        // Prevent menu from closing when clicking inside it
+        $(document).on('click', '.action-menu', function(e) {
+            e.stopPropagation();
+        });
+
+        // Filter toggle
+        $('#filter_btn').click(function() {
+            $('#filter_section').toggle();
+        });
+
         $('#searchInput').keyup(function() {
             updateTableData();
-
         });
-        // Event listener for status select change
+
         $('[data-kt-ecommerce-order-filter="status"]').on('change', function() {
             updateTableData();
-
         });
-        $(document).on('click', '#paginationLinks a', function(e) {
-            e.preventDefault();
-            var page = $(this).attr('href').split('page=')[1];
+
+        // Pagination function
+        window.goToPage = function(page) {
             updateTableData(page);
-        });
+        };
 
-        $(document).on('change', '[name="row-count-filter"]', function (e) {
+        $(document).on('change', '[name="row-count-filter"]', function(e) {
             var page = 1;
             updateTableData(page);
         });
@@ -244,16 +252,16 @@
         function updateTableData(page = '') {
             var searchTerm = $('#searchInput').val();
             var selectedStatus = $('[data-kt-ecommerce-order-filter="status"]').val();
-            if($('[name="row-count-filter"]').val()){
+            if ($('[name="row-count-filter"]').val()) {
                 var pageItems = $('[name="row-count-filter"]').val();
-            }else{
+            } else {
                 var defaultPageItems = 10;
             }
-            loadTableData(searchTerm, selectedStatus, page ,pageItems || defaultPageItems);
+            loadTableData(searchTerm, selectedStatus, page, pageItems || defaultPageItems);
         }
         updateTableData();
 
-        function loadTableData(searchTerm, selectedStatus, page = '',pageItems='') {
+        function loadTableData(searchTerm, selectedStatus, page = '', pageItems = '') {
             $.ajax({
                 url: "{{ route('role.index') }}?search=" + searchTerm + "&status=" + selectedStatus + "&page=" + page + "&pageItems=" + pageItems,
                 type: "GET",
@@ -261,90 +269,133 @@
                     search: searchTerm,
                     status: selectedStatus,
                     page: page,
-                    pageItems:pageItems
+                    pageItems: pageItems
                 },
                 dataType: 'html',
                 success: function(response) {
-                    console.log(response);
                     $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
-                    $('#paginationLinks').html($(response).find('#paginationLinks').html());
+                    $('#paginationInfo').html($(response).find('#paginationInfo').html());
+                    $('#paginationControls').html($(response).find('#paginationControls').html());
                 },
                 error: function() {
                     console.error('Error loading table data.');
                 }
             });
         }
-        // Attach event listener to the "Delete" button
-        $(document).on('click', '.deletestateBtn', function() {
-            var roleId = $(this).data('role-id');
-            getRoleUser(roleId, function(hasActiveUsers) {
-            var deleteMessage = "Are you sure you would like to delete?";
-            if (hasActiveUsers) {
-                deleteMessage = "This role has active users. Are you sure you want to delete it?";
-            }
-            Swal.fire({
-                text: deleteMessage,
-                icon: "warning",
-                showCancelButton: true,
-                buttonsStyling: false,
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "No, return",
-                customClass: {
-                    confirmButton: "btn btn-danger",
-                    cancelButton: "btn btn-active-light"
-                }
-            }).then(function(result) {
-                if (result.isConfirmed) {
-                    $.ajaxSetup({
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                    });
-                    $.ajax({
-                        url: "{{ route('role.delete', ['id' => ':id']) }}".replace(':id', roleId),
-                        type: 'DELETE',
-                        success: function(res) {
-                           Swal.fire({
-                                title: "Deleted!",
-                                text: res.message,
-                                icon: "success",
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-success"
-                                },
-                                timer: 3000,
-                            });
-                            refreshTableContent();
-                        },
-                        error: function(xhr, status, error) {
-                            var errorMessage = xhr.responseJSON?.error || "Something went wrong. Please try again.";
-                            Swal.fire({
-                                title: "Error!",
-                                text: errorMessage,
-                                icon: "error",
-                                confirmButtonText: "Ok, got it!",
-                                customClass: {
-                                    confirmButton: "btn btn-danger"
-                                },
-                                timer: 4000,
-                            });
-                        }
-                    });
+
+        // Status toggle handler
+        $(document).on('change', '.status-toggle', function() {
+            const roleId = $(this).data('role-id');
+            const newStatus = $(this).is(':checked') ? 1 : 0;
+            const toggle = $(this);
+
+            $.ajax({
+                url: "{{ route('role.toggle-status') }}",
+                type: 'POST',
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    role_id: roleId,
+                    status: newStatus
+                },
+                success: function(response) {
+                    if (response.success) {
+                        showToast(response.message, 'success');
+                        updateTableData();
+                    }
+                },
+                error: function(xhr) {
+                    // Revert toggle on error
+                    toggle.prop('checked', !newStatus);
+                    showToast(xhr.responseJSON?.error, 'error');
                 }
             });
-          });
+        });
+
+        $(document).on('click', '.deletestateBtn', function(e) {
+            e.stopPropagation();
+            var roleId = $(this).data('role-id');
+            confirmBox("Are you sure you want to delete this user?", function() {
+                $.ajax({
+                    url: "{{ route('role.delete', ['id' => ':id']) }}".replace(':id', roleId),
+                    type: 'DELETE',
+                    success: function(res) {
+                        showToast(res.message);
+                        refreshTableContent();
+                    },
+                    error: function(xhr, status, error) {
+                        var errorMessage = xhr.responseJSON?.error || "Something went wrong. Please try again.";
+                        showToast(errorMessage, 'error');
+                    }
+                });
+            });
+            // var roleId = $(this).data('role-id');
+            // $('.action-menu').hide(); 
+            // getRoleUser(roleId, function (hasActiveUsers) {
+            //     var deleteMessage = "Are you sure you would like to delete?";
+            //     if (hasActiveUsers) {
+            //         deleteMessage = "This role has active users. Are you sure you want to delete it?";
+            //     }
+            //     Swal.fire({
+            //         text: deleteMessage,
+            //         icon: "warning",
+            //         showCancelButton: true,
+            //         buttonsStyling: false,
+            //         confirmButtonText: "Yes, delete it!",
+            //         cancelButtonText: "No, return",
+            //         customClass: {
+            //             confirmButton: "btn btn-danger",
+            //             cancelButton: "btn btn-active-light"
+            //         }
+            //     }).then(function (result) {
+            //         if (result.isConfirmed) {
+            //             $.ajaxSetup({
+            //                 headers: {
+            //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //                 }
+            //             });
+            //             $.ajax({
+            //                 url: "{{ route('role.delete', ['id' => ':id']) }}".replace(':id', roleId),
+            //                 type: 'DELETE',
+            //                 success: function (res) {
+            //                     Swal.fire({
+            //                         title: "Deleted!",
+            //                         text: res.message,
+            //                         icon: "success",
+            //                         confirmButtonText: "Ok, got it!",
+            //                         customClass: {
+            //                             confirmButton: "btn btn-success"
+            //                         },
+            //                         timer: 3000,
+            //                     });
+            //                     refreshTableContent();
+            //                 },
+            //                 error: function (xhr, status, error) {
+            //                     var errorMessage = xhr.responseJSON?.error || "Something went wrong. Please try again.";
+            //                     Swal.fire({
+            //                         title: "Error!",
+            //                         text: errorMessage,
+            //                         icon: "error",
+            //                         confirmButtonText: "Ok, got it!",
+            //                         customClass: {
+            //                             confirmButton: "btn btn-danger"
+            //                         },
+            //                         timer: 4000,
+            //                                   });
+            //                     }
+            //                 });
+            //         }
+            //     });
+            // });
         });
 
         function refreshTableContent() {
             $.ajax({
-                url: "{{ route('role.index') }}", // Replace with the actual route name or URL
+                url: "{{ route('role.index') }}",
                 type: "GET",
                 dataType: 'html',
                 success: function(response) {
-                    // Update the table content with the refreshed data
                     $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
                     updateTableData();
-
                 },
                 error: function(xhr, status, error) {
                     console.error('AJAX Error:', error);
@@ -353,22 +404,20 @@
         }
 
         function getRoleUser(roleId, callback) {
-                $.ajax({
-                    url: "{{ route('role.role_user', ['id' => ':id']) }}".replace(':id', roleId),
-                    type: "GET",
-                    dataType: 'json',
-                    success: function(response) {
-                        if (typeof callback === "function") {
-                            callback(response.hasActiveUsers);
-                        }
-                    },
-                    error: function() {
-                        console.error('Error checking role user status.');
+            $.ajax({
+                url: "{{ route('role.role_user', ['id' => ':id']) }}".replace(':id', roleId),
+                type: "GET",
+                dataType: 'json',
+                success: function(response) {
+                    if (typeof callback === "function") {
+                        callback(response.hasActiveUsers);
                     }
-                });
+                },
+                error: function() {
+                    console.error('Error checking role user status.');
+                }
+            });
         }
     });
 </script>
-
-
 @endsection

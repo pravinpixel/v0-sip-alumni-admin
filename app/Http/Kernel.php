@@ -68,5 +68,13 @@ class Kernel extends HttpKernel
         'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
         'assign.guard' => \App\Http\Middleware\AssignGuard::class,
         'auth.jwt' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        'route.access' => \App\Http\Middleware\AccessModeMiddleware::class,
     ];
+
+    protected $routeMiddleware = [
+        // existing middlewares...
+
+        'alumni.auth' => \App\Http\Middleware\AlumniAuth::class,
+    ];
+
 }

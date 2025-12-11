@@ -1,5 +1,7 @@
 <?php
 use App\Helpers\AccessGuard;
+use App\Models\Role;
+use App\Models\User;
 
 if (!function_exists('access')) {
     function access()
@@ -29,5 +31,54 @@ if (!function_exists('returnSuccess')) {
             'message' => $message,
             'data' => $data
         ];
+    }
+}
+if (!function_exists('sendsms')) {
+
+    function sendsms($mobileno, $message){
+
+    $message = urlencode($message);
+
+    $sender = 'SIPIND'; 
+    $apikey = '864112os7wco63l6z6381357h53oh57jk8';
+    $baseurl = 'https://instantalerts.co/api/web/send?apikey='.$apikey;
+
+    $url = $baseurl.'&sender='.$sender.'&to='.$mobileno.'&message='.$message;
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_POST, false);
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    // Use file get contents when CURL is not installed on server.
+    if(!$response){
+        $response = file_get_contents($url);
+    }
+
+    return $response;
+    
+}
+
+    //call function
+    //  sendsms('919585850324', 'Hello, This is a test message from spring edge');
+}
+
+if (!function_exists('generateRoleId')) {
+
+    function generateRoleId()
+    {
+        $last = Role::orderBy('id', 'desc')->first();
+        $nextId = $last ? $last->id + 1 : 1;
+        return 'ROLE' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
+    }
+}
+if (!function_exists('generateUserId')) {
+
+    function generateUserId()
+    {
+        $last = User::orderBy('id', 'desc')->first();
+        $nextId = $last ? $last->id + 1 : 1;
+        return 'USER' . str_pad($nextId, 4, '0', STR_PAD_LEFT);
     }
 }
