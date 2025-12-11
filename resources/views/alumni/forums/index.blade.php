@@ -1044,7 +1044,7 @@
                         </div>
 
 
-                        <p style="color: #6b7280; font-size: 15px; line-height: 1.6; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;" 
+                        <p style="color: #6b7280; font-size: 18px; line-height: 1.3; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;" 
                            title="${escapeHtml(fullDescription)}">
                              ${escapeHtml(fullDescription)}
                         </p>
@@ -1052,7 +1052,7 @@
                         ${tags.length > 0 ? `
                             <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
                                 ${tags.map(tag => `
-                                    <span style="background: #F7C744; color: #000000ff; padding: 4px 12px; border-radius: 14px; font-size: 10px; font-weight: 600;">
+                                    <span style="background: #F7C744; color: #000000ff; padding: 4px 12px; border-radius: 14px; font-size: 13px; font-weight: 600;">
                                         ${escapeHtml(tag.trim())}
                                     </span>
                                 `).join('')}
@@ -1122,7 +1122,7 @@
                                     style="background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
                                         onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
                                         onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="far fa-comment"></i>
                                     View Thread
                                 </button>
                             </div>
