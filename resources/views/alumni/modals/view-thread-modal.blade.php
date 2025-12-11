@@ -153,4 +153,239 @@
         margin-bottom: 8px;
         display: inline-block;
     }
+
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+        #threadModal {
+            padding: 10px !important;
+        }
+
+        #threadModal > div {
+            max-width: 100% !important;
+            margin: 10px auto !important;
+            max-height: 95vh !important;
+            border-radius: 8px !important;
+        }
+
+        /* Modal content padding */
+        #threadModal > div > div {
+            padding: 16px !important;
+        }
+
+        /* Thread title */
+        #threadTitle {
+            font-size: 18px !important;
+            margin-bottom: 12px !important;
+            line-height: 1.3 !important;
+        }
+
+        /* Close button */
+        #threadModal button[onclick="closeThreadModal()"] {
+            font-size: 16px !important;
+            padding: 8px !important;
+        }
+
+        /* Author section */
+        #threadAuthorAvatar {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 12px !important;
+        }
+
+        #threadAuthor {
+            font-size: 13px !important;
+        }
+
+        #threadDate {
+            font-size: 11px !important;
+        }
+
+        /* Thread description */
+        #threadDescription {
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            margin: 8px 0 12px 0 !important;
+        }
+
+        /* Tags */
+        #threadTags span {
+            font-size: 10px !important;
+            padding: 4px 8px !important;
+        }
+
+        /* Comments heading */
+        #commentsHeading {
+            font-size: 15px !important;
+            margin-bottom: 12px !important;
+        }
+
+        /* Comment items */
+        .comment-item {
+            padding: 12px !important;
+            margin-bottom: 12px !important;
+        }
+
+        .comment-item p {
+            font-size: 13px !important;
+            line-height: 1.4 !important;
+        }
+
+        .comment-item .comment-author {
+            font-size: 12px !important;
+        }
+
+        .comment-item .comment-date {
+            font-size: 10px !important;
+        }
+
+        /* Reply section */
+        #replySection {
+            padding-top: 16px !important;
+        }
+
+        #replyingToIndicator {
+            padding: 10px 12px !important;
+            margin-bottom: 12px !important;
+        }
+
+        #replyingToIndicator span {
+            font-size: 12px !important;
+        }
+
+        /* Current user avatar in reply */
+        #currentUserAvatar {
+            width: 36px !important;
+            height: 36px !important;
+            font-size: 12px !important;
+        }
+
+        /* Reply input */
+        #replyInput {
+            padding: 10px 12px !important;
+            font-size: 13px !important;
+            margin-bottom: 10px !important;
+        }
+
+        /* Reply buttons */
+        #replySection button {
+            padding: 8px 16px !important;
+            font-size: 13px !important;
+        }
+
+        /* Stack buttons vertically on very small screens */
+        #replySection > div > div > div:last-child {
+            flex-direction: column !important;
+            gap: 8px !important;
+        }
+
+        #replySection > div > div > div:last-child button {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+
+        /* No comments message */
+        #noCommentsMessage {
+            padding: 30px 15px !important;
+        }
+
+        #noCommentsMessage i {
+            font-size: 36px !important;
+            margin-bottom: 8px !important;
+        }
+
+        #noCommentsMessage p {
+            font-size: 13px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #threadModal {
+            padding: 5px !important;
+        }
+
+        #threadModal > div {
+            margin: 5px auto !important;
+            border-radius: 6px !important;
+        }
+
+        /* Modal content padding */
+        #threadModal > div > div {
+            padding: 12px !important;
+        }
+
+        /* Thread title */
+        #threadTitle {
+            font-size: 16px !important;
+            margin-bottom: 10px !important;
+        }
+
+        /* Author section */
+        #threadAuthorAvatar {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 11px !important;
+        }
+
+        #threadAuthor {
+            font-size: 12px !important;
+        }
+
+        #threadDate {
+            font-size: 10px !important;
+        }
+
+        /* Thread description */
+        #threadDescription {
+            font-size: 13px !important;
+            margin: 6px 0 10px 0 !important;
+        }
+
+        /* Tags */
+        #threadTags span {
+            font-size: 9px !important;
+            padding: 3px 6px !important;
+        }
+
+        /* Comments heading */
+        #commentsHeading {
+            font-size: 14px !important;
+            margin-bottom: 10px !important;
+        }
+
+        /* Comment items */
+        .comment-item {
+            padding: 10px !important;
+        }
+
+        .comment-item p {
+            font-size: 12px !important;
+        }
+
+        .comment-item .comment-author {
+            font-size: 11px !important;
+        }
+
+        .comment-item .comment-date {
+            font-size: 9px !important;
+        }
+
+        /* Current user avatar in reply */
+        #currentUserAvatar {
+            width: 32px !important;
+            height: 32px !important;
+            font-size: 11px !important;
+        }
+
+        /* Reply input */
+        #replyInput {
+            padding: 8px 10px !important;
+            font-size: 12px !important;
+        }
+
+        /* Reply buttons */
+        #replySection button {
+            padding: 8px 14px !important;
+            font-size: 12px !important;
+        }
+    }
 </style>
