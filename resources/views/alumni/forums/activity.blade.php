@@ -716,7 +716,8 @@
                                                                                     <h3 onclick="openPostModal(${post.id})"
                                                                                         style="font-size: 18px; font-weight: 700; color: #dc2626; margin: 0; cursor: pointer; 
                                                                                             transition: color 0.2s; line-height: 1.4; word-wrap: break-word; padding-right: 8px; 
-                                                                                            overflow-wrap: break-word; word-break: break-word;">
+                                                                                            overflow-wrap: break-word; word-break: break-word;"
+                                                                                            onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none'; this.style.color='#dc2626';">
                                                                                         ${escapeHtml(title)}
                                                                                     </h3>
                                                                                 </div>
@@ -1173,9 +1174,17 @@
                 showFieldError(titleInput, 'Post title is required');
                 hasError = true;
             }
+            const invalidPattern = /[^A-Za-z0-9 ]/;
+            if (invalidPattern.test(title)) {
+                showFieldError(titleInput, 'Special characters are not allowed in the title');
+                hasError = true;
+            }
 
             if (!description || description.length === 0) {
                 showFieldError(document.getElementById('editor'), 'Post description is required');
+                hasError = true;
+            } else if (description.length > MAX_DESCRIPTION_LENGTH) {
+                showFieldError(document.getElementById('editor'), `Description must be less than ${MAX_DESCRIPTION_LENGTH} characters`);
                 hasError = true;
             }
 
@@ -1185,7 +1194,6 @@
             }
 
             if (hasError) {
-                showToast('Please fill in all required fields', 'error');
                 return;
             }
 
