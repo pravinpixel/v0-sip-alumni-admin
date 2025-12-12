@@ -1107,7 +1107,7 @@
                                         Like
                                     </button>
                                 `}
-                                <button 
+                                <button data-post-id="${post.id}"
                                          style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
                                             onmouseover="replyHover(this)"
                                             onmouseout="replyUnhover(this)"
@@ -1136,20 +1136,20 @@
                                         ${currentUserInitials}
                                     </div>
                                 `}
-                                <textarea placeholder="Write your reply..." id="replyInput-${post.id}" style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; resize: vertical;"
+                                <textarea placeholder="Write your reply..." id="replyInput-${post.id}" oninput="toggleReplyButton(${post.id})" style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; resize: vertical;"
                                 onfocus="this.style.borderColor='#dc2626'" 
                                 onblur="this.style.borderColor='#e5e7eb'"></textarea>
 
                             </div>
                             <div style="display: flex; justify-content: flex-end; gap: 12px;">
-                                <button onclick="toggleReplyForm(document.querySelector('[onclick*=toggleReplyForm][data-post-id=\\'${post.id}\\']'), ${post.id})"
+                                <button onclick="closeReplyForm(${post.id})"
                                         style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
                                         onmouseover="this.style.background='#f3f4f6'"
                                         onmouseout="this.style.background='white'">
                                     Cancel
                                 </button>
-                                <button onclick="submitReply(${post.id})"
-                                        style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
+                                <button onclick="submitReply(${post.id})" id="replySubmit-${post.id}" disabled
+                                        style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: not-allowed; opacity: 0.6; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
                                         onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
                                         onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
                                     <i class="fas fa-paper-plane"></i>
@@ -1180,6 +1180,17 @@
         }
 
         function toggleReplyForm(button, postId) {
+            document.querySelectorAll("[id^='replyForm-']").forEach(form => {
+                if (form.id !== `replyForm-${postId}`) {
+                    form.style.display = "none";
+                }
+            });
+            document.querySelectorAll("button[data-post-id]").forEach(btn => {
+                btn.classList.remove("reply-active");
+                btn.style.background = "transparent";
+                btn.style.color = "#6b7280";
+            });
+
             const replyForm = document.getElementById(`replyForm-${postId}`);
 
             // Remove active style from all buttons
@@ -1190,35 +1201,51 @@
                 btn.style.border = "none";
             });
 
-            if (replyForm.style.display === "none" || replyForm.style.display === "") {
-                replyForm.style.display = "block";
-
-                // Activate current button
-                button.classList.add("reply-active");
-                button.style.background = "#ffffff";
-                button.style.color = "#dc2626";
-
-                document.getElementById(`replyInput-${postId}`).focus();
-            } else {
+            if (replyForm.style.display === "block") {
                 replyForm.style.display = "none";
-
-                // Deactivate
                 button.classList.remove("reply-active");
                 button.style.background = "transparent";
                 button.style.color = "#6b7280";
-                button.style.border = "none";
+            } else {
+                replyForm.style.display = "block";
+                button.classList.add("reply-active");
+                button.style.background = "#ffffff";
+                button.style.color = "#dc2626";
+                document.getElementById(`replyInput-${postId}`).focus();
             }
         }
+        function closeReplyForm(postId) {
+            const replyForm = document.getElementById(`replyForm-${postId}`);
+            replyForm.style.display = "none";
 
+            const btn = document.querySelector(`button[data-post-id="${postId}"]`);
+            if (btn) {
+                btn.classList.remove("reply-active");
+                btn.style.background = "transparent";
+                btn.style.color = "#6b7280";
+            }
+        }
+        function toggleReplyButton(postId) {
+            let input = document.getElementById(`replyInput-${postId}`);
+            let button = document.getElementById(`replySubmit-${postId}`);
 
-
+            if (input.value.trim().length > 0) {
+                button.disabled = false;
+                button.style.opacity = "1";
+                button.style.cursor = "pointer";
+            } else {
+                button.disabled = true;
+                button.style.opacity = "0.6";
+                button.style.cursor = "not-allowed";
+            }
+        }
 
         function submitReply(postId) {
             const replyInput = document.getElementById(`replyInput-${postId}`);
             const replyText = replyInput.value.trim();
 
             if (!replyText) {
-                showToast('Please write a reply before posting', 'error');
+                showToast('Please enter a valid reply', 'error');
                 return;
             }
 

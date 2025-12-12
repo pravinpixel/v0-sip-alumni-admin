@@ -299,7 +299,7 @@ function submitThreadReply() {
     const replyText = replyInput.value.trim();
 
     if (!replyText) {
-        showToast('Please write a reply before posting', 'error');
+        showToast('Please enter a valid reply', 'error');
         return;
     }
 
