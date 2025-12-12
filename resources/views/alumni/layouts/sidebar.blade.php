@@ -82,7 +82,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     .drawer-toggle {
         position: absolute;
         top: 4%;
-        right: 0px;
+        right: 6px;
         transform: translateY(-50%);
         width: 30px;
         height: 30px;
@@ -102,7 +102,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     .drawer-toggle:hover {
         background: #d30f0fff;
-        right: 2px;
     }
 
     .drawer-toggle i {
@@ -126,7 +125,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     #sidebar.collapsed .profile-img {
         width: 55px;
         height: 55px;
-        margin: 0 auto 5px;
+        margin: 20px auto 5px;
     }
 
     #sidebar.collapsed .profile-name,

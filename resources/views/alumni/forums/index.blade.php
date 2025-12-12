@@ -1115,7 +1115,7 @@
                                             onmouseover="replyHover(this)"
                                             onmouseout="replyUnhover(this)"
                                             onclick="toggleReplyForm(this, ${post.id})">
-                                            <i class="fas fa-reply"></i> Reply
+                                            <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm"></i> Reply
                                             </button>
 
                                 <button onclick="openThreadModal(${post.id})"

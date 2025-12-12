@@ -212,7 +212,7 @@ function createCommentElement(reply) {
                                 style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;"
                                 onmouseover="this.style.background='#fef2f2'"
                                 onmouseout="this.style.background='transparent'">
-                                <i class="fas fa-reply"></i> Reply
+                                <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm me-1"></i> Reply
                             </button>
                         ` : ''}
                     </div>
@@ -440,7 +440,7 @@ function renderChildComment(reply, level = 0) {
                             style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 12px; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;"
                             onmouseover="this.style.background='#fef2f2'"
                             onmouseout="this.style.background='transparent'">
-                            <i class="fas fa-reply"></i> Reply
+                            <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm me-1"></i> Reply
                         </button>
                         ` : ''}
                     </div>
