@@ -47,7 +47,7 @@ function showToast(message, type = 'success') {
         toast.className = 'toast-notification';
         toast.style.background = type === 'success' ? '#10b981' : '#ef4444';
         toast.innerHTML = `
-            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} text-white"></i>
             <span>${message}</span>
         `;
         document.body.appendChild(toast);
