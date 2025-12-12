@@ -59,6 +59,44 @@
         border-radius: 8px;
     }
 
+    /* Hide default DataTables sorting arrows */
+    table.dataTable thead th.sorting:before,
+    table.dataTable thead th.sorting_asc:before,
+    table.dataTable thead th.sorting_desc:before,
+    table.dataTable thead th.sorting:after,
+    table.dataTable thead th.sorting_asc:after,
+    table.dataTable thead th.sorting_desc:after {
+        display: none !important;
+    }
+
+    /* Sortable columns styling */
+    #connectionsTable thead th.sorting,
+    #connectionsTable thead th.sorting_asc,
+    #connectionsTable thead th.sorting_desc,
+    #requestsTable thead th.sorting,
+    #requestsTable thead th.sorting_asc,
+    #requestsTable thead th.sorting_desc {
+        cursor: pointer !important;
+        position: relative !important;
+        padding-right: 30px !important;
+    }
+
+    /* Remove sorted column background highlighting */
+    table.dataTable.order-column>tbody tr>.sorting_1,
+    table.dataTable.order-column>tbody tr>.sorting_2,
+    table.dataTable.order-column>tbody tr>.sorting_3,
+    table.dataTable.display>tbody tr>.sorting_1,
+    table.dataTable.display>tbody tr>.sorting_2,
+    table.dataTable.display>tbody tr>.sorting_3,
+    table.dataTable tbody tr > .sorting_1,
+    table.dataTable tbody tr > .sorting_2,
+    table.dataTable tbody tr > .sorting_3,
+    #connectionsTable tbody td,
+    #requestsTable tbody td {
+        background-color: inherit !important;
+        box-shadow: none !important;
+    }
+
     /* Tab button active state */
     .tab-btn.active {
         background-color: #dc2626 !important;
@@ -414,25 +452,25 @@
             columns: [{
                     data: 'alumni',
                     name: 'alumni',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
                     data: 'email',
                     name: 'email',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
                     data: 'batch',
                     name: 'batch',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
                     data: 'location',
                     name: 'location',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
@@ -465,25 +503,25 @@
             columns: [{
                     data: 'alumni',
                     name: 'alumni',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
                     data: 'email',
                     name: 'email',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
                     data: 'batch',
                     name: 'batch',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
                     data: 'location',
                     name: 'location',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
@@ -569,11 +607,22 @@
         connectionsTable.on('draw', function() {
             renderCustomPagination(connectionsTable, 'connectionsInfo', 'connectionsPagination');
             updateCountsBadge('connectionsCount', connectionsTable);
+            updateSortIcons('connectionsTable');
         });
 
         requestsTable.on('draw', function() {
             renderCustomPagination(requestsTable, 'requestsInfo', 'requestsPagination');
             updateCountsBadge('requestsCount', requestsTable);
+            updateSortIcons('requestsTable');
+        });
+
+        // Update sorting icons after table order changes
+        connectionsTable.on('order.dt', function() {
+            updateSortIcons('connectionsTable');
+        });
+
+        requestsTable.on('order.dt', function() {
+            updateSortIcons('requestsTable');
         });
 
         // Filters (if you add filter inputs for these tables later)
@@ -705,6 +754,25 @@
             },
             error: function() {
                 showToast('Unable to reject connection request.', 'error');
+            }
+        });
+    }
+
+    // Function to update sorting icons
+    function updateSortIcons(tableId) {
+        $(`#${tableId} thead th`).each(function() {
+            const $th = $(this);
+            
+            // Remove existing sort icons
+            $th.find('.sort-icon').remove();
+            
+            // Add appropriate sort icon based on current state
+            if ($th.hasClass('sorting_asc')) {
+                $th.append(' <i class="bi bi-arrow-up sort-icon" style="color:white;font-size:14px;margin-left:6px;position:absolute;right:12px;top:50%;transform:translateY(-50%);"></i>');
+            } else if ($th.hasClass('sorting_desc')) {
+                $th.append(' <i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;position:absolute;right:12px;top:50%;transform:translateY(-50%);"></i>');
+            } else if ($th.hasClass('sorting')) {
+                $th.append(' <i class="bi bi-arrow-down-up sort-icon" style="color:white;font-size:13px;margin-left:6px;position:absolute;right:12px;top:50%;transform:translateY(-50%);"></i>');
             }
         });
     }

@@ -11,6 +11,7 @@ use App\Models\MobileOtp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
@@ -37,7 +38,7 @@ class ConnectionsController extends Controller
                 $q->where('sender_id', $alumniId)
                     ->orWhere('receiver_id', $alumniId);
             })
-            ->where('status', 'accepted')->orderBy('created_at', 'DESC');
+            ->where('status', 'accepted');
 
         return DataTables::of($query)
             ->addIndexColumn()
@@ -99,7 +100,46 @@ class ConnectionsController extends Controller
                     });
                 }
             })
-            
+            ->orderColumn('alumni', function ($query, $order) use ($alumniId) {
+                $query->orderBy(
+                    DB::raw("CASE 
+                        WHEN sender_id = {$alumniId} THEN (SELECT full_name FROM alumnis WHERE id = receiver_id)
+                        ELSE (SELECT full_name FROM alumnis WHERE id = sender_id)
+                    END"),
+                    $order
+                );
+            })
+            ->orderColumn('email', function ($query, $order) use ($alumniId) {
+                $query->orderBy(
+                    DB::raw("CASE 
+                        WHEN sender_id = {$alumniId} THEN (SELECT email FROM alumnis WHERE id = receiver_id)
+                        ELSE (SELECT email FROM alumnis WHERE id = sender_id)
+                    END"),
+                    $order
+                );
+            })
+            ->orderColumn('batch', function ($query, $order) use ($alumniId) {
+                $query->orderBy(
+                    DB::raw("CASE 
+                        WHEN sender_id = {$alumniId} THEN (SELECT year_of_completion FROM alumnis WHERE id = receiver_id)
+                        ELSE (SELECT year_of_completion FROM alumnis WHERE id = sender_id)
+                    END"),
+                    $order
+                );
+            })
+            ->orderColumn('location', function ($query, $order) use ($alumniId) {
+                $query->orderBy(
+                    DB::raw("CASE 
+                        WHEN sender_id = {$alumniId} THEN (
+                            SELECT name FROM cities WHERE id = (SELECT city_id FROM alumnis WHERE id = receiver_id)
+                        )
+                        ELSE (
+                            SELECT name FROM cities WHERE id = (SELECT city_id FROM alumnis WHERE id = sender_id)
+                        )
+                    END"),
+                    $order
+                );
+            })
             ->addColumn('alumni', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
                 $img = $alumni->image_url ?? asset('images/avatar/blank.png');
@@ -172,6 +212,31 @@ class ConnectionsController extends Controller
                 }
             })
             
+            ->orderColumn('alumni', function ($query, $order) {
+                $query->orderBy(
+                    DB::raw("(SELECT full_name FROM alumnis WHERE id = alumni_connections.sender_id)"),
+                    $order
+                );
+            })
+            ->orderColumn('email', function ($query, $order) {
+                $query->orderBy(
+                    DB::raw("(SELECT email FROM alumnis WHERE id = alumni_connections.sender_id)"),
+                    $order
+                );
+            })
+            ->orderColumn('batch', function ($query, $order) {
+                $query->orderBy(
+                    DB::raw("(SELECT year_of_completion FROM alumnis WHERE id = alumni_connections.sender_id)"),
+                    $order
+                );
+            })
+            ->orderColumn('location', function ($query, $order) {
+                $query->orderBy(
+                    DB::raw("(SELECT name FROM cities WHERE id = (SELECT city_id FROM alumnis WHERE id = alumni_connections.sender_id))"),
+                    $order
+                );
+            })
+
             ->editColumn('alumni', function ($row) {
                 $alumni = $row->sender;
                 $img = asset('images/avatar/blank.png');
