@@ -194,9 +194,9 @@ function createCommentElement(reply) {
             <div style="display: flex; gap: 12px;background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; transition: all 0.2s;">
                 ${hasConnection && profilePicture ? `
                     <img src="${profilePicture}" alt="${escapeHtml(replyAuthor)}" 
-                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626; flex-shrink: 0;">
+                        style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
                 ` : `
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(90deg, #E2001D, #B1040E); color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
                         ${replyInitial}
                     </div>
                 `}
@@ -250,8 +250,8 @@ function setReplyTo(replyId, userName) {
     // Highlight selected comment
     const commentElement = document.querySelector(`[data-reply-id="${replyId}"]`);
     if (commentElement) {
-        commentElement.style.background = '#fef2f2';
-        commentElement.style.borderColor = '#fca5a5';
+        // commentElement.style.background = '#fef2f2';
+        // commentElement.style.borderColor = '#fca5a5';
         commentElement.scrollIntoView({
             behavior: 'smooth',
             block: 'nearest'
@@ -269,7 +269,7 @@ function setReplyTo(replyId, userName) {
     // Focus input
     const input = document.getElementById('replyInput');
     input.focus();
-    input.placeholder = `Replying to ${userName}...`;
+    input.placeholder = `Write a comment...`;
 }
 
 function cancelReply() {

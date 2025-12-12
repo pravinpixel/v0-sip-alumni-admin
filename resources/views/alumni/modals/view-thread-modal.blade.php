@@ -46,12 +46,12 @@
             {{-- Reply Input Section --}}
             <div id="replySection" style="border-top: 1px solid #e5e7eb; padding-top: 24px;">
                 {{-- Replying To Indicator --}}
-                <div id="replyingToIndicator" style="display: none; background: #f3f4f6; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; border-left: 4px solid #dc2626;">
-                    <div style="display: flex; justify-content: between; align-items: center;">
+                <div id="replyingToIndicator" style="display: none; border: 1px solid #fff9a1ff; background: #fff4f6ff; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+                    <div class="d-flex align-items-center justify-content-between w-100">
                         <span style="font-size: 14px; color: #374151; font-weight: 600;">
-                            Replying to <span id="replyingToName" style="color: #dc2626;"></span>
+                            <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm me-1 text-danger"></i> Replying to <span id="replyingToName" style="color: #dc2626;"></span>
                         </span>
-                        <button onclick="cancelReply()" style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px;">
+                        <button onclick="cancelReply()" class="btn hover:text-danger" style="background: transparent; border: none; color: #1e1f20ff; cursor: pointer; font-size: 14px;">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
@@ -80,9 +80,9 @@
                             </button>
                             <button
                                 onclick="submitThreadReply()"
-                                style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
-                                onmouseover="this.style.background='#b91c1c'"
-                                onmouseout="this.style.background='#dc2626'">
+                                style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
+                                onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'"
+                                onmouseout="this.style.background='linear-gradient(90deg, #E2001D, #B1040E)'">
                                 <i class="fas fa-paper-plane"></i>
                                 Post Reply
                             </button>

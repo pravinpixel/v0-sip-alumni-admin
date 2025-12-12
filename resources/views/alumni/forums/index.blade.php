@@ -481,13 +481,13 @@
             </div>
             <div style="display: flex; gap: 12px;">
                 <a href="{{ route('alumni.forums.activity') }}"
-                    style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none;"
-                    onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+                    style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none;"
+                    onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'" onmouseout="this.style.background='linear-gradient(90deg, #E2001D, #B1040E)'">
                     Your Activity
                 </a>
                 <button
-                    style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;"
-                    onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'"
+                    style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;"
+                    onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'" onmouseout="this.style.background='linear-gradient(90deg, #E2001D, #B1040E)'"
                     onclick="openCreatePostModal()">
                     <i class="fas fa-plus"></i>
                     Create Post
@@ -969,9 +969,6 @@
             posts.forEach((post, index) => {
                 const title = post.title || 'Untitled Post';
                 const fullDescription = post.description ? post.description.replace(/<\/?[^>]+>/g, "") : 'No description available';
-                const description = fullDescription.length > 200 ? 
-                    fullDescription.substring(0, 200) + '...' : 
-                    fullDescription;
 
                 const tags = post.labels ?
                     post.labels.split(',').filter(tag => tag.trim() !== '') : [];
@@ -1062,9 +1059,9 @@
                         <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
                             ${hasConnection && profilePicture ? `
                                 <img src="${profilePicture}" alt="${escapeHtml(author)}" 
-                                    style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626;">
+                                    style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
                             ` : `
-                                <div style="width: 30px; height: 30px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
+                                <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(90deg, #E2001D, #B1040E); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
                                     ${authorInitial}
                                 </div>
                             `}
@@ -1078,15 +1075,15 @@
                         {{-- Added engagement stats and action buttons with reply toggle --}}
                         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0px; margin-bottom: 16px;border-top: 1px solid #e5e7eb;">
                             <div style="display: flex; align-items: center; gap: 20px;">
-                                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                                <div style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-size: 14px;">
                                     <i class="far fa-eye"></i>
                                     <span>${post.views_count || 0}</span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                                <div style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-size: 14px;">
                                     <i class="far fa-heart"></i>
                                     <span>${post.likes_count || 0}</span>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 8px; color: #6b7280; font-size: 14px;">
+                                <div style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-size: 14px;">
                                     <i class="far fa-comment"></i>
                                     <span>${post.reply_count || 0}</span>
                                 </div>
@@ -1119,9 +1116,9 @@
                                             </button>
 
                                 <button onclick="openThreadModal(${post.id})"
-                                    style="background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
-                                        onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
-                                        onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
+                                    style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
+                                        onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'; this.style.transform='translateY(-1px)'"
+                                        onmouseout="this.style.background='linear-gradient(90deg, #E2001D, #B1040E)'; this.style.transform='translateY(0)'">
                                     <i class="far fa-comment"></i>
                                     View Thread
                                 </button>
@@ -1139,11 +1136,10 @@
                                         ${currentUserInitials}
                                     </div>
                                 `}
-                                <input type="text" placeholder="Write your reply..."
-                                    id="replyInput-${post.id}"
-                                    style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
-                                    onfocus="this.style.borderColor='#dc2626'" 
-                                    onblur="this.style.borderColor='#e5e7eb'">
+                                <textarea placeholder="Write your reply..." id="replyInput-${post.id}" style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; resize: vertical;"
+                                onfocus="this.style.borderColor='#dc2626'" 
+                                onblur="this.style.borderColor='#e5e7eb'"></textarea>
+
                             </div>
                             <div style="display: flex; justify-content: flex-end; gap: 12px;">
                                 <button onclick="toggleReplyForm(document.querySelector('[onclick*=toggleReplyForm][data-post-id=\\'${post.id}\\']'), ${post.id})"

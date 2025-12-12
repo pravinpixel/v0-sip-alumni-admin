@@ -217,12 +217,12 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     /* Ensure edit button is red, not yellow */
     .edit-profile-btn {
-        background: #dc2626;
+        background: linear-gradient(90deg, #E2001D, #B1040E);
         border: none !important;
     }
 
     .edit-profile-btn:hover {
-        background: #b91c1c;
+        background: linear-gradient(90deg, #B1040E, #E2001D);
     }
 
     /* Remove any yellow/orange tints */
