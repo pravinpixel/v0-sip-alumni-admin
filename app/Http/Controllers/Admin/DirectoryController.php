@@ -40,7 +40,7 @@ class DirectoryController extends Controller
     public function getData(Request $request)
     {
         try {
-            $query = Alumnis::with(['city', 'occupation'])->orderBy('id', 'desc');
+            $query = Alumnis::with(['city', 'occupation']);
 
             // Apply filters - handle multiple selections
             if ($request->filled('years')) {
@@ -93,6 +93,35 @@ class DirectoryController extends Controller
                         });
                     }
                 })
+                
+                ->orderColumn('full_name', function ($query, $order) {
+                    $query->orderBy('alumnis.full_name', $order);
+                })
+                ->orderColumn('batch', function ($query, $order) {
+                    $query->orderBy('alumnis.year_of_completion', $order);
+                })
+                ->orderColumn('mobile_number', function ($query, $order) {
+                    $query->orderBy('alumnis.mobile_number', $order);
+                })
+                ->orderColumn('location', function ($query, $order) {
+                    $query->orderBy(
+                        DB::raw("(SELECT cities.name FROM cities WHERE cities.id = alumnis.city_id)"),
+                        $order
+                    );
+                })
+                ->orderColumn('occupation', function ($query, $order) {
+                    $query->orderBy(
+                        DB::raw("(SELECT name FROM occupations WHERE id = alumnis.occupation_id)"),
+                        $order
+                    );
+                })
+                ->orderColumn('status', function ($query, $order) {
+                    $query->orderBy('alumnis.status', $order);
+                })
+                ->orderColumn('created_at', function ($query, $order) {
+                    $query->orderBy('alumnis.created_at', $order);
+                })
+
                 ->editColumn('created_at', function ($row) {
                     return '<span>' . \Carbon\Carbon::parse($row->created_at)
                         ->setTimezone('Asia/Kolkata')

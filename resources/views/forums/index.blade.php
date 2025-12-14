@@ -73,21 +73,36 @@
             </div>
         </div>
 
-        <!-- Alumni Table -->
-        <table id="forumsTable" class="display" style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;">
-            <thead>
-                <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
-                    <th style="padding: 15px; text-align: left;">Created On</th>
-                    <th style="padding: 15px; text-align: left;">Alumni</th>
-                    <th style="padding: 15px; text-align: left;">Contact</th>
-                    <th style="padding: 15px; text-align: left;">View Post</th>
-                    <th style="padding: 15px; text-align: left;">Action Taken On</th>
-                    <th style="padding: 15px; text-align: left;">Status</th>
-                    <th style="padding: 15px; text-align: left;">Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <!-- Forums Table Container -->
+        <div class="table-container" style="border-radius: 8px 8px 0 0; border: 1px solid #dedede; border-bottom: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-top: 0; margin-bottom: 0;">
+            <!-- Table Wrapper (Scrollable) -->
+            <div class="table-responsive" style="overflow-x: auto;">
+                <table id="forumsTable" class="display forums-table" style="width: 100%; min-width: 1000px; border-collapse: collapse; background-color: white; margin: 0;">
+                    <thead>
+                        <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Created On</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Alumni</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Contact</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">View Post</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Action Taken On</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Status</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pagination Area (Bottom of Table Design) -->
+        <div class="pagination-bottom-area" style="background: #ffffff; border: 1px solid #dedede; border-top: 1px solid #e5e7eb; border-radius: 0 0 8px 8px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 0;">
+            <div class="dt-info-custom" style="color: #6b7280; font-size: 14px; font-weight: 400;">
+                <!-- Info will be populated here -->
+            </div>
+            <div class="dt-pagination-custom" style="display: flex; align-items: center; gap: 8px;">
+                <!-- Pagination will be populated here -->
+            </div>
+        </div>
     </div>
 </div>
 <style>
@@ -98,6 +113,124 @@
         vertical-align: middle;
         box-sizing: border-box;
         border-bottom: 1px solid #dedede;
+    }
+
+    /* Prevent duplicate headers */
+    #forumsTable {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #forumsTable thead th {
+        position: relative;
+        border-bottom: 2px solid #dedede;
+    }
+
+    /* Ensure only one header row */
+    #forumsTable thead {
+        display: table-header-group;
+    }
+
+    /* Hide any duplicate headers that might be created */
+    #forumsTable thead:not(:first-child) {
+        display: none !important;
+    }
+
+    /* Prevent DataTables from creating additional header elements */
+    .dataTables_wrapper .dataTables_scroll .dataTables_scrollHead {
+        display: none !important;
+    }
+
+    /* Ensure the original header stays visible */
+    #forumsTable > thead {
+        display: table-header-group !important;
+    }
+
+    /* Hide any cloned headers */
+    .dataTables_scrollHead table thead {
+        display: none !important;
+    }
+
+    /* Table responsive wrapper */
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f3f4f6;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+
+    /* DataTables sorting icons */
+    table.dataTable thead .sorting:before,
+    table.dataTable thead .sorting:after,
+    table.dataTable thead .sorting_asc:before,
+    table.dataTable thead .sorting_asc:after,
+    table.dataTable thead .sorting_desc:before,
+    table.dataTable thead .sorting_desc:after {
+        color: white !important;
+    }
+
+    /* Bottom pagination area (matches original table design) */
+    .pagination-bottom-area {
+        position: relative;
+        z-index: 10;
+        background: #ffffff !important;
+        border-top: 1px solid #e5e7eb !important;
+    }
+
+    /* Ensure DataTables doesn't interfere with our fixed pagination */
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        display: none !important;
+    }
+
+    /* Custom pagination button styles (original design) */
+    .dt-pagination-custom button {
+        background: #ffffff;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .dt-pagination-custom button:hover:not(:disabled) {
+        background: #f9fafb;
+        border-color: #9ca3af;
+        color: #111827;
+    }
+
+    .dt-pagination-custom button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background: #f9fafb;
+        color: #9ca3af;
+    }
+
+    .dt-pagination-custom span {
+        color: #6b7280;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0 12px;
     }
 </style>
 
@@ -240,9 +373,15 @@
         // Load filter options
         loadFilterOptions();
 
+        // Destroy existing DataTable if it exists to prevent duplicates
+        if ($.fn.DataTable.isDataTable('#forumsTable')) {
+            $('#forumsTable').DataTable().destroy();
+        }
+
         const table = $('#forumsTable').DataTable({
             processing: true,
             serverSide: true,
+            destroy: true,
             ajax: {
                 url: "{{ route('admin.forums.data') }}",
                 type: 'GET',
@@ -255,26 +394,30 @@
 
             columns: [{
                     data: 'created_at',
-                    name: 'created_at'
+                    name: 'created_at',
+                    orderable: true
                 },
                 {
                     data: 'alumni',
                     name: 'alumni',
-                    orderable: false,
+                    orderable: true,
                     searchable: false
                 },
                 {
                     data: 'contact',
-                    name: 'contact'
+                    name: 'contact',
+                    orderable: true
                 },
                 {
                     data: 'view_post',
                     name: 'view_post',
-                    orderable: false
+                    orderable: false,
+                    searchable: false
                 },
                 {
                     data: 'action_taken_on',
-                    name: 'action_taken_on'
+                    name: 'action_taken_on',
+                    orderable: true
                 },
                 {
                     data: 'status',
@@ -292,11 +435,13 @@
 
             paging: true,
             searching: true,
-            ordering: false,
+            ordering: true,
             pageLength: 10,
             lengthChange: false,
-            scrollX: true,
-            dom: 't<"row mt-10"<"col-6 dt-info-custom"><"col-6 dt-pagination-custom text-end">>',
+            order: [[0, 'desc']],
+            scrollX: false,
+            autoWidth: false,
+            dom: 't',
             language: {
                 info: "Showing _START_ to _END_ of _TOTAL_ posts"
             }
@@ -310,16 +455,18 @@
             );
 
             let paginationHtml = `
-            <button class="btn btn-light btn-sm me-2" id="prevPage" ${info.page === 0 ? "disabled" : ""}>
-                ‹ Previous
+            <button id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
+                Previous
             </button>
 
-            <span class="mx-2" style="font-weight:500;">
+            <span>
                 Page ${info.page + 1} of ${info.pages}
             </span>
 
-            <button class="btn btn-light btn-sm ms-2" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
-                Next ›
+            <button id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
+                Next
+                <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
             </button>
             `;
 
@@ -331,6 +478,21 @@
             $("#nextPage").on("click", function() {
                 table.page("next").draw("page");
             });
+        });
+
+        let currentPage = 0;
+        table.on('page.dt', function () {
+            currentPage = table.page.info().page;
+        });
+        table.on('order.dt', function () {
+            setTimeout(function () {
+                updateSortIcons();
+            }, 10);
+        });
+        table.on('preDraw.dt', function (e, settings) {
+            if (settings.aaSorting && settings.aaSorting.length > 0) {
+                settings._iDisplayStart = currentPage * settings._iDisplayLength;
+            }
         });
 
         // Search

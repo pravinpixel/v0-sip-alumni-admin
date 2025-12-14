@@ -120,25 +120,40 @@
             </div>
         </div>
 
-        <!-- Alumni Table -->
-        <table id="directoryTable" class="display" style="width: 100%;border-collapse: collapse;background-color: white;box-shadow: 0 2px 8px rgba(0,0,0,0.08);border-radius: 6px;border: 1px solid #e0e0e0;border-radius: 8px;">
-            <thead>
-                <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 12px;">
-                    <th style="padding: 15px; text-align: left;">Created On</th>
-                    <th style="padding: 15px; text-align: left;">Profile Picture</th>
-                    <th style="padding: 15px; text-align: left;">Name</th>
-                    <th style="padding: 15px; text-align: left;">Year</th>
-                    <th style="padding: 15px; text-align: left;">City & State</th>
-                    <th style="padding: 15px; text-align: left;">Email</th>
-                    <th style="padding: 15px; text-align: left;">Contact</th>
-                    <th style="padding: 15px; text-align: left;">Occupation</th>
-                    <th style="padding: 15px; text-align: left;">Status</th>
-                    <th style="padding: 15px; text-align: left;">Connections</th>
-                    <th style="padding: 15px; text-align: left;">Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <!-- Alumni Table Container -->
+        <div class="table-container" style="border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-top: 0; margin-bottom: 0;">
+            <!-- Table Wrapper (Scrollable) -->
+            <div class="table-responsive" style="overflow-x: auto;">
+                <table id="directoryTable" class="display directory-table" style="width: 100%; min-width: 1200px; border-collapse: collapse; background-color: white; margin: 0;">
+                    <thead>
+                        <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 12px;">
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Created On</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Profile Picture</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Name</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Year</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">City & State</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Email</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Contact</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Occupation</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Status</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Connections</th>
+                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination Area (Bottom of Table Design) -->
+            <div class="pagination-bottom-area" style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+                <div class="dt-info-custom" style="color: #6b7280; font-size: 14px; font-weight: 400;">
+                    <!-- Info will be populated here -->
+                </div>
+                <div class="dt-pagination-custom" style="display: flex; align-items: center; gap: 8px;">
+                    <!-- Pagination will be populated here -->
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <style>
@@ -157,8 +172,9 @@
     }
 
     .dataTables_wrapper {
-        margin-top: 25px !important;
-        /* pushes the whole table area down */
+        margin: 0 !important;
+        padding: 0 !important;
+        /* completely removed all gaps */
     }
 
     table.dataTable thead th {
@@ -171,9 +187,132 @@
         /* soft line between rows */
     }
 
+    #directoryTable {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
     #directoryTable thead th {
         border-bottom: 2px solid #e0e0e0;
         /* slightly thicker under header */
+        position: relative;
+        margin: 0 !important;
+        padding: 15px !important;
+    }
+
+    /* Ensure only one header row */
+    #directoryTable thead {
+        display: table-header-group;
+    }
+
+    /* Hide any duplicate headers that might be created by DataTables */
+    #directoryTable thead:not(:first-child) {
+        display: none !important;
+    }
+
+    /* Prevent DataTables from creating additional header elements */
+    .dataTables_wrapper .dataTables_scroll .dataTables_scrollHead {
+        display: none !important;
+    }
+
+    /* Ensure the original header stays visible */
+    #directoryTable > thead {
+        display: table-header-group !important;
+    }
+
+    /* Hide any cloned headers */
+    .dataTables_scrollHead table thead {
+        display: none !important;
+    }
+
+    /* Table container */
+    .table-container {
+        position: relative;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Table responsive wrapper */
+    .table-responsive {
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f3f4f6;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #9ca3af;
+    }
+
+    /* Bottom pagination area (matches original table design) */
+    .pagination-bottom-area {
+        position: relative;
+        z-index: 10;
+        background: #ffffff !important;
+        border-top: 1px solid #e5e7eb !important;
+    }
+
+    /* Ensure DataTables doesn't interfere with our fixed pagination */
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        display: none !important;
+    }
+
+    /* Custom pagination button styles (original design) */
+    .dt-pagination-custom button {
+        background: #ffffff;
+        border: 1px solid #d1d5db;
+        color: #374151;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .dt-pagination-custom button:hover:not(:disabled) {
+        background: #f9fafb;
+        border-color: #9ca3af;
+        color: #111827;
+    }
+
+    .dt-pagination-custom button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        background: #f9fafb;
+        color: #9ca3af;
+    }
+
+    .dt-pagination-custom span {
+        color: #6b7280;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 0 12px;
+    }
+
+    /* DataTables sorting icons */
+    table.dataTable thead .sorting:before,
+    table.dataTable thead .sorting:after,
+    table.dataTable thead .sorting_asc:before,
+    table.dataTable thead .sorting_asc:after,
+    table.dataTable thead .sorting_desc:before,
+    table.dataTable thead .sorting_desc:after {
+        color: white !important;
     }
 </style>
 
@@ -246,9 +385,15 @@
         // Load filter options
         loadFilterOptions();
 
+        // Destroy existing DataTable if it exists to prevent duplicates
+        if ($.fn.DataTable.isDataTable('#directoryTable')) {
+            $('#directoryTable').DataTable().destroy();
+        }
+
         const table = $('#directoryTable').DataTable({
             processing: true,
             serverSide: true,
+            destroy: true,
             ajax: {
                 url: "{{ route('admin.directory.data') }}",
                 type: 'GET',
@@ -261,6 +406,7 @@
             columns: [{
                     data: 'created_at',
                     name: 'created_at',
+                    orderable: true
                 },
                 {
                     data: 'alumni',
@@ -270,31 +416,38 @@
                 },
                 {
                     data: 'full_name',
-                    name: 'full_name'
+                    name: 'full_name',
+                    orderable: true
                 },
                 {
                     data: 'year_of_completion',
-                    name: 'year_of_completion'
+                    name: 'year_of_completion',
+                    orderable: true
                 },
                 {
                     data: 'location',
-                    name: 'location'
+                    name: 'location',
+                    orderable: true
                 },
                 {
                     data: 'email',
-                    name: 'email'
+                    name: 'email',
+                    orderable: true
                 },
                 {
                     data: 'mobile_number',
-                    name: 'mobile_number'
+                    name: 'mobile_number',
+                    orderable: true
                 },
                 {
                     data: 'occupation',
-                    name: 'occupation'
+                    name: 'occupation',
+                    orderable: true
                 },
                 {
                     data: 'status',
-                    name: 'status'
+                    name: 'status',
+                    orderable: false
                 },
                 {
                     data: 'connections',
@@ -311,11 +464,13 @@
             ],
             paging: true,
             searching: true,
-            ordering: false,
+            ordering: true,
             pageLength: 10,
             lengthChange: false,
-            scrollX: true,
-            dom: 't<"row mt-10"<"col-6 dt-info-custom"><"col-6 dt-pagination-custom text-end">>',
+            order: [[0, 'desc']],
+            scrollX: false,
+            autoWidth: false,
+            dom: 't',
             language: {
                 info: "Showing _START_ to _END_ of _TOTAL_ alumni"
             }
@@ -328,16 +483,18 @@
             );
 
             let paginationHtml = `
-            <button class="btn btn-light btn-sm me-2" id="prevPage" ${info.page === 0 ? "disabled" : ""}>
-                ‹ Previous
+            <button id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
+                Previous
             </button>
 
-            <span class="mx-2" style="font-weight:500;">
+            <span>
                 Page ${info.page + 1} of ${info.pages}
             </span>
 
-            <button class="btn btn-light btn-sm ms-2" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
-                Next ›
+            <button id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
+                Next
+                <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
             </button>
             `;
 
@@ -349,6 +506,21 @@
             $("#nextPage").on("click", function() {
                 table.page("next").draw("page");
             });
+        });
+
+        let currentPage = 0;
+        table.on('page.dt', function () {
+            currentPage = table.page.info().page;
+        });
+        table.on('order.dt', function () {
+            setTimeout(function () {
+                updateSortIcons();
+            }, 10);
+        });
+        table.on('preDraw.dt', function (e, settings) {
+            if (settings.aaSorting && settings.aaSorting.length > 0) {
+                settings._iDisplayStart = currentPage * settings._iDisplayLength;
+            }
         });
 
         $('#searchInput').on('keyup', function() {

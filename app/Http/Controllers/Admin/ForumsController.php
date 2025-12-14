@@ -10,6 +10,7 @@ use App\Models\ForumPost;
 use App\Models\ForumReplies;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\DataTables;
@@ -47,7 +48,7 @@ class ForumsController extends Controller
     public function getData(Request $request)
     {
         try {
-            $query = ForumPost::with('alumni')->orderBy('created_at', 'desc');
+            $query = ForumPost::with('alumni');
 
             // Apply status filter
             if ($request->has('statuses') && !empty($request->statuses)) {
@@ -89,6 +90,24 @@ class ForumsController extends Controller
                         });
                     }
                 })
+
+                ->orderColumn('created_at', function ($query, $order) {
+                    $query->orderBy('forum_post.created_at', $order);
+                })
+                ->orderColumn('alumni', function ($query, $order) {
+                    $query->orderBy(
+                        DB::raw("(SELECT alumnis.full_name FROM alumnis WHERE alumnis.id = forum_post.alumni_id)"),
+                        $order);
+                })
+                ->orderColumn('contact', function ($query, $order) {
+                    $query->orderBy(
+                        DB::raw("(SELECT alumnis.mobile_number FROM alumnis WHERE alumnis.id = forum_post.alumni_id)"),
+                        $order);
+                })
+                ->orderColumn('action_taken_on', function ($query, $order) {
+                    $query->orderBy('forum_post.updated_at', $order);
+                })
+
                 ->addColumn('created_at', function ($row) {
                     return \Carbon\Carbon::parse($row->created_at)
                         ->setTimezone('Asia/Kolkata')
