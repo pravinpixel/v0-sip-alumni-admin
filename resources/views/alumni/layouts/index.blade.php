@@ -106,7 +106,7 @@
         }
 
         .profile-info {
-            padding: 0 20px;
+            padding: 20px;
             flex: 1;
         }
 
@@ -122,11 +122,10 @@
         }
 
         .info-icon {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             color: #ef4444;
             font-size: 13px;
-            margin-top: 1px;
             flex-shrink: 0;
         }
 
@@ -136,7 +135,7 @@
 
         .info-label {
             display: block;
-            font-size: 11px;
+            font-size: 12px;
             color: #9ca3af;
             margin-bottom: 3px;
         }
@@ -144,8 +143,8 @@
         .info-value {
             color: #1f2937;
             font-weight: 500;
-            font-size: 13px;
-            line-height: 1.4;
+            font-size: 16px;
+            line-height: 1;
         }
 
         .edit-profile-btn {

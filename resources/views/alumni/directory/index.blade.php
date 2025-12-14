@@ -773,6 +773,7 @@ table.dataTable tbody tr > .sorting_3 {
             serverSide: true,
             stripeClasses: [],         
             orderClasses: false,
+            stateSave: false,
             ajax: {
                 url: "{{ route('alumni.directory.data') }}",
                 data: function(d) {
@@ -783,15 +784,21 @@ table.dataTable tbody tr > .sorting_3 {
             },
             columns: [{
                     data: 'alumni',
-                    name: 'full_name',
+                    name: 'alumni',
+                    orderable: true,
+                    searchable: false
                 },
                 {
                     data: 'batch',
-                    name: 'year_of_completion',
+                    name: 'batch',
+                    orderable: true,
+                    searchable: false
                 },
                 {
                     data: 'location',
-                    name: 'city_id',
+                    name: 'location',
+                    orderable: true,
+                    searchable: false
                 },
                 {
                     data: 'action',
@@ -805,7 +812,7 @@ table.dataTable tbody tr > .sorting_3 {
             searching: true,
             ordering: true,
             lengthChange: false,
-            pagelength: 10,
+            pageLength: 10,
             order: [[4, 'desc']],
             dom: 't',
         });
@@ -881,9 +888,23 @@ table.dataTable tbody tr > .sorting_3 {
             table.search(this.value).draw();
         });
 
-        // Update icons after sorting
+        let currentPage = 0;
+        table.on('page.dt', function() {
+            currentPage = table.page.info().page;
+        });
         table.on('order.dt', function() {
-            updateSortIcons();
+            let pageInfo = table.page.info();
+            currentPage = pageInfo.page;
+            setTimeout(function() {
+                updateSortIcons();
+            }, 10);
+        });
+        table.on('preDraw.dt', function(e, settings) {
+            if (settings.aaSorting && settings.aaSorting.length > 0) {
+                if (!settings.oPreviousSearch || settings.oPreviousSearch.sSearch === settings.oPreviousSearch.sSearch) {
+                    settings._iDisplayStart = currentPage * settings._iDisplayLength;
+                }
+            }
         });
 
         // Initial icon setup

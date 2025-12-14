@@ -35,7 +35,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         </div>
 
         <div class="info-item">
-            <i class="bi bi-geo-alt info-icon"></i>
+            <div>
+                <i class="bi bi-geo-alt info-icon"></i>
+            </div>
             <div class="info-content">
                 <span class="info-label">Location</span>
                 <div class="info-value">{{ $state->name ?? '-' }}, {{ $city->name ?? '-' }}</div>
@@ -43,7 +45,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         </div>
 
         <div class="info-item">
-            <i class="bi bi-envelope info-icon"></i>
+            <div>
+                <i class="bi bi-envelope info-icon"></i>
+            </div>
             <div class="info-content">
                 <span class="info-label">Email Address</span>
                 <div class="info-value">{{ $alumni->email ?? '-' }}</div>
@@ -51,7 +55,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         </div>
 
         <div class="info-item">
-            <i class="bi bi-telephone info-icon"></i>
+            <div>
+                <i class="bi bi-telephone info-icon"></i>
+            </div>
             <div class="info-content">
                 <span class="info-label">Contact Number</span>
                 <div class="info-value">{{ $alumni->mobile_number ?? '-' }}</div>
@@ -59,7 +65,9 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         </div>
 
         <div class="info-item">
-            <i class="bi bi-briefcase info-icon"></i>
+            <div>
+                <i class="bi bi-briefcase info-icon"></i>
+            </div>
             <div class="info-content">
                 <span class="info-label">Current Occupation</span>
                 <div class="info-value">{{ $occupation->name ?? '-' }}</div>

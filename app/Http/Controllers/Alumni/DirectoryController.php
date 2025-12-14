@@ -9,6 +9,7 @@ use App\Models\Alumnis;
 use App\Models\MobileOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
@@ -231,6 +232,19 @@ class DirectoryController extends Controller
                             }
                         });
                     }
+                })
+                
+                ->orderColumn('alumni', function ($query, $order) {
+                    $query->orderBy('alumnis.full_name', $order);
+                })
+                ->orderColumn('batch', function ($query, $order) {
+                    $query->orderBy('alumnis.year_of_completion', $order);
+                })
+                ->orderColumn('location', function ($query, $order) {
+                    $query->orderBy(
+                        DB::raw("(SELECT cities.name FROM cities WHERE cities.id = alumnis.city_id)"),
+                        $order
+                    );
                 })
 
                 ->editColumn('alumni', function ($row)  use ($alumniConnections) {
