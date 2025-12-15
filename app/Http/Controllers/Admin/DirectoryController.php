@@ -69,8 +69,9 @@ class DirectoryController extends Controller
                         $searchValue = $request->search['value'];
                         
                         $parsedDate = date('Y-m-d', strtotime($searchValue));
+                        $yearSearch = preg_match('/^\d{4}$/', $searchValue) ? $searchValue : null;
                         $keywords = preg_split('/[\s,]+/', $searchValue, -1, PREG_SPLIT_NO_EMPTY);
-                        $query->where(function ($q) use ($searchValue, $keywords, $parsedDate) {
+                        $query->where(function ($q) use ($searchValue, $keywords, $parsedDate, $yearSearch) {
                             $q->where('full_name', 'like', "%{$searchValue}%")
                                 ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
                                 ->orWhere('status', 'like', "%{$searchValue}%")
@@ -89,6 +90,9 @@ class DirectoryController extends Controller
                             });
                             if ($parsedDate && $parsedDate !== '1970-01-01') {
                                 $q->orWhereDate('created_at', $parsedDate);
+                            }
+                            if ($yearSearch) {
+                                $q->orWhereYear('created_at', $yearSearch);
                             }
                         });
                     }

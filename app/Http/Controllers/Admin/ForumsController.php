@@ -76,7 +76,8 @@ class ForumsController extends Controller
                     $searchLower = strtolower(trim($searchValue));
                     $dbStatus = $statusMap[$searchLower] ?? $searchValue;
                         $parsedDate = date('Y-m-d', strtotime($searchValue));
-                        $query->where(function ($q) use ($searchValue, $parsedDate, $dbStatus) {
+                        $yearSearch = preg_match('/^\d{4}$/', $searchValue) ? $searchValue : null;
+                        $query->where(function ($q) use ($searchValue, $parsedDate, $dbStatus, $yearSearch) {
                             $q->where('status', 'like', "%{$dbStatus}%")
                                 ->orWhereHas('alumni', function ($alumniQuery) use ($searchValue) {
                                     $alumniQuery->where('full_name', 'like', "%{$searchValue}%")
@@ -86,6 +87,9 @@ class ForumsController extends Controller
                             if ($parsedDate && $parsedDate !== '1970-01-01') {
                                 $q->orWhereDate('created_at', $parsedDate)
                                     ->orWhereDate('updated_at', $parsedDate);
+                            }
+                            if ($yearSearch) {
+                                $q->orWhereYear('created_at', $yearSearch);
                             }
                         });
                     }
