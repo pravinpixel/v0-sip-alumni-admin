@@ -72,8 +72,10 @@ class ForumsController extends Controller
     {
         try {
             $query = ForumPost::with('alumni')
+             ->withCount(['likes', 'views', 'replies'])
                 ->where('status', 'approved');
 
+            $alumniId = session('alumni.id');
             if ($request->has('search') && !empty($request->search)) {
                 $searchTerm = $request->search;
                 $query->where(function ($q) use ($searchTerm) {
@@ -102,7 +104,10 @@ class ForumsController extends Controller
             }
 
             if ($request->has('sort_by') && !empty($request->sort_by)) {
-                switch ($request->sort_by) {
+                $sortBy = is_array($request->sort_by)
+                    ? $request->sort_by[0]
+                    : $request->sort_by;
+                switch ($sortBy) {
                     case "most_recent":
                         $query->orderBy('created_at', 'desc');
                         break;
@@ -113,7 +118,7 @@ class ForumsController extends Controller
                         $query->orderBy('views_count', 'desc');
                         break;
                     case "most_commented":
-                        $query->orderBy('reply_count', 'desc');
+                        $query->orderBy('replies_count', 'desc');
                         break;
                 }
             }
@@ -128,13 +133,16 @@ class ForumsController extends Controller
                 $postTypes = $request->post_type;
                 if (in_array('pinned', $postTypes) && in_array('regular', $postTypes)) {
                 } elseif (in_array('pinned', $postTypes)) {
-                    $query->whereHas('pinned');
+                    $query->whereHas('pinned', function ($q) use ($alumniId) {
+                    $q->where('alumni_id', $alumniId);
+                });
                 } elseif (in_array('regular', $postTypes)) {
-                    $query->whereDoesntHave('pinned');
+                    $query->whereDoesntHave('pinned', function ($q) use ($alumniId) {
+                    $q->where('alumni_id', $alumniId);
+                });
                 }
             }
 
-            $alumniId = session('alumni.id');
             $forumPosts = $query->get();
             $forumPosts->each(function ($post) use ($alumniId) {
                 $post->is_pinned_by_user = PostPinned::where('post_id', $post->id)
@@ -156,14 +164,26 @@ class ForumsController extends Controller
                       ->where('status', 'accepted');
                 })->exists();
             });
+            $hasFilters =
+            $request->filled('search') ||
+            $request->filled('date_range') ||
+            $request->filled('sort_by') ||
+            $request->filled('batch_year') ||
+            $request->filled('post_type');
 
             $sortBy = $request->get('sort_by', 'created_at');
             $sortOrder = 'desc';
             
-            $forumPosts = $forumPosts->sortBy([
-                ['is_pinned_by_user', 'desc'], // Pinned posts first
-                [$sortBy, $sortOrder]          // Then by selected sort
-            ])->values();
+            if (!$hasFilters) {
+                $forumPosts = $forumPosts->sortBy([
+                    ['is_pinned_by_user', 'desc'],
+                    ['created_at', 'desc']
+                ])->values();
+            } else {
+                $forumPosts = $forumPosts->sortBy([
+                    [$sortBy, $sortOrder]
+                ])->values();
+            }
 
             return response()->json([
                 'success' => true,
