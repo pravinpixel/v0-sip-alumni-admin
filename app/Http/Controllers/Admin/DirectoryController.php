@@ -79,15 +79,19 @@ class DirectoryController extends Controller
                                 ->orWhere('mobile_number', 'like', "%{$searchValue}%")
                                 ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
                                     $occQuery->where('name', 'like', "%{$searchValue}%");
-                                });
-                            $q->orWhereHas('city', function ($cityQuery) use ($keywords) {
-                                foreach ($keywords as $word) {
-                                    $cityQuery->where('name', 'like', "%{$word}%")
-                                        ->orWhereHas('state', function ($stateQuery) use ($word) {
-                                            $stateQuery->where('name', 'like', "%{$word}%");
+                                })
+                                ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
+                                    $cityQuery->where('name', 'like', "%{$searchValue}%")
+                                        ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
+                                            $stateQuery->where('name', 'like', "%{$searchValue}%");
                                         });
-                                }
-                            });
+                                })
+                                ->orWhereHas('city', function ($c) use ($searchValue) {
+                                    $c->whereRaw(
+                                        "CONCAT(name, ', ', (SELECT name FROM states WHERE id = cities.state_id)) LIKE ?",
+                                        ["%{$searchValue}%"]
+                                    );
+                                });
                             if ($parsedDate && $parsedDate !== '1970-01-01') {
                                 $q->orWhereDate('created_at', $parsedDate);
                             }

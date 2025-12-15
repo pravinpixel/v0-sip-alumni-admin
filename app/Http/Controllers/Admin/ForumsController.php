@@ -459,8 +459,8 @@ class ForumsController extends Controller
     public function deleteComment($id)
     {
         try {
-            $comment = ForumReplies::findOrFail($id);
-            $comment->delete();
+            $ids = $this->getAllReplyIds($id);
+            ForumReplies::whereIn('id', $ids)->delete();
             
             return response()->json([
                 'success' => true,
@@ -473,6 +473,19 @@ class ForumsController extends Controller
                 'message' => 'Failed to delete comment'
             ], 500);
         }
+    }
+
+    private function getAllReplyIds($parentId)
+    {
+        $ids = [$parentId];
+
+        $children = ForumReplies::where('parent_reply_id', $parentId)->pluck('id');
+
+        foreach ($children as $childId) {
+            $ids = array_merge($ids, $this->getAllReplyIds($childId));
+        }
+
+        return $ids;
     }
 
     public function changeStatus(Request $request)
