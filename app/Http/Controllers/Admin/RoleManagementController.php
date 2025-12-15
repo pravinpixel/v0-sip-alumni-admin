@@ -93,9 +93,11 @@ class RoleManagementController extends Controller
             if (isset($id)) {
                 $role = Role::find($id);
                 $originalData = $role->getOriginal();
-                $users = User::where('role_id', $id)->first();
-                if ($users && $originalData['status'] == 1 && $request->has('status') == 0) {
-                    return $this->returnError('This role is already in use by user');
+                if ($request->status == 0) {
+                    $hasActiveUsers = User::where('role_id', $role->id)->where('status', 1)->exists();
+                    if ($hasActiveUsers) {
+                        return $this->returnError('Cannot deactivate role with active users');
+                    }
                 }
                 $role->name = $request->input('role_name');
                 $role->status = $request->status;

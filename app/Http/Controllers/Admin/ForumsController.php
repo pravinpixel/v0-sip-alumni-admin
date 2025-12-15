@@ -55,13 +55,19 @@ class ForumsController extends Controller
                 $query->whereIn('status', $request->statuses);
             }
 
-            // Apply date range filter
-            if ($request->has('from_date') && !empty($request->from_date)) {
-                $query->whereDate('created_at', '>=', $request->from_date);
-            }
-
-            if ($request->has('to_date') && !empty($request->to_date)) {
-                $query->whereDate('created_at', '<=', $request->to_date);
+            if ($request->filled('from_date') && $request->filled('to_date')) {
+                $query->whereBetween('created_at', [
+                    Carbon::parse($request->from_date)->startOfDay(),
+                    Carbon::parse($request->to_date)->endOfDay(),
+                ]);
+            } elseif ($request->filled('from_date')) {
+                $query->where('created_at', '>=',
+                    Carbon::parse($request->from_date)->startOfDay()
+                );
+            } elseif ($request->filled('to_date')) {
+                $query->where('created_at', '<=',
+                    Carbon::parse($request->to_date)->endOfDay()
+                );
             }
 
             return DataTables::of($query)
