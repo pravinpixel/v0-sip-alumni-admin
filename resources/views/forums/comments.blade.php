@@ -346,7 +346,7 @@
     }
 
     function deleteComment(commentId) {
-        confirmBox('By deleting this comment ?', function() {
+        confirmBox('By deleting this comment, it will be removed from the post.', function() {
             $.ajax({
                 url: "{{ route('admin.forums.comment.delete', '') }}/" + commentId,
                 type: 'DELETE',

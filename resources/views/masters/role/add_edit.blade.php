@@ -56,7 +56,7 @@
             <!-- Permissions Section -->
             <div style="border-top: 1px solid #e5e7eb; padding-top: 2rem;">
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 1.5rem 0;">Permissions</h2>
-                
+                <span class="field-error" id="role_permissions-error" style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
                 <!-- User Management -->
                 <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
                     <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
@@ -329,6 +329,29 @@
             $('#dynamic-submit').on('click', function (e) {
                 saveUpdateUser(e);
             });
+
+            // Auto-select VIEW when CREATE / EDIT / DELETE is checked
+            $('input[name="permissions[]"]').on('change', function () {
+                const value = $(this).val();
+                const isChecked = $(this).is(':checked');
+                const parts = value.split('.');
+                if (parts.length !== 2) return;
+
+                const module = parts[0];
+                const action = parts[1];
+                const viewCheckbox = $(`input[name="permissions[]"][value="${module}.view"]`);
+                if (['create', 'edit', 'delete'].includes(action) && isChecked) {
+                    viewCheckbox.prop('checked', true);
+                }
+                // If view unchecked → uncheck create/edit/delete
+                if (action === 'view' && !isChecked) {
+                    $(`input[name="permissions[]"][value="${module}.create"],
+                    input[name="permissions[]"][value="${module}.edit"],
+                    input[name="permissions[]"][value="${module}.delete"]`)
+                    .prop('checked', false);
+                }
+            });
+
     });
 
     function saveUpdateRole(event) {
@@ -356,8 +379,12 @@
                     var errors = response.responseJSON.error;
                     $('#dynamic-form').find(".field-error").text('');
                     $.each(errors, function(key, value) {
+                    if (key === 'permissions') {
+                        $('#role_permissions-error').text(value[0]);
+                    } else {
                         $('#' + key + '-error').text(value[0]);
-                    });
+                    }
+                });
                 } else {
                     showToast(response.responseJSON.error || 'An error occurred', 'error');
                 }

@@ -76,8 +76,12 @@ class RoleManagementController extends Controller
                 'required',
                 Rule::unique('roles', 'name')->ignore($id)->whereNull('deleted_at')
             ],
+            'permissions' => 'required|array|min:1',
+        ], [
             'role_name.unique' => ' This Role name Already exist.',
             'role_name.required' => ' This Role name field is required.',
+            'permissions.required' => 'Please select at least one permission.',
+            'permissions.min'      => 'Please select at least one permission.',
         ]);
 
         if ($validatedData->fails()) {
@@ -97,9 +101,9 @@ class RoleManagementController extends Controller
                 $role->status = $request->status;
                 $role->update();
 
-                if ($permissions) {
+                // if ($permissions) {
                     $role->syncPermissions($permissions);
-                }
+                // }
                 return $this->returnSuccess($role, "Role updated successfully");
             } else {
                 $role = new Role;
