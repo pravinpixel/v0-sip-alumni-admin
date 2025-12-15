@@ -11,7 +11,7 @@
     <meta http-equiv="Expires" content="0" />
     <link rel="icon" type="image/png" href="{{ asset('images/logo/favicon.png') }}">
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -212,9 +212,11 @@
         .sidebar::-webkit-scrollbar-thumb:hover {
             background: #9ca3af;
         }
+
         .main-title {
             font-size: 32px;
         }
+
         .sub-title {
             font-size: 15px;
         }
@@ -224,20 +226,24 @@
             .main-title {
                 font-size: 18px !important;
             }
+
             .sub-title {
                 font-size: 10px !important;
                 margin-bottom: 0 !important;
             }
+
             .header {
                 padding: 12px 20px;
                 height: 60px;
             }
 
             .sidebar {
-                width: 280px;
+                width: 230px;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
-                top: 60px;
+                top: 35px;
+                height: 98%;
+                overflow: hidden;
             }
 
             .sidebar.active {
@@ -273,12 +279,13 @@
                 padding: 20px;
                 min-height: calc(100vh - 120px);
             }
-        }
 
-        /* For very small screens */
-        @media (max-width: 480px) {
-            .sidebar {
-                width: 100%;
+            .info-label {
+                font-size: 10px;
+            }
+
+            .info-value {
+                font-size: 12px;
             }
         }
     </style>
@@ -303,9 +310,9 @@
             <div class="main-content-area">
                 <!-- Navbar -->
                 @if(!request()->routeIs('alumni.forums.activity'))
-                    <div class="navbar">
-                        @include('alumni.layouts.navbar')
-                    </div>
+                <div class="navbar">
+                    @include('alumni.layouts.navbar')
+                </div>
                 @endif
 
                 <!-- Content -->
@@ -324,7 +331,7 @@
     <script>
         // Disable back button after logout
         window.history.pushState(null, null, window.location.href);
-        window.onpopstate = function () {
+        window.onpopstate = function() {
             window.history.pushState(null, null, window.location.href);
         };
     </script>
@@ -333,7 +340,7 @@
 
     <script>
         // Mobile sidebar toggle functionality
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.querySelector('.sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
             const menuToggle = document.getElementById('menuToggle'); // Add this to your header
@@ -363,7 +370,7 @@
             }
 
             // Close sidebar when clicking outside on mobile
-            document.addEventListener('click', function (event) {
+            document.addEventListener('click', function(event) {
                 if (window.innerWidth <= 768 &&
                     !event.target.closest('.sidebar') &&
                     !event.target.closest('#menuToggle')) {
@@ -372,7 +379,7 @@
             });
 
             // Handle window resize
-            window.addEventListener('resize', function () {
+            window.addEventListener('resize', function() {
                 if (window.innerWidth > 768) {
                     closeSidebar();
                 }

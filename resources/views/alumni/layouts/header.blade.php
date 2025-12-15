@@ -8,7 +8,7 @@
         border-bottom: 1px solid #e5e7eb;
         position: sticky;
         top: 0;
-        z-index: 10;
+        z-index: 11;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
@@ -114,9 +114,6 @@
     }
 
     @media (max-width: 480px) {
-        .top-header {
-            padding: 10px 12px;
-        }
 
         .header-logo img {
             height: 35px;
@@ -137,7 +134,7 @@
 <!-- Header -->
 <div class="top-header"> <!-- Left: Menu Toggle + Logo -->
     <div style="display: flex; align-items: center; gap: 15px;">
-        <button class="menu-toggle" id="menuToggle" onclick="toggleSidebar()">
+        <button class="menu-toggle" id="menuToggle" onclick="openSidebar()">
             <i class="fas fa-bars"></i>
         </button>
         <div class="header-logo">

@@ -5,9 +5,6 @@ $state = $city && isset($city->state) ? $city->state : null;
 $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null;
 @endphp
 
-<!-- Sidebar Overlay for Mobile -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-
 <!-- Sidebar -->
 <div class="sidebar" id="sidebar">
     <!-- Drawer Toggle Button -->
@@ -180,18 +177,18 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         position: absolute;
         top: 15px;
         right: 15px;
-        width: 36px;
+        width: 34px;
         height: 36px;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.95);
         border: 2px solid #ef4444;
         color: #ef4444;
-        font-size: 22px;
+        font-size: 15px;
         font-weight: bold;
         cursor: pointer;
         line-height: 30px;
         text-align: center;
-        z-index: 1002;
+        z-index: 100;
         display: none;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         transition: all 0.2s ease;
@@ -214,6 +211,15 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
         .drawer-toggle {
             display: none;
+        }
+        #menuToggle {
+            display: block !important;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #333;
+            cursor: pointer;
+            padding: 8px;
         }
     }
 
@@ -448,6 +454,18 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         if (sidebarOverlay) sidebarOverlay.classList.remove('active');
         document.body.style.overflow = '';
     }
+    function openSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        if (sidebar) sidebar.classList.add('active');
+        if (sidebarOverlay) sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Make openSidebar globally accessible for header
+    window.openSidebar = openSidebar;
+    window.closeSidebar = closeSidebar;
 
     async function openEditProfileModal() {
         const modal = document.getElementById('editProfileModal');
