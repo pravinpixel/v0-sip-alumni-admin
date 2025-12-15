@@ -300,7 +300,7 @@ class ForumsController extends Controller
                     'comments_count' => $post->replies->count(),
                     'likes_count' => $post->likes_count ?? 0,
                     'views_count' => $post->views_count ?? 0,
-                    'awards_count' => $post->awards_count ?? 0,
+                    'awards_count' => $post->pinned()->count() ?? 0,
                     'status' => $post->status,
                     'created_at' => $post->created_at->format('M j, Y'),
                 ]
