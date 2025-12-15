@@ -241,7 +241,7 @@
                 width: 230px;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
-                top: 35px;
+                top: 38.5px;
                 height: 98%;
                 overflow: hidden;
             }
