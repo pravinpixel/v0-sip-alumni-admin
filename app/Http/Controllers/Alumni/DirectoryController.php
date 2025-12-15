@@ -197,15 +197,15 @@ class DirectoryController extends Controller
                     if ($request->has('search') && !empty($request->search['value'])) {
                         $searchValue = strtolower($request->search['value']);
                         $statusLookup = [
-                            'not shared' => 'not_shared',
-                            'shared'     => 'pending',
-                            'accepted'   => 'accepted',
-                            'rejected'   => 'rejected'
+                            'share contact' => 'not_shared',
+                            'contact shared'     => 'pending',
+                            'contact accepted'   => 'accepted',
+                            'contact rejected'   => 'rejected'
                         ];
                         $matchedStatus = null;
-                        foreach ($statusLookup as $key => $value) {
-                            if (strpos($searchValue, strtolower($key)) !== false) {
-                                $matchedStatus = $value;
+                        foreach ($statusLookup as $display => $internal) {
+                            if ($searchValue === strtolower($display)) {
+                                $matchedStatus = $internal;
                                 break;
                             }
                         }
