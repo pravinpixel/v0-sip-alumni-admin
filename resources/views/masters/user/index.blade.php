@@ -212,6 +212,87 @@
     <script>
         $(document).ready(function () {
             let eventListenersActive = true;
+            let currentSortColumn = 0;
+            let currentSortDirection = 'asc';
+
+            // Simple Column Sorting Function
+            function addColumnSorting() {
+                // Remove existing sorting setup to prevent duplicates
+                $('#kt_customers_table thead th').removeClass('sortable').css('cursor', '').off('click');
+                $('#kt_customers_table thead th .sort-icon').remove();
+
+                // Add sorting icons to sortable columns
+                $('#kt_customers_table thead th').each(function(index) {
+                    if (index <= 3) { // User ID, Name, Email, Role columns
+                        $(this).addClass('sortable').css('cursor', 'pointer');
+                        $(this).append(' <i class="fas fa-sort sort-icon" style="margin-left: 8px; color: rgba(255,255,255,0.7);"></i>');
+                    }
+                });
+
+                // Handle column header clicks
+                $('#kt_customers_table thead th.sortable').off('click').on('click', function() {
+                    const columnIndex = $(this).index();
+                    
+                    // Update sort direction
+                    if (currentSortColumn === columnIndex) {
+                        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSortDirection = 'asc';
+                    }
+                    currentSortColumn = columnIndex;
+
+                    // Update sort icons
+                    $('#kt_customers_table thead th .sort-icon').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+                    const icon = $(this).find('.sort-icon');
+                    icon.removeClass('fa-sort').addClass(currentSortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down');
+
+                    // Sort the table
+                    sortTable(columnIndex, currentSortDirection);
+                });
+            }
+
+            // Sort table function
+            function sortTable(columnIndex, direction) {
+                const tbody = $('#kt_customers_table tbody');
+                const rows = tbody.find('tr').not(':contains("No results found")').get();
+
+                rows.sort(function(a, b) {
+                    const aText = $(a).find('td').eq(columnIndex).text().trim();
+                    const bText = $(b).find('td').eq(columnIndex).text().trim();
+
+                    // Handle User ID column sorting
+                    if (columnIndex === 0) {
+                        // Extract numeric part from User ID (handles formats like USER001, USER123, etc.)
+                        const aMatch = aText.match(/\d+/);
+                        const bMatch = bText.match(/\d+/);
+                        
+                        const aNum = aMatch ? parseInt(aMatch[0]) : 0;
+                        const bNum = bMatch ? parseInt(bMatch[0]) : 0;
+                        
+                        // If numbers are the same, fall back to text comparison
+                        if (aNum === bNum) {
+                            return direction === 'asc' ? aText.localeCompare(bText) : bText.localeCompare(aText);
+                        }
+                        
+                        return direction === 'asc' ? aNum - bNum : bNum - aNum;
+                    }
+
+                    // Text sorting for other columns
+                    if (direction === 'asc') {
+                        return aText.localeCompare(bText);
+                    } else {
+                        return bText.localeCompare(aText);
+                    }
+                });
+
+                // Reorder rows in DOM
+                $.each(rows, function(index, row) {
+                    tbody.append(row);
+                });
+            }
+
+            // Initialize sorting
+            addColumnSorting();
 
             // Three-dot menu toggle
             $(document).on('click', '.action-menu-btn', function (e) {
@@ -309,6 +390,8 @@
                         $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
                         $('#paginationInfo').html($(response).find('#paginationInfo').html());
                         $('#paginationControls').html($(response).find('#paginationControls').html());
+                        
+                        // Sorting is already initialized on headers, no need to re-add
                     },
                     error: function () {
                         console.error('Error loading table data.');
@@ -361,14 +444,16 @@
 
             function refreshTableContent() {
                 $.ajax({
-                    url: "{{ route('user.index') }}", // Replace with the actual route name or URL
+                    url: "{{ route('user.index') }}",
                     type: "GET",
                     dataType: 'html',
                     success: function (response) {
                         // Update the table content with the refreshed data
                         $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
+                        
+                        // Sorting is already initialized on headers, no need to re-add
+                        
                         updateTableData();
-
                     },
                     error: function (xhr, status, error) {
                         console.error('AJAX Error:', error);
