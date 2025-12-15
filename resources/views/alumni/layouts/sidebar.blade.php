@@ -221,7 +221,30 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             cursor: pointer;
             padding: 8px;
         }
+            .modal-popup {
+            width: 90% !important;
+            height: 90dvh !important;
+            max-width: 100% !important;
+            max-height: 100dvh !important;
+            border-radius: 0 !important;
+        }
     }
+        .modal-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,.5);
+        z-index: 100000 !important;
+    }
+
+    .modal-overlay.open {
+        display: flex !important;
+    }
+
 
     /* Ensure sidebar has clean white background */
     #sidebar {
@@ -522,6 +545,13 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             modal.classList.add('open');
         }
     }
+    document.addEventListener('DOMContentLoaded', () => {
+        const modal = document.getElementById('editProfileModal');
+        if (modal && modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+    });
+
 
     function loadAlumniData() {
         const modal = document.getElementById('editProfileModal');
