@@ -89,18 +89,22 @@ class ForumsController extends Controller
             }
 
             if ($request->has('date_range') && !empty($request->date_range)) {
-                $dateRange = $request->date_range[0];
-                switch ($dateRange) {
-                    case 'today':
-                        $query->whereDate('created_at', today());
-                        break;
-                    case 'week':
-                        $query->where('created_at', '>=', now()->subDays(7));
-                        break;
-                    case 'month':
-                        $query->where('created_at', '>=', now()->subDays(30));
-                        break;
-                }
+                $dateRanges = $request->date_range;
+                $query->where(function($q) use ($dateRanges) {
+                    foreach ($dateRanges as $range) {
+                        switch ($range) {
+                            case 'today':
+                                $q->orWhereDate('created_at', today());
+                                break;
+                            case 'week':
+                                $q->orWhere('created_at', '>=', now()->subDays(7));
+                                break;
+                            case 'month':
+                                $q->orWhere('created_at', '>=', now()->subDays(30));
+                                break;
+                        }
+                    }
+                });
             }
 
             if ($request->has('sort_by') && !empty($request->sort_by)) {
@@ -164,26 +168,14 @@ class ForumsController extends Controller
                       ->where('status', 'accepted');
                 })->exists();
             });
-            $hasFilters =
-            $request->filled('search') ||
-            $request->filled('date_range') ||
-            $request->filled('sort_by') ||
-            $request->filled('batch_year') ||
-            $request->filled('post_type');
 
             $sortBy = $request->get('sort_by', 'created_at');
             $sortOrder = 'desc';
             
-            if (!$hasFilters) {
                 $forumPosts = $forumPosts->sortBy([
-                    ['is_pinned_by_user', 'desc'],
-                    ['created_at', 'desc']
-                ])->values();
-            } else {
-                $forumPosts = $forumPosts->sortBy([
-                    [$sortBy, $sortOrder]
-                ])->values();
-            }
+                ['is_pinned_by_user', 'desc'], 
+                [$sortBy, $sortOrder]          
+            ])->values();
 
             return response()->json([
                 'success' => true,
