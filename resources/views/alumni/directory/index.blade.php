@@ -583,6 +583,7 @@ table.dataTable tbody tr > .sorting_3 {
             location: [],
             status: []
         };
+        let selectedFiltersOrder = [];
 
         // Function to load filter options
         function loadFilterOptions() {
@@ -651,9 +652,18 @@ table.dataTable tbody tr > .sorting_3 {
 
             if ($(this).is(':checked')) {
                 selectedFilters[filterType].push({ id: value, name: label });
+                selectedFiltersOrder.push({
+                    type: filterType,
+                    id: value,
+                    name: label
+                });
             } else {
                 selectedFilters[filterType] = selectedFilters[filterType].filter(item => item.id != value);
+                selectedFiltersOrder = selectedFiltersOrder.filter(
+                    i => !(i.type === filterType && String(i.id) === String(value))
+                );
             }
+
 
             updatePlaceholder(filterType);
             table.ajax.reload();
@@ -683,6 +693,10 @@ table.dataTable tbody tr > .sorting_3 {
             const value = $(this).data('value');
 
             selectedFilters[type] = selectedFilters[type].filter(item => item.id != value);
+            selectedFiltersOrder = selectedFiltersOrder.filter(
+                i => !(i.type === type && String(i.id) === String(value))
+            );
+
             
             // Uncheck the checkbox
             $(`.multi-select-container[data-filter="${type}"] input[value="${value}"]`).prop('checked', false);
@@ -694,6 +708,7 @@ table.dataTable tbody tr > .sorting_3 {
 
         // Clear all filters
         $('#clearFiltersBtn').on('click', function() {
+            selectedFiltersOrder = [];
             selectedFilters = { batch: [], location: [], status: [] };
             
             $('.multi-select-option input[type="checkbox"]').prop('checked', false);
@@ -735,11 +750,7 @@ table.dataTable tbody tr > .sorting_3 {
             displayTags.empty();
             
             // Collect all selected filters
-            const allFilters = [
-                ...selectedFilters.batch.map(item => ({ ...item, type: 'batch' })),
-                ...selectedFilters.location.map(item => ({ ...item, type: 'location' })),
-                ...selectedFilters.status.map(item => ({ ...item, type: 'status' }))
-            ];
+            const allFilters = selectedFiltersOrder;
 
             if (allFilters.length > 0) {
                 // Show selected filters always when there are filters

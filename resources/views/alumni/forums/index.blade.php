@@ -604,6 +604,7 @@
             postType: [],
             sortBy: []
         };
+        let selectedFiltersOrder = [];
 
         document.addEventListener("DOMContentLoaded", function () {
             initializeMultiSelect();
@@ -772,25 +773,35 @@
 
                     // Reset filter and set selected one
                     selectedFilters[filterType] = checkbox.checked ? [value] : [];
+                    selectedFiltersOrder = selectedFiltersOrder.filter(i => i.type !== filterType);
+
+                    if (checkbox.checked) {
+                        selectedFiltersOrder.push({
+                            type: filterType,
+                            value: value
+                        });
+                    }
 
                     updateSelectedFiltersDisplay();
                     loadForumPosts();
                 }
 
-
-                function toggleFilter(filterType, value, isChecked) {
-
-            // Ensure key exists before use
+            function toggleFilter(filterType, value, isChecked) {
             if (!selectedFilters[filterType]) {
                 selectedFilters[filterType] = [];
             }
-
             if (isChecked) {
-                if (!selectedFilters[filterType].includes(value)) {
-                    selectedFilters[filterType].push(value);
-                }
+                if (!selectedFiltersOrder.some(i => i.type === filterType && i.value === value)) {
+                selectedFiltersOrder.push({
+                    type: filterType,
+                    value: value
+                });
+            }
             } else {
-                selectedFilters[filterType] = selectedFilters[filterType].filter(v => v !== value);
+                selectedFiltersOrder = selectedFiltersOrder.filter(i => i.type !== filterType);
+                selectedFiltersOrder = selectedFiltersOrder.filter(
+                    i => !(i.type === filterType && i.value === value)
+                );
             }
 
             updateSelectedFiltersDisplay();
@@ -828,22 +839,25 @@
                 'regular': 'Regular Posts'
             };
 
-            Object.keys(selectedFilters).forEach(filterType => {
-                selectedFilters[filterType].forEach(value => {
-                    hasFilters = true;
-                    const tag = document.createElement('div');
-                    tag.className = 'selected-tag';
-                    
-                    // Get display label for the value
-                    const displayValue = valueLabels[value] || value;
-                    
-                    tag.innerHTML = `
-                        <span>${filterLabels[filterType]}: ${displayValue}</span>
-                        <button onclick="removeFilter('${filterType}', '${value}')">×</button>
-                    `;
-                    tagsContainer.appendChild(tag);
-                });
+            selectedFiltersOrder.forEach(item => {
+                const filterType = item.type;
+                const value = item.value;
+
+                hasFilters = true;
+
+                const tag = document.createElement('div');
+                tag.className = 'selected-tag';
+
+                const displayValue = valueLabels[value] || value;
+
+                tag.innerHTML = `
+                    <span>${filterLabels[filterType]}: ${displayValue}</span>
+                    <button onclick="removeFilter('${filterType}', '${value}')">×</button>
+                `;
+
+                tagsContainer.appendChild(tag);
             });
+
 
             container.style.display = hasFilters ? 'block' : 'none';
             
@@ -854,7 +868,9 @@
         }
 
         function removeFilter(filterType, value) {
-            selectedFilters[filterType] = selectedFilters[filterType].filter(v => v !== value);
+            selectedFiltersOrder = selectedFiltersOrder.filter(
+                i => !(i.type === filterType && String(i.value) === String(value))
+            );
             
             // Uncheck the checkbox
             const checkbox = document.querySelector(`#${filterType}-${value}`);
@@ -872,6 +888,7 @@
                 postType: [],
                 sortBy: []
             };
+            selectedFiltersOrder = [];
 
             // Uncheck all checkboxes
             document.querySelectorAll('.multi-select-option input[type="checkbox"]').forEach(checkbox => {

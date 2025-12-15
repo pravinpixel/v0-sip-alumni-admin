@@ -546,6 +546,9 @@
         
         // Tab switching
         $('.tab-btn').on('click', function() {
+            $('#globalSearch').val('');
+            connectionsTable.search('').page(0).draw(false);
+            requestsTable.search('').page(0).draw(false);
             $('.tab-btn').removeClass('active').css({
                 'background-color': '#e5e7eb',
                 'color': '#6b7280'
