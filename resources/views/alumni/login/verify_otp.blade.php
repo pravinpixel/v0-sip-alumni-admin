@@ -238,8 +238,8 @@
 <body id="kt_body" class="app-blank app-blank bgi-size-cover bgi-position-center bgi-no-repeat" style="background-color:#f8f8f8;">
 
     <div class="d-flex flex-column flex-root" id="kt_app_root">
-        <div class="flex-grow-1 mb-10" style="margin-bottom: 0;">
-            <div class="mt-10">
+        <div class="flex-grow-1 mb-10">
+            <div class="mt-10 mb-20">
                 <img src="{{ asset('images/logo/logo.png') }}" alt="logo" style="width:380px; height:auto;" class="d-block mx-auto">
             </div>
             <div class="d-flex justify-content-center">

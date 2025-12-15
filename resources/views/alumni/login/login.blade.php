@@ -31,10 +31,8 @@
                 width: 350px !important;
                 margin-top: 40px !important;
             }
-
-            .log {
-                width: 90% !important;
-                max-width: 450px;
+            .container {
+                margin-bottom: 60px !important;
             }
         }
 
@@ -106,15 +104,15 @@
 <body id="kt_body" class="app-blank app-blank bgi-size-cover bgi-position-center bgi-no-repeat" style="background-color:#f8f8f8;">
 
     <div class="d-flex flex-column flex-root min-vh-6" id="kt_app_root">
-        <div class="mt-10">
+        <div class="mt-10 mb-14">
             <img src="{{ asset('images/logo/logo.png') }}" alt="logo" style="width:380px; height:auto;" class="d-block mx-auto">
         </div>
-        <div class="d-flex justify-content-center align-items-center">
+        <div class="d-flex justify-content-center align-items-center container">
             <div class="bg-body d-flex flex-column align-items-center rounded-4 w-450px p-6 log">
                 <div class="w-100" style="max-width:450px;">
                     
                     <!-- Change form action to send-otp -->
-                    <form id="dynamic-form" method="post" action="{{ url('/send-otp') }}">
+                    <form id="dynamic-form" method="post" action="{{ route('send.otp') }}">
                         @csrf
 
                         <div class="text-center mt-4 mb-4">
