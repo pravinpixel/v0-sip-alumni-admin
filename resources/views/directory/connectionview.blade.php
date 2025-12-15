@@ -35,11 +35,7 @@
     }
     .placeholder {
         background-color: #ffffffff !important;
-    }
-
-    .multi-select-display:hover {
-        border-color: #9ca3af;
-        background-color: #f9fafb;
+        opacity: 1 !important;
     }
 
     .multi-select-dropdown {
@@ -185,7 +181,7 @@
         </div>
 
         <!-- Filter Section - Compact Dropdowns -->
-        <div id="filterSection" style="display: none; padding: 20px; background-color: #e9e7e7ff; border-radius:6px; margin-bottom:6px">
+        <div id="filterSection" class="border border-gray-300 rounded mb-6" style="display: none; padding: 20px; background-color: #f9fafb;">
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                 <div class="multi-select-container" data-filter="batch" style="min-width: 180px;">
                     <div class="multi-select-display" style="padding: 8px 12px; min-height: 38px;">
@@ -464,7 +460,7 @@
         
         if (count > 0) {
             display.html(`
-                <span class="placeholder" style="color: #111827; font-weight: 600; font-size: 13px;">${placeholderTexts[type]}</span>
+                <span>${placeholderTexts[type]}</span>
                 <div style="display: flex; align-items: center; gap: 6px;">
                     <span class="filter-count-badge">${count}</span>
                     <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 10px;"></i>
@@ -472,7 +468,7 @@
             `);
         } else {
             display.html(`
-                <span class="placeholder" style="color: #6b7280; font-weight: 400; font-size: 13px;">${placeholderTexts[type]}</span>
+                <span>${placeholderTexts[type]}</span>
                 <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 10px;"></i>
             `);
         }

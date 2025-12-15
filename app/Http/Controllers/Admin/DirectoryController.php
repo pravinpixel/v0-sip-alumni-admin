@@ -264,8 +264,12 @@ class DirectoryController extends Controller
                 return $c->sender_id == $id ? $c->receiver_id : $c->sender_id;
             })->values();
 
+            // $query = Alumnis::whereIn('id', $connectedAlumniIds)
+            //     ->with(['city', 'occupation']);
+            $idsOrder = $connectedAlumniIds->implode(',');
             $query = Alumnis::whereIn('id', $connectedAlumniIds)
-                ->with(['city', 'occupation']);
+                ->with(['city', 'occupation'])
+                ->orderByRaw("FIELD(id, $idsOrder)");
 
             if ($request->filled('batch')) {
                 $batches = is_array($request->batch) ? $request->batch : [$request->batch];
@@ -285,9 +289,19 @@ class DirectoryController extends Controller
                 $query->where(function($q) use ($search) {
                     $q->where('full_name', 'like', "%{$search}%")
                       ->orWhere('email', 'like', "%{$search}%")
-                      ->orWhereHas('city', function($cityQuery) use ($search) {
-                          $cityQuery->where('name', 'like', "%{$search}%");
-                      });
+                        ->orWhere('year_of_completion', 'like', "%{$search}%")
+                      ->orWhereHas('city', function ($cityQuery) use ($search) {
+                                    $cityQuery->where('name', 'like', "%{$search}%")
+                                        ->orWhereHas('state', function ($stateQuery) use ($search) {
+                                            $stateQuery->where('name', 'like', "%{$search}%");
+                                        });
+                                })
+                                ->orWhereHas('city', function ($c) use ($search) {
+                                    $c->whereRaw(
+                                        "CONCAT(name, ', ', (SELECT name FROM states WHERE id = cities.state_id)) LIKE ?",
+                                        ["%{$search}%"]
+                                    );
+                                });
                 });
             }
 
@@ -314,7 +328,7 @@ class DirectoryController extends Controller
 
                 ->addColumn(
                     'location',
-                    fn($row) => ($row->city?->state?->name ?? '-') . ', ' . ($row->city?->name ?? '-')
+                    fn($row) => ($row->city?->name ?? '-') . ', ' . ($row->city?->state?->name ?? '-')
                 )
 
                 ->addColumn(

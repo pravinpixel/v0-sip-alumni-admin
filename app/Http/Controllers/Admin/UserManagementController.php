@@ -145,7 +145,8 @@ class UserManagementController extends Controller
                 $user->update();
                 $user->roles()->detach();
                 if ($request->input('role_id')) {
-                    $user->assignRole($request->input('role_id'));
+                    $role = Role::find($request->input('role_id'));
+                    $user->assignRole($role->name);
                 }
                 return $this->returnSuccess($user, "User updated successfully");
             } else {

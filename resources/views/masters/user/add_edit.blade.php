@@ -90,19 +90,19 @@
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
-                    <!-- Password -->
+                <!-- Password -->
                     <div>
                         <label
                             style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
                             @if(isset($user))
-                                New Password <span style="color: #6b7280; font-weight: 400;">(Leave blank to keep
-                                    current)</span>
+                                New Password <span style="color: #6b7280; font-weight: 400;">(Leave blank to keep current)</span>
                             @else
                                 Password <span style="color: #dc2626;">*</span>
                             @endif
                         </label>
                         <div style="position: relative;">
-                            <input type="password" id="password" name="password" value="{{ isset($user) ? '' : '' }}"
+                            <input type="password" id="password" name="password" 
+                                value="{{ isset($user) && $decryptedPassword ? $decryptedPassword : '' }}"
                                 style="width: 100%; padding: 0.75rem; padding-right: 3rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
                                 placeholder="Enter password">
                             <i class="fas fa-eye-slash toggle-password" data-toggle="password"
@@ -124,7 +124,7 @@
                         </label>
                         <div style="position: relative;">
                             <input type="password" id="retype_password" name="retype_password"
-                                value="{{ isset($user) ? '' : '' }}"
+                                value="{{ isset($user) && $decryptedPassword ? $decryptedPassword : '' }}"
                                 style="width: 100%; padding: 0.75rem; padding-right: 3rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
                                 placeholder="Re-enter password">
                             <i class="fas fa-eye-slash toggle-password" data-toggle="retype_password"
