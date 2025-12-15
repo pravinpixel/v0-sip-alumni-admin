@@ -207,7 +207,13 @@ class ConnectionsController extends Controller
                                          ->orWhereHas('state', function ($stateQuery) use ($searchValue) {
                                              $stateQuery->where('name', 'like', "%{$searchValue}%");
                                          });
-                            });
+                            })
+                            ->orWhereHas('city', function ($city) use ($searchValue) {
+                                            $city->whereRaw("
+                                                LOWER(CONCAT(cities.name, ', ', (SELECT name FROM states WHERE states.id = cities.state_id))) 
+                                                LIKE ?
+                                            ", ["%{$searchValue}%"]);
+                                        });
                     });
                 }
             })
