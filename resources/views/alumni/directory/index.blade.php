@@ -899,24 +899,24 @@ table.dataTable tbody tr > .sorting_3 {
             table.search(this.value).draw();
         });
 
-        let currentPage = 0;
-        table.on('page.dt', function() {
-            currentPage = table.page.info().page;
-        });
-        table.on('order.dt', function() {
-            let pageInfo = table.page.info();
-            currentPage = pageInfo.page;
-            setTimeout(function() {
-                updateSortIcons();
-            }, 10);
-        });
-        table.on('preDraw.dt', function(e, settings) {
-            if (settings.aaSorting && settings.aaSorting.length > 0) {
-                if (!settings.oPreviousSearch || settings.oPreviousSearch.sSearch === settings.oPreviousSearch.sSearch) {
-                    settings._iDisplayStart = currentPage * settings._iDisplayLength;
-                }
-            }
-        });
+        // let currentPage = 0;
+        // table.on('page.dt', function() {
+        //     currentPage = table.page.info().page;
+        // });
+        // table.on('order.dt', function() {
+        //     let pageInfo = table.page.info();
+        //     currentPage = pageInfo.page;
+        //     setTimeout(function() {
+        //         updateSortIcons();
+        //     }, 10);
+        // });
+        // table.on('preDraw.dt', function(e, settings) {
+        //     if (settings.aaSorting && settings.aaSorting.length > 0) {
+        //         if (!settings.oPreviousSearch || settings.oPreviousSearch.sSearch === settings.oPreviousSearch.sSearch) {
+        //             settings._iDisplayStart = currentPage * settings._iDisplayLength;
+        //         }
+        //     }
+        // });
 
         // Initial icon setup
         setTimeout(function() {
