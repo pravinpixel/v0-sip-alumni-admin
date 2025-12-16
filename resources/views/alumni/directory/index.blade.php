@@ -864,15 +864,23 @@ table.dataTable tbody tr > .sorting_3 {
             
             let info = table.page.info();
 
+            // Fix pagination display for empty results
+            let startRecord = info.recordsDisplay > 0 ? info.start + 1 : 0;
+            let endRecord = info.recordsDisplay > 0 ? info.end : 0;
+            
+            // Fix next button logic - disable if no records or on last page
+            let isNextDisabled = info.recordsDisplay === 0 || info.page + 1 >= info.pages;
+            let isPrevDisabled = info.page === 0 || info.recordsDisplay === 0;
+
             let html = `
           <div class="pagination-container d-flex justify-content-between align-items-center flex-wrap" style="padding: 10px 5px; gap: 10px;">
             
             <div class="pagination-info text-muted" style="font-size: 14px;">
-                Showing ${info.start + 1}-${info.end} of ${info.recordsTotal} alumni
+                Showing ${startRecord}-${endRecord} of ${info.recordsTotal} alumni
             </div>
 
             <div class="pagination-controls d-flex align-items-center gap-2">
-                <button class="btn btn-light btn-sm" id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                <button class="btn btn-light btn-sm" id="prevPage" ${isPrevDisabled ? "disabled" : ""}>
                     <span class="d-none d-sm-inline">‹ Previous</span>
                     <span class="d-inline d-sm-none">‹</span>
                 </button>
@@ -881,7 +889,7 @@ table.dataTable tbody tr > .sorting_3 {
                     ${info.page + 1}
                 </span>
 
-                <button class="btn btn-light btn-sm" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
+                <button class="btn btn-light btn-sm" id="nextPage" ${isNextDisabled ? "disabled" : ""}>
                     <span class="d-none d-sm-inline">Next ›</span>
                     <span class="d-inline d-sm-none">›</span>
                 </button>

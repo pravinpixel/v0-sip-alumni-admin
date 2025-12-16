@@ -657,16 +657,16 @@
     function renderCustomPagination(dt, infoContainerId, paginationContainerId) {
         const info = dt.page.info();
 
-        // Info text
-        const start = info.recordsTotal === 0 ? 0 : info.start + 1;
-        const end = info.recordsTotal === 0 ? 0 : info.end;
+        // Fix info text for empty results
+        const start = info.recordsDisplay > 0 ? info.start + 1 : 0;
+        const end = info.recordsDisplay > 0 ? info.end : 0;
         const recordsText = `Showing ${start} to ${end} of ${info.recordsTotal} ${info.recordsTotal === 1 ? 'record' : 'records'}`;
 
         $('#' + infoContainerId).html(recordsText);
 
-        // Pagination HTML
-        const prevDisabled = info.page === 0 ? 'disabled' : '';
-        const nextDisabled = (info.page + 1 === info.pages) ? 'disabled' : '';
+        // Fix pagination button logic - disable if no records or on first/last page
+        const prevDisabled = info.page === 0 || info.recordsDisplay === 0 ? 'disabled' : '';
+        const nextDisabled = info.recordsDisplay === 0 || info.page + 1 >= info.pages ? 'disabled' : '';
 
         const paginationHtml = `
                 <div class="d-flex justify-content-between align-items-center">
