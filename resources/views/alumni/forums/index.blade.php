@@ -350,7 +350,9 @@
 
     .multi-select-option label {
         flex: 1;
-        font-size: 14px;
+        font-size: 12px;
+        position: relative;
+        top:2px;
         color: #374151;
         cursor: pointer;
         user-select: none;
@@ -1026,12 +1028,12 @@
 
                         ${post.is_pinned_by_user ? `
                             <div style="position: absolute; top: 16px; right: 16px; display: flex; align-items: center; gap: 8px;">
-                                <div style="background: #F7C744; color: #000; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                                <div style="position: relative; top:2px;background: #F7C744; color: #000; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
                                     <i class="fas fa-thumbtack mt-1"></i>
                                     <span class="fw-bold">Pinned</span>
                                 </div>
                                 <button onclick="togglePin(${post.id}, this)" 
-                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 18px; padding: 10px;"
+                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 16px; padding: 10px;"
                                     title="Unpin this post">
                                     <i class="fas fa-thumbtack"></i>
                                 </button>

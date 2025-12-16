@@ -14,7 +14,11 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     <!-- Profile Section -->
     <div class="profile-section" style="position: relative;">
-        <button class="close-btn" onclick="closeSidebar()">×</button>
+        <!-- <button class="close-btn" onclick="closeSidebar()">×</button> -->
+         <button class="close-btn" onclick="closeSidebar()"><span style="
+            position: relative;
+            top: -1px;
+        ">×</span></button>
         <img src="{{ $alumni->image_url ?? asset('images/avatar/blank.png') }}" alt="Profile" class="profile-img">
         <div class="profile-name">{{ $alumni->full_name ?? '-' }}</div>
     </div>
@@ -27,7 +31,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             </div>
             <div class="info-content">
                 <span class="info-label">Year of Completion</span>
-                <div class="info-value">{{ $alumni->year_of_completion ?? '-' }}</div>
+                <div class="info-value" title="{{ $alumni->year_of_completion ?? '-' }}">{{ $alumni->year_of_completion ?? '-' }}</div>
             </div>
         </div>
 
@@ -37,7 +41,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             </div>
             <div class="info-content">
                 <span class="info-label">Location</span>
-                <div class="info-value">{{ $state->name ?? '-' }}, {{ $city->name ?? '-' }}</div>
+                <div class="info-value" title="{{ $state->name ?? '-' }}, {{ $city->name ?? '-' }}">{{ $state->name ?? '-' }}, {{ $city->name ?? '-' }}</div>
             </div>
         </div>
 
@@ -47,7 +51,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             </div>
             <div class="info-content">
                 <span class="info-label">Email Address</span>
-                <div class="info-value">{{ $alumni->email ?? '-' }}</div>
+                <div class="info-value" title="{{ $alumni->email ?? '-' }}">{{ $alumni->email ?? '-' }}</div>
             </div>
         </div>
 
@@ -57,7 +61,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             </div>
             <div class="info-content">
                 <span class="info-label">Contact Number</span>
-                <div class="info-value">{{ $alumni->mobile_number ?? '-' }}</div>
+                <div class="info-value" title="{{ $alumni->mobile_number ?? '-' }}">{{ $alumni->mobile_number ?? '-' }}</div>
             </div>
         </div>
 
@@ -67,7 +71,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             </div>
             <div class="info-content">
                 <span class="info-label">Current Occupation</span>
-                <div class="info-value">{{ $occupation->name ?? '-' }}</div>
+                <div class="info-value" title="{{ $occupation->name ?? '-' }}">{{ $occupation->name ?? '-' }}</div>
             </div>
         </div>
     </div>
@@ -178,7 +182,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         top: -15px;
         right: 15px;
         width: 34px;
-        height: 36px;
+        height: 34px;
         border-radius: 50%;
         background: rgba(255, 255, 255, 0.95);
         border: 2px solid #ef4444;

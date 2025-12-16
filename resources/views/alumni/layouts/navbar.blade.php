@@ -58,18 +58,6 @@
         scale: 1;
     }
 
-    /* Large screens (lg) - ≥992px */
-    @media (min-width: 992px) {
-        .nav-link {
-            font-size: 15px;
-            padding: 6px 20px;
-        }
-        
-        .nav-link i {
-            font-size: 16px;
-        }
-    }
-
     /* Medium screens (md) - 768px to 991px */
     @media (min-width: 768px) and (max-width: 991px) {
         .alumni-navbar {
@@ -121,14 +109,13 @@
 
         .nav-link {
             white-space: nowrap;
-            font-size: 7px;
-            padding: 6px 8px;
+            font-size: 12px;
             gap: 4px;
             flex: 0 0 auto;
         }
         
         .nav-link i {
-            font-size: 12px;
+            font-size: 10px;
         }
 
         .nav-link.active {

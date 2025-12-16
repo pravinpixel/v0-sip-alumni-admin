@@ -395,7 +395,9 @@ table.dataTable tbody tr > .sorting_3 {
 
     .multi-select-option label {
         flex: 1;
-        font-size: 14px;
+        font-size: 12px;
+        position: relative;
+        top:2px;
         color: #374151;
         user-select: none;
     }
