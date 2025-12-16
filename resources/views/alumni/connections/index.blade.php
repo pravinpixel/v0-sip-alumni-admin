@@ -150,6 +150,10 @@
             padding: 12px !important;
             font-size: 13px !important;
         }
+        
+        #connectionsTable_wrapper #connectionsTable thead tr th:last-child {
+            width: 100% !important;
+        }
     }
 
     @media (max-width: 767px) {
@@ -187,11 +191,11 @@
             min-width: 700px;
         }
 
-        #connectionsTable thead th,
+        /* #connectionsTable thead th,
         #requestsTable thead th {
             padding: 10px !important;
             font-size: 12px !important;
-        }
+        } */
 
         #connectionsTable tbody td,
         #requestsTable tbody td {
@@ -249,11 +253,11 @@
             min-width: 650px;
         }
 
-        #connectionsTable thead th,
+        /* #connectionsTable thead th,
         #requestsTable thead th {
             padding: 8px !important;
             font-size: 11px !important;
-        }
+        } */
 
         #connectionsTable tbody td,
         #requestsTable tbody td {
@@ -338,19 +342,11 @@
             <table id="connectionsTable" class="table table-hover" style="width: 100%; margin: 0; border-collapse: collapse;">
                 <thead>
                     <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Alumni 
-                        </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Email 
-                        </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Batch 
-                        </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Location 
-                        </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">Action</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Alumni</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Email</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Batch</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Location</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Action</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -370,19 +366,11 @@
             <table id="requestsTable" class="table table-hover" style="width: 100%; margin: 0; border-collapse: collapse;">
                 <thead>
                     <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Alumni 
-                        </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Email 
-                        </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Batch 
-                        </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">
-                            Location 
-                        </th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none;">Action</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Alumni</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Email</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Batch</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Location</th>
+                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Action</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -787,11 +775,11 @@
             
             // Add appropriate sort icon based on current state
             if ($th.hasClass('sorting_asc')) {
-                $th.append(' <i class="bi bi-arrow-up sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
+                $th.append('<i class="bi bi-arrow-up sort-icon" style="color:white;font-size:14px;margin-left:6px;display:inline-block;vertical-align:middle;"></i>');
             } else if ($th.hasClass('sorting_desc')) {
-                $th.append(' <i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
+                $th.append('<i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;display:inline-block;vertical-align:middle;"></i>');
             } else if ($th.hasClass('sorting')) {
-                $th.append(' <i class="bi bi-arrow-down-up sort-icon" style="color:white;font-size:13px;margin-left:6px;"></i>');
+                $th.append('<i class="bi bi-arrow-down-up sort-icon" style="color:white;font-size:13px;margin-left:6px;display:inline-block;vertical-align:middle;"></i>');
             }
         });
     }
