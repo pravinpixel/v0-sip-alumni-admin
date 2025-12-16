@@ -787,11 +787,11 @@
             
             // Add appropriate sort icon based on current state
             if ($th.hasClass('sorting_asc')) {
-                $th.append(' <i class="bi bi-arrow-up sort-icon" style="color:white;font-size:14px;margin-left:6px;position:absolute;right:12px;top:50%;transform:translateY(-50%);"></i>');
+                $th.append(' <i class="bi bi-arrow-up sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
             } else if ($th.hasClass('sorting_desc')) {
-                $th.append(' <i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;position:absolute;right:12px;top:50%;transform:translateY(-50%);"></i>');
+                $th.append(' <i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
             } else if ($th.hasClass('sorting')) {
-                $th.append(' <i class="bi bi-arrow-down-up sort-icon" style="color:white;font-size:13px;margin-left:6px;position:absolute;right:12px;top:50%;transform:translateY(-50%);"></i>');
+                $th.append(' <i class="bi bi-arrow-down-up sort-icon" style="color:white;font-size:13px;margin-left:6px;"></i>');
             }
         });
     }
