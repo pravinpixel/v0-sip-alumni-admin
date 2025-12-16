@@ -175,7 +175,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
     .close-btn {
         position: absolute;
-        top: 15px;
+        top: -15px;
         right: 15px;
         width: 34px;
         height: 36px;

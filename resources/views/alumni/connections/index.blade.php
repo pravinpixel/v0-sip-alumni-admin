@@ -20,6 +20,19 @@
         background-color: #f9fafb !important;
     }
 
+    /* Center align table data */
+    #connectionsTable tbody td,
+    #requestsTable tbody td {
+        /* text-align: center !important; */
+        vertical-align: middle !important;
+    }
+
+    /* Keep headers left aligned */
+    #connectionsTable thead th,
+    #requestsTable thead th {
+        text-align: left !important;
+    }
+
     /* Table wrapper with scroll */
     .table-wrapper {
         background: white;

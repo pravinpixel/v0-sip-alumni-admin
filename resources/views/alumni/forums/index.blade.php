@@ -787,26 +787,26 @@
                 }
 
             function toggleFilter(filterType, value, isChecked) {
-            if (!selectedFilters[filterType]) {
-                selectedFilters[filterType] = [];
-            }
-            if (isChecked) {
-                if (!selectedFiltersOrder.some(i => i.type === filterType && i.value === value)) {
-                selectedFiltersOrder.push({
-                    type: filterType,
-                    value: value
-                });
-            }
-            } else {
-                selectedFiltersOrder = selectedFiltersOrder.filter(i => i.type !== filterType);
-                selectedFiltersOrder = selectedFiltersOrder.filter(
-                    i => !(i.type === filterType && i.value === value)
-                );
+                if (!selectedFilters[filterType]) {
+                    selectedFilters[filterType] = [];
+                }
+
+                if (isChecked) {
+                    selectedFilters[filterType].push(value);
+                    selectedFiltersOrder.push({ type: filterType, value });
+                } else {
+                    selectedFilters[filterType] =
+                        selectedFilters[filterType].filter(v => v !== value);
+
+                    selectedFiltersOrder = selectedFiltersOrder.filter(
+                        i => !(i.type === filterType && i.value === value)
+                    );
+                }
+
+                updateSelectedFiltersDisplay();
+                loadForumPosts();
             }
 
-            updateSelectedFiltersDisplay();
-            loadForumPosts();
-            }
 
 
         function updateSelectedFiltersDisplay() {
@@ -868,14 +868,15 @@
         }
 
         function removeFilter(filterType, value) {
+            if (selectedFilters[filterType]) {
+                selectedFilters[filterType] =
+                    selectedFilters[filterType].filter(v => String(v) !== String(value));
+            }
             selectedFiltersOrder = selectedFiltersOrder.filter(
                 i => !(i.type === filterType && String(i.value) === String(value))
             );
-            
-            // Uncheck the checkbox
             const checkbox = document.querySelector(`#${filterType}-${value}`);
             if (checkbox) checkbox.checked = false;
-            
             updateSelectedFiltersDisplay();
             loadForumPosts();
         }
