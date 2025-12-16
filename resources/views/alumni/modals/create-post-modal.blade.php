@@ -15,6 +15,7 @@
 
                 <!-- Description Field with Quill Editor -->
                 <div class="form-group">
+                    <div>
                     <label>Post Description <span style="color: #dc2626;">*</span></label>
                     <div id="editorToolbar" class="editor-toolbar">
                         <button type="button" class="ql-bold" title="Bold"></button>
@@ -23,6 +24,7 @@
                         <button type="button" class="ql-list" value="bullet" title="Bullet List"></button>
                         <button type="button" class="ql-link" title="Link"></button>
                     </div>
+                </div>
                     <div id="editor" class="quill-editor" data-error-field="true"></div>
                     <small class="error-message" style="color: #dc2626; font-size: 12px; display: none; margin-top: 8px;"></small>
                 </div>
