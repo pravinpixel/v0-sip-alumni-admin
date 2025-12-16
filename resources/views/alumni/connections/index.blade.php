@@ -258,7 +258,7 @@
         #connectionsTable tbody td,
         #requestsTable tbody td {
             padding: 8px !important;
-            font-size: 11px !important;
+            font-size: 12px !important;
         }
 
         .custom-info {
