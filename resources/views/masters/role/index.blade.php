@@ -210,11 +210,10 @@
 <script>
     $(document).ready(function() {
         let currentSortColumn = 0;
-        let currentSortDirection = 'asc';
+        let currentSortDirection = 'desc'; // Role ID starts with down arrow (desc)
 
         // Simple Column Sorting Function
         function addColumnSorting() {
-            // Remove existing sorting setup to prevent duplicates
             $('#kt_customers_table thead th').removeClass('sortable').css('cursor', '').off('click');
             $('#kt_customers_table thead th .sort-icon').remove();
 
@@ -222,7 +221,12 @@
             $('#kt_customers_table thead th').each(function(index) {
                 if (index <= 1) { // Role ID, Role Name columns
                     $(this).addClass('sortable').css('cursor', 'pointer');
-                    $(this).append(' <i class="fas fa-sort sort-icon" style="margin-left: 8px; color: rgba(255,255,255,0.7);"></i>');
+                    
+                    if (index === 0) {
+                        $(this).append(' <i class="fas fa-chevron-down sort-icon ms-2 fs-8" style="color: rgba(219, 203, 203, 0.9);"></i>');
+                    } else {
+                        $(this).append(' <i class="fas fa-chevron-down sort-icon ms-2 fs-8" style="color: rgba(219, 203, 203, 0.9); display: none;"></i>');
+                    }
                 }
             });
 
@@ -232,16 +236,16 @@
                 
                 // Update sort direction
                 if (currentSortColumn === columnIndex) {
-                    currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                    currentSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
                 } else {
-                    currentSortDirection = 'asc';
+                    currentSortDirection = 'desc';
                 }
                 currentSortColumn = columnIndex;
-
-                // Update sort icons
-                $('#kt_customers_table thead th .sort-icon').removeClass('fa-sort-up fa-sort-down').addClass('fa-sort');
+                $('#kt_customers_table thead th .sort-icon').hide();
+                
                 const icon = $(this).find('.sort-icon');
-                icon.removeClass('fa-sort').addClass(currentSortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down');
+                icon.show().removeClass('fa-chevron-up fa-chevron-down');
+                icon.addClass(currentSortDirection === 'desc' ? 'fa-chevron-down' : 'fa-chevron-up');
 
                 // Sort the table
                 sortTable(columnIndex, currentSortDirection);
@@ -268,17 +272,17 @@
                     
                     // If numbers are the same, fall back to text comparison
                     if (aNum === bNum) {
-                        return direction === 'asc' ? aText.localeCompare(bText) : bText.localeCompare(aText);
+                        return direction === 'desc' ? bText.localeCompare(aText) : aText.localeCompare(bText);
                     }
                     
-                    return direction === 'asc' ? aNum - bNum : bNum - aNum;
+                    return direction === 'desc' ? bNum - aNum : aNum - bNum;
                 }
 
                 // Text sorting for other columns (Role Name)
-                if (direction === 'asc') {
-                    return aText.localeCompare(bText);
-                } else {
+                if (direction === 'desc') {
                     return bText.localeCompare(aText);
+                } else {
+                    return aText.localeCompare(bText);
                 }
             });
 
@@ -290,6 +294,10 @@
 
         // Initialize sorting
         addColumnSorting();
+        
+        setTimeout(function() {
+            sortTable(0, 'desc');
+        }, 100);
 
         // Three-dot menu toggle
         $(document).on('click', '.action-menu-btn', function(e) {
