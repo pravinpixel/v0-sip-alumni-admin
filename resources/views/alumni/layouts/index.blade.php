@@ -145,6 +145,8 @@
             font-weight: 500;
             font-size: 16px;
             line-height: 1;
+            word-break: break-word;
+            overflow-wrap: anywhere;
         }
 
         .edit-profile-btn {

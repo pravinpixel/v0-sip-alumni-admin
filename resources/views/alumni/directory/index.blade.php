@@ -389,7 +389,7 @@ table.dataTable tbody tr > .sorting_3 {
     .multi-select-option input[type="checkbox"] {
         cursor: pointer;
         width: 16px;
-        height: 16px;
+        height: 15px;
         accent-color: #dc2626;
     }
 
@@ -447,6 +447,11 @@ table.dataTable tbody tr > .sorting_3 {
         justify-content: center;
         padding: 0 6px;
         margin-left: 4px;
+    }
+
+    /* Right align action column (4th column) */
+    #alumniTable tbody td:nth-child(4) {
+        text-align: right !important;
     }
 </style>
 
@@ -559,7 +564,7 @@ table.dataTable tbody tr > .sorting_3 {
         Location 
     </th>
 
-    <th style="padding: 16px; font-weight: 600; text-align: left; border: none; min-width: 150px;">Action</th>
+    <th style="padding: 16px; font-weight: 600; text-align: right; border: none; min-width: 150px;">Action</th>
 
                     </tr>
                 </thead>

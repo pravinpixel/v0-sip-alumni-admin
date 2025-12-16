@@ -344,7 +344,7 @@
     .multi-select-option input[type="checkbox"] {
         cursor: pointer;
         width: 16px;
-        height: 16px;
+        height: 15px;
         accent-color: #dc2626;
     }
 

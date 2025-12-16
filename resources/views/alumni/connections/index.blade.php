@@ -201,10 +201,6 @@
             font-size: 12px !important;
         }
 
-        .custom-pagination {
-            padding: 10px 12px !important;
-        }
-
         .custom-pagination .btn {
             font-size: 12px !important;
             padding: 6px 12px !important;
@@ -273,6 +269,10 @@
 
         .custom-pagination span {
             font-size: 11px !important;
+        }
+
+        .custom-pagination {
+            padding: 0 !important;
         }
 
         #infoRibbon {
@@ -669,7 +669,7 @@
         const nextDisabled = (info.page + 1 === info.pages) ? 'disabled' : '';
 
         const paginationHtml = `
-                <div class="d-flex justify-content-end align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
                     <button class="btn btn-light btn-sm me-2" id="${paginationContainerId}_prev" ${prevDisabled}>‹ Previous</button>
                     <span class="mx-2" style="font-weight:500;">Page ${info.page + 1} of ${Math.max(info.pages, 1)}</span>
                     <button class="btn btn-light btn-sm ms-2" id="${paginationContainerId}_next" ${nextDisabled}>Next ›</button>
