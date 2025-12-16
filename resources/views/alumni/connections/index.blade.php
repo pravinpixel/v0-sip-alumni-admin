@@ -7,6 +7,9 @@
     #requestsTable thead tr {
         background: linear-gradient(90deg, #e2001d 0%, #f7c744 48%, #b1040e 100%) !important;
     }
+    #connectionsTable_wrapper #connectionsTable thead tr th:last-child {
+        width: 120px !important;
+    }
 
     #connectionsTable thead th,
     #requestsTable thead th {
