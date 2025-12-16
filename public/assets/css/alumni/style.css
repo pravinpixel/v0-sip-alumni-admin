@@ -344,7 +344,6 @@ html, body {
   height: 100% !important;
   max-height: 200px !important;
 }
-
 .toast-notification {
     position: fixed;
     top: 25px;
@@ -378,6 +377,31 @@ html, body {
       top: 76px;
       right: 10px
     }
+    
+    .modal-popup {
+            width: 70% !important;
+            height: 85dvh !important;
+            max-width: 100% !important;
+            max-height: 100dvh !important;
+            border-radius: 10px !important;
+    }       
+}
+
+@media screen and (max-width: 480px) {
+    .toast-notification {
+      font-size: 10px;
+      padding: 10px 15px;
+      top: 76px;
+      right: 10px
+    }
+    
+    .modal-popup {
+            width: 90% !important;
+            height: 76dvh !important;
+            max-width: 100% !important;
+            max-height: 100dvh !important;
+            border-radius: 10px !important;
+    }       
 }
 
 

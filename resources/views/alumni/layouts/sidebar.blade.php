@@ -225,13 +225,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             cursor: pointer;
             padding: 8px;
         }
-            .modal-popup {
-            width: 90% !important;
-            height: 90dvh !important;
-            max-width: 100% !important;
-            max-height: 100dvh !important;
-            border-radius: 0 !important;
-        }
     }
         .modal-overlay {
         position: fixed !important;

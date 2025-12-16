@@ -15,17 +15,17 @@
 
                 <!-- Description Field with Quill Editor -->
                 <div class="form-group">
-                    <div>
-                    <label>Post Description <span style="color: #dc2626;">*</span></label>
-                    <div id="editorToolbar" class="editor-toolbar">
-                        <button type="button" class="ql-bold" title="Bold"></button>
-                        <button type="button" class="ql-italic" title="Italic"></button>
-                        <button type="button" class="ql-underline" title="Underline"></button>
-                        <button type="button" class="ql-list" value="bullet" title="Bullet List"></button>
-                        <button type="button" class="ql-link" title="Link"></button>
+                    <div class="editor-container">
+                        <label>Post Description <span style="color: #dc2626;">*</span></label>
+                        <div id="editorToolbar" class="editor-toolbar">
+                            <button type="button" class="ql-bold" title="Bold"></button>
+                            <button type="button" class="ql-italic" title="Italic"></button>
+                            <button type="button" class="ql-underline" title="Underline"></button>
+                            <button type="button" class="ql-list" value="bullet" title="Bullet List"></button>
+                            <button type="button" class="ql-link" title="Link"></button>
+                        </div>
+                        <div id="editor" class="quill-editor form-input" data-error-field="true"></div>
                     </div>
-                </div>
-                    <div id="editor" class="quill-editor" data-error-field="true"></div>
                     <small class="error-message" style="color: #dc2626; font-size: 12px; display: none; margin-top: 8px;"></small>
                 </div>
 
@@ -177,11 +177,6 @@
         background-color: #fef2f2;
     }
 
-    #createPostModal .quill-editor.editor-error {
-        border-color: #dc2626;
-        background-color: #fef2f2;
-    }
-
     /* Quill Editor */
     #createPostModal .editor-toolbar {
         background: #f9fafb;
@@ -192,6 +187,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 4px;
+        transition: border-color 0.3s;
     }
 
     #createPostModal .editor-toolbar button {
@@ -207,6 +203,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        font-weight: bold;
     }
 
     #createPostModal .editor-toolbar button:hover {
@@ -227,6 +224,28 @@
         border-radius: 0 0 6px 6px;
         min-height: 120px;
         font-size: 14px;
+        transition: border-color 0.3s;
+    }
+
+    /* Error state for editor and toolbar */
+    #createPostModal .quill-editor.editor-error {
+        border-color: #dc2626;
+        background-color: #fef2f2;
+    }
+
+    #createPostModal .editor-container.editor-error .editor-toolbar {
+        border-color: #dc2626;
+        background-color: #fef2f2;
+    }
+
+    #createPostModal .editor-container.editor-error .editor-toolbar button {
+        border-color: #dc2626;
+        background-color: #fef2f2;
+    }
+
+    #createPostModal .editor-container.editor-error .editor-toolbar button:hover {
+        background-color: #fecaca;
+        border-color: #b91c1c;
     }
 
     #createPostModal .ql-editor {
@@ -273,6 +292,99 @@
         background: #9ca3af;
         cursor: not-allowed;
     }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+
+        #createPostModal .modal-body {
+            padding: 16px;
+        }
+
+        #createPostModal .modal-body>div:first-child {
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+        }
+
+        #createPostModal .modal-body>div:first-child h2 {
+            font-size: 18px;
+        }
+
+        #createPostModal .modal-close-btn {
+            font-size: 24px;
+            width: 28px;
+            height: 28px;
+        }
+
+        #createPostModal .form-group {
+            margin-bottom: 12px;
+        }
+
+        #createPostModal .form-group label {
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        #createPostModal .editor-toolbar {
+            padding: 6px;
+            gap: 3px;
+        }
+
+        #createPostModal .editor-toolbar button {
+            width: 28px;
+            height: 28px;
+            padding: 2px 4px;
+            font-size: 12px;
+        }
+
+        #createPostModal .quill-editor {
+            min-height: 100px;
+            font-size: 16px; /* Prevents zoom on iOS */
+        }
+
+        #createPostModal .ql-editor {
+            padding: 0px;
+        }
+
+
+        #createPostModal .error-message {
+            font-size: 11px;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        #createPostModal .modal-body {
+            padding: 12px;
+        }
+
+        #createPostModal .modal-body>div:first-child h2 {
+            font-size: 16px;
+        }
+
+        #createPostModal .editor-toolbar {
+            padding: 4px;
+            gap: 2px;
+        }
+
+        #createPostModal .editor-toolbar button {
+            width: 24px;
+            height: 24px;
+            font-size: 11px;
+        }
+
+        #createPostModal .quill-editor {
+            min-height: 80px;
+        }
+
+        #createPostModal .ql-editor {
+            padding: 0px;
+        }
+
+        #createPostModal .form-input {
+            font-size: 10px;
+        }
+
+    }
 </style>
 
 <!-- Quill Rich Text Editor CSS -->
@@ -309,7 +421,12 @@
                     const editorElement = document.getElementById('editor');
                     if (text.length > 0) {
                         editorElement.classList.remove('editor-error');
-                        const errorMsg = editorElement.parentElement.querySelector('.error-message');
+                        // Also remove error class from editor container
+                        const editorContainer = editorElement.closest('.editor-container');
+                        if (editorContainer) {
+                            editorContainer.classList.remove('editor-error');
+                        }
+                        const errorMsg = editorElement.closest('.form-group').querySelector('.error-message');
                         if (errorMsg) {
                             errorMsg.textContent = '';
                             errorMsg.style.display = 'none';
@@ -343,12 +460,7 @@
         const description = quill.getText().trim();
 
         // Clear previous errors
-        form.querySelectorAll('.error-message').forEach(el => {
-            el.textContent = '';
-            el.style.display = 'none';
-        });
-        form.querySelectorAll('.form-input').forEach(el => el.classList.remove('input-error'));
-        document.getElementById('editor').classList.remove('editor-error');
+        clearAllPostFormErrors();
 
         // Validation
         let hasError = false;
@@ -426,16 +538,26 @@
     }
 
     function showFieldError(element, message) {
-        const errorEl = element.parentElement.querySelector('.error-message');
+        let errorEl;
+        
+        if (element.id === 'editor') {
+            // For editor, find error message in the form-group
+            errorEl = element.closest('.form-group').querySelector('.error-message');
+            element.classList.add('editor-error');
+            // Also add error class to the editor container for toolbar styling
+            const editorContainer = element.closest('.editor-container');
+            if (editorContainer) {
+                editorContainer.classList.add('editor-error');
+            }
+        } else {
+            // For regular inputs
+            errorEl = element.parentElement.querySelector('.error-message');
+            element.classList.add('input-error');
+        }
+        
         if (errorEl) {
             errorEl.textContent = message;
             errorEl.style.display = 'block';
-        }
-
-        if (element.id === 'editor') {
-            element.classList.add('editor-error');
-        } else {
-            element.classList.add('input-error');
         }
     }
 
@@ -462,6 +584,11 @@
         });
         const editor = document.getElementById('editor');
         editor.classList.remove('editor-error');
+        // Also clear error from editor container
+        const editorContainer = editor.closest('.editor-container');
+        if (editorContainer) {
+            editorContainer.classList.remove('editor-error');
+        }
     }
 
 

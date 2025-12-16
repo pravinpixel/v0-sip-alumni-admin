@@ -38,7 +38,7 @@
             </div>
 
             {{-- Empty Comments Message --}}
-            <div id="noCommentsMessage" style="display: none; text-align: center; padding: 40px 20px; color: #6b7280;">
+            <div id="noCommentsMessage" style="display: none; text-align: center; padding: auto; color: #6b7280;">
                 <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 12px; opacity: 0.5;"></i>
                 <p style="font-size: 14px; margin: 0;">No comments yet. Be the first to reply!</p>
             </div>
@@ -96,6 +96,14 @@
 </div>
 
 <style>
+    #noCommentsMessage {
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
     #threadModal {
         animation: fadeIn 0.3s ease;
     }
@@ -162,7 +170,7 @@
         }
 
         #threadModal > div {
-            max-width: 100% !important;
+            max-width: 85% !important;
             margin: 10px auto !important;
             max-height: 95vh !important;
             border-radius: 8px !important;
@@ -307,6 +315,7 @@
         #threadModal > div {
             margin: 5px auto !important;
             border-radius: 6px !important;
+            max-width: 96% !important;
         }
 
         /* Modal content padding */
