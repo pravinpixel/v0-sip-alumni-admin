@@ -49,8 +49,40 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
             });
         }
 
+        if ($this->request->filled('search')) {
+            $this->applySearch($query, $this->request->search);
+        }
+
+
         return $query->get();
     }
+    private function applySearch($query, $searchValue)
+    {
+        $parsedDate = date('Y-m-d', strtotime($searchValue));
+        $yearSearch = preg_match('/^\d{4}$/', $searchValue) ? $searchValue : null;
+        $query->where(function ($q) use ($searchValue, $parsedDate, $yearSearch) {
+            $q->where('full_name', 'like', "%{$searchValue}%")
+            ->orWhere('year_of_completion', 'like', "%{$searchValue}%")
+            ->orWhere('status', 'like', "%{$searchValue}%")
+            ->orWhere('email', 'like', "%{$searchValue}%")
+            ->orWhere('mobile_number', 'like', "%{$searchValue}%")
+            ->orWhereHas('occupation', fn($o) =>
+                    $o->where('name', 'like', "%{$searchValue}%"))
+            ->orWhereHas('city', fn($c) =>
+                    $c->where('name', 'like', "%{$searchValue}%")
+                    ->orWhereHas('state', fn($s) =>
+                            $s->where('name', 'like', "%{$searchValue}%")
+                    )
+            );
+            if ($parsedDate && $parsedDate !== '1970-01-01') {
+                $q->orWhereDate('created_at', $parsedDate);
+            }
+            if ($yearSearch) {
+                $q->orWhereYear('created_at', $yearSearch);
+            }
+        });
+    }
+
 
     public function headings(): array
     {

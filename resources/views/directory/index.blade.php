@@ -597,11 +597,13 @@
         let years = selectedFilters.years.join(',');
         let cities = selectedFilters.cities.join(',');
         let occupations = selectedFilters.occupations.join(',');
+        let search = $('#directoryTable').DataTable().search();
 
         let url = "{{ route('admin.directory.export') }}" 
                     + "?years=" + years 
                     + "&cities=" + cities 
                     + "&occupations=" + occupations
+                    + "&search=" + encodeURIComponent(search)
                     + "&format=" + format;
 
         window.location.href = url;
