@@ -180,19 +180,22 @@
 <div id="settingModal"
     style="position:fixed; top:0; left:0; width:100%; height:100%; 
             background:rgba(0,0,0,0.45); display:none; 
-            justify-content:center; align-items:center; z-index:9999;">
+            justify-content:center; align-items:center; z-index:9999;
+            padding: 20px; box-sizing: border-box;">
 
-    <div style="background:white; width:450px; border-radius:12px; 
-                padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.2);">
+    <div class="settings-modal-content" style="background:white; width:100%; max-width:450px; border-radius:12px; 
+                padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.2); 
+                max-height: 90vh; overflow-y: auto;">
 
         <!-- Header -->
-        <div style="display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; margin-bottom:4px;">
-            <div>
+        <div class="settings-header" style="display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:10px; margin-bottom:4px;">
+            <div style="flex: 1; margin-right: 15px;">
                 <h2 style="margin:0; font-size:20px; font-weight:600;">Settings</h2>
                 <p style="margin:3px 0;color:#666;font-size:12px;">Manage your notification preferences</p>
             </div>
             <button onclick="closeSettingModal()"
-                style="background:none; border:none; font-size:16px; cursor:pointer;">
+                style="background:none; border:none; font-size:18px; cursor:pointer; 
+                       padding: 5px; line-height: 1; color: #666; flex-shrink: 0;">
                 ✖
             </button>
         </div>
@@ -201,14 +204,14 @@
         <div>
 
             <!-- Setting 1 -->
-            <div class="setting-row" style="display:flex;justify-content:space-between;align-items:center;
-                  padding:12px 0;">
-                <div>
-                    <h4 style="margin:0;font-size:13px;">Receive email notifications for all Admin Approvals</h4>
-                    <p style="margin:3px 0;color:#666;font-size:12px;">Get notified when admins approve or reject your requests</p>
+            <div class="setting-row" style="display:flex;justify-content:space-between;align-items:flex-start;
+                  padding:12px 0; gap: 15px;">
+                <div style="flex: 1;">
+                    <h4 style="margin:0;font-size:13px; line-height: 1.4;">Receive email notifications for all Admin Approvals</h4>
+                    <p style="margin:3px 0;color:#666;font-size:12px; line-height: 1.3;">Get notified when admins approve or reject your requests</p>
                 </div>
 
-                <div style="display:flex;align-items:center;">
+                <div style="display:flex;align-items:center; flex-shrink: 0;">
                     <input type="checkbox" id="adminToggle" style="display:none;"
                         {{ $alumni->notify_admin_approval ? 'checked' : '' }}>
 
@@ -222,14 +225,14 @@
 
 
             <!-- Setting 2 -->
-            <div class="setting-row" style="display:flex;justify-content:space-between;align-items:center;
-                 padding:12px 0;">
-                <div>
-                    <h4 style="margin:0;font-size:13px;">Receive email notifications for post comments or updates</h4>
-                    <p style="margin:3px 0;color:#666;font-size:12px;">Get notified when someone comments on your posts or replies to your comments</p>
+            <div class="setting-row" style="display:flex;justify-content:space-between;align-items:flex-start;
+                 padding:12px 0; gap: 15px;">
+                <div style="flex: 1;">
+                    <h4 style="margin:0;font-size:13px; line-height: 1.4;">Receive email notifications for post comments or updates</h4>
+                    <p style="margin:3px 0;color:#666;font-size:12px; line-height: 1.3;">Get notified when someone comments on your posts or replies to your comments</p>
                 </div>
 
-                <div style="display:flex;align-items:center;">
+                <div style="display:flex;align-items:center; flex-shrink: 0;">
                     <input type="checkbox" id="commentToggle" style="display:none;"
                         {{ $alumni->notify_post_comments ? 'checked' : '' }}>
 
@@ -246,6 +249,110 @@
 
     </div>
 </div>
+
+<style>
+    /* Settings Modal Mobile Responsive Styles */
+    @media (max-width: 768px) {
+        #settingModal {
+            padding: 15px !important;
+        }
+        
+        .settings-modal-content {
+            padding: 18px !important;
+            border-radius: 8px !important;
+        }
+        
+        .settings-header h2 {
+            font-size: 18px !important;
+        }
+        
+        .settings-header p {
+            font-size: 11px !important;
+        }
+        
+        .setting-row {
+            padding: 15px 0 !important;
+            gap: 12px !important;
+        }
+        
+        .setting-row h4 {
+            font-size: 12px !important;
+        }
+        
+        .setting-row p {
+            font-size: 11px !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        #settingModal {
+            padding: 10px !important;
+        }
+        
+        .settings-modal-content {
+            padding: 15px !important;
+            border-radius: 6px !important;
+        }
+        
+        .settings-header {
+            margin-bottom: 8px !important;
+        }
+        
+        .settings-header h2 {
+            font-size: 16px !important;
+        }
+        
+        .settings-header p {
+            font-size: 10px !important;
+            margin: 2px 0 !important;
+        }
+        
+        .setting-row {
+            padding: 12px 0 !important;
+            gap: 10px !important;
+        }
+        
+        .setting-row h4 {
+            font-size: 11px !important;
+            line-height: 1.3 !important;
+        }
+        
+        .setting-row p {
+            font-size: 10px !important;
+            line-height: 1.2 !important;
+            margin: 2px 0 !important;
+        }
+        
+        /* Smaller toggle switches on very small screens */
+        #adminSlider, #commentSlider {
+            width: 40px !important;
+            height: 20px !important;
+        }
+        
+        #adminCircle, #commentCircle {
+            width: 16px !important;
+            height: 16px !important;
+        }
+    }
+    
+    @media (max-width: 360px) {
+        .settings-modal-content {
+            padding: 12px !important;
+        }
+        
+        .setting-row {
+            padding: 10px 0 !important;
+        }
+        
+        .setting-row h4 {
+            font-size: 10px !important;
+        }
+        
+        .setting-row p {
+            font-size: 9px !important;
+        }
+    }
+</style>
 
 
 
