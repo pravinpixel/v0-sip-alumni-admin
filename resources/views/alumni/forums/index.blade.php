@@ -357,10 +357,11 @@
     }
 
     .selected-tag {
-        background: #dc2626;
-        color: white;
-        padding: 6px 12px;
+        background: color-mix(in oklab, #F7C744 20%, transparent);
+        color: #B1040E;
+        padding: 4px 10px;
         border-radius: 16px;
+        border: 1px solid #F7C744;
         font-size: 13px;
         font-weight: 500;
         display: inline-flex;
@@ -371,11 +372,10 @@
     .selected-tag button {
         background: none;
         border: none;
-        color: white;
+        color: #B1040E;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 18px;
         line-height: 1;
-        padding: 0;
         font-weight: 700;
     }
 
@@ -1090,7 +1090,7 @@
                         </div>
 
                         {{-- Added engagement stats and action buttons with reply toggle --}}
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0px; margin-bottom: 16px;border-top: 1px solid #e5e7eb;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0 0 0px; margin-bottom: 16px;border-top: 1px solid #e5e7eb;">
                             <div style="display: flex; align-items: center; gap: 20px;">
                                 <div style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-size: 14px;">
                                     <i class="far fa-eye"></i>
@@ -1143,8 +1143,9 @@
                         </div>
 
                         {{-- Added reply input form that shows/hides on button click --}}
-                        <div id="replyForm-${post.id}" style="display: none; background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 12px; padding: 20px;">
-                            <div style="display: flex; gap: 16px; margin-bottom: 16px;">
+                        <div id="replyForm-${post.id}" style="display: none; border-radius: 12px;">
+                        <hr>
+                            <div style="display: flex; gap: 16px; margin-bottom: 8px;">
                                 ${currentUserImage ? `
                                     <img src="${currentUserImage}" alt="${currentUserName}" 
                                         style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626; flex-shrink: 0;">
@@ -1160,16 +1161,18 @@
                             </div>
                             <div style="display: flex; justify-content: flex-end; gap: 12px;">
                                 <button onclick="closeReplyForm(${post.id})"
-                                        style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
-                                        onmouseover="this.style.background='#f3f4f6'"
-                                        onmouseout="this.style.background='white'">
+                                        class="px-3 py-1"
+                                        style="background: #f7f7f7ff; color: #0d0d0eff; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                                        onmouseover="this.style.background='#F7C744'"
+                                        onmouseout="this.style.background='#f7f7f7ff'">
                                     Cancel
                                 </button>
                                 <button onclick="submitReply(${post.id})" id="replySubmit-${post.id}" disabled
-                                        style="background: #dc2626; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: not-allowed; opacity: 0.6; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
+                                        class="px-3 py-1 fs-6"
+                                        style="background: #dc2626; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: not-allowed; opacity: 0.6; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
                                         onmouseover="this.style.background='#b91c1c'; this.style.transform='translateY(-1px)'"
                                         onmouseout="this.style.background='#dc2626'; this.style.transform='translateY(0)'">
-                                    <i class="fas fa-paper-plane"></i>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send h-2 w-2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
                                     Post Reply
                                 </button>
                             </div>

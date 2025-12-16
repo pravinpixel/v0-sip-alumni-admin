@@ -409,10 +409,11 @@ table.dataTable tbody tr > .sorting_3 {
     }
 
     .selected-tag {
-        background: #dc2626;
-        color: white;
-        padding: 6px 12px;
+        background: color-mix(in oklab, #F7C744 20%, transparent);
+        color: #B1040E;
+        padding: 4px 12px;
         border-radius: 20px;
+        border: 1px solid #F7C744;
         font-size: 13px;
         display: inline-flex;
         align-items: center;
@@ -423,9 +424,10 @@ table.dataTable tbody tr > .sorting_3 {
     .selected-tag .remove {
         cursor: pointer;
         font-weight: bold;
-        font-size: 16px;
+        font-size: 18px;
         line-height: 1;
         margin-left: 2px;
+        padding: 0px;
     }
 
     .selected-tag .remove:hover {

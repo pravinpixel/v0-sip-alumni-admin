@@ -44,7 +44,7 @@
             </div>
 
             {{-- Reply Input Section --}}
-            <div id="replySection" style="border-top: 1px solid #e5e7eb; padding-top: 24px;">
+            <div id="replySection">
                 {{-- Replying To Indicator --}}
                 <div id="replyingToIndicator" style="display: none; border: 1px solid #fff9a1ff; background: #fff4f6ff; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
                     <div class="d-flex align-items-center justify-content-between w-100">
@@ -57,37 +57,38 @@
                     </div>
                 </div>
 
-                <div style="display: flex; align-items: flex-start; gap: 12px;">
-                    <div id="currentUserAvatar" style="width: 40px; height: 40px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0;">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
-                    <div style="flex: 1;">
-                        <input
+                <div style="display: flex; align-items: center; gap: 6px;">
+                        <!-- <input
                             type="text"
                             placeholder="Write your reply..."
                             id="replyInput"
-                            style="width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 12px;"
+                            style="width: 100%; padding: 8px 10px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none;"
                             onfocus="this.style.borderColor='#dc2626'"
-                            onblur="this.style.borderColor='#e5e7eb'">
-
-                        <div style="display: flex; justify-content: flex-end; gap: 12px;">
-                            <button
-                                onclick="closeThreadModal()"
-                                style="background: white; color: #374151; border: 2px solid #e5e7eb; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
-                                onmouseover="this.style.background='#f3f4f6'"
-                                onmouseout="this.style.background='white'">
-                                Cancel
-                            </button>
+                            onblur="this.style.borderColor='#e5e7eb'"> -->
+                        <textarea
+                            id="replyInput"
+                            placeholder="Write your reply..."
+                            rows="1"
+                            class="py-2 px-3"
+                            style="width:100%;
+                                border:2px solid #e5e7eb;
+                                border-radius:8px;
+                                font-size:14px;
+                                outline:none;
+                                resize:none;
+                                overflow:hidden;"
+                            oninput="this.style.height='auto'; this.style.height=this.scrollHeight+'px';"
+                            onfocus="this.style.borderColor='#dc2626'"
+                            onblur="this.style.borderColor='#e5e7eb'"></textarea>
                             <button
                                 onclick="submitThreadReply()"
-                                style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
+                                class="py-2 px-3"
+                                style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
                                 onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'"
                                 onmouseout="this.style.background='linear-gradient(90deg, #E2001D, #B1040E)'">
-                                <i class="fas fa-paper-plane"></i>
-                                Post Reply
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send h-2 w-2"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+                                Post
                             </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

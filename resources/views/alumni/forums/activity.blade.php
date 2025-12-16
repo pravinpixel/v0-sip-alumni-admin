@@ -331,7 +331,8 @@
             <div
                 style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
                 <div
-                    style="display: flex; gap: 0; background: #f3f4f6; border-radius: 8px; overflow: hidden; flex: 0 0 auto;">
+                    style="display: flex; gap: 0; background: #f3f4f6; border-radius: 8px; overflow: hidden; flex: 0 0 auto; justify-content: space-between;">
+                    {{-- Tabs --}}
                     <button id="activePostsTab" onclick="switchTab('activePosts')"
                         style="padding: 12px 40px; background: #dc2626; color: white; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
                         Active Posts
@@ -435,7 +436,7 @@
                 html = `
                                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
                                     <div class="stat-card" style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Active Posts</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-file-alt" style="color: #ef4444; font-size: 16px;"></i>
@@ -444,7 +445,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #ef4444; margin: 0;">${stats.activePosts || 0}</h2>
                                     </div>
                                     <div class="stat-card" style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Likes</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-heart" style="color: #f59e0b; font-size: 16px;"></i>
@@ -453,7 +454,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #f59e0b; margin: 0;">${stats.totalLikes || 0}</h2>
                                     </div>
                                     <div class="stat-card" style="background: white; border: 2px solid #3b82f6; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Views</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-eye" style="color: #3b82f6; font-size: 16px;"></i>
@@ -462,7 +463,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #3b82f6; margin: 0;">${stats.totalViews || 0}</h2>
                                     </div>
                                     <div class="stat-card" style="background: white; border: 2px solid #a855f7; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Replies</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-reply" style="color: #a855f7; font-size: 16px;"></i>
@@ -477,7 +478,7 @@
                 html = `
                                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
                                     <div class="stat-card" style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Posts</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-file-alt" style="color: #ef4444; font-size: 16px;"></i>
@@ -486,7 +487,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #ef4444; margin: 0;">${stats.totalStatusPosts || 0}</h2>
                                     </div>
                                     <div class="stat-card" style="background: white; border: 2px solid #008f58ff; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Approved</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-check" style="color: #008f58ff; font-size: 16px;"></i>
@@ -495,7 +496,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #008f58ff; margin: 0;">${stats.activePosts || 0}</h2>
                                     </div>
                                     <div class="stat-card" style="background: white; border: 2px solid #f59e0b; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Pending</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-clock" style="color: #f59e0b; font-size: 16px;"></i>
@@ -504,7 +505,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #f59e0b; margin: 0;">${stats.pendingPosts || 0}</h2>
                                     </div>
                                     <div class="stat-card" style="background: white; border: 2px solid #ef4444; border-radius: 12px; padding: 20px; transition: all 0.3s ease; cursor: pointer;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Rejected</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-times-circle" style="color: #ef4444; font-size: 16px;"></i>
@@ -519,7 +520,7 @@
                 html = `
                                 <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
                                     <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Total Posts</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-file-alt" style="color: #9ca3af; font-size: 16px;"></i>
@@ -528,7 +529,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.archivedPosts || 0}</h2>
                                     </div>
                                     <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Active</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-check-circle" style="color: #9ca3af; font-size: 16px;"></i>
@@ -537,7 +538,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.activePosts || 0}</h2>
                                     </div>
                                     <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Pending</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-clock" style="color: #9ca3af; font-size: 16px;"></i>
@@ -546,7 +547,7 @@
                                         <h2 style="font-size: 32px; font-weight: 700; color: #6b7280; margin: 0;">${stats.pendingPosts || 0}</h2>
                                     </div>
                                     <div style="background: white; border: 2px solid #d1d5db; border-radius: 12px; padding: 20px;">
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                                             <span style="color: #9ca3af; font-size: 13px; font-weight: 500;">Rejected</span>
                                             <div style="width: 32px; height: 32px; background: transparent; display: flex; align-items: center; justify-content: center;">
                                                 <i class="fas fa-times-circle" style="color: #9ca3af; font-size: 16px;"></i>
@@ -744,7 +745,7 @@
 
                                                                             ${viewType === 'archive' && post.status === 'removed_by_admin' && post.remarks ? `
                                                                                 <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 6px; margin-bottom: 16px; display: flex; gap: 12px;">
-                                                                                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                                                                    <div style="display: flex; align-items: center; gap: 8px;">
                                                                                         <span style="color: #b32626ff; font-weight: 600; font-size: 13px;">Removal Reason:</span>
                                                                                     </div>
                                                                                     <p style="color: #d64747ff; font-size: 13px; line-height: 1.5; margin: 0;">
