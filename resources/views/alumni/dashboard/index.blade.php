@@ -322,7 +322,7 @@
                         </h3>
                         
                         {{-- Description - Fixed height --}}
-                        <p class="post-description" style="font-size: 14px; color: #6b7280; margin-bottom: 16px; line-height: 1.5; min-height: 60px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; word-wrap: break-word;">
+                        <p class="post-description" title="{{ strip_tags($post['description']) }}" style="font-size: 14px; color: #6b7280; margin-bottom: 16px; line-height: 1.5; min-height: 60px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; word-wrap: break-word;">
                             {{ strip_tags($post['description']) }}
                         </p>
 
