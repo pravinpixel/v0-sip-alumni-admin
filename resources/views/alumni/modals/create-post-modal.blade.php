@@ -248,6 +248,17 @@
         border-color: #b91c1c;
     }
 
+    /* Focus state for editor container */
+    #createPostModal .editor-container.editor-focused .editor-toolbar {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    #createPostModal .editor-container.editor-focused .quill-editor {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
     #createPostModal .ql-editor {
         padding: 12px;
         line-height: 1.6;
@@ -409,13 +420,24 @@
                     }
                 });
 
+                // Add focus and blur event handlers for red border
+                quill.on('selection-change', function(range) {
+                    const editorContainer = document.querySelector('.editor-container');
+                    if (range) {
+                        // Editor is focused
+                        editorContainer.classList.add('editor-focused');
+                    } else {
+                        // Editor lost focus
+                        editorContainer.classList.remove('editor-focused');
+                    }
+                });
+
                 // Clear error when user starts typing in editor
                 quill.on('text-change', function() {
                     const text = quill.getText().trim();
                     if (text.length > MAX_DESCRIPTION_LENGTH) {
                         quill.deleteText(MAX_DESCRIPTION_LENGTH);
                     }
-
 
                     // Clear error styling
                     const editorElement = document.getElementById('editor');
@@ -584,10 +606,11 @@
         });
         const editor = document.getElementById('editor');
         editor.classList.remove('editor-error');
-        // Also clear error from editor container
+        // Also clear error and focus from editor container
         const editorContainer = editor.closest('.editor-container');
         if (editorContainer) {
             editorContainer.classList.remove('editor-error');
+            editorContainer.classList.remove('editor-focused');
         }
     }
 
