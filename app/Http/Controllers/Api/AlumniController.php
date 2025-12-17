@@ -95,7 +95,11 @@ class AlumniController extends Controller
             Mail::to($alumni->email)->queue(new AlumniWelcomeMail($alumniData));
 
             // $role = Role::where('name', 'Super Admin')->first();
-            $admins = User::whereNull('deleted_at')->get();
+            $admins = User::where('status', 1)->whereNull('deleted_at')
+                    ->whereHas('role', function ($q) {
+                        $q->where('status', 1);
+                    })
+                    ->get();
 
             $adminData = [
                 'name' => $alumni->full_name ?? '',

@@ -433,7 +433,8 @@
                         }
                     },
                     error: function (xhr) {
-                        showToast(xhr.responseJSON?.message || 'Failed to update status', 'error');
+                        toggle.prop('checked', !newStatus);
+                        showToast(xhr.responseJSON?.error, 'error');
                     }
                 });
             });

@@ -229,8 +229,12 @@ class ForumsController extends Controller
                 ];
                 Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
             }
-            // $role = Role::where('name', 'Super Admin')->first();
-            $admins = User::whereNull('deleted_at')->get();
+            // $roles = Role::where('status', 1)->get();
+            // $admins = User::whereIn('role_id', $roles->pluck('id'))->where('status', 1)->whereNull('deleted_at')->get();
+            $admins = User::where('status', 1)->whereNull('deleted_at')
+                    ->whereHas('role', function ($q) {
+                        $q->where('status', 1);
+                    })->get();
             $adminData = [
                 'name' => $alumni->full_name,
                 'support_email' => env('SUPPORT_EMAIL'),
@@ -301,7 +305,10 @@ class ForumsController extends Controller
                     Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
                 }
                 // $role = Role::where('name', 'Super Admin')->first();
-                $admins = User::whereNull('deleted_at')->get();
+                $admins = User::where('status', 1)->whereNull('deleted_at')
+                    ->whereHas('role', function ($q) {
+                        $q->where('status', 1);
+                    })->get();
                 $adminData = [
                     'name' => $alumni->full_name,
                     'support_email' => env('SUPPORT_EMAIL'),
@@ -640,7 +647,10 @@ class ForumsController extends Controller
                     Mail::to($alumni->email)->queue(new AlumniPostDeleteMail($data));
                 }
 
-                $admins = User::whereNull('deleted_at')->get();
+                $admins = User::where('status', 1)->whereNull('deleted_at')
+                    ->whereHas('role', function ($q) {
+                        $q->where('status', 1);
+                    })->get();
                 $adminData = [
                     'alumni_name' => $alumni->full_name,
                     'title' => $post->title,

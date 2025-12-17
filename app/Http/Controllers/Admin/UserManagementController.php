@@ -185,6 +185,9 @@ class UserManagementController extends Controller
     {
         try {
             $user = User::findOrFail($request->user_id);
+            if($user->role->status !== 1){
+                return $this->returnError("Cannot change status of user with inactive role");
+            }
             $user->status = $request->status;
             $user->save();
 
