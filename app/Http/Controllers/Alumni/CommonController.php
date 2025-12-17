@@ -39,7 +39,7 @@ class CommonController extends Controller
             $validator      = Validator::make($request->all(), [
                 'full_name' => 'required|string|max:255',
                 'year_of_completion' => 'required|digits:4',
-                'email' => 'required|email|unique:alumnis,email,' . $alumniId,
+                'email' => 'required|email:rfc,dns|unique:alumnis,email,' . $alumniId,
                 'mobile_number' => 'required|digits:10|unique:alumnis,mobile_number,' . $alumniId,
                 'city_id' => 'required|exists:cities,id',
                 'state_id' => 'required|exists:states,id',

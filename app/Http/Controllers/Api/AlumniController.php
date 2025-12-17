@@ -27,7 +27,7 @@ class AlumniController extends Controller
                 'year_of_completion'   => 'required|integer|digits:4',
                 'state_id'             => 'required|integer',
                 'city_id'              => 'required',
-                'email'                => 'required|email|unique:alumnis,email',
+                'email'                => 'required|email:rfc,dns|unique:alumnis,email',
                 'mobile_number'        => 'required|digits:10|unique:alumnis,mobile_number',
                 'occupation'           => 'required|string|max:255',
                 'other_city'           => 'required_if:city_id,others|string|max:255',
@@ -89,7 +89,7 @@ class AlumniController extends Controller
 
             $alumniData = [
                 'name' => $alumni->full_name,
-                'url' => env('APP_URL'),
+                'url' => env('SITE_URL'),
                 'support_email' => env('SUPPORT_EMAIL'),
             ];
             Mail::to($alumni->email)->queue(new AlumniWelcomeMail($alumniData));

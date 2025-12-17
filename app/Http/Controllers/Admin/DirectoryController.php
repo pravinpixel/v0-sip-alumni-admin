@@ -264,12 +264,12 @@ class DirectoryController extends Controller
                 return $c->sender_id == $id ? $c->receiver_id : $c->sender_id;
             })->values();
 
-            // $query = Alumnis::whereIn('id', $connectedAlumniIds)
-            //     ->with(['city', 'occupation']);
-            $idsOrder = $connectedAlumniIds->implode(',');
             $query = Alumnis::whereIn('id', $connectedAlumniIds)
-                ->with(['city', 'occupation'])
-                ->orderByRaw("FIELD(id, $idsOrder)");
+                ->with(['city', 'occupation']);
+            // $idsOrder = $connectedAlumniIds->implode(',');
+            // $query = Alumnis::whereIn('id', $connectedAlumniIds)
+            //     ->with(['city', 'occupation'])
+            //     ->orderByRaw("FIELD(id, $idsOrder)");
 
             if ($request->filled('batch')) {
                 $batches = is_array($request->batch) ? $request->batch : [$request->batch];
@@ -421,7 +421,7 @@ class DirectoryController extends Controller
                 if ($alumni->notify_admin_approval === 1) {
                     $data = [
                         'name' => $alumni->full_name,
-                        'remarks' => $defaultRemark,
+                        'remarks' => $request->remarks,
                         'support_email' => env('SUPPORT_EMAIL'),
                     ];
                     Mail::to($alumni->email)->queue(new AlumniBlockedMail($data));
