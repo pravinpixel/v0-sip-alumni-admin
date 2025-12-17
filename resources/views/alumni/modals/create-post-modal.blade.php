@@ -1,5 +1,5 @@
 <div id="createPostModal" class="modal-overlay" data-alumni-id="{{ $alumni->id ?? '' }}">
-    <div class="modal-popup">
+    <div class="create-post-popup">
         <div class="modal-body">
             <div class="">
                 <h2>Create New Post</h2>
@@ -36,9 +36,9 @@
                     <small class="error-message" style="color: #dc2626; font-size: 12px; display: none;"></small>
                 </div>
             </form>
-            <div class="">
-                <button class="btn-submit" onclick="submitPost()">Submit Post</button>
-            </div>
+        </div>
+        <div class="modal-footer border-0 bg-white pt-0">
+            <button class="btn-submit" onclick="submitPost()">Submit Post</button>
         </div>
     </div>
 </div>
@@ -63,13 +63,13 @@
     }
 
     /* Modal Popup */
-    #createPostModal .modal-popup {
+    #createPostModal .create-post-popup {
         background-color: white;
         border-radius: 12px;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         width: 90%;
         max-width: 500px;
-        max-height: 70vh;
+        max-height: 86vh;
         display: flex;
         flex-direction: column;
         animation: slideIn 0.3s ease;
@@ -92,7 +92,7 @@
     #createPostModal .modal-body {
         flex: 1;
         overflow-y: auto;
-        padding: 24px;
+        padding: 20px;
     }
 
     #createPostModal .modal-body>div:first-child {
@@ -307,10 +307,6 @@
     /* Responsive Design */
     @media (max-width: 768px) {
 
-        #createPostModal .modal-body {
-            padding: 16px;
-        }
-
         #createPostModal .modal-body>div:first-child {
             margin-bottom: 8px;
             padding-bottom: 12px;
@@ -363,10 +359,6 @@
     }
 
     @media (max-width: 480px) {
-
-        #createPostModal .modal-body {
-            padding: 12px;
-        }
 
         #createPostModal .modal-body>div:first-child h2 {
             font-size: 16px;

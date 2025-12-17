@@ -170,7 +170,7 @@ class ConnectionsController extends Controller
         <button onclick="viewProfile(' . $alumni->id . ')" 
             class="btn btn-sm" 
             style="background-color:#c41e3a;width:100%;color:white;border:none;border-radius:4px;padding:clamp(4px,1.5vw,8px) clamp(6px,2vw,12px);font-size:12px;">
-            👁 View Profile
+            <i class="fa-regular fa-eye me-2"></i> View Profile
         </button>';
             })
             ->editColumn('created_at', fn($row) => Carbon::parse($row->created_at)->format('d M Y'))
