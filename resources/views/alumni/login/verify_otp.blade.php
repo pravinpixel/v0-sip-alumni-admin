@@ -451,7 +451,7 @@
                 success: function(response) {
 
                     if (response.success) {
-                        showToast('OTP verified successfully!', 'success');
+                        showToast('OTP verified successfully', 'success');
 
                         setTimeout(() => {
                             if (response.redirect) {
@@ -515,10 +515,9 @@
                     'Accept': 'application/json'
                 },
                 success: function(response) {
-                    console.log('Resend Success:', response);
 
                     if (response.success) {
-                        showToast('OTP sent successfully!', 'success');
+                        showToast('OTP sent successfully', 'success');
                         clearOTPFields();
                         startResendCountdown();
                     } else {

@@ -511,6 +511,7 @@ class ForumsController extends Controller
                     ];
                     Mail::to($alumni->email)->queue(new AlumniApprovedPostMail($data));
                 }
+                $toast_message = 'Post approved and published successfully.';
             } elseif($request->status == 'rejected'){
                 $post->status = 'rejected';
                 $post->remarks = $request->remarks;
@@ -523,6 +524,7 @@ class ForumsController extends Controller
                     ];
                     Mail::to($alumni->email)->queue(new AlumniRejectPostMail($data));
                 }
+                $toast_message = 'Post rejected successfully.';
             } elseif($request->status == 'removed_by_admin'){
                 $post->status = 'removed_by_admin';
                 $post->remarks = $request->remarks;
@@ -535,12 +537,13 @@ class ForumsController extends Controller
                     ];
                     Mail::to($alumni->email)->queue(new AlumniPostRemoveMail($data));
                 }
+                $toast_message = 'Post removed. This post is no longer available to alumni.';
             }else{
                 return $this->returnError(false,'Invalid status provided');
             }
             
             $post->save();
-            return $this->returnSuccess($post, 'Status updated successfully');
+            return $this->returnSuccess($post, $toast_message);
         } catch (\Exception $e) {
             return $this->returnError('Failed to update status: ' . $e->getMessage(), 500);
         }

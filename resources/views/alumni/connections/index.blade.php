@@ -708,7 +708,7 @@
             url: "{{ route('alumni.connections.accept', '') }}/" + id,
             type: 'POST',
             success: function(data) {
-                showToast(data.message);
+                showToast("Alumni added to your connections.");
                 connectionsTable.ajax.reload(null, false);
                 requestsTable.ajax.reload(null, false);
                 requestsTable.one('draw', function () {
@@ -733,7 +733,7 @@
             url: "{{ route('alumni.connections.reject', '') }}/" + id,
             type: 'POST',
             success: function(data) {
-                showToast(data.message);
+                showToast("alumni request has been rejected.");
                 requestsTable.ajax.reload(null, false);
                 requestsTable.one('draw', function () {
                     const totalRequests = requestsTable.page.info().recordsTotal;

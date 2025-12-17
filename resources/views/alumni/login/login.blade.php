@@ -206,7 +206,10 @@
 
                 success: function(response) {
                     if (response.success) {
-                        window.location.href = response.redirect;
+                        showToast(response.message, 'success');
+                        setTimeout(function() {
+                            window.location.href = response.redirect;
+                        }, 1500);
                     }
                 },
 

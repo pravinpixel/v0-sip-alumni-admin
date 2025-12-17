@@ -26,6 +26,7 @@ class AuthCheckController extends Controller
 
             $mobile = $request->number;
 
+            $toast_message = "OTP has been sent to your mobile number.";
             // Check if mobile exists
             if($request->is_login == 1) {
                 $alumni = Alumnis::where('mobile_number', $mobile)->first();
@@ -41,6 +42,7 @@ class AuthCheckController extends Controller
                         'error' => 'Your account has been blocked. Please contact admin.'
                     ], 400);
                 }
+                $toast_message = "OTP has been sent to your registered mobile number.";
             }
 
             // Generate new OTP
@@ -66,7 +68,7 @@ class AuthCheckController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'OTP sent successfully',
+                'message' => $toast_message,
                 'redirect' => route('verify.otp.page'),
                 // 'otp' => $otp 
             ]);

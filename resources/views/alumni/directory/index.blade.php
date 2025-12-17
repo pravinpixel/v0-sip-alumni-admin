@@ -992,7 +992,7 @@ table.dataTable tbody tr > .sorting_3 {
                 },
                 success: function (res) {
                     if (res.success) {
-                        showToast(res.message);
+                        showToast("Contact request shared successfully.");
                     }
 
                     loadFilterOptions();

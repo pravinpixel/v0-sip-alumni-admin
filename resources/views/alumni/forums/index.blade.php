@@ -1015,7 +1015,7 @@
                             </div>
                         ` : `
                             <button onclick="togglePin(${post.id}, this)" 
-                                style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 18px; padding: 10px;"
+                                style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 16px; padding: 10px;"
                                 onmouseover="this.style.color='#6b7280'"
                                 onmouseout="this.style.color='#9ca3af'"
                                 title="Pin this post">

@@ -544,7 +544,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Track Your post status in Your Activity');
+                    showToast('Post submitted successfully. Awaiting Admin approval.');
                     closeCreatePostModal();
                 } else {
                     showToast(data.message || 'Failed to create post', 'error');
