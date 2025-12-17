@@ -846,11 +846,11 @@ table.dataTable tbody tr > .sorting_3 {
                 
                 // Check specific sorting states first (before generic 'sorting')
                 if ($th.hasClass('sorting_asc')) {
-                    $th.append(' <i class="bi bi-arrow-up sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
+                    $th.append(' <i class="bi bi-arrow-up sort-icon"></i>');
                 } else if ($th.hasClass('sorting_desc')) {
-                    $th.append(' <i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;"></i>');
+                    $th.append(' <i class="bi bi-arrow-down sort-icon"></i>');
                 } else if ($th.hasClass('sorting')) {
-                    $th.append(' <i class="bi bi-arrow-down-up sort-icon" style="color:white;font-size:13px;margin-left:6px;"></i>');
+                    $th.append(' <i class="bi bi-arrow-down-up sort-icon"></i>');
                 }
             });
         }

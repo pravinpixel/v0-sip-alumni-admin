@@ -11,13 +11,6 @@
         width: 120px !important;
     }
 
-    #connectionsTable thead th,
-    #requestsTable thead th {
-        background: transparent !important;
-        color: white !important;
-        border: none !important;
-    }
-
     #connectionsTable tbody tr:hover,
     #requestsTable tbody tr:hover {
         background-color: #f9fafb !important;
@@ -28,12 +21,6 @@
     #requestsTable tbody td {
         /* text-align: center !important; */
         vertical-align: middle !important;
-    }
-
-    /* Keep headers left aligned */
-    #connectionsTable thead th,
-    #requestsTable thead th {
-        text-align: left !important;
     }
 
     /* Table wrapper with scroll */
@@ -342,11 +329,11 @@
             <table id="connectionsTable" class="table table-hover" style="width: 100%; margin: 0; border-collapse: collapse;">
                 <thead>
                     <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Alumni</th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Email</th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Batch</th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Location</th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Action</th>
+                        <th class="table-header">Alumni</th>
+                        <th class="table-header">Email</th>
+                        <th class="table-header">Batch</th>
+                        <th class="table-header">Location</th>
+                        <th class="table-header">Action</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -366,11 +353,11 @@
             <table id="requestsTable" class="table table-hover" style="width: 100%; margin: 0; border-collapse: collapse;">
                 <thead>
                     <tr style="background: linear-gradient(90deg, #dc2626 0%, #f59e0b 100%); color: white;">
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Alumni</th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Email</th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Batch</th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Location</th>
-                        <th style="padding: 16px; font-weight: 600; text-align: left; border: none; white-space: nowrap;">Action</th>
+                        <th class="table-header">Alumni</th>
+                        <th class="table-header">Email</th>
+                        <th class="table-header">Batch</th>
+                        <th class="table-header">Location</th>
+                        <th class="table-header">Action</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -775,11 +762,12 @@
             
             // Add appropriate sort icon based on current state
             if ($th.hasClass('sorting_asc')) {
-                $th.append('<i class="bi bi-arrow-up sort-icon" style="color:white;font-size:14px;margin-left:6px;display:inline-block;vertical-align:middle;"></i>');
+                $th.append('<i class="bi bi-arrow-up sort-icon"></i>');
             } else if ($th.hasClass('sorting_desc')) {
-                $th.append('<i class="bi bi-arrow-down sort-icon" style="color:white;font-size:14px;margin-left:6px;display:inline-block;vertical-align:middle;"></i>');
+                $th.append('<i class="bi bi-arrow-down sort-icon"></i>');
             } else if ($th.hasClass('sorting')) {
-                $th.append('<i class="bi bi-arrow-down-up sort-icon" style="color:white;font-size:13px;margin-left:6px;display:inline-block;vertical-align:middle;"></i>');
+                $th.append('<i class="bi bi-arrow-down-up sort-icon"></i>');
+                //  style="display:inline-block;vertical-align:middle;"
             }
         });
     }
