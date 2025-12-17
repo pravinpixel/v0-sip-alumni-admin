@@ -40,26 +40,7 @@
             padding: 12px !important;
         }
 
-        /* Header - stack vertically */
-        div[style*="display: flex"][style*="justify-content: space-between"][style*="margin-bottom: 30px"] {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-            gap: 16px !important;
-        }
 
-
-
-        /* Header buttons - full width */
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child {
-            width: 100%;
-            flex-direction: column !important;
-        }
-
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child a,
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child button {
-            width: 100%;
-            justify-content: center !important;
-        }
 
         /* Search and filter row - stack vertically */
         div[style*="display: flex"][style*="align-items: center"][style*="gap: 12px"][style*="margin-bottom: 20px"] {
@@ -130,12 +111,7 @@
             font-size: 12px !important;
         }
 
-        /* Header buttons */
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child a,
-        div[style*="display: flex"][style*="justify-content: space-between"] > div:last-child button {
-            font-size: 13px !important;
-            padding: 9px 16px !important;
-        }
+        
 
         /* Search input */
         #searchInput {
@@ -476,20 +452,19 @@
     
     <div style="max-width: 1400px; margin: 0 auto; padding: 20px; background: white">
         {{-- Header --}}
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;">
-            <div>
+        <div class="forum-header">
+            <div class="forum-header-left">
                 <h1 style=" font-weight: 700; color: #111827; margin-bottom: 8px;" class="main-title">Forum Posts</h1>
                 <p style="color: #6b7280;" class="sub-title">Share and engage with the SIP Academy community</p>
             </div>
-            <div style="display: flex; gap: 12px;">
-                <a href="{{ route('alumni.forums.activity') }}"
-                    style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none;"
-                    onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'" onmouseout="this.style.background='linear-gradient(90deg, #E2001D, #B1040E)'">
-                    Your Activity
-                </a>
+            <div style="display: flex; gap: 12px;" class="forum-header-actions">
                 <button
-                    style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;"
-                    onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'" onmouseout="this.style.background='linear-gradient(90deg, #E2001D, #B1040E)'"
+                onclick="window.location='{{ route('alumni.forums.activity') }}'"
+                class="forum-btn">
+                Your Activity
+                </button>
+                <button
+                class="forum-btn"
                     onclick="openCreatePostModal()">
                     <i class="fas fa-plus"></i>
                     Create Post
