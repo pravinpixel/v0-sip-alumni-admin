@@ -228,6 +228,7 @@ class ForumsController extends Controller
                     'support_email' => env('SUPPORT_EMAIL'),
                 ];
                 Mail::to($alumni->email)->queue(new AlumniCreatePostMail($data));
+                Log::info('Alumni notification email queued to: ' . $alumni->email);
             }
             // $roles = Role::where('status', 1)->get();
             // $admins = User::whereIn('role_id', $roles->pluck('id'))->where('status', 1)->whereNull('deleted_at')->get();
@@ -241,6 +242,7 @@ class ForumsController extends Controller
             ];
             foreach ($admins as $admin) {
                 Mail::to($admin->email)->queue(new AdminApprovalMail($adminData));
+                Log::info('Admin notification email queued to: ' . $admin->email);
             }
 
             return response()->json([

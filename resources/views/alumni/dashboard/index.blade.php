@@ -233,29 +233,29 @@
                 [
                     'title' => 'Connections Made',
                     'value' => $stats['connectionsMade'] ?? 0,
-                    'icon' => 'fa-users',
-                    'bgColor' => '#dc2626',
+                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-6 w-6 text-white"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>',
+                    'bgColor' => 'linear-gradient(135deg, #E2001D, #B1040E)',
                     'description' => 'Total accepted invites'
                 ],
                 [
                     'title' => 'Pending Requests',
                     'value' => $stats['pendingRequests'] ?? 0,
-                    'icon' => 'fa-clock',
-                    'bgColor' => '#f59e0b',
+                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock h-6 w-6 text-white"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>',
+                    'bgColor' => 'linear-gradient(135deg, #F7C744, #E2001D)',
                     'description' => 'Awaiting response'
                 ],
                 [
                     'title' => 'Posts Created',
                     'value' => $stats['postsCreated'] ?? 0,
-                    'icon' => 'fa-file-alt',
-                    'bgColor' => '#dc2626',
+                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text h-6 w-6 text-white"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>',
+                    'bgColor' => 'linear-gradient(135deg, #B1040E, #E2001D)',
                     'description' => 'Community contributions'
                 ],
                 [
                     'title' => 'Total Engagement',
                     'value' => $stats['totalEngagement'] ?? 0,
-                    'icon' => 'fa-heart',
-                    'bgColor' => '#f59e0b',
+                    'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart h-6 w-6 text-white"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>',
+                    'bgColor' => 'linear-gradient(135deg, #E2001D, #F7C744)',
                     'description' => 'Likes & replies received'
                 ]
             ];
@@ -273,7 +273,7 @@
                     <div style="margin-bottom: 20px; display:flex">
                         <div
                             style="background: {{ $stat['bgColor'] }}; padding: 12px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block;">
-                            <i class="fas {{ $stat['icon'] }}" style="color: white; font-size: 20px;"></i>
+                            {!! $stat['icon'] !!}
                         </div>
                         {{-- Arrow in top-right corner --}}
                         <div style="position: absolute; top: 20px; right: 20px;">

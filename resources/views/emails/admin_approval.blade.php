@@ -4,7 +4,7 @@
 
 <p>Dear Admin,</p>
 
-<p>A <strong>new forum post</strong>has been created by <strong>{{ $data['name'] }}</strong>.</p>
+<p>A <strong>new forum post</strong> has been created by <strong>{{ $data['name'] }}</strong>.</p>
 
 <p>Kindly review and approve the post to make it visible to all alumni members.</p>
 
