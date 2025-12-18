@@ -6,7 +6,7 @@
 <br>
 <p>Congratulations! 🎉 Your registration on the <strong>SIP Abacus Alumni Portal</strong> has been successfully completed.</p>
 <br>
-<p>You can now <strong>log in using your registered mobile number</strong>to:</p>
+<p>You can now <strong>log in using your registered mobile number</strong> to:</p>
 <br>
 <ul>
     <li>Connect with other alumni across regions.</li>
