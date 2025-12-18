@@ -98,12 +98,9 @@ class UserManagementController extends Controller
             'email' => ['required', 'email', 'unique:users,email,' . $id . ',id,deleted_at,NULL', 'regex:/(.+)@(.+)\.(.+)/i'],
             'role_id' => 'required|exists:roles,id',
             'status' => 'required|in:0,1',
+            'password' => 'required|min:6',
+            'retype_password' => 'required|same:password|min:6',
         ];
-
-        if ($id == null || $isUpdatingPassword) {
-            $rule_arr['password'] = 'required|min:6';
-            $rule_arr['retype_password'] = 'required|same:password|min:6';
-        }
 
         return $rule_arr;
     }
@@ -122,7 +119,7 @@ class UserManagementController extends Controller
     {
 
         $id = $request->id ?? NULL;
-        $isUpdatingPassword = $id == null || !empty($request->input('retype_password'));
+        $isUpdatingPassword = $id == null || $request->filled('password') || $request->filled('retype_password');
         $validatedData = Validator::make($request->all(), $this->getValidationRules($id, $isUpdatingPassword), $this->getValidationMessages());
 
         if ($validatedData->fails()) {
