@@ -298,7 +298,7 @@ class DirectoryController extends Controller
                     } elseif ($status == 'accepted') {
                         return '<button style="background-color:#eebc4a;color:#000;padding:4px 12px;border:none;border-radius:16px;font-size:12px;font-weight:600;cursor:default;">Contact Accepted</button>';
                     } elseif ($status == 'rejected') {
-                        return '<div style="display:flex;align-items:center;gap:6px;">
+                        return '<div style="display:flex;align-items:center;gap:6px; justify-content: right;">
                         <span style="background-color:#fee2e2;color:#dc2626;padding:4px 8px;border-radius:16px;font-size:12px;font-weight:600;">
                             Contact Rejected
                         </span>

@@ -566,7 +566,7 @@ table.dataTable tbody tr > .sorting_3 {
         Location 
     </th>
 
-    <th style="padding: 16px; font-weight: 600; text-align: right; border: none; min-width: 150px;">Action</th>
+    <th style="padding: 16px; font-weight: 600; text-align: right; border: none; min-width: 180px;">Action</th>
 
                     </tr>
                 </thead>
