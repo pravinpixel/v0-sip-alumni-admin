@@ -11,7 +11,7 @@ class AlumniAuth
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!session('alumni_logged_in')) {
+        if (!session('alumni_logged_in') || empty(session('alumni_logged_in'))) {
             return redirect()->route('alumni.login')
                 ->with('error', 'Please login to continue.');
         }
