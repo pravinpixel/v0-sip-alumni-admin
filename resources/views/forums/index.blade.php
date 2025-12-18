@@ -7,7 +7,7 @@
     <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
         Manage community discussions and forum posts
     </p>
-    <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div class="p-6" style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <!-- Search and Filter -->
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px;">
             <div style="flex: 1; position: relative;">
@@ -74,7 +74,7 @@
         </div>
 
         <!-- Forums Table Container -->
-        <div class="table-container" style="border-radius: 8px 8px 0 0; border: 1px solid #dedede; border-bottom: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-top: 0; margin-bottom: 0;">
+        <div class="table-container" style="border-radius: 8px; border: 1px solid #dedede; border-bottom: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-top: 0; margin-bottom: 0;">
             <!-- Table Wrapper (Scrollable) -->
             <div class="table-responsive" style="overflow-x: auto;">
                 <table id="forumsTable" class="display forums-table" style="width: 100%; min-width: 1000px; border-collapse: collapse; background-color: white; margin: 0;">
@@ -95,7 +95,7 @@
         </div>
         
         <!-- Pagination Area (Bottom of Table Design) -->
-        <div class="pagination-bottom-area" style="background: #ffffff; border: 1px solid #dedede; border-top: 1px solid #e5e7eb; border-radius: 0 0 8px 8px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-top: 0;">
+        <div class="pagination-bottom-area" style="background: #ffffff; border-radius: 0 0 8px 8px; padding: 16px 30px; display: flex; justify-content: space-between; align-items: center; margin-top: 0;">
             <div class="dt-info-custom" style="color: #6b7280; font-size: 14px; font-weight: 400;">
                 <!-- Info will be populated here -->
             </div>
@@ -188,7 +188,6 @@
         position: relative;
         z-index: 10;
         background: #ffffff !important;
-        border-top: 1px solid #e5e7eb !important;
     }
 
     /* Ensure DataTables doesn't interfere with our fixed pagination */
@@ -460,7 +459,7 @@
                     <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
                     Previous
                 </button>
-                
+
                 <span>
                     Page ${info.page + 1} of ${totalPages}
                 </span>

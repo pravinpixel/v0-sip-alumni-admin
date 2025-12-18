@@ -144,14 +144,14 @@
                 </table>
             </div>
             
-            <!-- Pagination Area (Bottom of Table Design) -->
-            <div class="pagination-bottom-area" style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
-                <div class="dt-info-custom" style="color: #6b7280; font-size: 14px; font-weight: 400;">
-                    <!-- Info will be populated here -->
-                </div>
-                <div class="dt-pagination-custom" style="display: flex; align-items: center; gap: 8px;">
-                    <!-- Pagination will be populated here -->
-                </div>
+        </div>
+        <!-- Pagination Area (Bottom of Table Design) -->
+        <div class="pagination-bottom-area" style="background: #ffffff; border-top: 1px solid #e5e7eb; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="dt-info-custom" style="color: #6b7280; font-size: 14px; font-weight: 400;">
+                <!-- Info will be populated here -->
+            </div>
+            <div class="dt-pagination-custom" style="display: flex; align-items: center; gap: 8px;">
+                <!-- Pagination will be populated here -->
             </div>
         </div>
     </div>
