@@ -479,23 +479,24 @@
             let info = table.page.info();
 
             $(".dt-info-custom").html(
-                `Showing ${info.start + 1} to ${info.end} alumni of ${info.recordsTotal}`
+                `Showing ${info.start + 1 > info.recordsTotal ? 0 : info.start + 1} to ${info.end} posts of ${info.recordsTotal}`
             );
+            let totalPages = info.pages > 0 ? info.pages : 1;
 
             let paginationHtml = `
-            <button id="prevPage" ${info.page === 0 ? "disabled" : ""}>
-                <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
-                Previous
-            </button>
+                <button id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                    <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
+                    Previous
+                </button>
+                
+                <span>
+                    Page ${info.page + 1} of ${totalPages}
+                </span>
 
-            <span>
-                Page ${info.page + 1} of ${info.pages}
-            </span>
-
-            <button id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
-                Next
-                <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
-            </button>
+                <button id="nextPage" ${(info.page + 1 === totalPages) ? "disabled" : ""}>
+                    Next
+                    <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+                </button>
             `;
 
             $(".dt-pagination-custom").html(paginationHtml);
@@ -517,11 +518,11 @@
                 updateSortIcons();
             }, 10);
         });
-        table.on('preDraw.dt', function (e, settings) {
-            if (settings.aaSorting && settings.aaSorting.length > 0) {
-                settings._iDisplayStart = currentPage * settings._iDisplayLength;
-            }
-        });
+        // table.on('preDraw.dt', function (e, settings) {
+        //     if (settings.aaSorting && settings.aaSorting.length > 0) {
+        //         settings._iDisplayStart = currentPage * settings._iDisplayLength;
+        //     }
+        // });
 
         $('#searchInput').on('keyup', function() {
             table.search(this.value).draw();
