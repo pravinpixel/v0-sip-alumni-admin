@@ -8,11 +8,11 @@
 
 <p>Kindly review and approve the post to make it visible to all alumni members.</p>
 
-<br>
 
-<p>Warm regards,<br>
-<strong>Alumni Portal System</strong><br>
-Phone: 044-42023331 / 42605609<br>
+
+<p>Warm regards,
+<strong>Alumni Portal System</strong>
+Phone: 044-42023331 / 42605609
 Email: {{ $data['support_email'] }}
 </p>
 

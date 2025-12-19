@@ -4,21 +4,21 @@
 
 <p>Dear {{ $data['name'] }},</p>
 
-<br>
+
 
 <p>Your forum post titled <strong>{{ $data['title']}}</strong>  has been approved by the admin and is now published for all alumni members to view.</p>
 
 <p>If any comments are added to your post, you will receive an email notification.</p>
 
-<br>
+
 
 <p>Thank you for sharing your thoughts with the alumni community!</p>
 
-<br>
 
-<p>Warm regards,<br>
-<strong>Alumni Portal System</strong><br>
-Phone: 044-42023331 / 42605609<br>
+
+<p>Warm regards,
+<strong>Alumni Portal System</strong>
+Phone: 044-42023331 / 42605609
 Email: {{ $data['support_email'] }}</p>
 
 @endsection

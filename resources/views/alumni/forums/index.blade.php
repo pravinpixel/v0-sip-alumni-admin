@@ -1068,57 +1068,68 @@
                         </div>
 
                         {{-- Added engagement stats and action buttons with reply toggle --}}
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0 0 0px; margin-bottom: 16px;border-top: 1px solid #e5e7eb;">
-                            <div style="display: flex; align-items: center; gap: 20px;">
-                                <div style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-size: 14px;">
-                                    <i class="far fa-eye"></i>
-                                    <span>${post.views_count || 0}</span>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-size: 14px;">
-                                    <i class="far fa-heart"></i>
-                                    <span>${post.likes_count || 0}</span>
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 4px; color: #6b7280; font-size: 14px;">
-                                    <i class="far fa-comment"></i>
-                                    <span>${post.reply_count || 0}</span>
-                                </div>
-                            </div>
 
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                ${post.is_liked_by_user ? `
-                                    <button onclick="toggleLike(${post.id}, this)" 
-                                        style="border: none; color: #dc2626; background: #ffffffff; cursor: pointer; font-size: 14px; padding: 8px 16px; border-radius: 6px; font-weight: 600; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
-                                        onmouseover="this.style.background='#F7C744';this.style.color='#000000ff';this.style.opacity='0.9'"
-                                        onmouseout="this.style.background='#ffffffff';this.style.color='#000000ff';this.style.opacity='1'">
-                                        <i class="fas fa-heart" style="color: #dc2626;"></i>
-                                        Unlike
-                                    </button>
-                                ` : `
-                                    <button onclick="toggleLike(${post.id}, this)" 
-                                        style="border: none; color: #756b80ff; background: #ffffffff; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: all 0.2s;"
-                                        onmouseover="this.style.background='#F7C744';this.style.color='#000000ff'"
-                                        onmouseout="this.style.background='transparent'; this.style.color='#6b7280'">
-                                        <i class="far fa-heart"></i>
-                                        Like
-                                    </button>
-                                `}
-                                <button data-post-id="${post.id}"
-                                         style="background: transparent; border: none; color: #6b7280; cursor: pointer; font-size: 14px; padding: 8px 12px; border-radius: 6px; display: flex; align-items: center; gap: 6px; transition: 0.2s;"
-                                            onmouseover="replyHover(this)"
-                                            onmouseout="replyUnhover(this)"
-                                            onclick="toggleReplyForm(this, ${post.id})">
-                                            <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm"></i> Reply
-                                            </button>
+<div class="post-footer">
+    <!-- row 1: used on all screens; on mobile it has NO View Thread -->
+    <div class="post-footer-row-1">
+        <div class="post-footer-left">
+            <div style="display:flex;align-items:center;gap:4px;color:#6b7280;font-size:14px;">
+                <i class="far fa-eye"></i>
+                <span>${post.views_count || 0}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;color:#6b7280;font-size:14px;">
+                <i class="far fa-heart"></i>
+                <span>${post.likes_count || 0}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:4px;color:#6b7280;font-size:14px;">
+                <i class="far fa-comment"></i>
+                <span>${post.reply_count || 0}</span>
+            </div>
+        </div>
 
-                                <button onclick="openThreadModal(${post.id})"
-                                    style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;"
-                                        onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'; this.style.transform='translateY(-1px)'"
-                                        onmouseout="this.style.background='linear-gradient(90deg, #E2001D, #B1040E)'; this.style.transform='translateY(0)'">
-                                    <i class="far fa-comment"></i>
-                                    View Thread
-                                </button>
-                            </div>
-                        </div>
+        <div class="post-footer-actions">
+            ${post.is_liked_by_user ? `
+                <button onclick="toggleLike(${post.id}, this)" 
+                    style="border:none;color:#dc2626;background:#ffffffff;cursor:pointer;font-size:14px;padding:8px 16px;border-radius:6px;font-weight:600;display:flex;align-items:center;gap:6px;transition:all 0.2s;">
+                    <i class="fas fa-heart" style="color:#dc2626;"></i>
+                    Unlike
+                </button>
+            ` : `
+                <button onclick="toggleLike(${post.id}, this)" 
+                    style="border:none;color:#756b80ff;background:#ffffffff;cursor:pointer;font-size:14px;padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:6px;transition:all 0.2s;">
+                    <i class="far fa-heart"></i>
+                    Like
+                </button>
+            `}
+
+            <button data-post-id="${post.id}"
+                style="background:transparent;border:none;color:#6b7280;cursor:pointer;font-size:14px;padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:6px;transition:0.2s;"
+                onmouseover="replyHover(this)"
+                onmouseout="replyUnhover(this)"
+                onclick="toggleReplyForm(this, ${post.id})">
+                <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm"></i> Reply
+            </button>
+
+            <!-- View Thread for desktop & tablet -->
+            <button onclick="openThreadModal(${post.id})"
+                class="view-thread-btn desktop-tablet-only"
+                style="background:linear-gradient(90deg,#E2001D,#B1040E);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;">
+                <i class="far fa-comment"></i>
+                View Thread
+            </button>
+        </div>
+    </div>
+
+    <!-- row 2: MOBILE-ONLY View Thread -->
+    <div class="post-footer-row-2">
+        <button onclick="openThreadModal(${post.id})"
+            class="view-thread-btn mobile-only"
+            style="background:linear-gradient(90deg,#E2001D,#B1040E);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;">
+            <i class="far fa-comment"></i>
+            View Thread
+        </button>
+    </div>
+</div>
 
                         {{-- Added reply input form that shows/hides on button click --}}
                         <div id="replyForm-${post.id}" style="display: none; border-radius: 12px;">

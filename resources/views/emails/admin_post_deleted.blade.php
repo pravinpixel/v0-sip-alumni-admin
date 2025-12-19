@@ -9,11 +9,11 @@
 <p>The post status has been updated to <strong>Post Deleted</strong> in the admin panel.</p>
 <p>You can still view the post details and its last recorded comments for reference.</p>
 
-<br>
 
-<p>Warm regards,<br>
-<strong>Alumni Portal System</strong><br>
-Phone: 044-42023331 / 42605609<br>
+
+<p>Warm regards,
+<strong>Alumni Portal System</strong>
+Phone: 044-42023331 / 42605609
 Email: {{ $data['support_email'] }}
 </p>
 
