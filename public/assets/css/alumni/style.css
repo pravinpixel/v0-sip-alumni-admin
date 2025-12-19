@@ -430,16 +430,16 @@ body {
 }
 
 .forum-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 30px;
 }
 
 .forum-header-actions {
-    display: flex;
-    gap: 12px;
+  display: flex;
+  gap: 12px;
 }
 
 
@@ -469,9 +469,9 @@ body {
 
 
 @media (max-width: 1024px) and (min-width: 769px) {
-    .forum-btn {
-        white-space: nowrap;
-    }
+  .forum-btn {
+    white-space: nowrap;
+  }
 }
 
 
@@ -513,15 +513,15 @@ body {
   }
 
   .forum-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-    .forum-header-actions {
-        width: 100%;
-        flex-direction: column;
-        gap: 10px;
-    }
+  .forum-header-actions {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -542,114 +542,111 @@ body {
 }
 
 .stat-card {
-    background: #fff;
-    border: 2px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 24px;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
+  background: #fff;
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 .stat-card:hover {
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .stat-icon {
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stat-value {
-    font-size: 36px;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 8px;
+  font-size: 36px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
 }
 
 .stat-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
 }
 
 .stat-desc {
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 0;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 0;
 }
 
 .post-footer {
-    padding: 10px 0 0 0;
-    margin-bottom: 16px;
-    border-top: 1px solid #e5e7eb;
+  padding: 10px 0 0 0;
+  margin-bottom: 16px;
+  border-top: 1px solid #e5e7eb;
 }
 
-/* row 1: stats + like + reply */
 .post-footer {
-    padding: 10px 0 0 0;
-    margin-bottom: 16px;
-    border-top: 1px solid #e5e7eb;
+  padding: 10px 0 0 0;
+  margin-bottom: 16px;
+  border-top: 1px solid #e5e7eb;
 }
 
-/* default: desktop & tablet – ONE ROW */
 .post-footer-row-1 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
 }
 
 .post-footer-left,
 .post-footer-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .post-footer-row-2 {
-    display: none; /* hidden by default (desktop/tablet) */
+  display: none;
 }
 
-/* MOBILE ONLY: split into 2 rows, center View Thread */
 @media (max-width: 480px) {
-    .post-footer-row-1 {
-        justify-content: space-between;
-    }
+  .post-footer-row-1 {
+    justify-content: space-between;
+  }
 
-    .post-footer-row-2 {
-        display: flex;
-        justify-content: center;   /* center View Thread */
-        margin-top: 8px;
-    }
+  .post-footer-row-2 {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
 }
 
-/* default: desktop + tablet */
 .desktop-tablet-only {
-    display: inline-flex;
+  display: inline-flex;
 }
+
 .mobile-only {
-    display: none;
+  display: none;
 }
 
-/* mobile only (e.g. ≤ 480px) */
 @media (max-width: 492px) {
-    .desktop-tablet-only {
-        display: none !important;          /* hide desktop View Thread */
-    }
-    .mobile-only {
-        display: inline-flex;   /* show centered mobile View Thread */
-    }
+  .desktop-tablet-only {
+    display: none !important;
+  }
 
-    .post-footer-row-2 {
-        display: flex;
-        justify-content: center; /* center the button row */
-        margin-top: 8px;
-    }
+  .mobile-only {
+    display: inline-flex;
+  }
+
+  .post-footer-row-2 {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
 }
