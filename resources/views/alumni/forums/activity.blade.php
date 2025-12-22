@@ -294,7 +294,7 @@
                                 onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db'" onmouseout="this.style.background='white'; this.style.borderColor='#e5e7eb'">
                                 Cancel
                             </button>
-                            <button onclick="confirmDeletePost()" style="padding: 10px 24px; background: #dc2626; border: none; border-radius: 8px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                            <button onclick="confirmDeletePost(event)" id="deletePostButton" style="padding: 10px 24px; background: #dc2626; border: none; border-radius: 8px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
                                 onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
                                 Delete
                             </button>
@@ -1028,15 +1028,21 @@
             const modal = document.getElementById('deleteConfirmModal');
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
+            const deleteBtn = document.getElementById('deletePostButton');
+            if (deleteBtn) {
+                deleteBtn.innerHTML = 'Delete';
+                deleteBtn.disabled = false;
+            }
         }
 
-        function confirmDeletePost() {
+        function confirmDeletePost(event) {
             if (!postToDelete) return;
-
+            
             // Show loading state in the delete button
             const deleteBtn = event.target;
+            if (deleteBtn.disabled) return;
             const originalText = deleteBtn.innerHTML;
-            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            deleteBtn.innerHTML = 'Deleting...';
             deleteBtn.disabled = true;
 
             // Make API call to update post status to 'post_deleted'
