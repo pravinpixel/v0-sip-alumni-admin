@@ -46,25 +46,27 @@
         <div
             style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;">
             <!-- Search Input -->
-            <div style="position: relative; flex: 1; max-width: 600px;">
+            <div style="position: relative; flex: 1;">
                 <i class="fas fa-search"
                     style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
                 <input type="text" id="searchInput"
-                    style="width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                    style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 14px;"
                     placeholder="Search by role ID or name...">
             </div>
 
             <!-- Action Buttons -->
             <div style="display: flex; gap: 0.75rem; align-items: center;">
                 <button type="button" id="filter_btn"
-                    style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fas fa-filter" style="color: #6b7280;"></i>
-                    Filter
+                    style="background-color: #ba0028; color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
+                    onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
+                    onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
+                    <i class="fas fa-filter"></i>
+                    <span id="filterBtnText">Filter</span>
                 </button>
 
                 @can('role.create')
                 <button type="button" onclick="window.location='{{ route('role.create') }}'"
-                    style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                    style="padding: 10px 20px; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-plus"></i>
                     Create Role
                 </button>
@@ -73,21 +75,49 @@
         </div>
 
         <!-- Filter Section (Hidden by default) -->
-        <div id="filter_section"
-            style="display: none; margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
-            <select data-kt-ecommerce-order-filter="status"
-                style="padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; background: white;">
-                <option value="all">All Status</option>
-                <option value="1">Active</option>
-                <option value="0">Inactive</option>
-            </select>
+        <div id="filter_section" style="display: none; margin-bottom: 1.5rem;">
+            <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px;">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <!-- Status Filter Dropdown -->
+                    <div class="filter-dropdown" style="position: relative;">
+                        <button type="button" class="filter-dropdown-btn" data-filter="status"
+                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
+                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
+                            <span>Status</span>
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span class="filter-count" data-filter="status" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
+                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                            </div>
+                        </button>
+                        <div class="filter-dropdown-menu" data-filter="status" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
+                            <div class="filter-option" data-value="all" style="padding: 12px 16px; cursor: pointer; font-size: 14px; color: #374151; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                                <input type="checkbox" style="margin: 0; accent-color: #ba0028;">
+                                <span>All Status</span>
+                            </div>
+                            <div class="filter-option" data-value="1" style="padding: 12px 16px; cursor: pointer; font-size: 14px; color: #374151; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                                <input type="checkbox" style="margin: 0; accent-color: #ba0028;">
+                                <span>Active</span>
+                            </div>
+                            <div class="filter-option" data-value="0" style="padding: 12px 16px; cursor: pointer; font-size: 14px; color: #374151; display: flex; align-items: center; gap: 10px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                                <input type="checkbox" style="margin: 0; accent-color: #ba0028;">
+                                <span>Inactive</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clear Filters Button -->
+                    <button type="button" id="clearFiltersBtn" style="display: none; background: #ba0028; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                        Clear All Filters
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- Table Container -->
         <div style="overflow-x: auto;">
             <table style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;" id="kt_customers_table">
                 <thead>
-                    <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
+                    <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px; border-radius: 6px;">
                         <th style="padding: 15px; text-align: left;">Role ID</th>
                         <th style="padding: 15px; text-align: left;">Role Name</th>
                         <th style="padding: 15px; text-align: left;">Status</th>
@@ -211,6 +241,186 @@
     $(document).ready(function() {
         let currentSortColumn = 0;
         let currentSortDirection = 'desc'; // Role ID starts with down arrow (desc)
+        
+        // Store original pagination info
+        let originalPaginationInfo = $('#paginationInfo').html();
+        let originalPaginationControls = $('#paginationControls').html();
+
+        // Filter functionality
+        $('#filter_btn').on('click', function() {
+            const filterSection = $('#filter_section');
+            const isVisible = filterSection.is(':visible');
+            
+            if (isVisible) {
+                filterSection.slideUp();
+                $('#filterBtnText').text('Filter');
+            } else {
+                filterSection.slideDown();
+                $('#filterBtnText').text('Close Filter');
+            }
+        });
+
+        // Filter dropdown functionality
+        $('.filter-dropdown-btn').on('click', function(e) {
+            e.stopPropagation();
+            const dropdown = $(this).siblings('.filter-dropdown-menu');
+            
+            // Close other dropdowns
+            $('.filter-dropdown-menu').not(dropdown).hide();
+            
+            // Toggle current dropdown
+            dropdown.toggle();
+        });
+
+        // Filter option selection
+        $('.filter-option').on('click', function(e) {
+            e.stopPropagation();
+            const checkbox = $(this).find('input[type="checkbox"]');
+            const filterType = $(this).closest('.filter-dropdown').find('.filter-dropdown-btn').data('filter');
+            const optionValue = $(this).data('value');
+            
+            // Handle "All Status" option
+            if (optionValue === 'all') {
+                if (!checkbox.prop('checked')) {
+                    // If selecting "All", uncheck other options and check "All"
+                    $(this).siblings('.filter-option').find('input[type="checkbox"]').prop('checked', false);
+                    checkbox.prop('checked', true);
+                } else {
+                    // If unchecking "All", just uncheck it
+                    checkbox.prop('checked', false);
+                }
+            } else {
+                // If selecting specific option, uncheck "All"
+                $(this).siblings('.filter-option[data-value="all"]').find('input[type="checkbox"]').prop('checked', false);
+                // Toggle the clicked option
+                checkbox.prop('checked', !checkbox.prop('checked'));
+            }
+            
+            // Update filter count
+            updateFilterCount(filterType);
+            
+            // Apply filters
+            applyFilters();
+        });
+
+        // Clear all filters
+        $('#clearFiltersBtn').on('click', function() {
+            $('.filter-option input[type="checkbox"]').prop('checked', false);
+            $('.filter-count').hide().text('0');
+            $(this).hide();
+            applyFilters();
+            // Restore original pagination when clearing filters
+            restoreOriginalPagination();
+        });
+
+        // Close dropdowns when clicking outside
+        $(document).on('click', function() {
+            $('.filter-dropdown-menu').hide();
+        });
+
+        function updateFilterCount(filterType) {
+            const checkedCount = $(`.filter-dropdown-btn[data-filter="${filterType}"]`)
+                .siblings('.filter-dropdown-menu')
+                .find('input[type="checkbox"]:checked').length;
+            
+            const countBadge = $(`.filter-count[data-filter="${filterType}"]`);
+            
+            if (checkedCount > 0) {
+                countBadge.text(checkedCount).show();
+                $('#clearFiltersBtn').show();
+            } else {
+                countBadge.hide();
+                
+                // Check if any filters are active
+                const totalFilters = $('.filter-option input[type="checkbox"]:checked').length;
+                if (totalFilters === 0) {
+                    $('#clearFiltersBtn').hide();
+                }
+            }
+        }
+
+        function applyFilters() {
+            // Check if "All Status" is selected
+            const allStatusSelected = $('.filter-dropdown-menu[data-filter="status"] .filter-option[data-value="all"] input[type="checkbox"]').prop('checked');
+            
+            if (allStatusSelected) {
+                // Show all rows if "All Status" is selected
+                $('#kt_customers_table tbody tr').show();
+                updatePaginationInfo();
+                return;
+            }
+
+            // Get selected status filters
+            const selectedStatuses = [];
+            $('.filter-dropdown-menu[data-filter="status"] input[type="checkbox"]:checked').each(function() {
+                const value = $(this).closest('.filter-option').data('value');
+                if (value !== 'all') {
+                    selectedStatuses.push(value);
+                }
+            });
+
+            console.log('Selected statuses:', selectedStatuses); // Debug log
+
+            // If no filters selected, show all rows
+            if (selectedStatuses.length === 0) {
+                $('#kt_customers_table tbody tr').show();
+                updatePaginationInfo();
+                return;
+            }
+
+            // Apply filters to table rows
+            $('#kt_customers_table tbody tr').each(function() {
+                let showRow = false;
+                
+                // Skip the "No results found" row
+                if ($(this).find('td[colspan]').length > 0) {
+                    $(this).show();
+                    return;
+                }
+                
+                const statusCell = $(this).find('td:nth-child(3)'); // Status column
+                const statusSpan = statusCell.find('span:last-child'); // Get the status span
+                const statusText = statusSpan.text().trim().toLowerCase();
+                
+                console.log('Row status text:', statusText); // Debug log
+                
+                // Check if this row matches any selected filter
+                for (let status of selectedStatuses) {
+                    if (status === 1 && statusText === 'active') {
+                        showRow = true;
+                        break;
+                    } else if (status === 0 && statusText === 'inactive') {
+                        showRow = true;
+                        break;
+                    }
+                }
+                
+                $(this).toggle(showRow);
+            });
+
+            // Update pagination info after filtering
+            updatePaginationInfo();
+        }
+
+        // Function to update pagination information based on visible rows
+        function updatePaginationInfo() {
+            const visibleRows = $('#kt_customers_table tbody tr:visible').not(':contains("No results found")');
+            const totalVisible = visibleRows.length;
+            
+            if (totalVisible === 0) {
+                $('#paginationInfo').text('No roles found');
+                $('#paginationControls').hide();
+            } else {
+                $('#paginationInfo').text(`Showing 1 to ${totalVisible} of ${totalVisible} roles`);
+                $('#paginationControls').hide(); // Hide pagination controls when filtering
+            }
+        }
+
+        // Function to restore original pagination
+        function restoreOriginalPagination() {
+            $('#paginationInfo').html(originalPaginationInfo);
+            $('#paginationControls').html(originalPaginationControls).show();
+        }
 
         // Simple Column Sorting Function
         function addColumnSorting() {
@@ -316,11 +526,6 @@
             e.stopPropagation();
         });
 
-        // Filter toggle
-        $('#filter_btn').click(function() {
-            $('#filter_section').toggle();
-        });
-
         $('#searchInput').keyup(function() {
             updateTableData();
         });
@@ -366,6 +571,10 @@
                     $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
                     $('#paginationInfo').html($(response).find('#paginationInfo').html());
                     $('#paginationControls').html($(response).find('#paginationControls').html());
+                    
+                    // Update stored original pagination info
+                    originalPaginationInfo = $(response).find('#paginationInfo').html();
+                    originalPaginationControls = $(response).find('#paginationControls').html();
                     
                     // Sorting is already initialized on headers, no need to re-add
                 },
@@ -487,6 +696,12 @@
                 dataType: 'html',
                 success: function(response) {
                     $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
+                    $('#paginationInfo').html($(response).find('#paginationInfo').html());
+                    $('#paginationControls').html($(response).find('#paginationControls').html());
+                    
+                    // Update stored original pagination info
+                    originalPaginationInfo = $(response).find('#paginationInfo').html();
+                    originalPaginationControls = $(response).find('#paginationControls').html();
                     
                     // Sorting is already initialized on headers, no need to re-add
                     updateTableData();
