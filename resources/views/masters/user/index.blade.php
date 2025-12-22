@@ -59,7 +59,7 @@
                 <!-- Action Buttons -->
                 <div style="display: flex; gap: 0.75rem; align-items: center;">
                     <button type="button" id="filter_panel"
-                        style="background-color: #ba0028; color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
+                        style="background-color: white; color: black; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
                         onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
                         onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
                         <i class="fas fa-filter"></i>
@@ -79,7 +79,7 @@
             @include('masters/user.filter')
 
             <!-- Table Container -->
-            <div style="overflow-x: auto;">
+            <div style="overflow-x: auto; border-radius: 8px 8px 0 0;">
                 <table style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;" id="kt_customers_table">
                     <thead>
                         <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">

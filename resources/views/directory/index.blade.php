@@ -16,7 +16,7 @@
                     style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
             </div>
             <button id="filterToggleBtn"
-                style="background-color: #ba0028; color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
+                style="background-color: white; color: black; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
                 onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
                 onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
                 <i class="fas fa-filter"></i>
