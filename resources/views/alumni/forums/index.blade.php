@@ -219,7 +219,7 @@
         /* Post action buttons */
         #forumPostsContainer button {
             font-size: 12px !important;
-            padding: 6px 12px !important;
+            padding: 6px 8px !important;
         }
 
         /* Reply form */
