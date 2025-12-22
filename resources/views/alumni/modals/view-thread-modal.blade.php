@@ -82,6 +82,7 @@
                             onblur="this.style.borderColor='#e5e7eb'"></textarea>
                             <button
                                 onclick="submitThreadReply()"
+                                id="replyButton"
                                 class="py-2 px-3"
                                 style="background: linear-gradient(90deg, #E2001D, #B1040E); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;"
                                 onmouseover="this.style.background='linear-gradient(90deg, #B1040E, #E2001D)'"

@@ -983,6 +983,9 @@ table.dataTable tbody tr > .sorting_3 {
         });
         $(document).on("click", ".sendRequestBtn", function (e) {
             e.preventDefault();
+            let $btn = $(this);
+            if ($btn.prop("disabled")) return;
+            $btn.prop("disabled", true).text("Sharing...");
             let url = $(this).data("url");
             $.ajax({
                 url: url,
@@ -999,6 +1002,7 @@ table.dataTable tbody tr > .sorting_3 {
                     $('#alumniTable').DataTable().ajax.reload(null, false);
                 },
                 error: function (xhr) {
+                    $btn.prop("disabled", false);
                     const res = xhr.responseJSON;
                     showToast(res && res.message ? res.message : 'An error occurred while updating status.', 'error');
                 }

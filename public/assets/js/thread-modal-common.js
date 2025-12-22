@@ -296,7 +296,9 @@ function resetReplyState() {
 
 function submitThreadReply() {
     const replyInput = document.getElementById('replyInput');
+    const replyButton = document.getElementById('replyButton');
     const replyText = replyInput.value.trim();
+    if (replyButton.disabled) return;
 
     if (!replyText) {
         showToast('Please enter a valid reply', 'error');
@@ -310,6 +312,8 @@ function submitThreadReply() {
         parent_reply_id: replyingToReplyId,
         message: replyText
     };
+    replyButton.disabled = true;
+    replyButton.innerText = 'Posting...';
 
     fetch(window.createReplyRoute, {
         method: 'POST',
@@ -333,10 +337,12 @@ function submitThreadReply() {
                     window.reloadPageData();
                 }
             } else {
+                replyButton.disabled = false;
                 showToast('Failed to post reply: ' + (data.message || 'Unknown error'), 'error');
             }
         })
         .catch(error => {
+            replyButton.disabled = false;
             console.error('Error:', error);
             showToast('Error posting reply', 'error');
         });

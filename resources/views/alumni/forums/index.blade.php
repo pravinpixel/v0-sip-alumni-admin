@@ -1309,7 +1309,9 @@
 
     function submitReply(postId) {
         const replyInput = document.getElementById(`replyInput-${postId}`);
+        const replyBtn = document.getElementById(`replySubmit-${postId}`);
         const replyText = replyInput.value.trim();
+        if (replyBtn.disabled) return;
 
         if (!replyText) {
             showToast('Please enter a valid reply', 'error');
@@ -1319,6 +1321,9 @@
             showToast('Reply exceeds maximum length of 255 characters', 'error');
             return;
         }
+
+        replyBtn.disabled = true;
+        replyBtn.innerText = 'Posting...';
 
         fetch("{{ route('alumni.create.reply') }}", {
                 method: 'POST',
@@ -1343,10 +1348,12 @@
                     showToast('Reply posted successfully!', 'success');
                     loadForumPosts();
                 } else {
+                    replyBtn.disabled = false;
                     showToast('Failed to post reply: ' + (data.message || 'Unknown error'), 'error');
                 }
             })
             .catch(error => {
+                replyBtn.disabled = false;
                 console.error('Error:', error);
                 showToast('Error posting reply', 'error');
             });
