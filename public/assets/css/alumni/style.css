@@ -646,6 +646,10 @@ body {
   .stat-icon {
     padding: 8px;
   }
+
+  .post-footer-actions {
+  gap: 0px;
+}
 }
 
 .desktop-tablet-only {
