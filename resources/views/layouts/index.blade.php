@@ -88,20 +88,21 @@
     // GLOBAL CONFIRM FUNCTION — usable in ALL PAGES
     function confirmBox(message, callback) {
 
-        $("#globalConfirmMessage").text(message);
+    $("#globalConfirmMessage").text(message);
 
-        // remove old click events
-        $("#globalConfirmYes").off('click');
+    const yesBtn = $("#globalConfirmYes");
+    yesBtn.prop('disabled', false).text('Yes');
+    yesBtn.off('click');
+    yesBtn.on('click', function () {
+        if (yesBtn.prop('disabled')) return;
+        yesBtn.prop('disabled', true).text('Processing...');
+        callback();
+        $("#globalConfirmModal").modal('hide');
+    });
 
-        // add new callback
-        $("#globalConfirmYes").on('click', function () {
-            callback();
-            $("#globalConfirmModal").modal('hide');
-        });
+    $("#globalConfirmModal").modal('show');
+}
 
-        // show modal
-        $("#globalConfirmModal").modal('show');
-    }
 </script>
 
     @if($message = Session::get('success'))

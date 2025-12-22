@@ -359,7 +359,7 @@
                         onmouseover="this.style.background='#f9fafb'; this.style.borderColor='#d1d5db'" onmouseout="this.style.background='white'; this.style.borderColor='#e5e7eb'">
                         Cancel
                     </button>
-                    <button onclick="confirmBlock()" style="padding: 10px 24px; background: #dc2626; border: none; border-radius: 8px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                    <button onclick="confirmBlock()" id="confirmBlockBtn" style="padding: 10px 24px; background: #dc2626; border: none; border-radius: 8px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
                         onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
                         Block Alumni
                     </button>
@@ -755,7 +755,7 @@
                 },
                 success: function(response) {
                     showToast(response.message);
-                    $('#directoryTable').DataTable().ajax.reload();
+                    $('#directoryTable').DataTable().ajax.reload( null, false);
                 },
                 error: function(xhr) {
                     const res = xhr.responseJSON;
@@ -773,11 +773,15 @@
         document.body.style.overflow = 'auto';
         document.getElementById('blockRemarks').value = '';
         document.getElementById('remarksError').style.display = 'none';
+        document.getElementById('confirmBlockBtn').disabled = false;
     }
 
     function confirmBlock() {
         const remarks = document.getElementById('blockRemarks').value.trim();
         const errorEl = document.getElementById('remarksError');
+        const confirmBlockBtn = document.getElementById('confirmBlockBtn');
+
+        if (confirmBlockBtn.disabled) return;
         
         if (!remarks) {
             errorEl.style.display = 'block';
@@ -785,6 +789,10 @@
         }
         
         if (!alumniToBlock) return;
+
+        const originalText = confirmBlockBtn.innerHTML;
+            confirmBlockBtn.innerHTML = 'Blocking...';
+            confirmBlockBtn.disabled = true;
         
         $.ajax({
             url: "{{ route('directory.update.status') }}",
@@ -796,11 +804,15 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
+                confirmBlockBtn.innerHTML = originalText;
+                confirmBlockBtn.disabled = false;
                 showToast('User Blocked Successfully.' ||response.message);
                 closeBlockModal();
-                $('#directoryTable').DataTable().ajax.reload();
+                $('#directoryTable').DataTable().ajax.reload(null, false);
             },
             error: function(xhr) {
+                confirmBlockBtn.innerHTML = originalText;
+                confirmBlockBtn.disabled = false;
                 const res = xhr.responseJSON;
                 showToast(res && res.message ? res.message : 'An error occurred while blocking alumni.', 'error');
             }

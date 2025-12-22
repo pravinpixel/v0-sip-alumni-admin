@@ -777,7 +777,10 @@
     let currentRejectPostTitle = '';
     let currentRemovePostId = null;
 
+    let statusUpdating = false;
     function updatePostStatus(postId, status, remarks = null) {
+        if (statusUpdating) return;
+        statusUpdating = true;
         $.ajax({
             url: "{{ route('forums.change.status') }}",
             type: 'POST',
@@ -788,10 +791,14 @@
                 _token: '{{ csrf_token() }}'
             },
             success: function(response) {
-                $('#forumsTable').DataTable().ajax.reload();
+                showToast(response.message);
+                $('#forumsTable').DataTable().ajax.reload(null, false);
             },
             error: function(xhr) {
-                alert('An error occurred while updating the status.');
+                showToast('Error updating post status', 'error');
+            },
+            complete: function () {
+                statusUpdating = false;
             }
         });
     }
