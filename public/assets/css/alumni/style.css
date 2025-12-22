@@ -522,6 +522,10 @@ body {
     flex-direction: column;
     gap: 10px;
   }
+
+  .post-footer-actions {
+    gap: 0px !important;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -591,12 +595,6 @@ body {
   border-top: 1px solid #e5e7eb;
 }
 
-.post-footer {
-  padding: 10px 0 0 0;
-  margin-bottom: 16px;
-  border-top: 1px solid #e5e7eb;
-}
-
 .post-footer-row-1 {
   display: flex;
   justify-content: space-between;
@@ -647,9 +645,6 @@ body {
     padding: 8px;
   }
 
-  .post-footer-actions {
-  gap: 0px;
-}
 }
 
 .desktop-tablet-only {
