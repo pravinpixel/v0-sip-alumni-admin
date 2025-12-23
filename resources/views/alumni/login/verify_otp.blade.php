@@ -245,7 +245,7 @@
                 <div class="bg-body d-flex flex-column align-items-center rounded-4 w-450px p-6 log">
                 <div class="w-100" style="max-width:450px;">
 
-                    <a href="{{ url('/') }}" class="back-btn">
+                    <a href="javascript:void(0)" class="back-btn" onclick="history.back();">
                         <i class="fa fa-arrow-left"></i>
                         Back
                     </a>
@@ -406,7 +406,11 @@
         }
 
         function verifyOTP() {
-            // Collect OTP
+
+            const verifyBtn = $('#verify-otp-btn');
+            if (verifyBtn.prop('disabled')) return;
+            verifyBtn.prop('disabled', true);
+            
             const otpInputs = document.querySelectorAll('.otp-input');
             let otp = '';
             otpInputs.forEach(input => {
@@ -415,6 +419,7 @@
 
             if (otp.length !== 6) {
                 showToast('Please enter complete 6-digit OTP', 'error');
+                verifyBtn.prop('disabled', false);
                 otpInputs[0].focus();
                 return;
             }
@@ -451,43 +456,20 @@
 
                     if (response.success) {
                         showToast('OTP verified successfully', 'success');
+                        verifyBtn.prop('disabled', true);
 
                         setTimeout(() => {
-                            if (response.redirect) {
-                                window.location.href = response.redirect;
-                            } else {
-                                window.location.href = '{{ url("/") }}';
-                            }
-                        }, 1000);
+                                window.location.href = response.redirect || '{{ route("alumni.dashboard") }}';
+                        }, 400);
                     } else {
                         showToast('Invalid OTP', 'error');
+                        verifyBtn.prop('disabled', false);
                         clearOTPFields();
                     }
                 },
                 error: function(xhr) {
-                    switch (xhr.status) {
-                        case 400:
-                            showToast(xhr.responseJSON?.error || 'Invalid OTP. Please try again.', 'error');
-                            break;
-
-                        case 422:
-                            const errors = xhr.responseJSON.errors;
-                            if (errors && errors.otp) {
-                                showToast(errors.otp[0], 'error');
-                            } else if (xhr.responseJSON.error) {
-                                showToast(xhr.responseJSON.error, 'error');
-                            } else {
-                                showToast('Invalid OTP. Please try again.', 'error');
-                            }
-                            break;
-
-                        case 500:
-                            showToast('Server error. Please try again later.', 'error');
-                            break;
-
-                        default:
-                            showToast('Something went wrong. Please try again.', 'error');
-                    }
+                    showToast(xhr.responseJSON.error, 'error');
+                    verifyBtn.prop('disabled', false);
                     clearOTPFields();
                 },
                 complete: function() {

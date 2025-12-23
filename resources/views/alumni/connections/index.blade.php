@@ -431,6 +431,7 @@
         connectionsTable = $('#connectionsTable').DataTable({
             processing: true,
             serverSide: true,
+            retrieve: true,
             ajax: '{{ route("alumni.connections.list") }}',
             searching: true,
             paging: true,
@@ -482,6 +483,7 @@
         requestsTable = $('#requestsTable').DataTable({
             processing: true,
             serverSide: true,
+            retrieve: true,
             ajax: '{{ route("alumni.connections.requests") }}',
             searching: true,
             paging: true,
@@ -523,6 +525,12 @@
                 },
                 { data: 'created_at', name: 'created_at', visible: false },
             ]
+        });
+
+        $(document).ajaxComplete(function (event, xhr) {
+            if (xhr.status === 401 || xhr.status === 419) {
+                location.reload();
+            }
         });
 
         // Global search: apply to both tables

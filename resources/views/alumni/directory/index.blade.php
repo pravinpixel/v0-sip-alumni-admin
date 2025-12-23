@@ -794,6 +794,7 @@ table.dataTable tbody tr > .sorting_3 {
             stripeClasses: [],         
             orderClasses: false,
             stateSave: false,
+            retrieve: true,
             ajax: {
                 url: "{{ route('alumni.directory.data') }}",
                 data: function(d) {
@@ -836,6 +837,13 @@ table.dataTable tbody tr > .sorting_3 {
             order: [[4, 'desc']],
             dom: 't',
         });
+
+        $(document).ajaxComplete(function (event, xhr) {
+            if (xhr.status === 401 || xhr.status === 419) {
+                location.reload();
+            }
+        });
+
 
         // Function to update sorting icons
         function updateSortIcons() {

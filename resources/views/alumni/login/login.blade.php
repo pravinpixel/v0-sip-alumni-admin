@@ -153,14 +153,27 @@
             $("#number-error").text("");
         });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            $('#dynamic-submit').on('click', function(e) {
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#dynamic-form').on('submit', function (e) {
                 sendOtp(e);
             });
         });
 
+        window.addEventListener('pageshow', function (event) {
+            const btn = $('#dynamic-submit');
+            if (event.persisted) {
+                btn.prop('disabled', false);
+                $('#dynamic-submit .indicator-label').show();
+                $('#dynamic-submit .indicator-progress').hide();
+            }
+        });
+
+
         function sendOtp(event) {
             event.preventDefault();
+            const btn = $('#dynamic-submit');
+            if (btn.prop('disabled')) return;
+            btn.prop('disabled', true);
 
             // Clear previous errors
             $("#invalid-credential-error").text("");
@@ -172,16 +185,19 @@
             // Validate mobile number
             if (mobileNumber === '') {
                 $("#number-error").text("Please enter a valid 10-digit mobile number");
+                btn.prop('disabled', false);
                 return;
             }
 
             if (mobileNumber.length !== 10) {
                 $("#number-error").text("Please enter a valid 10-digit mobile number");
+                btn.prop('disabled', false);
                 return;
             }
 
             if (!/^\d{10}$/.test(mobileNumber)) {
                 $("#number-error").text("Please enter a valid 10-digit mobile number");
+                btn.prop('disabled', false);
                 return;
             }
 
@@ -204,31 +220,19 @@
                 success: function(response) {
                     if (response.success) {
                         showToast(response.message, 'success');
+                        
                         setTimeout(function() {
-                            window.location.href = response.redirect;
-                        }, 1500);
+                            window.location.href = response.redirect || '{{ route("verify.otp") }}';
+                        }, 1000);
+                    } else {
+                        showToast(response.message, 'error');
+                        btn.prop('disabled', false);
                     }
                 },
 
                 error: function(xhr) {
-                    console.log('Error:', xhr.responseJSON);
-
-                    if (xhr.status === 422 || xhr.status === 400) {
-                        let res = xhr.responseJSON;
-
-                        if (res.errors) {
-                            $.each(res.errors, function(key, val) {
-                                $("#" + key + "-error").text(val[0]);
-                            });
-                        }
-
-                        if (res.error) {
-                            showToast(res.error, 'error');
-                        }
-                        return;
-                    }
-
-                    showToast("Unexpected error occurred.");
+                    showToast(xhr.responseJSON.error, 'error');
+                    btn.prop('disabled', false);
                 },
 
                 complete: function() {
