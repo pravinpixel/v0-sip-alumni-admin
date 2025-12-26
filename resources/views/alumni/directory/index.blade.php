@@ -788,6 +788,7 @@ table.dataTable tbody tr > .sorting_3 {
             }
         }
 
+        $.fn.dataTable.ext.errMode = 'none';
         const table = $('#alumniTable').DataTable({
             processing: true,
             serverSide: true,
@@ -838,9 +839,20 @@ table.dataTable tbody tr > .sorting_3 {
             dom: 't',
         });
 
+        let sessionReloaded = false;
         $(document).ajaxComplete(function (event, xhr) {
-            if (xhr.status === 401 || xhr.status === 419) {
-                location.reload();
+            if (!sessionReloaded && (xhr.status === 401 || xhr.status === 419)) {
+                sessionReloaded = true;
+
+                let msg = 'Session expired. Please login again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    msg = xhr.responseJSON.message;
+                }
+                showToast(msg, 'error');
+
+                setTimeout(() => {
+                    window.location.href = "{{ route('alumni.login') }}";
+                }, 1000);
             }
         });
 

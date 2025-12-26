@@ -140,24 +140,24 @@
 
 <nav class="alumni-navbar">
     <a href="{{ route('alumni.dashboard') }}"
-        class="nav-link @if(request()->routeIs('alumni.dashboard')) active @endif">
+        @class(['nav-link', 'active' => request()->routeIs('alumni.dashboard')])>
         <i class="fas fa-th-large"></i>
         <span>Dashboard</span>
     </a>
 
     <a href="{{ route('alumni.directory') }}"
-        class="nav-link @if(request()->routeIs('alumni.directory')) active @endif">
+        @class(['nav-link', 'active' => request()->routeIs('alumni.directory')])>
         <i class="fas fa-address-book"></i>
         <span>Directory</span>
     </a>
 
     <a href="{{ route('alumni.connections') }}"
-        class="nav-link @if(request()->routeIs('alumni.connections')) active @endif">
+        @class(['nav-link', 'active' => request()->routeIs('alumni.connections')])>
         <i class="fas fa-link"></i>
         <span>Connections</span>
     </a>
 
-    <a href="{{ route('alumni.forums') }}" class="nav-link @if(request()->routeIs('alumni.forums')) active @endif">
+    <a href="{{ route('alumni.forums') }}" @class(['nav-link', 'active' => request()->routeIs('alumni.forums')])>
         <i class="fas fa-comments"></i>
         <span>Forums</span>
     </a>

@@ -313,7 +313,6 @@ function submitThreadReply() {
         message: replyText
     };
     replyButton.disabled = true;
-    replyButton.innerText = 'Posting...';
 
     fetch(window.createReplyRoute, {
         method: 'POST',
@@ -331,6 +330,7 @@ function submitThreadReply() {
                 // Reload thread with current reply permissions
                 const canReply = window.canReplyToComments !== false;
                 openThreadModal(postId, canReply);
+                replyButton.disabled = false;
                 
                 // Call page-specific reload function if available
                 if (typeof window.reloadPageData === 'function') {
@@ -343,7 +343,6 @@ function submitThreadReply() {
         })
         .catch(error => {
             replyButton.disabled = false;
-            console.error('Error:', error);
             showToast('Error posting reply', 'error');
         });
 }

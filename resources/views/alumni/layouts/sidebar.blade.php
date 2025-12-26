@@ -20,7 +20,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             top: -1px;
         ">×</span></button>
         <img src="{{ $alumni->image_url ?? asset('images/avatar/blank.png') }}" alt="Profile" class="profile-img">
-        <div class="profile-name">{{ $alumni->full_name ?? '-' }}</div>
+        <div class="profile-name text-break">{{ $alumni->full_name ?? '-' }}</div>
     </div>
 
     <!-- Profile Info -->

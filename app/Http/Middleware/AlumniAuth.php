@@ -13,7 +13,7 @@ class AlumniAuth
     {
         $alumniId = session('alumni.id');
         if (!$alumniId) {
-            return $this->unauthorizedResponse($request, 'Please login to continue.');
+            return $this->unauthorizedResponse($request, 'Session expired. Please login again.');
         }
 
         $alumni = Alumnis::with(['city', 'occupation'])->find($alumniId);
@@ -36,6 +36,7 @@ class AlumniAuth
             return response()->json([
                 'success' => false,
                 'message' => $message,
+                'redirect' => route('alumni.login')
             ], 401);
         }
 
