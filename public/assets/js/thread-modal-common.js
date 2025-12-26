@@ -430,7 +430,7 @@ function renderChildComment(reply, level = 0) {
             <div style="display: flex; gap: 12px;">
                 ${hasConnection && profilePicture ? `
                     <img src="${profilePicture}" alt="${escapeHtml(author)}" 
-                        style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid #dc2626; flex-shrink: 0;">
+                        style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
                 ` : `
                     <div style="width: 36px; height: 36px; border-radius: 50%; background: #dc2626; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
                         ${initials}
