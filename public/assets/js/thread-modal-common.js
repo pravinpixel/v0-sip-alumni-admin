@@ -351,6 +351,11 @@ function closeThreadModal() {
     document.getElementById('threadModal').style.display = 'none';
     document.body.style.overflow = 'auto';
     resetReplyState();
+
+    // Call page-specific reload function if available
+    if (typeof window.reloadPageData === 'function') {
+        window.reloadPageData();
+    }
 }
 
 function toggleReplies(parentId) {
