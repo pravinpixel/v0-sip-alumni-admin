@@ -436,6 +436,7 @@
 
                     {{-- Title --}}
                     <h3 class="fw-bold text-dark mb-2"
+                    title="{{ strip_tags($post['title']) }}"
                         style="font-size:18px; min-height:48px;
                     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
                         {{ strip_tags($post['title']) }}
@@ -443,6 +444,7 @@
 
                     {{-- Description --}}
                     <p class="text-muted mb-3"
+                    title="{{ strip_tags($post['description']) }}"
                         style="font-size:14px; min-height:60px;
                    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
                         {{ strip_tags($post['description']) }}
