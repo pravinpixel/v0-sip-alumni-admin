@@ -455,7 +455,7 @@
                 success: function(response) {
 
                     if (response.success) {
-                        showToast('OTP verified successfully', 'success');
+                        showToast('OTP verified successfully.', 'success');
                         verifyBtn.prop('disabled', true);
 
                         setTimeout(() => {

@@ -260,8 +260,8 @@ class ConnectionsController extends Controller
             ->addColumn('action', function ($row) {
                 return '
                     <div style="display:flex;gap:8px;">
-                        <button onclick="acceptRequest(' . $row->id . ')" class="btn btn-sm" style="background-color:#28a745;color:white;border:none;border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer;">Accept</button>
-                        <button onclick="rejectRequest(' . $row->id . ')" class="btn btn-sm" style="background-color:#c41e3a;color:white;border:none;border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer;">Reject</button>
+                        <button onclick="acceptRequest(' . $row->id . ', this)" class="btn btn-sm" style="background-color:#28a745;color:white;border:none;border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer;">Accept</button>
+                        <button onclick="rejectRequest(' . $row->id . ', this)" class="btn btn-sm" style="background-color:#c41e3a;color:white;border:none;border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer;">Reject</button>
                     </div>';
             })
             ->rawColumns(['alumni', 'batch', 'action'])

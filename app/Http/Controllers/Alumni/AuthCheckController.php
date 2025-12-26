@@ -140,7 +140,7 @@ class AuthCheckController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'OTP verified successfully',
+                    'message' => 'OTP verified successfully.',
                     'redirect' => route('alumni.dashboard')
                 ]);
             }

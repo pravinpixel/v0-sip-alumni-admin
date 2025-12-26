@@ -149,6 +149,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             width: 170px;
+            padding-bottom: 4px;
         }
 
         .edit-profile-btn {

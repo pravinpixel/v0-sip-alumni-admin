@@ -157,7 +157,7 @@ class CommonController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'OTP verified successfully',
+                'message' => 'OTP verified successfully.',
             ]);
             
         } catch (\Exception $e) {

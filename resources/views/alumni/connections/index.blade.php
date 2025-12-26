@@ -723,7 +723,11 @@
         });
     }
 
-    function acceptRequest(id) {
+    function acceptRequest(id, btn) {
+
+        if ($(btn).prop('disabled')) return;
+        $(btn).prop('disabled', true);
+
         $.ajax({
             url: "{{ route('alumni.connections.accept', '') }}/" + id,
             type: 'POST',
@@ -744,16 +748,21 @@
             },
             error: function() {
                 showToast('Unable to accept connection request.', 'error');
+                $(btn).prop('disabled', false);
             }
         });
     }
 
-    function rejectRequest(id) {
+    function rejectRequest(id, btn) {
+
+        if ($(btn).prop('disabled')) return;
+        $(btn).prop('disabled', true);
+
         $.ajax({
             url: "{{ route('alumni.connections.reject', '') }}/" + id,
             type: 'POST',
             success: function(data) {
-                showToast("alumni request has been rejected.");
+                showToast("Alumni request has been rejected.");
                 requestsTable.ajax.reload(null, false);
                 requestsTable.one('draw', function () {
                     const totalRequests = requestsTable.page.info().recordsTotal;
@@ -768,6 +777,7 @@
             },
             error: function() {
                 showToast('Unable to reject connection request.', 'error');
+                $(btn).prop('disabled', false);
             }
         });
     }
