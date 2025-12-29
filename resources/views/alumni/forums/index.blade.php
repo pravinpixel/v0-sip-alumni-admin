@@ -11,10 +11,6 @@
         }
 
 
-        /* Filter section */
-        #filterSection {
-            padding: 16px !important;
-        }
 
         #filterSection>div {
             grid-template-columns: repeat(2, 1fr) !important;
@@ -58,18 +54,6 @@
 
         #searchInput {
             width: 100% !important;
-        }
-
-        /* Filter button - full width */
-        #filterToggleBtn,
-        #clearAllFiltersBtn {
-            width: 100% !important;
-            justify-content: center !important;
-        }
-
-        /* Filter section */
-        #filterSection {
-            padding: 14px !important;
         }
 
         #filterSection>div {
@@ -121,34 +105,6 @@
             font-size: 13px !important;
             padding: 10px 16px 10px 40px !important;
             height: 38px !important;
-        }
-
-        /* Filter buttons */
-        #filterToggleBtn,
-        #clearAllFiltersBtn {
-            font-size: 13px !important;
-            padding: 10px 16px !important;
-            height: 38px !important;
-        }
-
-        /* Filter section */
-        #filterSection {
-            padding: 12px !important;
-        }
-
-        #filterSection label {
-            font-size: 12px !important;
-        }
-
-        /* Multi-select dropdowns */
-        .multi-select-display {
-            font-size: 13px !important;
-            padding: 8px 10px !important;
-            min-height: 36px !important;
-        }
-
-        .multi-select-display .placeholder {
-            font-size: 13px !important;
         }
 
         .multi-select-option {
@@ -243,69 +199,6 @@
             right: 12px !important;
             font-size: 16px !important;
         }
-    }
-
-    /* Multi-select dropdown styles */
-    .multi-select-container {
-        position: relative;
-        cursor: pointer !important;
-    }
-
-    .multi-select-display {
-        width: 100%;
-        padding: 9px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 14px;
-        cursor: pointer !important;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-height: 40px;
-        transition: all 0.2s;
-        background: white;
-    }
-
-    .multi-select-display * {
-        cursor: pointer !important;
-    }
-
-    .multi-select-display .placeholder {
-        color: #000000ff;
-        opacity: 1;
-        flex: 1;
-        font-size: 14px;
-        font-weight: 400;
-    }
-
-    .multi-select-display span {
-        background: none;
-    }
-
-    .multi-select-display:hover {
-        border-color: #9ca3af;
-        background-color: #eebc4a;
-    }
-
-    .multi-select-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        margin-top: 4px;
-        max-height: 250px;
-        overflow-y: auto;
-        z-index: 1;
-        display: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        padding: 10px;
-    }
-
-    .multi-select-dropdown.active {
-        display: block;
     }
 
     .multi-select-option {
@@ -478,87 +371,31 @@
     @include('alumni.modals.create-post-modal')
 
     {{-- Search and Filter --}}
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+    <div class="search-filter-container">
         <div style="flex: 1; position: relative; max-width: 400px;">
             <i class="fas fa-search"
                 style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-            <input type="text" id="searchInput" placeholder="Search posts..."
-                style="width: 100%; padding: 11px 16px 11px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none; height: 42px;"
-                onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
+            <input type="text" id="searchInput" placeholder="Search posts...">
         </div>
-        <button id="filterToggleBtn"
+        <!-- <button id="filterToggleBtn"
             style="color: #374151; border: 1px solid #d1d5db; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; height: 42px; white-space: nowrap;"
             onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
             <i class="bi bi-funnel" style="font-size: 18px;"></i>
             <span id="filterBtnText">Filter</span>
             <i class="fas fa-chevron-down"></i>
         </button>
-        <button id="clearAllFiltersBtn" onclick="clearAllFilters()"
+        <button id="clearFiltersBtn" onclick="clearAllFilters()"
             style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 11px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; height: 42px; white-space: nowrap;"
             onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
             Clear All Filters
-        </button>
-    </div>
-
-    {{-- Filter Section --}}
-    <div id="filterSection"
-        style="display: none; background: #fbf9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
-                    Date Range
-                </label>
-                <div class="multi-select-container" data-filter="dateRange">
-                    <div class="multi-select-display">
-                        <span class="placeholder">Select date range</span>
-                        <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-            </div>
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
-                    Sort By
-                </label>
-                <div class="multi-select-container" data-filter="sortBy">
-                    <div class="multi-select-display">
-                        <span class="placeholder">Select sorting</span>
-                        <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-            </div>
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
-                    Batch Year
-                </label>
-                <div class="multi-select-container" data-filter="batch">
-                    <div class="multi-select-display">
-                        <span class="placeholder">Select batch years</span>
-                        <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-            </div>
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
-                    Post Type
-                </label>
-                <div class="multi-select-container" data-filter="postType">
-                    <div class="multi-select-display">
-                        <span class="placeholder">Select post type</span>
-                        <i class="fas fa-chevron-down" style="color: #151616ff; font-size: 11px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-            </div>
+        </button> -->
+        <div style="display: flex; align-items: center; gap: 12px;">
+            @include('alumni.filter')
         </div>
     </div>
 
-    {{-- Selected Filters Display --}}
-    <div id="selectedFiltersDisplay" style="display: none; margin-bottom: 20px;">
-        <div class="selected-tags" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-    </div>
+    @include('alumni.forums.filters')
+    
 
     <div id="forumPostsContainer"></div>
 </div>
@@ -616,21 +453,20 @@
 
     // Filter toggle
     document.getElementById('filterToggleBtn').addEventListener('click', function() {
-        const section = document.getElementById('filterSection');
-        const isVisible = section.style.display !== 'none';
-        section.style.display = isVisible ? 'none' : 'block';
+        const section = $('#filterSection');
+            const isVisible = section.is(':visible');
+            section.slideToggle(300, function() {
+                updateSelectedFiltersDisplay();
+            });
 
-        const icon = this.querySelector('.fa-chevron-up, .fa-chevron-down');
-        const btnText = document.getElementById('filterBtnText');
-        if (isVisible) {
-            icon.classList.remove('fa-chevron-up');
-            icon.classList.add('fa-chevron-down');
-            btnText.textContent = 'Filter';
-        } else {
-            icon.classList.remove('fa-chevron-down');
-            icon.classList.add('fa-chevron-up');
-            btnText.textContent = 'Close Filters';
-        }
+            const icon = $(this).find('i');
+            const btnText = $('#filterBtnText');
+            if (isVisible) {
+                icon.removeClass('fa-times').addClass('bi-funnel');
+                $('#filterBtnText').html('Filter <i class="fa-solid fa-chevron-down ms-2"></i>');
+            } else {
+                $('#filterBtnText').html('Close Filters <i class="fa-solid fa-chevron-up ms-2"></i>');
+            }
     });
 
     // Initialize multi-select dropdowns
@@ -845,7 +681,7 @@
     function updateSelectedFiltersDisplay() {
         const container = document.getElementById('selectedFiltersDisplay');
         const tagsContainer = container.querySelector('.selected-tags');
-        const clearBtn = document.getElementById('clearAllFiltersBtn');
+        const clearBtn = document.getElementById('clearFiltersBtn');
         tagsContainer.innerHTML = '';
 
         let hasFilters = false;

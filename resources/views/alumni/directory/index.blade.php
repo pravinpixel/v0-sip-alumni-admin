@@ -5,9 +5,6 @@
 <style>
     /* Responsive Styles */
     @media (max-width: 991px) {
-        .search-filter-container {
-            gap: 10px !important;
-        }
 
         .search-box {
             min-width: 250px !important;
@@ -18,16 +15,9 @@
             grid-template-columns: repeat(2, 1fr) !important;
             gap: 16px !important;
         }
-
-        #filterSection {
-            padding: 16px !important;
-        }
     }
 
     @media (max-width: 767px) {
-        .search-filter-container {
-            gap: 8px !important;
-        }
 
         .search-box {
             width: 100% !important;
@@ -38,16 +28,6 @@
         .filter-grid {
             grid-template-columns: 1fr !important;
             gap: 12px !important;
-        }
-
-        #filterSection {
-            padding: 12px !important;
-        }
-
-        #filterToggleBtn,
-        #clearFiltersBtn {
-            font-size: 13px !important;
-            padding: 8px 14px !important;
         }
 
         .table-container {
@@ -66,30 +46,9 @@
     }
 
     @media (max-width: 575px) {
-        .search-filter-container {
-            flex-direction: column;
-            align-items: stretch !important;
-            gap: 12px !important;
-        }
 
         .search-box {
             min-width: 100% !important;
-        }
-
-        #searchInput {
-            padding: 10px 16px 10px 40px !important;
-            font-size: 14px !important;
-        }
-
-        #filterToggleBtn,
-        #clearFiltersBtn {
-            width: 100%;
-            justify-content: center;
-            padding: 10px 16px !important;
-        }
-
-        #filterSection {
-            padding: 10px !important;
         }
 
         #alumniTable thead th {
@@ -102,10 +61,6 @@
             font-size: 12px !important;
         }
 
-        .multi-select-display {
-            font-size: 13px !important;
-            padding: 8px 10px !important;
-        }
     }
 
     /* Table horizontal scroll indicator */
@@ -305,73 +260,9 @@ table.dataTable tbody tr > .sorting_3 {
         font-size: 14px !important;
     }
 
-    /* Multi-select dropdown styles */
-    .multi-select-container {
-        position: relative;
-        cursor: pointer !important;
-    }
 
-    .multi-select-display {
-        width: 100%;
-        padding: 9px 12px;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        font-size: 14px;
-        cursor: pointer !important;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-height: 40px;
-        transition: border-color 0.2s;
-    }
 
-    .multi-select-display * {
-        cursor: pointer !important;
-    }
 
-    .multi-select-display .placeholder {
-        color: #111213ff !important;
-        opacity: 1 !important;
-        flex: 1;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 1.5;
-    }
-
-    .multi-select-display span {
-        background: none;
-    }
-
-    .multi-select-display:hover {
-        border-color: #9ca3af;
-        background-color: #eebc4a;
-    }
-
-    .multi-select-display:focus-within {
-        border-color: #dc2626;
-        outline: none;
-    }
-
-    .multi-select-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 1px solid #d1d5db;
-        border-radius: 6px;
-        margin-top: 4px;
-        max-height: 250px;
-        overflow-y: auto;
-        z-index: 1;
-        display: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        padding: 10px;
-    }
-
-    .multi-select-dropdown.active {
-        display: block;
-    }
 
     .multi-select-option {
         padding: 2px 4px;
@@ -465,74 +356,18 @@ table.dataTable tbody tr > .sorting_3 {
     </div>
 
     {{-- Search and Filter --}}
-    <div class="search-filter-container" style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
+    <div class="search-filter-container">
         <div class="search-box" style="flex: 1; position: relative; min-width: 300px; max-width: 450px;">
             <i class="fas fa-search"
                 style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-            <input type="text" id="searchInput" placeholder="Search alumni..."
-                style="width: 100%; padding: 8px 16px 8px 45px; border: 1px solid #d1d5db; border-radius: 30px; font-size: 14px; outline: none;"
-                onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'">
+            <input type="text" id="searchInput" placeholder="Search alumni...">
         </div>
-        <button id="filterToggleBtn"
-            style="background: #fbf9fa; color: #374151; border: 1px solid #d1d5db; padding: 4px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; transition: all 0.2s ease;"
-            onmouseover="this.style.background='#eebc4a'" onmouseout="this.style.background='#fbf9fa'">
-            <i class="bi bi-funnel" style="font-size: 18px;"></i>
-            <span id="filterBtnText">Filter<i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i></span>
-        </button>
-        <button id="clearFiltersBtn"
-            style="background: white; color: #dc2626; border: 1px solid #dc2626; padding: 7px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; display: none; white-space: nowrap;"
-            onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">
-            Clear All Filters
-        </button>
-    </div>
-
-    {{-- Filter Section --}}
-    <div id="filterSection"
-        style="display: none; background: #fbf9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-        <div class="filter-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
-                    Batch Year
-                </label>
-                <div class="multi-select-container" data-filter="batch">
-                    <div class="multi-select-display">
-                        <span class="placeholder">Select batch years</span>
-                        <i class="fas fa-chevron-down" style="color: #000000ff; font-size: 11px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-            </div>
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
-                    Location
-                </label>
-                <div class="multi-select-container" data-filter="location">
-                    <div class="multi-select-display">
-                        <span class="placeholder">Select locations</span>
-                        <i class="fas fa-chevron-down" style="color: #000000ff; font-size: 11px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-            </div>
-            <div>
-                <label style="font-weight: 600; font-size: 13px; color: #111827; display: block; margin-bottom: 8px;">
-                    Status
-                </label>
-                <div class="multi-select-container" data-filter="status">
-                    <div class="multi-select-display">
-                        <span class="placeholder">Select status</span>
-                        <i class="fas fa-chevron-down" style="color: #000000ff; font-size: 11px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-            </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            @include('alumni.filter')
         </div>
     </div>
 
-    {{-- Selected Filters Display (Always visible when filters are selected) --}}
-    <div id="selectedFiltersDisplay" style="display: none; margin-bottom: 20px;">
-        <div class="selected-tags" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
-    </div>
+    @include('alumni.directory.filters')
 
     {{-- Info Banner --}}
     <div id="directoryRibbon" data-ribbon-state="{{ $isDirectoryRibbon ?? 0 }}"
@@ -971,9 +806,9 @@ table.dataTable tbody tr > .sorting_3 {
             const btnText = $('#filterBtnText');
             if (isVisible) {
                 icon.removeClass('fa-times').addClass('bi-funnel');
-                $('#filterBtnText').html('Filter <i class="fa-solid fa-chevron-down" style="margin-left: 10px;"></i>');
+                $('#filterBtnText').html('Filter <i class="fa-solid fa-chevron-down ms-2"></i>');
             } else {
-                $('#filterBtnText').html('Close Filters <i class="fa-solid fa-chevron-up" style="margin-left: 10px;"></i>');
+                $('#filterBtnText').html('Close Filters <i class="fa-solid fa-chevron-up ms-2"></i>');
             }
         });
 

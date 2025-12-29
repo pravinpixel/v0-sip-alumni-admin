@@ -436,7 +436,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         const sidebar = document.getElementById('sidebar');
         const mainContent = document.querySelector('.main-content-area');
 
-        console.log('Toggle drawer clicked', sidebar, mainContent);
 
         if (!sidebar) {
             console.error('Sidebar not found');
@@ -463,7 +462,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             }
         }
 
-        console.log('Sidebar collapsed:', !isCollapsed, 'Width:', sidebar.style.width);
     }
 
     function closeSidebar() {
