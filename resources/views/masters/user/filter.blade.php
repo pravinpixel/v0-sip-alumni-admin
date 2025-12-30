@@ -51,7 +51,7 @@
             </div>
 
             <!-- Clear Filters Button -->
-            <button id="clearAllFiltersBtn" style="display: none; background: #ba0028; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 500;">
+            <button type="button" id="clearFiltersBtn" style="display: none; background: #ba0028; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 500;">
                 Clear All Filters
             </button>
         </div>
