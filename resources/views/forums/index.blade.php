@@ -2,76 +2,25 @@
 @section('title', 'Directory - Alumni Tracking')
 
 @section('content')
-<div style="margin-bottom: 30px;">
-    <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Forums</h1>
-    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+<div class="content-container">
+    <h1 class="main-title">Forums</h1>
+    <p class="main-subtitle">
         Manage community discussions and forum posts
     </p>
-    <div class="p-6" style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div class="table-box-container">
         <!-- Search and Filter -->
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px;">
-            <div style="flex: 1; position: relative;">
-                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-                <input type="text" id="searchInput" placeholder="Search by alumni name or post title..."
-                    style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+        <div class="search-filter-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by alumni name or post title...">
             </div>
-            <button id="filterToggleBtn"
-                style="background-color: white; color: black; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
-                onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
-                onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
+            <button id="filterToggleBtn">
                 <i class="fas fa-filter"></i>
                 <span id="filterBtnText">Filter</span>
             </button>
         </div>
 
-        <!-- Filter Section -->
-        <div id="filterSection" style="display: none; margin-bottom: 20px;">
-            <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px;">
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <!-- Status Filter Dropdown -->
-                    <div class="filter-dropdown" style="position: relative;">
-                        <button type="button" class="filter-dropdown-btn" data-filter="statuses"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
-                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
-                            <span>Status</span>
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <span class="filter-count" data-filter="statuses" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
-                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
-                            </div>
-                        </button>
-                        <div class="filter-dropdown-menu" data-filter="statuses" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
-                            <!-- Options will be loaded here -->
-                        </div>
-                    </div>
-
-                    <!-- From Date -->
-                    <div style="min-width: 180px;">
-                        <input type="date" id="filterFromDate" placeholder="From Date"
-                            style="width: 100%; padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; cursor: pointer;">
-                    </div>
-
-                    <!-- To Date -->
-                    <div style="min-width: 180px;">
-                        <input type="date" id="filterToDate" placeholder="To Date"
-                            style="width: 100%; padding: 8px 16px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; cursor: pointer;">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Active Filters Display -->
-        <div id="activeFiltersContainer" style="display: none; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                <span style="font-weight: 600; font-size: 14px; color: #374151;">Active Filters:</span>
-                <div id="activeFiltersChips" style="display: flex; gap: 8px; flex-wrap: wrap; flex: 1;">
-                    <!-- Filter chips will be added here -->
-                </div>
-                <button id="clearAllFiltersBtn"
-                    style="background: transparent; border: none; color: #ba0028; cursor: pointer; font-size: 14px; font-weight: 500; text-decoration: underline;">
-                    Clear All Filters
-                </button>
-            </div>
-        </div>
+        @include('forums.filtersection')
 
         <!-- Forums Table Container -->
         <div class="table-container" style="border-radius: 8px; border: 1px solid #dedede; border-bottom: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-top: 0; margin-bottom: 0;">

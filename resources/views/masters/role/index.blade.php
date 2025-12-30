@@ -34,39 +34,32 @@
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div style="padding: 2rem;">
-    <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Roles Management</h1>
-    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+<div class="content-container">
+    <h1 class="main-title">Roles Management</h1>
+    <p class="main-subtitle">
         Manage admin roles and permissions
     </p>
     <!-- Main Card -->
-    <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem;">
+    <div class="table-box-container">
 
         <!-- Search and Actions Bar -->
-        <div
-            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;">
+        <div class="search-filter-container">
             <!-- Search Input -->
-            <div style="position: relative; flex: 1;">
-                <i class="fas fa-search"
-                    style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
                 <input type="text" id="searchInput"
-                    style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 14px;"
                     placeholder="Search by role ID or name...">
             </div>
 
             <!-- Action Buttons -->
-            <div style="display: flex; gap: 0.75rem; align-items: center;">
-                <button type="button" id="filter_btn"
-                    style="background-color: white; color: black; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
-                    onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
-                    onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
+            <div class="filter-btns">
+                <button id="filterToggleBtn">
                     <i class="fas fa-filter"></i>
                     <span id="filterBtnText">Filter</span>
                 </button>
 
                 @can('role.create')
-                <button type="button" onclick="window.location='{{ route('role.create') }}'"
-                    style="padding: 10px 20px; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                <button type="button" class="create-button" onclick="window.location='{{ route('role.create') }}'">
                     <i class="fas fa-plus"></i>
                     Create Role
                 </button>
@@ -75,31 +68,29 @@
         </div>
 
         <!-- Filter Section (Hidden by default) -->
-        <div id="filter_section" style="display: none; margin-bottom: 1.5rem;">
-            <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px;">
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+        <div id="filterSection" style="display: none;">
+            <div class="filter-wrapper">
+                <div class="filter-row">
                     <!-- Status Filter Dropdown -->
-                    <div class="filter-dropdown" style="position: relative;">
-                        <button type="button" class="filter-dropdown-btn" data-filter="status"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
-                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
+                    <div class="filter-dropdown">
+                        <button type="button" class="filter-dropdown-btn" data-filter="status">
                             <span>Status</span>
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <span class="filter-count" data-filter="status" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
-                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="filter-count" data-filter="status">0</span>
+                                <i class="fas fa-chevron-down"></i>
                             </div>
                         </button>
-                        <div class="filter-dropdown-menu" data-filter="status" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
-                            <div class="filter-option" data-value="all" style="padding: 12px 16px; cursor: pointer; font-size: 14px; color: #374151; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                                <input type="checkbox" style="margin: 0; accent-color: #ba0028;">
+                        <div class="filter-dropdown-menu" data-filter="status">
+                            <div class="filter-option" data-value="all">
+                                <input type="checkbox">
                                 <span>All Status</span>
                             </div>
-                            <div class="filter-option" data-value="1" style="padding: 12px 16px; cursor: pointer; font-size: 14px; color: #374151; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; gap: 10px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                                <input type="checkbox" style="margin: 0; accent-color: #ba0028;">
+                            <div class="filter-option" data-value="1">
+                                <input type="checkbox">
                                 <span>Active</span>
                             </div>
-                            <div class="filter-option" data-value="0" style="padding: 12px 16px; cursor: pointer; font-size: 14px; color: #374151; display: flex; align-items: center; gap: 10px;" onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                                <input type="checkbox" style="margin: 0; accent-color: #ba0028;">
+                            <div class="filter-option" data-value="0">
+                                <input type="checkbox">
                                 <span>Inactive</span>
                             </div>
                         </div>
@@ -247,8 +238,8 @@
         let originalPaginationControls = $('#paginationControls').html();
 
         // Filter functionality
-        $('#filter_btn').on('click', function() {
-            const filterSection = $('#filter_section');
+        $('#filterToggleBtn').on('click', function() {
+            const filterSection = $('#filterSection');
             const isVisible = filterSection.is(':visible');
             
             if (isVisible) {

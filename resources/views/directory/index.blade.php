@@ -2,142 +2,66 @@
 @section('title', 'Directory - Alumni Tracking')
 
 @section('content')
-<div style="margin-bottom: 30px;">
-    <h1 style="font-size: 40px; font-weight: 700; color: #333; margin-bottom: 8px;">Alumni Directory</h1>
-    <p style="color: #666; font-size: 14px; margin-bottom: 20px;">
+<div class="content-container">
+    <h1 class="main-title">Alumni Directory</h1>
+    <p class="main-subtitle">
         Manage and view all alumni profiles
     </p>
-    <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div class="table-box-container">
         <!-- Search and Filter -->
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px;">
-            <div style="flex: 1; position: relative;">
-                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-                <input type="text" id="searchInput" placeholder="Search by name or email..."
-                    style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+        <div class="search-filter-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by name or email...">
             </div>
-            <button id="filterToggleBtn"
-                style="background-color: white; color: black; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
-                onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
-                onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
+            <button id="filterToggleBtn">
                 <i class="fas fa-filter"></i>
                 <span id="filterBtnText">Filter</span>
             </button>
             <!-- Export Dropdown -->
             <div style="position: relative;">
                 <button id="exportBtn"
-                    style="background-color: white; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500; position: relative;"
-                    onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
-                    onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';"
                     onclick="toggleExportDropdown()">
                     <i class="fas fa-download"></i>
                     <span>Export</span>
                 </button>
                 
                 <!-- Export Dropdown Menu -->
-                <div id="exportDropdown" style="display: none; position: absolute; top: 100%; right: 0; margin-top: 8px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 200px; z-index: 1000;">
-                    <div onclick="exportDirectory('csv')" 
-                        style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f3f4f6; transition: background 0.2s;"
-                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                        <i class="fas fa-file-csv" style="color: #10b981; font-size: 16px;"></i>
-                        <span style="font-size: 12px; color: #374151; font-weight: 500;">Export as CSV</span>
+                <div id="exportDropdown">
+                    <div onclick="exportDirectory('csv')" class="export-option">
+                        <i class="fas fa-file-csv"></i>
+                        <span>Export as CSV</span>
                     </div>
-                    <div onclick="exportDirectory('excel')" 
-                        style="padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: background 0.2s;"
-                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
-                        <i class="fas fa-file-excel" style="color: #059669; font-size: 16px;"></i>
-                        <span style="font-size: 12px; color: #374151; font-weight: 500;">Export as Excel</span>
+                    <div onclick="exportDirectory('excel')" class="export-option">
+                        <i class="fas fa-file-excel"></i>
+                        <span>Export as Excel</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Filter Section -->
-        <div id="filterSection" style="display: none; margin-bottom: 20px;">
-            <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px;">
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <!-- Year Filter Dropdown -->
-                    <div class="filter-dropdown" style="position: relative;">
-                        <button type="button" class="filter-dropdown-btn" data-filter="years"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
-                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
-                            <span>Year of Completion</span>
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <span class="filter-count" data-filter="years" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
-                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
-                            </div>
-                        </button>
-                        <div class="filter-dropdown-menu" data-filter="years" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
-                            <!-- Options will be loaded here -->
-                        </div>
-                    </div>
-
-                    <!-- City Filter Dropdown -->
-                    <div class="filter-dropdown" style="position: relative;">
-                        <button type="button" class="filter-dropdown-btn" data-filter="cities"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
-                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
-                            <span>City</span>
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <span class="filter-count" data-filter="cities" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
-                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
-                            </div>
-                        </button>
-                        <div class="filter-dropdown-menu" data-filter="cities" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
-                            <!-- Options will be loaded here -->
-                        </div>
-                    </div>
-
-                    <!-- Occupation Filter Dropdown -->
-                    <div class="filter-dropdown" style="position: relative;">
-                        <button type="button" class="filter-dropdown-btn" data-filter="occupations"
-                            style="background: white; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; min-width: 180px; justify-content: space-between;"
-                            onmouseover="this.style.background='#ba0028'; this.style.color='#fff';" onmouseout="this.style.background='white'; this.style.color='#000000ff';">
-                            <span>Occupation</span>
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                                <span class="filter-count" data-filter="occupations" style="background: #ba0028; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 600; align-items: center; justify-content: center; display: none;">0</span>
-                                <i class="fas fa-chevron-down" style="font-size: 12px;"></i>
-                            </div>
-                        </button>
-                        <div class="filter-dropdown-menu" data-filter="occupations" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 4px; background: white; border: 1px solid #d1d5db; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 1000; min-width: 200px; max-height: 300px; overflow-y: auto;">
-                            <!-- Options will be loaded here -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @include('directory.filtersection')
 
         <!-- Active Filters Display (Outside Filter Section) -->
-        <div id="activeFiltersContainer" style="display: none; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                <span style="font-weight: 600; font-size: 14px; color: #374151;">Active Filters:</span>
-                <div id="activeFiltersChips" style="display: flex; gap: 8px; flex-wrap: wrap; flex: 1;">
-                    <!-- Filter chips will be added here -->
-                </div>
-                <button id="clearAllFiltersBtn"
-                    style="background: transparent; border: none; color: #ba0028; cursor: pointer; font-size: 14px; font-weight: 500; text-decoration: underline;">
-                    Clear All Filters
-                </button>
-            </div>
-        </div>
 
         <!-- Alumni Table Container -->
-        <div class="table-container" style="border-radius: 8px; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-top: 0; margin-bottom: 0;">
+        <div class="table-container">
             <!-- Table Wrapper (Scrollable) -->
             <div class="table-responsive" style="overflow-x: auto;">
-                <table id="directoryTable" class="display directory-table" style="width: 100%; min-width: 1200px; border-collapse: collapse; background-color: white; margin: 0;">
+                <table id="dataTable">
                     <thead>
-                        <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 12px;">
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Created On</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Profile Picture</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Name</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Year</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">City & State</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Email</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Contact</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Occupation</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Status</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Connections</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Actions</th>
+                        <tr id="tableHeaderRow">
+                            <th class="table-header">Created On</th>
+                            <th class="table-header">Profile Picture</th>
+                            <th class="table-header">Name</th>
+                            <th class="table-header">Year</th>
+                            <th class="table-header">City & State</th>
+                            <th class="table-header">Email</th>
+                            <th class="table-header">Contact</th>
+                            <th class="table-header">Occupation</th>
+                            <th class="table-header">Status</th>
+                            <th class="table-header">Connections</th>
+                            <th class="table-header">Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -157,13 +81,6 @@
     </div>
 </div>
 <style>
-    /* Add padding to tbody cells */
-    #directoryTable tbody td {
-        padding: 12px 15px;
-        /* Adjust as needed */
-        vertical-align: middle;
-        box-sizing: border-box;
-    }
 
     table.dataTable th,
     table.dataTable td {
@@ -182,17 +99,9 @@
         /* Ensure proper width calculation */
     }
 
-    #directoryTable tbody td {
-        border-bottom: 1px solid #f0f0f0;
-        /* soft line between rows */
-    }
 
-    #directoryTable {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
 
-    #directoryTable thead th {
+    #dataTable thead th {
         border-bottom: 2px solid #e0e0e0;
         /* slightly thicker under header */
         position: relative;
@@ -201,12 +110,12 @@
     }
 
     /* Ensure only one header row */
-    #directoryTable thead {
+    #dataTable thead {
         display: table-header-group;
     }
 
     /* Hide any duplicate headers that might be created by DataTables */
-    #directoryTable thead:not(:first-child) {
+    #dataTable thead:not(:first-child) {
         display: none !important;
     }
 
@@ -216,7 +125,7 @@
     }
 
     /* Ensure the original header stays visible */
-    #directoryTable > thead {
+    #dataTable > thead {
         display: table-header-group !important;
     }
 
@@ -225,12 +134,6 @@
         display: none !important;
     }
 
-    /* Table container */
-    .table-container {
-        position: relative;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
 
     /* Table responsive wrapper */
     .table-responsive {
@@ -386,11 +289,11 @@
         loadFilterOptions();
 
         // Destroy existing DataTable if it exists to prevent duplicates
-        if ($.fn.DataTable.isDataTable('#directoryTable')) {
-            $('#directoryTable').DataTable().destroy();
+        if ($.fn.DataTable.isDataTable('#dataTable')) {
+            $('#dataTable').DataTable().destroy();
         }
 
-        const table = $('#directoryTable').DataTable({
+        const table = $('#dataTable').DataTable({
             processing: true,
             serverSide: true,
             destroy: true,
@@ -598,7 +501,7 @@
         let years = selectedFilters.years.join(',');
         let cities = selectedFilters.cities.join(',');
         let occupations = selectedFilters.occupations.join(',');
-        let search = $('#directoryTable').DataTable().search();
+        let search = $('#dataTable').DataTable().search();
 
         let url = "{{ route('admin.directory.export') }}" 
                     + "?years=" + years 
@@ -755,7 +658,7 @@
                 },
                 success: function(response) {
                     showToast(response.message);
-                    $('#directoryTable').DataTable().ajax.reload( null, false);
+                    $('#dataTable').DataTable().ajax.reload( null, false);
                 },
                 error: function(xhr) {
                     const res = xhr.responseJSON;
@@ -808,7 +711,7 @@
                 confirmBlockBtn.disabled = false;
                 showToast('User Blocked Successfully.' ||response.message);
                 closeBlockModal();
-                $('#directoryTable').DataTable().ajax.reload(null, false);
+                $('#dataTable').DataTable().ajax.reload(null, false);
             },
             error: function(xhr) {
                 confirmBlockBtn.innerHTML = originalText;

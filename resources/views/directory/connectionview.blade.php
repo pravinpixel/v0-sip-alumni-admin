@@ -172,46 +172,15 @@
                 <input type="text" id="searchInput" placeholder="Search by name or location..."
                     style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
             </div>
-            <button id="filterToggleBtn"
-                style="background-color: #ba0028; color: white; border: none; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
-                onmouseover="this.style.background='#9a0020'" onmouseout="this.style.background='#ba0028'">
+            <button id="filterToggleBtn">
                 <i class="fas fa-filter"></i>
                 <span id="filterBtnText">Filter</span>
             </button>
         </div>
 
-        <!-- Filter Section - Compact Dropdowns -->
-        <div id="filterSection" class="border border-gray-300 rounded mb-6" style="display: none; padding: 20px; background-color: #f9fafb;">
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <div class="multi-select-container" data-filter="batch" style="min-width: 180px;">
-                    <div class="multi-select-display" style="padding: 8px 12px; min-height: 38px;">
-                        <span class="placeholder" style="font-size: 13px;">Batch</span>
-                        <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 10px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-                <div class="multi-select-container" data-filter="location" style="min-width: 180px;">
-                    <div class="multi-select-display" style="padding: 8px 12px; min-height: 38px;">
-                        <span class="placeholder" style="font-size: 13px;">Location</span>
-                        <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 10px;"></i>
-                    </div>
-                    <div class="multi-select-dropdown"></div>
-                </div>
-            </div>
-        </div>
+        @include('directory.connectionfilter')
 
-        <!-- Selected Filters Display -->
-        <div id="selectedFiltersDisplay" style="display: none; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                <span style="font-weight: 600; font-size: 14px; color: #6b7280;">Active Filters:</span>
-                <div class="selected-tags" style="display: flex; flex-wrap: wrap; gap: 8px; flex: 1;"></div>
-                <button id="clearAllFiltersBtn" onclick="clearAllFilters()" 
-                    style="background: transparent; border: none; color: #ba0028; cursor: pointer; font-size: 14px; font-weight: 500; text-decoration: underline; white-space: nowrap;"
-                    onmouseover="this.style.color='#9a0020'" onmouseout="this.style.color='#ba0028'">
-                    Clear All Filters
-                </button>
-            </div>
-        </div>
+
 
         <!-- Alumni Table -->
         <table id="ConnectionListTable" class="display" style="width: 100%;border-collapse: collapse;background-color: white;box-shadow: 0 2px 8px rgba(0,0,0,0.08);border-radius: 6px;border: 1px solid #e0e0e0;border-radius: 8px;">

@@ -33,42 +33,32 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div style="padding: 2rem;">
-        <!-- Header Section -->
-        <div style="margin-bottom: 2rem;">
-            <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0;">User Management</h1>
-            <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">Manage admin users and their access
+    <div class="content-container">
+            <h1 class="main-title">User Management</h1>
+            <p class="main-subtitle">Manage admin users and their access
                 permissions</p>
-        </div>
 
         <!-- Main Card -->
-        <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem;">
+        <div class="table-box-container">
 
             <!-- Search and Actions Bar -->
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;">
+            <div class="search-filter-container">
                 <!-- Search Input -->
-                <div style="position: relative; flex: 1;">
-                    <i class="fas fa-search"
-                        style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
                     <input type="text" id="searchInput"
-                        style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 14px;"
                         placeholder="Search by user ID, name, or email...">
                 </div>
 
                 <!-- Action Buttons -->
-                <div style="display: flex; gap: 0.75rem; align-items: center;">
-                    <button type="button" id="filter_panel"
-                        style="background-color: white; color: black; border: 1px solid #ccc; border-radius: 6px; padding: 10px 20px; cursor: pointer; font-size: 14px; display: flex; align-items: center; gap: 8px; font-weight: 500;"
-                        onmouseover="this.style.backgroundColor='#ba0028'; this.style.color='#fff';"
-                        onmouseout="this.style.backgroundColor='white'; this.style.color='#000000ff';">
+                <div class="filter-btns">
+                    <button id="filterToggleBtn">
                         <i class="fas fa-filter"></i>
                         <span id="filterBtnText">Filter</span>
                     </button>
 
                     @can('user.create')
-                        <button type="button" onclick="window.location='{{ route('user.create') }}'"
-                            style="padding: 10px 20px; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                        <button type="button" class="create-button" onclick="window.location='{{ route('user.create') }}'">
                             <i class="fas fa-plus"></i>
                             Create User
                         </button>
@@ -222,8 +212,8 @@
             let originalPaginationControls = $('#paginationControls').html();
 
             // Filter functionality
-            $('#filter_panel').on('click', function() {
-                const filterSection = $('#filter_section');
+            $('#filterToggleBtn').on('click', function() {
+                const filterSection = $('#filterSection');
                 const isVisible = filterSection.is(':visible');
                 
                 if (isVisible) {
