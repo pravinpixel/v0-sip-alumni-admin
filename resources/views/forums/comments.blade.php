@@ -76,10 +76,9 @@
     <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2 style="font-size: 20px; font-weight: 700; color: #333; margin: 0;">Comments (<span id="totalComments">0</span>)</h2>
-            <div style="position: relative; flex: 1; max-width: 400px; margin-left: 20px;">
-                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-                <input type="text" id="searchComments" placeholder="Search comments..."
-                    style="width: 100%; padding: 8px 15px 8px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+            <div class="comment-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search comments...">
             </div>
         </div>
 
@@ -97,6 +96,14 @@
             </thead>
             <tbody></tbody>
         </table>
+        <div class="pagination-bottom-area">
+                <div class="dt-info-custom">
+                    <!-- Info will be populated here -->
+                </div>
+                <div class="dt-pagination-custom">
+                    <!-- Pagination will be populated here -->
+                </div>
+            </div>
     </div>
 </div>
 
@@ -178,7 +185,7 @@
             pageLength: 10,
             lengthChange: false,
             scrollX: true,
-            dom: 't<"row mt-10"<"col-6 dt-info-custom"><"col-6 dt-pagination-custom text-end">>',
+            dom: 't',
             language: {
                 info: "Showing _START_ to _END_ of _TOTAL_ comments"
             }
@@ -188,21 +195,24 @@
             let info = table.page.info();
 
             $(".dt-info-custom").html(
-                `Showing ${info.start + 1} to ${info.end} comments of ${info.recordsTotal}`
+                `Showing ${info.start + 1 > info.recordsTotal ? 0 : info.start + 1} to ${info.end} comments of ${info.recordsTotal}`
             );
+            let totalPages = info.pages > 0 ? info.pages : 1;
 
             let paginationHtml = `
-            <button class="btn btn-light btn-sm me-2" id="prevPage" ${info.page === 0 ? "disabled" : ""}>
-                ‹ Previous
-            </button>
+                <button id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
 
-            <span class="mx-2" style="font-weight:500;">
-                Page ${info.page + 1} of ${info.pages}
-            </span>
+                <span>
+                    Page ${info.page + 1} of ${totalPages}
+                </span>
 
-            <button class="btn btn-light btn-sm ms-2" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>
-                Next ›
-            </button>
+                <button id="nextPage" ${(info.page + 1 === totalPages) ? "disabled" : ""}>
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             `;
 
             $(".dt-pagination-custom").html(paginationHtml);
@@ -216,7 +226,7 @@
         });
 
         // Search
-        $('#searchComments').on('keyup', function() {
+        $('#searchInput').on('keyup', function() {
             table.search(this.value).draw();
         });
     });

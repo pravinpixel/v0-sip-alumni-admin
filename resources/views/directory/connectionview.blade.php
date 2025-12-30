@@ -195,6 +195,14 @@
             </thead>
             <tbody></tbody>
         </table>
+        <div class="pagination-bottom-area">
+                <div class="dt-info-custom">
+                    <!-- Info will be populated here -->
+                </div>
+                <div class="dt-pagination-custom">
+                    <!-- Pagination will be populated here -->
+                </div>
+            </div>
     </div>
 </div>
 
@@ -302,7 +310,7 @@
             searching: false,
             ordering: false,
             scrollX: true,
-            dom: 't<"row mt-10"<"col-6 dt-info-custom"><"col-6 dt-pagination-custom text-end">>',
+            dom: 't',
             language: {
                 info: "Showing _START_ to _END_ of _TOTAL_ connections"
             }
@@ -311,12 +319,25 @@
         // Custom Pagination
         table.on('draw', function() {
             let info = table.page.info();
-            $(".dt-info-custom").html(`Showing ${info.start + 1} to ${info.end} connections`);
-            
+            $(".dt-info-custom").html(
+                `Showing ${info.start + 1 > info.recordsTotal ? 0 : info.start + 1} to ${info.end} connections`
+            );
+            let totalPages = info.pages > 0 ? info.pages : 1;
+
             let paginationHtml = `
-                <button class="btn btn-light btn-sm me-2" id="prevPage" ${info.page === 0 ? "disabled" : ""}>‹ Previous</button>
-                <span class="mx-2" style="font-weight:500;">Page ${info.page + 1} of ${info.pages}</span>
-                <button class="btn btn-light btn-sm ms-2" id="nextPage" ${(info.page + 1 === info.pages) ? "disabled" : ""}>Next ›</button>
+                <button id="prevPage" ${info.page === 0 ? "disabled" : ""}>
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+
+                <span>
+                    Page ${info.page + 1} of ${totalPages}
+                </span>
+
+                <button id="nextPage" ${(info.page + 1 === totalPages) ? "disabled" : ""}>
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             `;
             $(".dt-pagination-custom").html(paginationHtml);
             

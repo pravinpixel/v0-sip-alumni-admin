@@ -44,11 +44,11 @@
         </div>
         
         <!-- Pagination Area (Bottom of Table Design) -->
-        <div class="pagination-bottom-area" style="background: #ffffff; border-radius: 0 0 8px 8px; padding: 16px 30px; display: flex; justify-content: space-between; align-items: center; margin-top: 0;">
-            <div class="dt-info-custom" style="color: #6b7280; font-size: 14px; font-weight: 400;">
+        <div class="pagination-bottom-area">
+            <div class="dt-info-custom">
                 <!-- Info will be populated here -->
             </div>
-            <div class="dt-pagination-custom" style="display: flex; align-items: center; gap: 8px;">
+            <div class="dt-pagination-custom">
                 <!-- Pagination will be populated here -->
             </div>
         </div>
@@ -132,12 +132,6 @@
         color: white !important;
     }
 
-    /* Bottom pagination area (matches original table design) */
-    .pagination-bottom-area {
-        position: relative;
-        z-index: 10;
-        background: #ffffff !important;
-    }
 
     /* Ensure DataTables doesn't interfere with our fixed pagination */
     .dataTables_wrapper .dataTables_info,
@@ -146,40 +140,6 @@
     }
 
     /* Custom pagination button styles (original design) */
-    .dt-pagination-custom button {
-        background: #ffffff;
-        border: 1px solid #d1d5db;
-        color: #374151;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .dt-pagination-custom button:hover:not(:disabled) {
-        background: #f9fafb;
-        border-color: #9ca3af;
-        color: #111827;
-    }
-
-    .dt-pagination-custom button:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        background: #f9fafb;
-        color: #9ca3af;
-    }
-
-    .dt-pagination-custom span {
-        color: #6b7280;
-        font-size: 14px;
-        font-weight: 500;
-        margin: 0 12px;
-    }
 </style>
 
 <!-- Post Details Modal -->
@@ -405,7 +365,7 @@
 
             let paginationHtml = `
                 <button id="prevPage" ${info.page === 0 ? "disabled" : ""}>
-                    <i class="fas fa-chevron-left" style="font-size: 12px;"></i>
+                    <i class="fas fa-chevron-left"></i>
                     Previous
                 </button>
 
@@ -415,7 +375,7 @@
 
                 <button id="nextPage" ${(info.page + 1 === totalPages) ? "disabled" : ""}>
                     Next
-                    <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
+                    <i class="fas fa-chevron-right"></i>
                 </button>
             `;
 

@@ -164,31 +164,31 @@
             <!-- Pagination -->
             <div style="margin-top: 1.5rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div id="paginationInfo" style="color: #6b7280; font-size: 0.875rem;">
+                    <div id="paginationInfo">
                         Showing {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() ?? 0 }} of {{ $datas->total() }} users
                     </div>
-                    <div id="paginationControls" style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div id="paginationControls">
                         @if ($datas->onFirstPage())
-                            <button disabled style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: #f9fafb; color: #9ca3af; border-radius: 0.375rem; font-size: 0.875rem; cursor: not-allowed;">
-                                ‹ Previous
+                            <button disabled >
+                                <i class="fas fa-chevron-left"></i> Previous
                             </button>
                         @else
-                            <button onclick="goToPage({{ $datas->currentPage() - 1 }})" style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: white; color: #374151; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
-                                ‹ Previous
+                            <button onclick="goToPage({{ $datas->currentPage() - 1 }})">
+                                <i class="fas fa-chevron-left"></i> Previous
                             </button>
                         @endif
                         
-                        <span style="margin: 0 1rem; font-weight: 500; color: #374151;">
+                        <span>
                             Page {{ $datas->currentPage() }} of {{ $datas->lastPage() }}
                         </span>
                         
                         @if ($datas->hasMorePages())
-                            <button onclick="goToPage({{ $datas->currentPage() + 1 }})" style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: white; color: #374151; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
-                                Next ›
+                            <button onclick="goToPage({{ $datas->currentPage() + 1 }})">
+                                Next <i class="fas fa-chevron-right"></i>
                             </button>
                         @else
-                            <button disabled style="padding: 0.5rem 1rem; border: 1px solid #e5e7eb; background: #f9fafb; color: #9ca3af; border-radius: 0.375rem; font-size: 0.875rem; cursor: not-allowed;">
-                                Next ›
+                            <button disabled >
+                                Next <i class="fas fa-chevron-right"></i>
                             </button>
                         @endif
                     </div>
