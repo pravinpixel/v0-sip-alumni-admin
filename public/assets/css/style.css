@@ -811,9 +811,12 @@ body {
 }
 
 .dt-pagination-custom button:hover:not(:disabled) {
-  background: #f9fafb;
+  background: #ba0028;
   border-color: #9ca3af;
-  color: #111827;
+  color: #ffffff;
+}
+.dt-pagination-custom button:hover:not(:disabled) i {
+  color: #ffffff;
 }
 
 .dt-pagination-custom button:disabled {
@@ -855,7 +858,12 @@ body {
 }
 
 #paginationControls button:hover:not(:disabled) {
-  background: #f3f4f6;
+  background: #ba0028;
+  border-color: #9ca3af;
+  color: #ffffff;
+}
+#paginationControls button:hover:not(:disabled) i {
+  color: #ffffff;
 }
 
 #paginationControls button:disabled {
