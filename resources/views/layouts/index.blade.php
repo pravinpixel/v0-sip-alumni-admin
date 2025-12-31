@@ -23,16 +23,6 @@
     @show
     @stack('styles')
 </head>
-<style>
-
-.modal-content {
-    padding: 20px;
-}
-
-.modal-header{
-    padding: 0 !important;
-}
-</style>
 
 
 <body id="kt_app_body" data-kt-app-layout="light-sidebar" data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true" data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true" data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default">
@@ -64,18 +54,18 @@
 
 <div class="modal fade" id="globalConfirmModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
+    <div class="modal-content confirm-modal">
 
       <div class="modal-header border-0">
-        <h5 class="modal-title" style="font-size: 24px;">Confirmation</h5>
+        <h5 class="modal-title">Confirmation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
-      <div class="modal-body" style="padding-left: 0; font-size: 14px;">
+      <div class="modal-body">
         <p id="globalConfirmMessage">Are you sure?</p>
       </div>
 
-      <div class="modal-footer border-0" style="padding: 0;">
+      <div class="modal-footer border-0">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
         <button type="button" class="btn btn-danger" id="globalConfirmYes">Yes</button>
       </div>
@@ -83,6 +73,7 @@
     </div>
   </div>
 </div>
+
 
 <script>
     // GLOBAL CONFIRM FUNCTION — usable in ALL PAGES

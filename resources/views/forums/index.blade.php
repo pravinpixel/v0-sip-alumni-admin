@@ -23,19 +23,19 @@
         @include('forums.filtersection')
 
         <!-- Forums Table Container -->
-        <div class="table-container" style="border-radius: 8px; border: 1px solid #dedede; border-bottom: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-top: 0; margin-bottom: 0;">
+        <div class="table-container">
             <!-- Table Wrapper (Scrollable) -->
             <div class="table-responsive" style="overflow-x: auto;">
-                <table id="forumsTable" class="display forums-table" style="width: 100%; min-width: 1000px; border-collapse: collapse; background-color: white; margin: 0;">
+                <table id="dataTable">
                     <thead>
-                        <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px;">
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Created On</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Alumni</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Contact</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">View Post</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Action Taken On</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Status</th>
-                            <th style="padding: 15px; text-align: left; white-space: nowrap;">Actions</th>
+                        <tr id="tableHeaderRow">
+                            <th class="table-header">Created On</th>
+                            <th class="table-header">Alumni</th>
+                            <th class="table-header">Contact</th>
+                            <th class="table-header">View Post</th>
+                            <th class="table-header">Action Taken On</th>
+                            <th class="table-header">Status</th>
+                            <th class="table-header">Actions</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -55,35 +55,6 @@
     </div>
 </div>
 <style>
-    /* Add padding to tbody cells */
-    #forumsTable tbody td {
-        padding: 12px 15px;
-        /* Adjust as needed */
-        vertical-align: middle;
-        box-sizing: border-box;
-        border-bottom: 1px solid #dedede;
-    }
-
-    /* Prevent duplicate headers */
-    #forumsTable {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    #forumsTable thead th {
-        position: relative;
-        border-bottom: 2px solid #dedede;
-    }
-
-    /* Ensure only one header row */
-    #forumsTable thead {
-        display: table-header-group;
-    }
-
-    /* Hide any duplicate headers that might be created */
-    #forumsTable thead:not(:first-child) {
-        display: none !important;
-    }
 
     /* Prevent DataTables from creating additional header elements */
     .dataTables_wrapper .dataTables_scroll .dataTables_scrollHead {
@@ -91,7 +62,7 @@
     }
 
     /* Ensure the original header stays visible */
-    #forumsTable > thead {
+    #dataTable > thead {
         display: table-header-group !important;
     }
 
@@ -138,57 +109,57 @@
     .dataTables_wrapper .dataTables_paginate {
         display: none !important;
     }
-
-    /* Custom pagination button styles (original design) */
 </style>
 
 <!-- Post Details Modal -->
-<div id="postDetailsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
-    <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: white; border-radius: 12px; max-width: 400px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+<div id="postDetailsModal" class="modal-overlay">
+    <div class="modal-wrapper">
+        <div class="modal-card">
+
             <!-- Header -->
-            <div style="padding: 24px 32px; border-bottom: 1px solid #e5e7eb; position: relative; border: 0">
-                <button onclick="closePostModal()" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; background: transparent; border: none; color: #9ca3af; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px;"
-                    onmouseover="this.style.background='#f3f4f6'; this.style.color='#111827'" onmouseout="this.style.background='transparent'; this.style.color='#9ca3af'">
-                    ×
-                </button>
-                <h2 style="font-size: 28px; font-weight: 700; color: #ba0028; margin: 0;">Post Details</h2>
+            <div class="modal-header">
+                <button class="modal-close-btn" onclick="closePostModal()">×</button>
+                <h2 class="modal-title">Post Details</h2>
             </div>
 
             <!-- Body -->
-            <div style="padding: 20px;">
+            <div class="modal-body">
+
                 <!-- Post Title -->
-                <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px;">POST TITTLE</label>
-                    <div id="postTitle" style="background: #f9fafb; padding: 12px; border-radius: 8px; font-size: 18px; font-weight: 600; color: #111827; border: 1px solid #d1d5db;"></div>
+                <div class="modal-section">
+                    <label class="modal-label">POST TITLE</label>
+                    <div id="postTitle" class="modal-content-box"></div>
                 </div>
+
                 <hr>
 
                 <!-- Post Description -->
-                <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px;">POST DESCRIPTION</label>
-                    <div id="postDescription" style="background: #f9fafb; padding: 12px; border-radius: 8px; font-size: 15px; color: #374151; line-height: 1.6; border: 1px solid #d1d5db;"></div>
+                <div class="modal-section">
+                    <label class="modal-label">POST DESCRIPTION</label>
+                    <div id="postDescription" class="modal-content-box description-box"></div>
                 </div>
+
                 <hr>
+
                 <!-- Labels -->
-                <div style="margin-bottom: 24px;">
-                    <label style="display: block; font-weight: 700; font-size: 14px; color: #6b7280; margin-bottom: 8px;">LABELS</label>
-                    <div id="postLabels" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <!-- Labels will be added here -->
-                    </div>
+                <div class="modal-section">
+                    <label class="modal-label">LABELS</label>
+                    <div id="postLabels" class="modal-labels"></div>
                 </div>
+
                 <hr>
 
                 <!-- View Comments Button -->
-                <button id="viewCommentsBtn" onclick="viewComments()" style="width: 100%; background: #ba0028; color: white; border: none; border-radius: 4px; padding: 10px; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s;"
-                    onmouseover="this.style.background='#9a0020'" onmouseout="this.style.background='#ba0028'">
+                <button id="viewCommentsBtn" class="view-comments-btn" onclick="viewComments()">
                     <i class="fas fa-comments"></i>
                     <span id="commentsText">View Comments (0)</span>
                 </button>
+
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Reject Post Modal -->
 <div id="rejectPostModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
@@ -230,43 +201,52 @@
 </div>
 
 <!-- Remove Post Modal -->
-<div id="removePostModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 10000; overflow-y: auto;">
-    <div style="min-height: 100%; display: flex; align-items: center; justify-content: center; padding: 20px;">
-        <div style="background: white; border-radius: 12px; max-width: 500px; width: 100%; position: relative; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
-            <!-- Header -->
-            
+<div id="removePostModal" class="modal-overlay">
+    <div class="modal-wrapper">
+        <div class="modal-card modal-card-lg">
+
             <!-- Body -->
-            <div style="padding: 32px;">
-                    <!-- Description -->
-                    <div style="margin-bottom: 20px;">
-                    <h2 style="font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 10px;">Remove Post</h2>
-                    <p style="font-size: 12px; color: #6b7280; margin: 0; line-height: 1.6;">
-                        Removing this post will make it no longer available to any of the alumni. Please provide a reason for removal.
+            <div class="modal-body-lg">
+
+                <!-- Description -->
+                <div class="modal-desc">
+                    <h2 class="modal-heading">Remove Post</h2>
+                    <p class="modal-subtext">
+                        Removing this post will make it no longer available to any of the alumni.
+                        Please provide a reason for removal.
                     </p>
                 </div>
 
                 <!-- Removal Remarks -->
-                <div style="margin-bottom: 24px;">
-                    <textarea id="removalRemarks" rows="3" placeholder="Enter remarks for removing this post..."
-                        style="width: 100%; padding: 10px; border: 2px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; resize: vertical; outline: none; transition: border-color 0.2s;"
-                        onfocus="this.style.borderColor='#dc2626'" onblur="this.style.borderColor='#d1d5db'"></textarea>
+                <div class="modal-field">
+                    <textarea
+                        id="removalRemarks"
+                        rows="3"
+                        class="modal-textarea"
+                        placeholder="Enter remarks for removing this post...">
+                    </textarea>
                 </div>
 
                 <!-- Action Buttons -->
-                <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                    <button onclick="closeRemoveModal()" style="background: white; color: #513737ff; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;"
-                        onmouseover="this.style.background='#f9fafb'" onmouseout="this.style.background='white'">
+                <div class="modal-actions">
+                    <button class="btn-cancel" onclick="closeRemoveModal()">
                         Cancel
                     </button>
-                    <button id="removePostBtn" onclick="confirmRemovePost()" disabled
-                        style="background: #f12020ff; color: white; border: none; border-radius: 8px; padding: 10px 24px; font-size: 14px; font-weight: 600; cursor: not-allowed; transition: background 0.2s; opacity: 0.6;">
+
+                    <button
+                        id="removePostBtn"
+                        class="btn-danger"
+                        onclick="confirmRemovePost()"
+                        disabled>
                         Remove Post
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
+
 
 @push('scripts')
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
@@ -282,11 +262,11 @@
         loadFilterOptions();
 
         // Destroy existing DataTable if it exists to prevent duplicates
-        if ($.fn.DataTable.isDataTable('#forumsTable')) {
-            $('#forumsTable').DataTable().destroy();
+        if ($.fn.DataTable.isDataTable('#dataTable')) {
+            $('#dataTable').DataTable().destroy();
         }
 
-        const table = $('#forumsTable').DataTable({
+        const table = $('#dataTable').DataTable({
             processing: true,
             serverSide: true,
             destroy: true,
@@ -701,7 +681,7 @@
             },
             success: function(response) {
                 showToast(response.message);
-                $('#forumsTable').DataTable().ajax.reload(null, false);
+                $('#dataTable').DataTable().ajax.reload(null, false);
             },
             error: function(xhr) {
                 showToast('Error updating post status', 'error');
