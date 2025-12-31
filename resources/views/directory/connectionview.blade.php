@@ -128,49 +128,30 @@
         margin-left: 6px;
     }
 
-    #ConnectionListTable tbody td {
-        padding: 12px 15px;
-        vertical-align: middle;
-        box-sizing: border-box;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    #ConnectionListTable thead th {
-        border-bottom: 2px solid #e0e0e0;
-    }
-
-    table.dataTable th,
-    table.dataTable td {
-        white-space: nowrap;
-    }
-
-    .dataTables_wrapper {
-        margin-top: 25px !important;
+     table.dataTable {
+        margin: 0 !important;
     }
 </style>
 
-<div style="margin-bottom: 30px;">
-    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-        <button onclick="history.back()" 
-            style="background-color: #f3f4f6; color: #374151; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; transition: all 0.2s;"
-            onmouseover="this.style.background='#e5e7eb'" onmouseout="this.style.background='#f3f4f6'">
-            ←
+<div class="content-container mt-4">
+    <div class="connection-header">
+        <button onclick="history.back()" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
         </button>
         <div>
-            <h1 style="font-size: 28px; font-weight: 700; color: #111827; margin: 0 0 4px 0;">Alumni 1 connections with the Alumni Peoples</h1>
-            <p style="color: #6b7280; font-size: 14px; margin: 0;">
+            <h1 class="main-title">Alumni 1 connections with the Alumni Peoples</h1>
+            <p class="main-subtitle">
                 View and manage alumni connections
             </p>
         </div>
     </div>
 
-    <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div class="table-box-container">
         <!-- Search and Filter -->
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 15px;">
-            <div style="flex: 1; position: relative;">
-                <i class="fas fa-search" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af;"></i>
-                <input type="text" id="searchInput" placeholder="Search by name or location..."
-                    style="width: 100%; padding: 10px 15px 10px 40px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+        <div class="search-filter-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search by name or location...">
             </div>
             <button id="filterToggleBtn">
                 <i class="fas fa-filter"></i>
@@ -183,18 +164,22 @@
 
 
         <!-- Alumni Table -->
-        <table id="ConnectionListTable" class="display" style="width: 100%;border-collapse: collapse;background-color: white;box-shadow: 0 2px 8px rgba(0,0,0,0.08);border-radius: 6px;border: 1px solid #e0e0e0;border-radius: 8px;">
-            <thead>
-                <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 12px;">
-                    <th style="padding: 15px; text-align: left;">Alumni Name</th>
-                    <th style="padding: 15px; text-align: left;">Batch</th>
-                    <th style="padding: 15px; text-align: left;">Location</th>
-                    <th style="padding: 15px; text-align: left;">View profile</th>
-                    <th style="padding: 15px; text-align: left;">Status</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-container">
+            <div class="table-responsive" style="overflow-x: auto;">
+                <table id="dataTable">
+                    <thead>
+                        <tr id="tableHeaderRow">
+                            <th class="table-header">Alumni Name</th>
+                            <th class="table-header">Batch</th>
+                            <th class="table-header">Location</th>
+                            <th class="table-header">View profile</th>
+                            <th class="table-header">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
         <div class="pagination-bottom-area">
                 <div class="dt-info-custom">
                     <!-- Info will be populated here -->
@@ -286,7 +271,7 @@
         initializeMultiSelect();
 
         // Initialize DataTable
-        table = $('#ConnectionListTable').DataTable({
+        table = $('#dataTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {

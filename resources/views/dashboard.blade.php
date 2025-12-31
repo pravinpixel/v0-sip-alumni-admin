@@ -48,8 +48,8 @@
         const html = `
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
                 <div>
-                    <h1 style="font-size: 1.875rem; font-weight: 700; color: #111827; margin: 0;">Admin Dashboard</h1>
-                    <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">Directory analytics and insights</p>
+                    <h1 class="main-title">Admin Dashboard</h1>
+                    <p class="main-subtitle">Directory analytics and insights</p>
                 </div>
             </div>
 

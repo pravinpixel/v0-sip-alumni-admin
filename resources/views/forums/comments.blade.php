@@ -2,78 +2,81 @@
 @section('title', 'Post Comments - Alumni Tracking')
 
 @section('content')
-<div style="margin-bottom: 30px;">
+<div class="content-container mt-4">
     <!-- Back Button and Header -->
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
-        <button onclick="window.history.back()" style="background: transparent; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: background 0.2s;"
-            onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='transparent'">
-            <i class="fas fa-arrow-left" style="font-size: 20px; color: #374151;"></i>
+    <div class="connection-header">
+        <button onclick="window.history.back()" class="back-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left h-4 w-4"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
         </button>
         <div>
-            <h1 id="postTitleHeader" style="font-size: 28px; font-weight: 700; color: #333; margin: 0;">Discussion Topic connections with the Alumni Peoples</h1>
-            <p style="color: #666; font-size: 14px; margin: 4px 0 0 0;">
+            <h1 id="postTitleHeader" class="main-title">Discussion Topic connections with the Alumni Peoples</h1>
+            <p class="main-subtitle">
                 View and manage all comments on this post
             </p>
         </div>
     </div>
 
     <!-- Post Details Card -->
-    <div style="background-color: #fff; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px;">
-        <!-- Post Title Section -->
-        <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
-            <label style="display: block; font-weight: 700; font-size: 11px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Post Title</label>
-            <div id="postTitle" style="font-size: 20px; font-weight: 600; color: #111827; line-height: 1.4;"></div>
-        </div>
+    <div class="post-card">
+    <!-- Post Title -->
+    <div class="post-section">
+        <label class="post-label">Post Title</label>
+        <div id="postTitle" class="post-title text-wrap"></div>
+    </div>
 
-        <!-- Post Description Section -->
-        <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
-            <label style="display: block; font-weight: 700; font-size: 11px; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Post Description</label>
-            <div id="postDescription" style="font-size: 14px; color: #4b5563; line-height: 1.7;"></div>
-        </div>
+    <!-- Post Description -->
+    <div class="post-section">
+        <label class="post-label">Post Description</label>
+        <div id="postDescription" class="post-description text-wrap"></div>
+    </div>
 
-        <!-- Labels Section -->
-        <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
-            <label style="display: block; font-weight: 700; font-size: 11px; color: #6b7280; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Labels</label>
-            <div id="postLabels" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <!-- Labels will be added here -->
-            </div>
-        </div>
-
-        <!-- Post Stats -->
-        <div style="display: flex; gap: 32px; flex-wrap: wrap; align-items: center;">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <i class="fas fa-heart" style="color: #ef4444; font-size: 20px;"></i>
-                    <span id="likesCount" style="font-weight: 700; color: #111827; font-size: 18px;">0</span>
-                </div>
-                <span style="color: #6b7280; font-size: 12px; font-weight: 500;">Likes</span>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <i class="fas fa-comment" style="color: #3b82f6; font-size: 20px;"></i>
-                    <span id="commentsCount" style="font-weight: 700; color: #111827; font-size: 18px;">0</span>
-                </div>
-                <span style="color: #6b7280; font-size: 12px; font-weight: 500;">Comments</span>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <i class="fas fa-eye" style="color: #10b981; font-size: 20px;"></i>
-                    <span id="viewsCount" style="font-weight: 700; color: #111827; font-size: 18px;">0</span>
-                </div>
-                <span style="color: #6b7280; font-size: 12px; font-weight: 500;">Views</span>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <i class="fas fa-thumbtack" style="color: #f59e0b; font-size: 20px;"></i>
-                    <span id="awardsCount" style="font-weight: 700; color: #111827; font-size: 18px;">0</span>
-                </div>
-                <span style="color: #6b7280; font-size: 12px; font-weight: 500;">Pinned</span>
-            </div>
+    <!-- Labels -->
+    <div class="post-section">
+        <label class="post-label">Labels</label>
+        <div id="postLabels" class="post-labels">
+            <!-- Labels here -->
         </div>
     </div>
 
+    <!-- Stats -->
+    <div class="post-stats">
+        <div class="stat-item">
+            <div class="stat-value">
+                <i class="fas fa-heart stat-icon like"></i>
+                <span id="likesCount">0</span>
+            </div>
+            <span class="stat-label">Likes</span>
+        </div>
+
+        <div class="stat-item">
+            <div class="stat-value">
+                <i class="fas fa-comment stat-icon comment"></i>
+                <span id="commentsCount">0</span>
+            </div>
+            <span class="stat-label">Comments</span>
+        </div>
+
+        <div class="stat-item">
+            <div class="stat-value">
+                <i class="fas fa-eye stat-icon view"></i>
+                <span id="viewsCount">0</span>
+            </div>
+            <span class="stat-label">Views</span>
+        </div>
+
+        <div class="stat-item">
+            <div class="stat-value">
+                <i class="fas fa-thumbtack stat-icon pin"></i>
+                <span id="awardsCount">0</span>
+            </div>
+            <span class="stat-label">Pinned</span>
+        </div>
+    </div>
+</div>
+
+
     <!-- Comments Section -->
-    <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <div class="table-box-container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2 style="font-size: 20px; font-weight: 700; color: #333; margin: 0;">Comments (<span id="totalComments">0</span>)</h2>
             <div class="comment-search">
@@ -83,19 +86,23 @@
         </div>
 
         <!-- Comments Table -->
-        <table id="commentsTable" class="display" style="width: 100%; border-collapse: collapse; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px; border: 1px solid #e0e0e0;">
-            <thead>
-                <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 12px;">
-                    <th style="padding: 15px; text-align: left;">Alumni Profile</th>
-                    <th style="padding: 15px; text-align: left;">Alumni Name</th>
-                    <th style="padding: 15px; text-align: left;">Comment</th>
-                    <th style="padding: 15px; text-align: left;">Time Commented</th>
-                    <th style="padding: 15px; text-align: left;">Threads</th>
-                    <th style="padding: 15px; text-align: left;">Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div class="table-container">
+            <div class="table-responsive" style="overflow-x: auto;">
+                <table id="dataTable">
+                    <thead>
+                        <tr id="tableHeaderRow">
+                            <th class="table-header">Alumni Profile</th>
+                            <th class="table-header">Alumni Name</th>
+                            <th class="table-header">Comment</th>
+                            <th class="table-header">Time Commented</th>
+                            <th class="table-header">Threads</th>
+                            <th class="table-header">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
         <div class="pagination-bottom-area">
                 <div class="dt-info-custom">
                     <!-- Info will be populated here -->
@@ -103,29 +110,13 @@
                 <div class="dt-pagination-custom">
                     <!-- Pagination will be populated here -->
                 </div>
-            </div>
+        </div>
     </div>
 </div>
 
 <style>
-    #commentsTable tbody td {
-        padding: 12px 15px;
-        vertical-align: middle;
-        box-sizing: border-box;
-        border-bottom: 1px solid #f0f0f0;
-    }
-
-    #commentsTable thead th {
-        border-bottom: 2px solid #e0e0e0;
-    }
-
-    table.dataTable th,
-    table.dataTable td {
-        white-space: nowrap;
-    }
-
-    .dataTables_wrapper {
-        margin-top: 25px !important;
+    table.dataTable {
+        margin: 0 !important;
     }
 </style>
 
@@ -140,7 +131,7 @@
         loadPostDetails();
 
         // Initialize DataTable
-        const table = $('#commentsTable').DataTable({
+        const table = $('#dataTable').DataTable({
             processing: true,
             serverSide: true,
             ajax: {
@@ -365,7 +356,7 @@
                 },
                 success: function(response) {
                     showToast('Comment deleted successfully');
-                    $('#commentsTable').DataTable().ajax.reload();
+                    $('#dataTable').DataTable().ajax.reload();
                     loadPostDetails(); 
                 },
                 error: function(xhr) {

@@ -105,31 +105,32 @@
         </div>
 
         <!-- Table Container -->
-        <div style="border-bottom: none; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; margin-top: 0; margin-bottom: 0; border-radius: 8px 8px 0 0;" style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; border: 1px solid #dedede; background-color: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); border-radius: 6px;" id="kt_customers_table">
+        <div class="table-container">
+            <div class="table-responsive" style="overflow-x: auto;">
+            <table id="dataTable">
                 <thead>
-                    <tr style="background: #ba0028; color: white; font-weight: 700; font-size: 14px; border-radius: 6px;">
-                        <th style="padding: 15px; text-align: left;">Role ID</th>
-                        <th style="padding: 15px; text-align: left;">Role Name</th>
-                        <th style="padding: 15px; text-align: left;">Status</th>
+                    <tr id="tableHeaderRow">
+                        <th class="table-header">Role ID</th>
+                        <th class="table-header">Role Name</th>
+                        <th class="table-header">Status</th>
                         @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
-                        <th style="padding: 15px; text-align: left;">Actions</th>
+                        <th class="table-header">Actions</th>
                         @endif
                     </tr>
                 </thead>
                 <tbody>
                     @if($datas->isEmpty())
                     <tr>
-                        <td colspan="4" style="padding: 2rem; text-align: center; color: #6b7280;">No results found.
+                        <td colspan="4" class="text-center">No results found.
                         </td>
                     </tr>
                     @else
                     @foreach($datas as $data)
-                    <tr style="border-bottom: 1px solid #dedede;">
-                        <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">
+                    <tr>
+                        <td>
                             {{$data->role_id}}</td>
-                        <td style="padding: 1rem; font-size: 0.875rem; color: #111827;">{{$data->name}}</td>
-                        <td style="padding: 1rem;">
+                        <td>{{$data->name}}</td>
+                        <td>
                             <div style="display: flex; align-items: center; gap: 12px;">
                                 <label class="toggle-switch"
                                     style="position: relative; display: inline-block; width: 44px; height: 24px;">
@@ -145,16 +146,16 @@
                             </div>
                         </td>
                         @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
-                        <td style="padding: 1rem; position: relative;">
+                        <td style="position: relative;">
                             <button class="action-menu-btn"
                                 style="background: none; border: none; cursor: pointer; padding: 0.5rem;">
                                 <i class="fas fa-ellipsis-v" style="color: #6b7280;"></i>
                             </button>
                             <div class="action-menu"
-                                style="display: none; position: absolute; right: 10rem; bottom: 1.5rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
+                                style="display: none; position: absolute; right: 13rem; bottom: 2rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
                                 @can('role.edit')
                                 <a href="{{ route('role.edit', ['id' => $data->id]) }}"
-                                    style="display: block; padding: 0.5rem 1rem; color: #111827; text-decoration: none; font-size: 0.875rem; border-radius: 0.375rem; transition: background 0.2s;"
+                                    style="display: block; padding: 0.5rem 1rem; color: #111827; text-decoration: none; font-size: 12px; border-radius: 0.375rem; transition: background 0.2s;"
                                     onmouseover="this.style.background='#f3f4f6'"
                                     onmouseout="this.style.background='transparent'">
                                     <i class="fas fa-edit" style="margin-right: 0.5rem;"></i>Edit
@@ -162,7 +163,7 @@
                                 @endcan
                                 @can('role.delete')
                                 <button type="button" class="deletestateBtn" data-role-id="{{ $data->id }}"
-                                    style="display: block; width: 100%; text-align: left; padding: 0.5rem 1rem; background: none; border: none; color: #dc2626; cursor: pointer; font-size: 0.875rem; border-radius: 0.375rem; transition: background 0.2s;"
+                                    style="display: block; width: 100%; text-align: left; padding: 0.5rem 1rem; background: none; border: none; color: #dc2626; cursor: pointer; font-size: 12px; border-radius: 0.375rem; transition: background 0.2s;"
                                     onmouseover="this.style.background='#fee2e2'"
                                     onmouseout="this.style.background='transparent'">
                                     <i class="fas fa-trash" style="margin-right: 0.5rem;"></i>Delete
@@ -177,20 +178,10 @@
                 </tbody>
             </table>
         </div>
-        
-        <style>
-            /* Add padding to tbody cells */
-            #kt_customers_table tbody td {
-                padding: 12px 15px;
-                vertical-align: middle;
-                box-sizing: border-box;
-                border-bottom: 1px solid #dedede;
-            }
-        </style>
+        </div>
 
         <!-- Pagination -->
-        <div style="margin-top: 1.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="user-role-pagination">
                 <div id="paginationInfo">
                     Showing {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() ?? 0 }} of {{ $datas->total() }} roles
                 </div>
@@ -219,7 +210,6 @@
                         </button>
                     @endif
                 </div>
-            </div>
         </div>
     </div>
 </div>
@@ -336,7 +326,7 @@
             
             if (allStatusSelected) {
                 // Show all rows if "All Status" is selected
-                $('#kt_customers_table tbody tr').show();
+                $('#dataTable tbody tr').show();
                 updatePaginationInfo();
                 return;
             }
@@ -354,13 +344,13 @@
 
             // If no filters selected, show all rows
             if (selectedStatuses.length === 0) {
-                $('#kt_customers_table tbody tr').show();
+                $('#dataTable tbody tr').show();
                 updatePaginationInfo();
                 return;
             }
 
             // Apply filters to table rows
-            $('#kt_customers_table tbody tr').each(function() {
+            $('#dataTable tbody tr').each(function() {
                 let showRow = false;
                 
                 // Skip the "No results found" row
@@ -395,7 +385,7 @@
 
         // Function to update pagination information based on visible rows
         function updatePaginationInfo() {
-            const visibleRows = $('#kt_customers_table tbody tr:visible').not(':contains("No results found")');
+            const visibleRows = $('#dataTable tbody tr:visible').not(':contains("No results found")');
             const totalVisible = visibleRows.length;
             
             if (totalVisible === 0) {
@@ -415,11 +405,11 @@
 
         // Simple Column Sorting Function
         function addColumnSorting() {
-            $('#kt_customers_table thead th').removeClass('sortable').css('cursor', '').off('click');
-            $('#kt_customers_table thead th .sort-icon').remove();
+            $('#dataTable thead th').removeClass('sortable').css('cursor', '').off('click');
+            $('#dataTable thead th .sort-icon').remove();
 
             // Add sorting icons to sortable columns
-            $('#kt_customers_table thead th').each(function(index) {
+            $('#dataTable thead th').each(function(index) {
                 if (index <= 1) { // Role ID, Role Name columns
                     $(this).addClass('sortable').css('cursor', 'pointer');
                     
@@ -432,7 +422,7 @@
             });
 
             // Handle column header clicks
-            $('#kt_customers_table thead th.sortable').off('click').on('click', function() {
+            $('#dataTable thead th.sortable').off('click').on('click', function() {
                 const columnIndex = $(this).index();
                 
                 // Update sort direction
@@ -442,7 +432,7 @@
                     currentSortDirection = 'desc';
                 }
                 currentSortColumn = columnIndex;
-                $('#kt_customers_table thead th .sort-icon').hide();
+                $('#dataTable thead th .sort-icon').hide();
                 
                 const icon = $(this).find('.sort-icon');
                 icon.show().removeClass('fa-chevron-up fa-chevron-down');
@@ -455,7 +445,7 @@
 
         // Sort table function
         function sortTable(columnIndex, direction) {
-            const tbody = $('#kt_customers_table tbody');
+            const tbody = $('#dataTable tbody');
             const rows = tbody.find('tr').not(':contains("No results found")').get();
 
             rows.sort(function(a, b) {
@@ -559,7 +549,7 @@
                 },
                 dataType: 'html',
                 success: function(response) {
-                    $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
+                    $('#dataTable tbody').html($(response).find('#dataTable tbody').html());
                     $('#paginationInfo').html($(response).find('#paginationInfo').html());
                     $('#paginationControls').html($(response).find('#paginationControls').html());
                     
@@ -686,7 +676,7 @@
                 type: "GET",
                 dataType: 'html',
                 success: function(response) {
-                    $('#kt_customers_table tbody').html($(response).find('#kt_customers_table tbody').html());
+                    $('#dataTable tbody').html($(response).find('#dataTable tbody').html());
                     $('#paginationInfo').html($(response).find('#paginationInfo').html());
                     $('#paginationControls').html($(response).find('#paginationControls').html());
                     
