@@ -94,39 +94,9 @@
         /* completely removed all gaps */
     }
 
-    table.dataTable thead th {
-        box-sizing: border-box;
-        /* Ensure proper width calculation */
-    }
-
-
-
-    #dataTable thead th {
-        border-bottom: 2px solid #e0e0e0;
-        /* slightly thicker under header */
-        position: relative;
-        margin: 0 !important;
-        padding: 15px !important;
-    }
-
-    /* Ensure only one header row */
-    #dataTable thead {
-        display: table-header-group;
-    }
-
-    /* Hide any duplicate headers that might be created by DataTables */
-    #dataTable thead:not(:first-child) {
-        display: none !important;
-    }
-
     /* Prevent DataTables from creating additional header elements */
     .dataTables_wrapper .dataTables_scroll .dataTables_scrollHead {
         display: none !important;
-    }
-
-    /* Ensure the original header stays visible */
-    #dataTable > thead {
-        display: table-header-group !important;
     }
 
     /* Hide any cloned headers */
@@ -139,30 +109,6 @@
     .table-responsive {
         -webkit-overflow-scrolling: touch;
         position: relative;
-    }
-
-    .table-responsive::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .table-responsive::-webkit-scrollbar-track {
-        background: #f3f4f6;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: #d1d5db;
-        border-radius: 4px;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb:hover {
-        background: #9ca3af;
-    }
-
-
-    /* Ensure DataTables doesn't interfere with our fixed pagination */
-    .dataTables_wrapper .dataTables_info,
-    .dataTables_wrapper .dataTables_paginate {
-        display: none !important;
     }
 
 
