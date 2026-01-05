@@ -12,10 +12,6 @@
                     </div>
                 </button>
                 <div class="filter-dropdown-menu" data-filter="status">
-                    <div class="filter-option" data-value="all">
-                        <input type="checkbox">
-                        <span>All Status</span>
-                    </div>
                     <div class="filter-option" data-value="1">
                         <input type="checkbox">
                         <span>Active</span>
@@ -37,10 +33,6 @@
                     </div>
                 </button>
                 <div class="filter-dropdown-menu" data-filter="role">
-                    <div class="filter-option" data-value="all">
-                        <input type="checkbox">
-                        <span>All Roles</span>
-                    </div>
                     @foreach ($roles as $role)
                     <div class="filter-option" data-value="{{ $role->id }}">
                         <input type="checkbox">

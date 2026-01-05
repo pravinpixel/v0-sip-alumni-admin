@@ -81,10 +81,6 @@
                             </div>
                         </button>
                         <div class="filter-dropdown-menu" data-filter="status">
-                            <div class="filter-option" data-value="all">
-                                <input type="checkbox">
-                                <span>All Status</span>
-                            </div>
                             <div class="filter-option" data-value="1">
                                 <input type="checkbox">
                                 <span>Active</span>
@@ -107,108 +103,109 @@
         <!-- Table Container -->
         <div class="table-container">
             <div class="table-responsive" style="overflow-x: auto;">
-            <table id="dataTable">
-                <thead>
-                    <tr id="tableHeaderRow">
-                        <th class="table-header">Role ID</th>
-                        <th class="table-header">Role Name</th>
-                        <th class="table-header">Status</th>
-                        @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
-                        <th class="table-header">Actions</th>
-                        @endif
-                    </tr>
-                </thead>
-                <tbody>
-                    @if($datas->isEmpty())
-                    <tr>
-                        <td colspan="4" class="text-center">No results found.
-                        </td>
-                    </tr>
-                    @else
-                    @foreach($datas as $data)
-                    <tr>
-                        <td>
-                            {{$data->role_id}}</td>
-                        <td>{{$data->name}}</td>
-                        <td>
-                            <div style="display: flex; align-items: center; gap: 12px;">
-                                <label class="toggle-switch"
-                                    style="position: relative; display: inline-block; width: 44px; height: 24px;">
-                                    <input type="checkbox" class="status-toggle" data-role-id="{{$data->id}}"
-                                        {{$data->status == 1 ? 'checked' : ''}} style="opacity: 0; width: 0; height: 0;">
-                                    <span class="toggle-slider"
-                                        style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.4s; border-radius: 24px;"></span>
-                                </label>
-                                <span class="status-badge {{ $data->status == 1 ? 'status-active' : 'status-inactive' }}">
-                                    {{ $data->status == 1 ? 'Active' : 'Inactive' }}
-                                </span>
-                            </div>
-                        </td>
-                        @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
-                        <td style="position: relative;">
-                            <button class="action-menu-btn"
-                                style="background: none; border: none; cursor: pointer; padding: 0.5rem;">
-                                <i class="fas fa-ellipsis-v" style="color: #6b7280;"></i>
-                            </button>
-                            <div class="action-menu"
-                                style="display: none; position: absolute; right: 13rem; bottom: 2rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
-                                @can('role.edit')
-                                <a href="{{ route('role.edit', ['id' => $data->id]) }}"
-                                    style="display: block; padding: 0.5rem 1rem; color: #111827; text-decoration: none; font-size: 12px; border-radius: 0.375rem; transition: background 0.2s;"
-                                    onmouseover="this.style.background='#f3f4f6'"
-                                    onmouseout="this.style.background='transparent'">
-                                    <i class="fas fa-edit" style="margin-right: 0.5rem;"></i>Edit
-                                </a>
-                                @endcan
-                                @can('role.delete')
-                                <button type="button" class="deletestateBtn" data-role-id="{{ $data->id }}"
-                                    style="display: block; width: 100%; text-align: left; padding: 0.5rem 1rem; background: none; border: none; color: #dc2626; cursor: pointer; font-size: 12px; border-radius: 0.375rem; transition: background 0.2s;"
-                                    onmouseover="this.style.background='#fee2e2'"
-                                    onmouseout="this.style.background='transparent'">
-                                    <i class="fas fa-trash" style="margin-right: 0.5rem;"></i>Delete
+                <table id="dataTable">
+                    <thead>
+                        <tr id="tableHeaderRow">
+                            <th class="table-header">Role ID</th>
+                            <th class="table-header">Role Name</th>
+                            <th class="table-header">Status</th>
+                            @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
+                            <th class="table-header">Actions</th>
+                            @endif
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($datas->isEmpty())
+                        <tr>
+                            <td colspan="4" class="text-center">No results found.
+                            </td>
+                        </tr>
+                        @else
+                        @foreach($datas as $data)
+                        <tr>
+                            <td>
+                                {{$data->role_id}}
+                            </td>
+                            <td>{{$data->name}}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <label class="toggle-switch"
+                                        style="position: relative; display: inline-block; width: 44px; height: 24px;">
+                                        <input type="checkbox" class="status-toggle" data-role-id="{{$data->id}}"
+                                            {{$data->status == 1 ? 'checked' : ''}} style="opacity: 0; width: 0; height: 0;">
+                                        <span class="toggle-slider"
+                                            style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.4s; border-radius: 24px;"></span>
+                                    </label>
+                                    <span class="status-badge {{ $data->status == 1 ? 'status-active' : 'status-inactive' }}">
+                                        {{ $data->status == 1 ? 'Active' : 'Inactive' }}
+                                    </span>
+                                </div>
+                            </td>
+                            @if(auth()->user()->can('role.edit') || auth()->user()->can('role.delete'))
+                            <td style="position: relative;">
+                                <button class="action-menu-btn"
+                                    style="background: none; border: none; cursor: pointer; padding: 0.5rem;">
+                                    <i class="fas fa-ellipsis-v" style="color: #6b7280;"></i>
                                 </button>
-                                @endcan
-                            </div>
-                        </td>
+                                <div class="action-menu"
+                                    style="display: none; position: absolute; right: 13rem; bottom: 2rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
+                                    @can('role.edit')
+                                    <a href="{{ route('role.edit', ['id' => $data->id]) }}"
+                                        style="display: block; padding: 0.5rem 1rem; color: #111827; text-decoration: none; font-size: 12px; border-radius: 0.375rem; transition: background 0.2s;"
+                                        onmouseover="this.style.background='#f3f4f6'"
+                                        onmouseout="this.style.background='transparent'">
+                                        <i class="fas fa-edit" style="margin-right: 0.5rem;"></i>Edit
+                                    </a>
+                                    @endcan
+                                    @can('role.delete')
+                                    <button type="button" class="deletestateBtn" data-role-id="{{ $data->id }}"
+                                        style="display: block; width: 100%; text-align: left; padding: 0.5rem 1rem; background: none; border: none; color: #dc2626; cursor: pointer; font-size: 12px; border-radius: 0.375rem; transition: background 0.2s;"
+                                        onmouseover="this.style.background='#fee2e2'"
+                                        onmouseout="this.style.background='transparent'">
+                                        <i class="fas fa-trash" style="margin-right: 0.5rem;"></i>Delete
+                                    </button>
+                                    @endcan
+                                </div>
+                            </td>
+                            @endif
+                        </tr>
+                        @endforeach
                         @endif
-                    </tr>
-                    @endforeach
-                    @endif
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- Pagination -->
         <div class="user-role-pagination">
-                <div id="paginationInfo">
-                    Showing {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() ?? 0 }} of {{ $datas->total() }} roles
-                </div>
-                <div id="paginationControls">
-                    @if ($datas->onFirstPage())
-                        <button disabled >
-                            <i class="fas fa-chevron-left"></i> Previous
-                        </button>
-                    @else
-                        <button onclick="goToPage({{ $datas->currentPage() - 1 }})" >
-                            <i class="fas fa-chevron-left"></i> Previous
-                        </button>
-                    @endif
-                    
-                    <span>
-                        Page {{ $datas->currentPage() }} of {{ $datas->lastPage() }}
-                    </span>
-                    
-                    @if ($datas->hasMorePages())
-                        <button onclick="goToPage({{ $datas->currentPage() + 1 }})">
-                            Next <i class="fas fa-chevron-right"></i>
-                        </button>
-                    @else
-                        <button disabled >
-                            Next <i class="fas fa-chevron-right"></i>
-                        </button>
-                    @endif
-                </div>
+            <div id="paginationInfo">
+                Showing {{ $datas->firstItem() ?? 0 }} to {{ $datas->lastItem() ?? 0 }} of {{ $datas->total() }} roles
+            </div>
+            <div id="paginationControls">
+                @if ($datas->onFirstPage())
+                <button disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                @else
+                <button onclick="goToPage({{ $datas->currentPage() - 1 }})">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                @endif
+
+                <span>
+                    Page {{ $datas->currentPage() }} of {{ $datas->lastPage() }}
+                </span>
+
+                @if ($datas->hasMorePages())
+                <button onclick="goToPage({{ $datas->currentPage() + 1 }})">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+                @else
+                <button disabled>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+                @endif
+            </div>
         </div>
     </div>
 </div>
@@ -221,7 +218,7 @@
     $(document).ready(function() {
         let currentSortColumn = 0;
         let currentSortDirection = 'desc'; // Role ID starts with down arrow (desc)
-        
+
         // Store original pagination info
         let originalPaginationInfo = $('#paginationInfo').html();
         let originalPaginationControls = $('#paginationControls').html();
@@ -230,7 +227,7 @@
         $('#filterToggleBtn').on('click', function() {
             const filterSection = $('#filterSection');
             const isVisible = filterSection.is(':visible');
-            
+
             if (isVisible) {
                 filterSection.slideUp();
                 $('#filterBtnText').text('Filter');
@@ -244,10 +241,10 @@
         $('.filter-dropdown-btn').on('click', function(e) {
             e.stopPropagation();
             const dropdown = $(this).siblings('.filter-dropdown-menu');
-            
+
             // Close other dropdowns
             $('.filter-dropdown-menu').not(dropdown).hide();
-            
+
             // Toggle current dropdown
             dropdown.toggle();
         });
@@ -258,7 +255,7 @@
             const checkbox = $(this).find('input[type="checkbox"]');
             const filterType = $(this).closest('.filter-dropdown').find('.filter-dropdown-btn').data('filter');
             const optionValue = $(this).data('value');
-            
+
             // Handle "All Status" option
             if (optionValue === 'all') {
                 if (!checkbox.prop('checked')) {
@@ -275,10 +272,10 @@
                 // Toggle the clicked option
                 checkbox.prop('checked', !checkbox.prop('checked'));
             }
-            
+
             // Update filter count
             updateFilterCount(filterType);
-            
+
             // Apply filters
             applyFilters();
         });
@@ -302,15 +299,15 @@
             const checkedCount = $(`.filter-dropdown-btn[data-filter="${filterType}"]`)
                 .siblings('.filter-dropdown-menu')
                 .find('input[type="checkbox"]:checked').length;
-            
+
             const countBadge = $(`.filter-count[data-filter="${filterType}"]`);
-            
+
             if (checkedCount > 0) {
                 countBadge.text(checkedCount).show();
                 $('#clearFiltersBtn').show();
             } else {
                 countBadge.hide();
-                
+
                 // Check if any filters are active
                 const totalFilters = $('.filter-option input[type="checkbox"]:checked').length;
                 if (totalFilters === 0) {
@@ -320,86 +317,7 @@
         }
 
         function applyFilters() {
-            // Check if "All Status" is selected
-            const allStatusSelected = $('.filter-dropdown-menu[data-filter="status"] .filter-option[data-value="all"] input[type="checkbox"]').prop('checked');
-            
-            if (allStatusSelected) {
-                // Show all rows if "All Status" is selected
-                $('#dataTable tbody tr').show();
-                updatePaginationInfo();
-                return;
-            }
-
-            // Get selected status filters
-            const selectedStatuses = [];
-            $('.filter-dropdown-menu[data-filter="status"] input[type="checkbox"]:checked').each(function() {
-                const value = $(this).closest('.filter-option').data('value');
-                if (value !== 'all') {
-                    selectedStatuses.push(value);
-                }
-            });
-
-            console.log('Selected statuses:', selectedStatuses); // Debug log
-
-            // If no filters selected, show all rows
-            if (selectedStatuses.length === 0) {
-                $('#dataTable tbody tr').show();
-                updatePaginationInfo();
-                return;
-            }
-
-            // Apply filters to table rows
-            $('#dataTable tbody tr').each(function() {
-                let showRow = false;
-                
-                // Skip the "No results found" row
-                if ($(this).find('td[colspan]').length > 0) {
-                    $(this).show();
-                    return;
-                }
-                
-                const statusCell = $(this).find('td:nth-child(3)'); // Status column
-                const statusSpan = statusCell.find('span:last-child'); // Get the status span
-                const statusText = statusSpan.text().trim().toLowerCase();
-                
-                console.log('Row status text:', statusText); // Debug log
-                
-                // Check if this row matches any selected filter
-                for (let status of selectedStatuses) {
-                    if (status === 1 && statusText === 'active') {
-                        showRow = true;
-                        break;
-                    } else if (status === 0 && statusText === 'inactive') {
-                        showRow = true;
-                        break;
-                    }
-                }
-                
-                $(this).toggle(showRow);
-            });
-
-            // Update pagination info after filtering
-            updatePaginationInfo();
-        }
-
-        // Function to update pagination information based on visible rows
-        function updatePaginationInfo() {
-            const visibleRows = $('#dataTable tbody tr:visible').not(':contains("No results found")');
-            const totalVisible = visibleRows.length;
-            
-            if (totalVisible === 0) {
-                $('#paginationInfo').text('No roles found');
-                $('#paginationControls').hide();
-            } else {
-                $('#paginationInfo').text(`Showing 1 to ${totalVisible} of ${totalVisible} roles`);
-                $('#paginationControls').hide(); // Hide pagination controls when filtering
-            }
-        }
-
-        // Function to restore original pagination
-        function restoreOriginalPagination() {
-            $('#paginationInfo').html(originalPaginationInfo);
-            $('#paginationControls').html(originalPaginationControls).show();
+            updateTableData(1); // 👈 AJAX reload with filters
         }
 
         // Simple Column Sorting Function
@@ -411,7 +329,7 @@
             $('#dataTable thead th').each(function(index) {
                 if (index <= 1) { // Role ID, Role Name columns
                     $(this).addClass('sortable').css('cursor', 'pointer');
-                    
+
                     if (index === 0) {
                         $(this).append(' <i class="fas fa-chevron-down sort-icon ms-2 fs-8" style="color: rgba(219, 203, 203, 0.9);"></i>');
                     } else {
@@ -423,7 +341,7 @@
             // Handle column header clicks
             $('#dataTable thead th.sortable').off('click').on('click', function() {
                 const columnIndex = $(this).index();
-                
+
                 // Update sort direction
                 if (currentSortColumn === columnIndex) {
                     currentSortDirection = currentSortDirection === 'desc' ? 'asc' : 'desc';
@@ -432,7 +350,7 @@
                 }
                 currentSortColumn = columnIndex;
                 $('#dataTable thead th .sort-icon').hide();
-                
+
                 const icon = $(this).find('.sort-icon');
                 icon.show().removeClass('fa-chevron-up fa-chevron-down');
                 icon.addClass(currentSortDirection === 'desc' ? 'fa-chevron-down' : 'fa-chevron-up');
@@ -456,15 +374,15 @@
                     // Extract numeric part from Role ID (handles formats like ROLE001, ROLE123, etc.)
                     const aMatch = aText.match(/\d+/);
                     const bMatch = bText.match(/\d+/);
-                    
+
                     const aNum = aMatch ? parseInt(aMatch[0]) : 0;
                     const bNum = bMatch ? parseInt(bMatch[0]) : 0;
-                    
+
                     // If numbers are the same, fall back to text comparison
                     if (aNum === bNum) {
                         return direction === 'desc' ? bText.localeCompare(aText) : aText.localeCompare(bText);
                     }
-                    
+
                     return direction === 'desc' ? bNum - aNum : aNum - bNum;
                 }
 
@@ -484,7 +402,7 @@
 
         // Initialize sorting
         addColumnSorting();
-        
+
         setTimeout(function() {
             sortTable(0, 'desc');
         }, 100);
@@ -524,16 +442,32 @@
             updateTableData(page);
         });
 
-        function updateTableData(page = '') {
-            var searchTerm = $('#searchInput').val();
-            var selectedStatus = $('[data-kt-ecommerce-order-filter="status"]').val();
-            if ($('[name="row-count-filter"]').val()) {
-                var pageItems = $('[name="row-count-filter"]').val();
-            } else {
-                var defaultPageItems = 10;
-            }
-            loadTableData(searchTerm, selectedStatus, page, pageItems || defaultPageItems);
+        function updateTableData(page = 1) {
+
+            let searchTerm = $('#searchInput').val() || '';
+
+            let statuses = [];
+            $('.filter-dropdown-menu[data-filter="status"] input:checked').each(function() {
+                let val = $(this).closest('.filter-option').data('value');
+                if (val !== 'all') statuses.push(val);
+            });
+
+            $.ajax({
+                url: "{{ route('role.index') }}",
+                type: "GET",
+                data: {
+                    search: searchTerm,
+                    status: statuses,
+                    page: page
+                },
+                success: function(response) {
+                    $('#dataTable tbody').html($(response).find('#dataTable tbody').html());
+                    $('#paginationInfo').html($(response).find('#paginationInfo').html());
+                    $('#paginationControls').html($(response).find('#paginationControls').html());
+                }
+            });
         }
+
         updateTableData();
 
         function loadTableData(searchTerm, selectedStatus, page = '', pageItems = '') {
@@ -551,11 +485,11 @@
                     $('#dataTable tbody').html($(response).find('#dataTable tbody').html());
                     $('#paginationInfo').html($(response).find('#paginationInfo').html());
                     $('#paginationControls').html($(response).find('#paginationControls').html());
-                    
+
                     // Update stored original pagination info
                     originalPaginationInfo = $(response).find('#paginationInfo').html();
                     originalPaginationControls = $(response).find('#paginationControls').html();
-                    
+
                     // Sorting is already initialized on headers, no need to re-add
                 },
                 error: function() {
@@ -595,7 +529,7 @@
         $(document).on('click', '.deletestateBtn', function(e) {
             e.stopPropagation();
             var roleId = $(this).data('role-id');
-            confirmBox("Delete Role","Are you sure you want to delete this role ?", function() {
+            confirmBox("Delete Role", "Are you sure you want to delete this role ?", function() {
                 $.ajax({
                     url: "{{ route('role.delete', ['id' => ':id']) }}".replace(':id', roleId),
                     type: 'DELETE',
@@ -678,11 +612,11 @@
                     $('#dataTable tbody').html($(response).find('#dataTable tbody').html());
                     $('#paginationInfo').html($(response).find('#paginationInfo').html());
                     $('#paginationControls').html($(response).find('#paginationControls').html());
-                    
+
                     // Update stored original pagination info
                     originalPaginationInfo = $(response).find('#paginationInfo').html();
                     originalPaginationControls = $(response).find('#paginationControls').html();
-                    
+
                     // Sorting is already initialized on headers, no need to re-add
                     updateTableData();
                 },

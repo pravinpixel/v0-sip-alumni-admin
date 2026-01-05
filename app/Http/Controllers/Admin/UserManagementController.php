@@ -19,40 +19,40 @@ class UserManagementController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $status = $request->input('status');
-        $role = $request->input('role');
-        $perPage = $request->input('pageItems');
-        $query = User::query();
+        $status = $request->input('status'); 
+        $role = $request->input('role'); 
+        $perPage = $request->input('pageItems') ?? 10;
+
+        $query = User::with('role');
         $roles = Role::all();
         if ($search) {
             $searchLower = strtolower(trim($search));
-            $statusMap = [
-            'active' => '1',
-            'inactive' => '0',
-        ];
-        $searchStatus = $statusMap[$searchLower] ?? null;
+            $statusMap = ['active' => '1', 'inactive' => '0'];
+            $searchStatus = $statusMap[$searchLower] ?? null;
+
             $query->where(function ($q) use ($search, $searchStatus) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('user_id', 'like', "%{$search}%")
-                    ->orWhereHas('role', function ($roleQuery) use ($search) {
-                        $roleQuery->where('name', 'like', "%{$search}%");
-                    });
+                    ->orWhereHas('role', fn($r) => $r->where('name', 'like', "%{$search}%"));
+
                 if ($searchStatus !== null) {
                     $q->orWhere('status', $searchStatus);
                 }
             });
         }
-        if ($status === '1' || $status === '0') {
-            $query->where('status', $status);
+
+        if (!empty($status)) {
+            $query->whereIn('status', (array) $status);
         }
-        if ($role != 'all') {
-            $query->where('role_id', $role);
+
+        if (!empty($role)) {
+            $query->whereIn('role_id', (array) $role);
         }
+
         $datas = $query->orderBy('id', 'desc')->paginate($perPage);
         $currentPage = $datas->currentPage();
         $serialNumberStart = ($currentPage - 1) * $perPage + 1;
-
         $total_count = User::count();
 
         return view('masters.user.index', [

@@ -17,7 +17,7 @@ class RoleManagementController extends Controller
     {
         $search = $request->input('search');
         $status = $request->input('status');
-        $perPage = $request->input('pageItems');
+        $perPage = $request->input('pageItems', 10);
 
         $query = Role::query();
 
@@ -29,31 +29,26 @@ class RoleManagementController extends Controller
             ];
             $searchStatus = $statusMap[$searchLower] ?? null;
             $query->where(function ($q) use ($search, $searchStatus) {
-                $q->where('name', 'like', '%' . $search . '%');
-                $q->orWhere('role_id', 'like', '%' . $search . '%');
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('role_id', 'like', '%' . $search . '%');
+
                 if ($searchStatus !== null) {
                     $q->orWhere('status', $searchStatus);
                 }
             });
         }
 
-        if ($status === '1' || $status === '0') {
-            $query->where('status', $status);
+        if (!empty($status)) {
+            if (is_array($status)) {
+                $query->whereIn('status', $status);
+            } else {
+                $query->where('status', $status);
+            }
         }
 
         $datas = $query->orderBy('id', 'desc')->paginate($perPage);
-        $currentPage = $datas->currentPage();
-        $serialNumberStart = ($currentPage - 1) * $perPage + 1;
 
-        $total_count = Role::count();
-
-        return view('masters.role.index', [
-            'datas' => $datas,
-            'selectedStatus' => $status,
-            'search' => $search,
-            'total_count' => $total_count,
-            'serialNumberStart' => $serialNumberStart,
-        ]);
+        return view('masters.role.index', compact('datas', 'search', 'status'));
     }
 
     public function create(Request $request)

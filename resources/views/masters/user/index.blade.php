@@ -254,7 +254,7 @@
                 updateFilterCount(filterType);
                 
                 // Apply filters
-                applyFilters();
+                updateTableData();
             });
 
             // Clear all filters
@@ -262,7 +262,7 @@
                 $('.filter-option input[type="checkbox"]').prop('checked', false);
                 $('.filter-count').hide().text('0');
                 $(this).hide();
-                applyFilters();
+                updateTableData();
                 // Restore original pagination when clearing filters
                 restoreOriginalPagination();
             });
@@ -271,14 +271,6 @@
             $(document).on('click', function() {
                 $('.filter-dropdown-menu').hide();
             });
-
-            // Initialize - make sure all rows are visible by default
-            function initializeTable() {
-                $('#dataTable tbody tr').show();
-            }
-
-            // Call initialization
-            initializeTable();
 
             function updateFilterCount(filterType) {
                 const checkedCount = $(`.filter-dropdown-btn[data-filter="${filterType}"]`)
@@ -299,132 +291,6 @@
                         $('#clearFiltersBtn').hide();
                     }
                 }
-            }
-
-            function applyFilters() {
-                // Check if "All Status" is selected
-                const allStatusSelected = $('.filter-dropdown-menu[data-filter="status"] .filter-option[data-value="all"] input[type="checkbox"]').prop('checked');
-                const allRoleSelected = $('.filter-dropdown-menu[data-filter="role"] .filter-option[data-value="all"] input[type="checkbox"]').prop('checked');
-                
-                if (allStatusSelected && allRoleSelected) {
-                    // Show all rows if both "All" options are selected
-                    $('#dataTable tbody tr').show();
-                    updatePaginationInfo();
-                    return;
-                }
-
-                // Get selected filters
-                const selectedStatuses = [];
-                const selectedRoles = [];
-                
-                $('.filter-dropdown-menu[data-filter="status"] input[type="checkbox"]:checked').each(function() {
-                    const value = $(this).closest('.filter-option').data('value');
-                    if (value !== 'all') {
-                        selectedStatuses.push(value);
-                    }
-                });
-                
-                $('.filter-dropdown-menu[data-filter="role"] input[type="checkbox"]:checked').each(function() {
-                    const value = $(this).closest('.filter-option').data('value');
-                    if (value !== 'all') {
-                        selectedRoles.push(value.toString());
-                    }
-                });
-
-                // If no filters selected, show all rows
-                if (selectedStatuses.length === 0 && selectedRoles.length === 0) {
-                    $('#dataTable tbody tr').show();
-                    updatePaginationInfo();
-                    return;
-                }
-
-                // Apply filters to table rows
-                $('#dataTable tbody tr').each(function() {
-                    let showRow = true;
-                    
-                    // Skip the "No results found" row
-                    if ($(this).find('td[colspan]').length > 0) {
-                        $(this).show();
-                        return;
-                    }
-                    
-                    // Check status filter
-                    if (selectedStatuses.length > 0 && !allStatusSelected) {
-                        const statusCell = $(this).find('td:nth-child(5)'); // Status column (5th column)
-                        const statusSpan = statusCell.find('span:last-child'); // Get the status span
-                        const statusText = statusSpan.text().trim().toLowerCase();
-                        
-                        let statusMatch = false;
-                        for (let status of selectedStatuses) {
-                            if (status === 1 && statusText === 'active') {
-                                statusMatch = true;
-                                break;
-                            } else if (status === 0 && statusText === 'inactive') {
-                                statusMatch = true;
-                                break;
-                            }
-                        }
-                        
-                        if (!statusMatch) {
-                            showRow = false;
-                        }
-                    }
-                    
-                    // Check role filter
-                    if (selectedRoles.length > 0 && !allRoleSelected && showRow) {
-                        const roleCell = $(this).find('td:nth-child(4)'); // Role column (4th column)
-                        const roleSpan = roleCell.find('span'); // Get the role span
-                        const roleText = roleSpan.text().trim();
-                        
-                        console.log('Role text found:', roleText); // Debug log
-                        console.log('Selected role IDs:', selectedRoles); // Debug log
-                        
-                        // We need to match role names, not IDs
-                        // Get the role names from the filter dropdown for the selected IDs
-                        let roleMatch = false;
-                        for (let roleId of selectedRoles) {
-                            // Find the role name for this ID from the dropdown
-                            const roleNameElement = $(`.filter-dropdown-menu[data-filter="role"] .filter-option[data-value="${roleId}"] span`);
-                            const roleName = roleNameElement.text().trim();
-                            
-                            console.log('Comparing:', roleText, 'with', roleName); // Debug log
-                            
-                            if (roleText.toLowerCase() === roleName.toLowerCase()) {
-                                roleMatch = true;
-                                break;
-                            }
-                        }
-                        
-                        if (!roleMatch) {
-                            showRow = false;
-                        }
-                    }
-                    
-                    $(this).toggle(showRow);
-                });
-
-                // Update pagination info after filtering
-                updatePaginationInfo();
-            }
-
-            // Function to update pagination information based on visible rows
-            function updatePaginationInfo() {
-                const visibleRows = $('#dataTable tbody tr:visible').not(':contains("No results found")');
-                const totalVisible = visibleRows.length;
-                
-                if (totalVisible === 0) {
-                    $('#paginationInfo').text('No users found');
-                    $('#paginationControls').hide();
-                } else {
-                    $('#paginationInfo').text(`Showing 1 to ${totalVisible} of ${totalVisible} users`);
-                    $('#paginationControls').hide(); // Hide pagination controls when filtering
-                }
-            }
-
-            // Function to restore original pagination
-            function restoreOriginalPagination() {
-                $('#paginationInfo').html(originalPaginationInfo);
-                $('#paginationControls').html(originalPaginationControls).show();
             }
 
             // Simple Column Sorting Function
@@ -569,42 +435,40 @@
                 }
             });
 
-            function updateTableData(page = '') {
-                var searchTerm = $('#searchInput').val() || '';
-                var selectedStatus = 'all'; // Default to 'all' since we removed the old filter
-                var selectedRole = 'all'; // Default to 'all' since we removed the old filter
-                
-                if ($('[name="row-count-filter"]').val()) {
-                    var pageItems = $('[name="row-count-filter"]').val();
-                } else {
-                    var defaultPageItems = 10;
-                }
-                loadTableData(searchTerm, selectedStatus, selectedRole, page, pageItems || defaultPageItems);
+            function updateTableData(page = 1) {
+                let searchTerm = $('#searchInput').val() || '';
+                let statuses = [];
+                $('.filter-dropdown-menu[data-filter="status"] input:checked').each(function () {
+                    let val = $(this).closest('.filter-option').data('value');
+                    if (val !== 'all') statuses.push(val);
+                });
+
+                let roles = [];
+                $('.filter-dropdown-menu[data-filter="role"] input:checked').each(function () {
+                    let val = $(this).closest('.filter-option').data('value');
+                    if (val !== 'all') roles.push(val);
+                });
+
+                    let pageItems = $('[name="row-count-filter"]').val() || 10;
+                    $.ajax({
+                        url: "{{ route('user.index') }}",
+                        type: "GET",
+                        data: {
+                            search: searchTerm,
+                            status: statuses,
+                            role: roles,
+                            page: page,
+                            pageItems: pageItems
+                        },
+                        success: function (response) {
+                            $('#dataTable tbody').html($(response).find('#dataTable tbody').html());
+                            $('#paginationInfo').html($(response).find('#paginationInfo').html());
+                            $('#paginationControls').html($(response).find('#paginationControls').html());
+                        }
+                    });
             }
             updateTableData();
 
-            function loadTableData(searchTerm, selectedStatus, selectedRole, page = '', pageItems = '') {
-                $.ajax({
-                    url: "{{ route('user.index') }}?search=" + searchTerm + "&status=" + selectedStatus + "&role=" + selectedRole + "&page=" + page + "&pageItems=" + pageItems,
-                    type: "GET",
-                    data: {},
-                    dataType: 'html',
-                    success: function (response) {
-                        $('#dataTable tbody').html($(response).find('#dataTable tbody').html());
-                        $('#paginationInfo').html($(response).find('#paginationInfo').html());
-                        $('#paginationControls').html($(response).find('#paginationControls').html());
-                        
-                        // Update stored original pagination info
-                        originalPaginationInfo = $(response).find('#paginationInfo').html();
-                        originalPaginationControls = $(response).find('#paginationControls').html();
-                        
-                        // Sorting is already initialized on headers, no need to re-add
-                    },
-                    error: function () {
-                        console.error('Error loading table data.');
-                    }
-                });
-            }
             // Status toggle handler
             $(document).on('change', '.status-toggle', function () {
                 const userId = $(this).data('user-id');
