@@ -520,10 +520,9 @@
         selectedFilters.statuses.forEach(value => {
             hasFilters = true;
             const chip = $(`
-                <div style="background: #fbbf24; color: #000; padding: 6px 12px; border-radius: 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
-                    <span>Status: ${value.replace(/_/g, ' ')}</span>
-                    <button onclick="removeFilter('statuses', '${value}')" 
-                        style="background: none; border: none; color: #000; cursor: pointer; padding: 0; font-size: 16px; line-height: 1; font-weight: 700;">
+                <div class="filter-chip">
+                    <span>Status: ${value.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}</span>
+                    <button onclick="removeFilter('statuses', '${value}')" >
                         ×
                     </button>
                 </div>

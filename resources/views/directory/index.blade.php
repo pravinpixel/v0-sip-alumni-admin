@@ -506,10 +506,9 @@
             selectedFilters[filterType].forEach(value => {
                 hasFilters = true;
                 const chip = $(`
-                    <div style="background: #fbbf24; color: #000; padding: 6px 12px; border-radius: 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                    <div class="filter-chip">
                         <span>${filterLabels[filterType]}: ${value}</span>
-                        <button onclick="removeFilter('${filterType}', '${value}')" 
-                            style="background: none; border: none; color: #000; cursor: pointer; padding: 0; font-size: 16px; line-height: 1; font-weight: 700;">
+                        <button onclick="removeFilter('${filterType}', '${value}')" >
                             ×
                         </button>
                     </div>

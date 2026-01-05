@@ -86,33 +86,6 @@
         user-select: none;
     }
 
-    .selected-tag {
-        background: #fbbf24;
-        color: #000;
-        padding: 6px 12px;
-        border-radius: 16px;
-        font-size: 13px;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .selected-tag button {
-        background: none;
-        border: none;
-        color: #000;
-        cursor: pointer;
-        font-size: 16px;
-        line-height: 1;
-        padding: 0;
-        font-weight: 700;
-    }
-
-    .selected-tag button:hover {
-        opacity: 0.8;
-    }
-
     /* Count badge in dropdown */
     .filter-count-badge {
         background: #dc2626;
@@ -461,7 +434,7 @@
             selectedFilters[filterType].forEach(value => {
                 hasFilters = true;
                 const tag = $(`
-                    <div class="selected-tag">
+                    <div class="filter-chip">
                         <span>${filterLabels[filterType]}: ${value}</span>
                         <button onclick="removeFilter('${filterType}', '${value}')">×</button>
                     </div>
