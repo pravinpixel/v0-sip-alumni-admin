@@ -374,9 +374,7 @@
         currentPage = table.page.info().page;
         });
         table.on('order.dt', function () {
-            setTimeout(function () {
-                updateSortIcons();
-            }, 10);
+            currentPage = table.page.info().page;
         });
         // table.on('preDraw.dt', function (e, settings) {
         //     if (settings.aaSorting && settings.aaSorting.length > 0) {
