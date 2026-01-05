@@ -703,7 +703,7 @@
             return;
         }
 
-        confirmBox("Are you sure you want approve this post?", function() {
+        confirmBox("Approve Post","Are you sure you want approve this post ?", function() {
             updatePostStatus(id, status);
         });
     }

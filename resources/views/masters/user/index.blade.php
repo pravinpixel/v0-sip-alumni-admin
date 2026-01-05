@@ -637,7 +637,7 @@
             // Attach event listener to the "Delete" button
             $(document).on('click', '.deletestateBtn', function () {
                 var userId = $(this).data('user-id');
-                confirmBox("Are you sure you want to delete this user?", function() {
+                confirmBox("Delete User","Are you sure you want to delete this user ?", function() {
                     $.ajax({
                             url: "{{ route('user.delete', ['id' => ':id']) }}".replace(':id', userId),
                             type: 'DELETE',

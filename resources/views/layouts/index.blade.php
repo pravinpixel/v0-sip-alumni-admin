@@ -57,7 +57,7 @@
     <div class="modal-content confirm-modal">
 
       <div class="modal-header border-0">
-        <h5 class="modal-title">Confirmation</h5>
+        <h5 class="modal-title" id="globalConfirmHeader">Confirmation</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
@@ -77,9 +77,10 @@
 
 <script>
     // GLOBAL CONFIRM FUNCTION — usable in ALL PAGES
-    function confirmBox(message, callback) {
+    function confirmBox(title, message, callback) {
 
     $("#globalConfirmMessage").text(message);
+    $("#globalConfirmHeader").text(title);
 
     const yesBtn = $("#globalConfirmYes");
     yesBtn.prop('disabled', false).text('Yes');

@@ -550,7 +550,7 @@
             document.getElementById('remarksError').style.display = 'none';
         } else {
             // Unblock without remarks
-            confirmBox("Are you sure you want to unblock this user?", function() {
+            confirmBox("Unblock Alumni","Are you sure you want to unblock this alumni ?", function() {
             
             $.ajax({
                 url: "{{ route('directory.update.status') }}",

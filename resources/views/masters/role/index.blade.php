@@ -596,7 +596,7 @@
         $(document).on('click', '.deletestateBtn', function(e) {
             e.stopPropagation();
             var roleId = $(this).data('role-id');
-            confirmBox("Are you sure you want to delete this user?", function() {
+            confirmBox("Delete Role","Are you sure you want to delete this role ?", function() {
                 $.ajax({
                     url: "{{ route('role.delete', ['id' => ':id']) }}".replace(':id', roleId),
                     type: 'DELETE',
