@@ -1340,3 +1340,23 @@ body {
   padding: 16px;
   display: flex; justify-content: space-between; align-items: center;
 }
+
+.status-badge {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+/* Active */
+.status-active {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+/* Inactive */
+.status-inactive {
+    background-color: #fee2e2;
+    color: #dc2626;
+}

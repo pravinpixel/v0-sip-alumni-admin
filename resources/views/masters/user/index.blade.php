@@ -111,9 +111,8 @@
                                                     <span class="toggle-slider"
                                                         style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.4s; border-radius: 24px;"></span>
                                                 </label>
-                                                <span
-                                                    style="padding: 0.375rem 0.75rem; background: {{$data->status == 1 ? '#dcfce7' : '#fee2e2'}}; color: {{$data->status == 1 ? '#16a34a' : '#dc2626'}}; border-radius: 0.375rem; font-size: 10px; font-weight: 600;">
-                                                    {{$data->status == 1 ? 'Active' : 'Inactive'}}
+                                                <span class="status-badge {{ $data->status == 1 ? 'status-active' : 'status-inactive' }}">
+                                                    {{ $data->status == 1 ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </div>
                                         </td>
@@ -591,7 +590,6 @@
                     data: {},
                     dataType: 'html',
                     success: function (response) {
-                        console.log(response);
                         $('#dataTable tbody').html($(response).find('#dataTable tbody').html());
                         $('#paginationInfo').html($(response).find('#paginationInfo').html());
                         $('#paginationControls').html($(response).find('#paginationControls').html());
