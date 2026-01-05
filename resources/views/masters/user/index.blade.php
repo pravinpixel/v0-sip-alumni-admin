@@ -254,7 +254,7 @@
                 updateFilterCount(filterType);
                 
                 // Apply filters
-                updateTableData();
+                applyFilters();
             });
 
             // Clear all filters
@@ -262,10 +262,12 @@
                 $('.filter-option input[type="checkbox"]').prop('checked', false);
                 $('.filter-count').hide().text('0');
                 $(this).hide();
-                updateTableData();
-                // Restore original pagination when clearing filters
-                restoreOriginalPagination();
+                applyFilters();
             });
+
+            function applyFilters() {
+                updateTableData(1); 
+            }
 
             // Close dropdowns when clicking outside
             $(document).on('click', function() {

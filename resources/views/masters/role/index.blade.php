@@ -286,8 +286,6 @@
             $('.filter-count').hide().text('0');
             $(this).hide();
             applyFilters();
-            // Restore original pagination when clearing filters
-            restoreOriginalPagination();
         });
 
         // Close dropdowns when clicking outside
@@ -317,7 +315,7 @@
         }
 
         function applyFilters() {
-            updateTableData(1); // 👈 AJAX reload with filters
+            updateTableData(1); 
         }
 
         // Simple Column Sorting Function
