@@ -889,139 +889,135 @@
                 'Unknown date';
 
             html += `
-                    <div style="background: white; border: 1px solid ${post.is_pinned_by_user ? '#e5e7eb' : '#e5e7eb'}; border-radius: 12px; padding: 24px; margin-bottom: 20px; transition: all 0.3s ease; position: relative;"
-                         onmouseover="this.style.boxShadow='0 4px 12px rgba(0,0,0,0.1)'"
-                         onmouseout="this.style.boxShadow='none'">
-
-                        ${post.is_pinned_by_user ? `
-                            <div style="position: absolute; top: 16px; right: 16px; display: flex; align-items: center; gap: 8px;">
-                                <div style="position: relative; top:2px;background: #F7C744; color: #000; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                                    <i class="fas fa-thumbtack mt-1"></i>
-                                    <span class="fw-bold">Pinned</span>
-                                </div>
-                                <button onclick="togglePin(${post.id}, this)" 
-                                    style="background: transparent; border: none; color: #dc2626; cursor: pointer; font-size: 16px; padding: 10px;"
-                                    title="Unpin this post">
-                                    <i class="fas fa-thumbtack"></i>
-                                </button>
+                    <div class="forum-post-card">
+                        <div class="post-header mb-2">
+                            <div>
+                                <a onclick="openThreadModal(${post.id})">
+                                <h2 class="post-title">
+                                    ${escapeHtml(title)}
+                                </h2>
+                                </a>
                             </div>
-                        ` : `
-                            <button onclick="togglePin(${post.id}, this)" 
-                                style="position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: #9ca3af; cursor: pointer; font-size: 16px; padding: 10px;"
-                                onmouseover="this.style.color='#6b7280'"
-                                onmouseout="this.style.color='#9ca3af'"
-                                title="Pin this post">
-                                <i class="fas fa-thumbtack"></i>
-                            </button>
-                        `}
 
-                        <div style="margin-bottom: 16px; padding-right: 80px;">
-                            <a onclick="openThreadModal(${post.id})">
-                              <h2 
-                                style="font-size: 20px; font-weight: 700; color: #dc2626; margin: 0; line-height: 1.4;overflow-wrap: break-word;"
-                                onmouseover="this.style.textDecoration='underline';"
-                                onmouseout="this.style.textDecoration='none'; this.style.color='#dc2626';"
-                              >
-                                ${escapeHtml(title)}
-                              </h2>
-                            </a>
+                            ${post.is_pinned_by_user ? `
+                                <div class="post-header-right">
+                                    <div class="pinned-tag">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            class="pin-icon">
+                                            <line x1="12" x2="12" y1="17" y2="22"></line>
+                                            <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
+                                        </svg>
+                                        <span class="fw-bold">Pinned</span>
+                                    </div>
+                                    <button onclick="togglePin(${post.id}, this)" class="pin-button pinned"
+                                        title="Unpin this post">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                            class="pin-icon">
+                                            <line x1="12" x2="12" y1="17" y2="22"></line>
+                                            <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            ` : `
+                                <button onclick="togglePin(${post.id}, this)" class="pin-button"
+                                    title="Pin this post">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                        class="pin-icon">
+                                        <line x1="12" x2="12" y1="17" y2="22"></line>
+                                        <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
+                                    </svg>
+                                  </button>
+                            `}
                         </div>
 
-
-                        <p style="color: #6b7280; font-size: 18px; line-height: 1.3; margin-bottom: 20px; word-wrap: break-word; overflow-wrap: break-word; white-space: normal;" 
+                        <p class="post-description mb-4"
                            title="${escapeHtml(fullDescription)}">
                              ${escapeHtml(fullDescription)}
                         </p>
 
                         ${tags.length > 0 ? `
-                            <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+                            <div class="post-tags mb-4">
                                 ${tags.map(tag => `
-                                    <span style="background: #F7C744; color: #000000ff; padding: 4px 12px; border-radius: 14px; font-size: 13px; font-weight: 600;">
+                                    <span>
                                         ${escapeHtml(tag.trim())}
                                     </span>
                                 `).join('')}
                             </div>
                         ` : ''}
 
-                        <div style="display: flex; align-items: center; gap: 12px; padding-bottom: 16px; margin-bottom: 16px; border-bottom: 1px solid #e5e7eb;">
+                        <div class="post-author-section">
                             ${hasConnection && profilePicture ? `
-                                <img src="${profilePicture}" alt="${escapeHtml(author)}" 
-                                    style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
+                                <img src="${profilePicture}" alt="${escapeHtml(author)}" class="post-author-image">
                             ` : `
-                                <div style="width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(90deg, #E2001D, #B1040E); color: white; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
+                                <div class="post-author-initial">
                                     ${authorInitial}
                                 </div>
                             `}
-                            <div style="display: flex; gap: 8px;">
-                                <p style="font-size: 14px; color: #6b7280; margin: 0;">${escapeHtml(author)}</p>
-                                <span style="color:#6b7280;">•</span>
-                                <p style="font-size: 14px; color: #6b7280; margin: 0;">${date}</p>
+                            <div class="post-author-info">
+                                <p>${escapeHtml(author)}</p>
+                                <span>•</span>
+                                <p>${date}</p>
                             </div>
                         </div>
 
                         {{-- Added engagement stats and action buttons with reply toggle --}}
 
-                <div class="post-footer">
-                    <!-- row 1: used on all screens; on mobile it has NO View Thread -->
-                    <div class="post-footer-row-1">
-                        <div class="post-footer-left">
-                            <div style="display:flex;align-items:center;gap:4px;color:#6b7280;font-size:14px;">
-                                <i class="far fa-eye"></i>
-                                <span>${post.views_count || 0}</span>
+                        <div class="post-footer">
+                            <!-- row 1: used on all screens; on mobile it has NO View Thread -->
+                            <div class="post-footer-row-1">
+                                <div class="post-footer-left">
+                                    <div>
+                                        <i class="far fa-eye"></i>
+                                        <span>${post.views_count || 0}</span>
+                                    </div>
+                                    <div>
+                                        <i class="far fa-heart"></i>
+                                        <span>${post.likes_count || 0}</span>
+                                    </div>
+                                    <div>
+                                        <i class="far fa-comment"></i>
+                                        <span>${post.reply_count || 0}</span>
+                                    </div>
+                                </div>
+
+                                <div class="post-footer-actions">
+                                    ${post.is_liked_by_user ? `
+                                        <button onclick="toggleLike(${post.id}, this)" class="like-toggle-btn liked">
+                                            <i class="fas fa-heart"></i>
+                                            Unlike
+                                        </button>
+                                    ` : `
+                                        <button onclick="toggleLike(${post.id}, this)" class="like-toggle-btn">
+                                            <i class="far fa-heart"></i>
+                                            Like
+                                        </button>
+                                    `}
+
+                                    <button data-post-id="${post.id}" class="reply-toggle-btn"
+                                        onmouseover="replyHover(this)"
+                                        onmouseout="replyUnhover(this)"
+                                        onclick="toggleReplyForm(this, ${post.id})">
+                                        <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm"></i> Reply
+                                    </button>
+
+                                    <!-- View Thread for desktop & tablet -->
+                                    <button onclick="openThreadModal(${post.id})"
+                                        class="view-thread-btn desktop-tablet-only">
+                                        <i class="far fa-comment"></i>
+                                        View Thread
+                                    </button>
+                                </div>
                             </div>
-                            <div style="display:flex;align-items:center;gap:4px;color:#6b7280;font-size:14px;">
-                                <i class="far fa-heart"></i>
-                                <span>${post.likes_count || 0}</span>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:4px;color:#6b7280;font-size:14px;">
-                                <i class="far fa-comment"></i>
-                                <span>${post.reply_count || 0}</span>
+
+                            <!-- row 2: MOBILE-ONLY View Thread -->
+                            <div class="post-footer-row-2">
+                                <button onclick="openThreadModal(${post.id})"
+                                    class="view-thread-btn mobile-only">
+                                    <i class="far fa-comment"></i>
+                                    View Thread
+                                </button>
                             </div>
                         </div>
-
-                        <div class="post-footer-actions">
-                            ${post.is_liked_by_user ? `
-                                <button onclick="toggleLike(${post.id}, this)" 
-                                    style="border:none;color:#dc2626;background:#ffffffff;cursor:pointer;font-size:14px;padding:8px 16px;border-radius:6px;font-weight:600;display:flex;align-items:center;gap:6px;transition:all 0.2s;">
-                                    <i class="fas fa-heart" style="color:#dc2626;"></i>
-                                    Unlike
-                                </button>
-                            ` : `
-                                <button onclick="toggleLike(${post.id}, this)" 
-                                    style="border:none;color:#756b80ff;background:#ffffffff;cursor:pointer;font-size:14px;padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:6px;transition:all 0.2s;">
-                                    <i class="far fa-heart"></i>
-                                    Like
-                                </button>
-                            `}
-
-                            <button data-post-id="${post.id}"
-                                style="background:transparent;border:none;color:#6b7280;cursor:pointer;font-size:14px;padding:8px 12px;border-radius:6px;display:flex;align-items:center;gap:6px;transition:0.2s;"
-                                onmouseover="replyHover(this)"
-                                onmouseout="replyUnhover(this)"
-                                onclick="toggleReplyForm(this, ${post.id})">
-                                <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm"></i> Reply
-                            </button>
-
-                            <!-- View Thread for desktop & tablet -->
-                            <button onclick="openThreadModal(${post.id})"
-                                class="view-thread-btn desktop-tablet-only"
-                                style="background:linear-gradient(90deg,#E2001D,#B1040E);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;">
-                                <i class="far fa-comment"></i>
-                                View Thread
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- row 2: MOBILE-ONLY View Thread -->
-                    <div class="post-footer-row-2">
-                        <button onclick="openThreadModal(${post.id})"
-                            class="view-thread-btn mobile-only"
-                            style="background:linear-gradient(90deg,#E2001D,#B1040E);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:8px;">
-                            <i class="far fa-comment"></i>
-                            View Thread
-                        </button>
-                    </div>
-                </div>
 
                         {{-- Added reply input form that shows/hides on button click --}}
                         <div id="replyForm-${post.id}" style="display: none; border-radius: 12px;">

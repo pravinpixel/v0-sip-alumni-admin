@@ -304,6 +304,10 @@ function submitThreadReply() {
         showToast('Please enter a valid reply', 'error');
         return;
     }
+    if (replyText.length > 255) {
+        showToast('Reply exceeds maximum length of 255 characters', 'error');
+        return;
+    }
 
     const postId = window.currentThreadPostId;
 
