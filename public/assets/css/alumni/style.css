@@ -1004,11 +1004,14 @@ body {
   padding: 24px;
   margin-bottom: 20px;
   transition: all 0.3s ease;
+  scale: 0.99;
   position: relative;
 }
 
 .forum-post-card:hover {
+  scale: 1;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #F7C744;
 }
 
 .post-header {
