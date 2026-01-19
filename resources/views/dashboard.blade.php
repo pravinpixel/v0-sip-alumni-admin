@@ -66,15 +66,15 @@
     function renderStatsCards(stats) {
         return `
             <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(3, 1fr);">
-                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 6px solid #dc2626;">
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 6px solid #ba0028;">
                     <div style="display: flex; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h3 style="font-size: 0.875rem; font-weight: 500; color: #4b5563; margin-bottom: 1rem;">Total Directory (Alumni)</h3>
-                            <div style="font-size: 2.25rem; font-weight: 700; color: #dc2626; margin-bottom: 0.5rem;">${stats.totalAlumni}</div>
+                            <div style="font-size: 2.25rem; font-weight: 700; color: #ba0028; margin-bottom: 0.5rem;">${stats.totalAlumni}</div>
                             <p style="font-size: 0.75rem; color: #9ca3af;">All registered alumni</p>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: center; height: 2.5rem; width: 2.5rem; border-radius: 0.5rem; background-color: #fef2f2;">
-                            <i class="fas fa-users" style="color: #dc2626;"></i>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ba0028" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-5 w-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                         </div>
                     </div>
                 </div>
@@ -86,21 +86,21 @@
                             <div style="font-size: 2.25rem; font-weight: 700; color: #16a34a; margin-bottom: 0.5rem;">${stats.activeAlumni}</div>
                             <p style="font-size: 0.75rem; color: #9ca3af;">Currently active members</p>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: center; height: 2.5rem; width: 2.5rem; border-radius: 0.5rem; background-color: #f0fdf4;">
-                            <i class="fas fa-user-check" style="color: #16a34a;"></i>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-check h-5 w-5 text-green-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
                         </div>
                     </div>
                 </div>
 
-                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 6px solid #dc2626;">
+                <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 6px solid #e7000b;">
                     <div style="display: flex; align-items: flex-start; justify-content: space-between;">
                         <div style="flex: 1;">
                             <h3 style="font-size: 0.875rem; font-weight: 500; color: #4b5563; margin-bottom: 1rem;">Blocked Alumni</h3>
-                            <div style="font-size: 2.25rem; font-weight: 700; color: #dc2626; margin-bottom: 0.5rem;">${stats.blockedAlumni}</div>
+                            <div style="font-size: 2.25rem; font-weight: 700; color: #e7000b; margin-bottom: 0.5rem;">${stats.blockedAlumni}</div>
                             <p style="font-size: 0.75rem; color: #9ca3af;">Temporarily blocked</p>
                         </div>
-                        <div style="display: flex; align-items: center; justify-content: center; height: 2.5rem; width: 2.5rem; border-radius: 0.5rem; background-color: #fef2f2;">
-                            <i class="fas fa-user-times" style="color: #dc2626;"></i>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e7000b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x h-5 w-5 text-red-600"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="17" x2="22" y1="8" y2="13"></line><line x1="22" x2="17" y1="8" y2="13"></line></svg>
                         </div>
                     </div>
                 </div>
@@ -132,8 +132,8 @@
                         <p style="font-size: 0.875rem; color: #6b7280; margin: 0.25rem 0 0 0;">Year ${alumni.year || 'N/A'}</p>
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
-                        <i class="fas fa-user-friends" style="color: #dc2626; font-size: 0.875rem;"></i>
-                        <span style="font-size: 1.125rem; font-weight: 700; color: #dc2626;">${alumni.connections}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ba0028" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users h-4 w-4 mb-1"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                        <span style="font-size: 1.125rem; font-weight: 700; color: #ba0028;">${alumni.connections}</span>
                         <span style="font-size: 0.75rem; color: #9ca3af;">connections</span>
                     </div>
                 </div>
@@ -147,7 +147,7 @@
                         <h2 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0;">Top Alumni by Connections</h2>
                         <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">Alumni with the most network connections</p>
                     </div>
-                    <i class="fas fa-chart-line" style="font-size: 1.5rem; color: #dc2626;"></i>
+                    <i class="fas fa-chart-line" style="font-size: 1.5rem; color: #ba0028;"></i>
                 </div>
                 <div style="display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
                     ${alumniCards}
@@ -169,8 +169,8 @@
                     </div>
                 </div>
                 
-                <h4 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0 0 1rem 0; min-height: 10px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;">${post.title}</h4>
-                <p style="font-size: 0.95rem; color: #9ca3af; margin: 0 0 1.5rem 0; line-height: 1.5; min-height: 60px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">${post.description}</p>
+                <h4 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0 0 1rem 0; min-height: 10px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;" title="${post.title}">${post.title}</h4>
+                <p style="font-size: 0.95rem; color: #9ca3af; margin: 0 0 1.5rem 0; line-height: 1.5; min-height: 60px; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;" title="${post.description}">${post.description}</p>
                 
                 <div style="margin-top: auto;">
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
@@ -206,7 +206,7 @@
                         
                         <div style="display: flex; align-items: center; gap: 0.75rem;">
                             <div style="width: 48px; height: 48px; border-radius: 0.75rem; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                <i class="fas fa-thumbtack" style="color: white; font-size: 1.25rem;"></i>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pin h-3 w-3 text-white"><line x1="12" x2="12" y1="17" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>
                             </div>
                             <div>
                                 <p style="font-size: 0.875rem; color: #9ca3af; margin: 0;">Pinned</p>
@@ -225,7 +225,7 @@
                         <h2 style="font-size: 1.5rem; font-weight: 700; color: #111827; margin: 0;">Forum Statistics</h2>
                         <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.25rem;">Overview of forum posts and engagement</p>
                     </div>
-                    <i class="fas fa-comments" style="font-size: 1.5rem; color: #dc2626;"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ba0028" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square h-6 w-6 text-primary"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                 </div>
 
                 <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(3, 1fr); margin-bottom: 2rem;">
@@ -236,8 +236,8 @@
                                 <div style="font-size: 2.25rem; font-weight: 700; color: #16a34a; margin-bottom: 0.5rem;">${forumStats.activePosts}</div>
                                 <p style="font-size: 0.75rem; color: #9ca3af;">Approved and published</p>
                             </div>
-                            <div style="display: flex; align-items: center; justify-content: center; height: 2.5rem; width: 2.5rem; border-radius: 0.5rem; background-color: #f0fdf4;">
-                                <i class="fas fa-comment-alt" style="color: #16a34a;"></i>
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square h-6 w-6 text-primary"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                             </div>
                         </div>
                     </div>
