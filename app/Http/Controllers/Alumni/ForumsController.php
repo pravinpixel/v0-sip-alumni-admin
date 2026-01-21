@@ -16,6 +16,7 @@ use App\Models\Labels;
 use App\Models\PostLabel;
 use App\Models\PostLikes;
 use App\Models\PostPinned;
+use App\Models\PostReport;
 use App\Models\PostViews;
 use App\Models\Role;
 use App\Models\User;
@@ -57,9 +58,25 @@ class ForumsController extends Controller
                 ->values()
                 ->toArray();
 
+            // Get unique labels from approved posts
+            $labels = Labels::select('id', 'name')
+                ->whereHas('postlabels.post', function ($query) {
+                    $query->where('status', 'approved');
+                })
+                ->orderBy('name')
+                ->get()
+                ->map(function ($label) {
+                    return [
+                        'key' => $label->id,
+                        'label' => $label->name
+                    ];
+                })
+                ->toArray();
+
             return response()->json([
                 'success' => true,
                 'batchYears' => $batchYears,
+                'labels' => $labels,
             ]);
         } catch (\Exception $e) {
             Log::error('Error fetching filter options: ' . $e->getMessage());
@@ -147,6 +164,14 @@ class ForumsController extends Controller
                     $q->where('alumni_id', $alumniId);
                 });
                 }
+            }
+
+            // Add label filtering
+            if ($request->has('label') && !empty($request->label)) {
+                $labelIds = $request->label;
+                $query->whereHas('postlabels', function ($labelQuery) use ($labelIds) {
+                    $labelQuery->whereIn('label_id', $labelIds);
+                });
             }
 
             $forumPosts = $query->get();
@@ -409,6 +434,44 @@ class ForumsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while fetching labels.'
+            ], 500);
+        }
+    }
+
+    public function reportPost(Request $request)
+    {
+        try {
+            $alumniId = session('alumni.id');
+            
+            $validator = Validator::make($request->all(), [
+                'post_id' => 'required',
+                'report' => 'required|string'
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $validator->errors()->first()
+                ], 422);
+            }
+
+            // Create the report
+            PostReport::create([
+                'alumni_id' => $alumniId,
+                'post_id' => $request->post_id,
+                'report' => $request->report
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Report submitted successfully.'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error submitting post report: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while submitting the report.'
             ], 500);
         }
     }

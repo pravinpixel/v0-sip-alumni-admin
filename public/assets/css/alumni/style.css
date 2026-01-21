@@ -1087,3 +1087,19 @@ body {
   top: 2px;
   position: relative;
 }
+
+.flag-icon {
+  color: #ff0000;
+}
+
+.flag-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 6px 8px;
+}
+
+.flag-button:hover {
+  background: #ffe7e7;
+  border-radius: 20%;
+}

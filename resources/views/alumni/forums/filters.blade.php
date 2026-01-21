@@ -1,6 +1,6 @@
     {{-- Filter Section --}}
     <div id="filterSection">
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;">
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
             <div>
                 <label class="filter-label">
                     Date Range
@@ -44,6 +44,18 @@
                 <div class="multi-select-container" data-filter="postType">
                     <div class="multi-select-display">
                         <span class="placeholder">Select post type</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="multi-select-dropdown"></div>
+                </div>
+            </div>
+            <div>
+                <label class="filter-label">
+                    Label
+                </label>
+                <div class="multi-select-container" data-filter="label">
+                    <div class="multi-select-display">
+                        <span class="placeholder">Select labels</span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="multi-select-dropdown"></div>

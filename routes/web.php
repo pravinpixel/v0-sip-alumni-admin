@@ -73,6 +73,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/get-data', 'getData')->name('admin.forums.data')->middleware('checkAccess:forum.view');
         Route::get('/filter-options', 'getFilterOptions')->name('admin.forums.filter.options');
         Route::get('/post-details/{id}', 'getPostDetails')->name('admin.forums.post.details');
+        Route::get('/post-reports/{id}', 'getPostReports')->name('admin.forums.post.reports');
         Route::get('/comments/{id}', 'viewComments')->name('admin.forums.comments');
         Route::get('/comments-data/{id}', 'getCommentsData')->name('admin.forums.comments.data');
         Route::get('/comment-replies/{id}', 'getCommentReplies')->name('admin.forums.comment.replies');

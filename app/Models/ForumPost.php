@@ -79,5 +79,9 @@ class ForumPost extends Model
         return $this->postlabels()->with('label:id,name')->get()->pluck('label.name');
     }
 
+    public function reports()
+    {
+        return $this->hasMany(PostReport::class, 'post_id');
+    }
 
 }

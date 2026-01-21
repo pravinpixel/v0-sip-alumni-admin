@@ -8,6 +8,7 @@ use App\Mail\AlumniPostRemoveMail;
 use App\Mail\AlumniRejectPostMail;
 use App\Models\ForumPost;
 use App\Models\ForumReplies;
+use App\Models\PostReport;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -155,6 +156,17 @@ class ForumsController extends Controller
                         ->format('M j, Y');
                 })
 
+                ->addColumn('report', function ($row) {
+                    $count = $row->reports()->count();
+                    if ($count == 0) {
+                        return '<span>No reports</span>';
+                    }
+                    return '<div class="report-count-badge" onclick="viewPostReports(' . $row->id . ')" style="cursor: pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert h-4 w-4 text-orange-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg>
+                        <span style="margin-left:4px;">' . $count . '</span>
+                        </div>';
+                })
+
                 ->addColumn('status', function ($row) {
 
                     $status = strtolower($row->status);
@@ -267,7 +279,7 @@ class ForumsController extends Controller
                     ';
                 })
 
-                ->rawColumns(['alumni', 'contact', 'view_post', 'status', 'action'])
+                ->rawColumns(['alumni', 'contact', 'view_post', 'status', 'action', 'report'])
                 ->make(true);
         } catch (\Throwable $e) {
             Log::error('Directory DataTable error: ' . $e->getMessage(), [
@@ -546,6 +558,45 @@ class ForumsController extends Controller
             return $this->returnSuccess($post, $toast_message);
         } catch (\Exception $e) {
             return $this->returnError('Failed to update status: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function getPostReports($id)
+    {
+        try {
+            $post = ForumPost::with(['alumni'])->findOrFail($id);
+            $reports = PostReport::with(['alumni'])
+                ->where('post_id', $id)
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function($report) {
+                    return [
+                        'id' => $report->id,
+                        'report' => $report->report,
+                        'alumni_name' => $report->alumni->full_name ?? 'Unknown',
+                        'alumni_image' => $report->alumni->image_url ?? asset('images/avatar/blank.png'),
+                        'location' => $report->alumni?->city?->state?->name ?? 'Unknown',
+                        'created_at' => \Carbon\Carbon::parse($report->created_at)
+                            ->setTimezone('Asia/Kolkata')
+                            ->format('M j, Y')
+                    ];
+                });
+
+            return response()->json([
+                'success' => true,
+                'post' => [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'alumni_name' => $post->alumni->full_name ?? 'Unknown'
+                ],
+                'reports' => $reports
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error loading post reports: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to load post reports'
+            ], 500);
         }
     }
 

@@ -35,6 +35,7 @@
                             <th class="table-header">View Post</th>
                             <th class="table-header">Action Taken On</th>
                             <th class="table-header">Status</th>
+                            <th class="table-header">Reports</th>
                             <th class="table-header">Actions</th>
                         </tr>
                     </thead>
@@ -101,6 +102,36 @@
     table.dataTable thead .sorting_desc:before,
     table.dataTable thead .sorting_desc:after {
         color: white !important;
+    }
+
+    /* Report count badge styling */
+    .report-count-badge {
+        display: inline-flex;
+        align-items: center;
+        background: #fef3c7;
+        color: #d97706;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid #fbbf24;
+    }
+
+    .report-count-badge:hover {
+        background: #fbbf24;
+        color: #92400e;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .report-count-badge svg {
+        color: #d97706;
+    }
+
+    .report-count-badge:hover svg {
+        color: #92400e;
     }
 
 
@@ -247,6 +278,47 @@
     </div>
 </div>
 
+<!-- Post Reports Modal -->
+<div id="postReportsModal" class="modal-overlay" style="display: none;">
+    <div class="modal-wrapper">
+        <div class="modal-card" style="max-width: 500px;">
+            <!-- Header -->
+            <div class="modal-header">
+                <button class="modal-close-btn" onclick="closeReportsModal()">×</button>
+                <div class="mb-4" style="display: flex; align-items: center; gap: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert text-orange-600 alert-icon"><
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path>
+                        <path d="M12 9v4"></path>
+                        <path d="M12 17h.01"></path>
+                    </svg>
+                    <h2 class="fs-2">Post Reports (<span id="reportsCount">0</span>)</h2>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body pb-0">
+                <!-- Post Info -->
+                <div class="modal-section">
+                    <div class="modal-content-box">
+                        <div id="reportedPostTitle" class="bold"></div>
+                        <div class="fw-light fs-6">
+                            Posted by <span id="reportedPostAuthor"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports Section -->
+                <div class="modal-section">
+                    <label class="modal-label">REPORTS SUBMITTED BY ALUMNI</label>
+                    <div id="reportsList" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Reports will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @push('scripts')
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
@@ -310,6 +382,12 @@
                 {
                     data: 'status',
                     name: 'status',
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    data: 'report',
+                    name: 'report',
                     orderable: false,
                     searchable: false
                 },
@@ -791,12 +869,16 @@
     document.addEventListener('click', function(event) {
         const rejectModal = document.getElementById('rejectPostModal');
         const removeModal = document.getElementById('removePostModal');
+        const reportsModal = document.getElementById('postReportsModal');
         
         if (event.target === rejectModal) {
             closeRejectModal();
         }
         if (event.target === removeModal) {
             closeRemoveModal();
+        }
+        if (event.target === reportsModal) {
+            closeReportsModal();
         }
     });
 
@@ -863,6 +945,64 @@
         // Use unified API call
         updatePostStatus(currentRemovePostId, 'removed_by_admin', remarks);
         closeRemoveModal();
+    }
+
+    // Post Reports Modal Functions
+    function viewPostReports(postId) {
+        $.ajax({
+            url: "{{ route('admin.forums.post.reports', '') }}/" + postId,
+            type: 'GET',
+            success: function(response) {
+                if (response.success) {
+                    // Set post info
+                    $('#reportedPostTitle').text(response.post.title || 'Untitled Post');
+                    $('#reportedPostAuthor').text(response.post.alumni_name || 'Unknown');
+                    $('#reportsCount').text(response.reports.length);
+                    
+                    // Clear and populate reports list
+                    const reportsList = $('#reportsList');
+                    reportsList.empty();
+                    
+                    if (response.reports.length === 0) {
+                        reportsList.html('<div style="text-align: center; color: #6b7280; padding: 20px;">No reports found</div>');
+                    } else {
+                        response.reports.forEach(function(report) {
+                            const reportItem = $(`
+                                <div style="border: 1px solid #e5e7eb;border-left: 4px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 12px; background: #fff7ed;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <img src="${report.alumni_image}" 
+                                             style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                        <div>
+                                            <div style="font-weight: 600; color: #111827;">${$('<div>').text(report.alumni_name).html()}</div>
+                                            <div style="font-size: 12px; color: #6b7280;">
+                                                <i class="fas fa-map-marker-alt" style="margin-right: 4px;"></i>
+                                                ${$('<div>').text(report.location).html()} <i class="fas fa-calendar" style="margin: 0 4px;"></i>  ${$('<div>').text(report.created_at).html()}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style=" padding: 12px;">
+                                        <div style="color: #374151; line-height: 1.5;">${$('<div>').text(report.report).html()}</div>
+                                    </div>
+                                </div>
+                            `);
+                            reportsList.append(reportItem);
+                        });
+                    }
+                    
+                    // Show modal
+                    document.getElementById('postReportsModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                }
+            },
+            error: function(xhr) {
+                showToast('Error loading post reports', 'error');
+            }
+        });
+    }
+
+    function closeReportsModal() {
+        document.getElementById('postReportsModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 </script>
 @endpush

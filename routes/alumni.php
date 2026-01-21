@@ -64,6 +64,7 @@ Route::middleware(['route.access:website'])->group(function () {
             Route::post('/update-status', [ForumsController::class, 'updateStatus'])->name('alumni.update.status');
             Route::get('/view-thread/{id}', [ForumsController::class, 'viewThread'])->name('alumni.view.thread');
             Route::get('/get-labels', [ForumsController::class, 'getLabels'])->name('alumni.forums.labels');
+            Route::post('/report-post', [ForumsController::class, 'reportPost'])->name('alumni.forums.report');
         });
 
     });

@@ -1366,3 +1366,22 @@ body {
   background-color: #fee2e2;
   color: #dc2626;
 }
+
+.report-count-badge {
+  background-color: #ffedd4;
+  color: #ca3500;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+.report-count-badge:hover {
+  background-color: #ffd7a8;
+  cursor: pointer;
+}
+
+.alert-icon {
+  color: #ca3500;
+}

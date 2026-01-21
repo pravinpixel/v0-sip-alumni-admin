@@ -9,4 +9,9 @@ class Labels extends Model
 {
     use HasFactory;
     protected $table = 'labels';
+
+    public function postlabels()
+    {
+        return $this->hasMany(PostLabel::class, 'label_id');
+    }
 }

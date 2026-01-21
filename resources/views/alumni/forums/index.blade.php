@@ -344,6 +344,267 @@
 
 @include('alumni.modals.view-thread-modal')
 
+{{-- Report Post Modal --}}
+<div id="reportPostModal" class="modal-overlay">
+    <div class="report-modal-popup">
+        <div class="modal-header">
+            <h2>Report Post</h2>
+            <button class="modal-close-btn" onclick="closeReportModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label>Reason for reporting</label>
+                <textarea id="reportReason" class="form-textarea" placeholder="Please describe why you're reporting this post..." rows="3"></textarea>
+                <small class="error-message" style="color: #dc2626; font-size: 12px; display: none;"></small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" onclick="closeReportModal()">Cancel</button>
+            <button class="btn-submit-report" onclick="submitReport()">Submit Report</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Report Modal Styles */
+    #reportPostModal.modal-overlay {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+    }
+
+    #reportPostModal.modal-overlay.open {
+        display: flex;
+    }
+
+    #reportPostModal .report-modal-popup {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 500px;
+        max-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        animation: slideIn 0.3s ease;
+        overflow: hidden;
+    }
+
+    #reportPostModal .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #e5e7eb;
+        background: white;
+        border-radius: 12px 12px 0 0;
+    }
+
+    #reportPostModal .modal-header h2 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: #111827;
+    }
+
+    #reportPostModal .modal-close-btn {
+        background: none;
+        border: none;
+        font-size: 28px;
+        color: #6b7280;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #reportPostModal .modal-close-btn:hover {
+        color: #111827;
+    }
+
+    #reportPostModal .modal-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+    }
+
+    #reportPostModal .form-group {
+        margin-bottom: 20px;
+    }
+
+    #reportPostModal .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #111827;
+        font-size: 14px;
+    }
+
+    #reportPostModal .form-textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    #reportPostModal .form-textarea:focus {
+        outline: none;
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    #reportPostModal .form-textarea::placeholder {
+        color: #9ca3af;
+    }
+
+    #reportPostModal .form-textarea.input-error {
+        border-color: #dc2626;
+        background-color: #fef2f2;
+    }
+
+    #reportPostModal .char-count {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #6b7280;
+        text-align: right;
+    }
+
+    #reportPostModal .error-message {
+        display: block;
+        margin-top: 6px;
+        font-size: 12px;
+        color: #dc2626;
+        font-weight: 500;
+    }
+
+    #reportPostModal .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        padding: 20px;
+        border-top: 1px solid #e5e7eb;
+        background-color: #f9fafb;
+        flex-shrink: 0;
+        border-radius: 0 0 12px 12px;
+    }
+
+    #reportPostModal .btn-cancel {
+        background: white;
+        color: #6b7280;
+        padding: 10px 20px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    #reportPostModal .btn-cancel:hover {
+        background: #f9fafb;
+        border-color: #d1d5db;
+    }
+
+    #reportPostModal .btn-submit-report {
+        background: #dc2626;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    #reportPostModal .btn-submit-report:hover {
+        background: #b91c1c;
+    }
+
+    #reportPostModal .btn-submit-report:disabled {
+        background: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    /* Report Button Styles */
+    .report-toggle-btn {
+        background: transparent;
+        color: #6b7280;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .report-toggle-btn:hover {
+        background: #fef2f2;
+        color: #dc2626;
+    }
+
+    .report-toggle-btn i {
+        font-size: 12px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        #reportPostModal .report-modal-popup {
+            width: 95%;
+            margin: 20px;
+        }
+
+        #reportPostModal .modal-header {
+            padding: 16px;
+        }
+
+        #reportPostModal .modal-header h2 {
+            font-size: 18px;
+        }
+
+        #reportPostModal .modal-body {
+            padding: 16px;
+        }
+
+        #reportPostModal .modal-footer {
+            padding: 16px;
+            flex-direction: column;
+        }
+
+        #reportPostModal .btn-cancel,
+        #reportPostModal .btn-submit-report {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .report-toggle-btn {
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+    }
+</style>
+
 {{-- Include common thread modal JavaScript --}}
 <script src="{{ asset('js/thread-modal-common.js') }}"></script>
 
@@ -420,9 +681,11 @@
         dateRange: [],
         batch: [],
         postType: [],
-        sortBy: []
+        sortBy: [],
+        label: []
     };
     let selectedFiltersOrder = [];
+    let labelNames = {}; // Store label ID to name mapping
 
     document.addEventListener("DOMContentLoaded", function() {
         initializeMultiSelect();
@@ -517,9 +780,17 @@
                                 label: "Regular Posts"
                             }
                         ],
+                        label: data.labels || [],
                     };
 
                     populateFilters(filterData);
+                    
+                    // Store label names for display
+                    if (data.labels) {
+                        data.labels.forEach(label => {
+                            labelNames[label.key] = label.label;
+                        });
+                    }
                 }
             })
             .catch(error => {
@@ -566,6 +837,7 @@
                             label: "Regular Posts"
                         }
                     ],
+                    label: [],
                 };
                 populateFilters(filterData);
             });
@@ -690,7 +962,8 @@
             dateRange: 'Date',
             batch: 'Batch',
             sortBy: 'Sort',
-            postType: 'Type'
+            postType: 'Type',
+            label: 'Label'
         };
 
         const valueLabels = {
@@ -717,7 +990,12 @@
             const tag = document.createElement('div');
             tag.className = 'selected-tag';
 
-            const displayValue = valueLabels[value] || value;
+            let displayValue = valueLabels[value] || value;
+            
+            // Handle label names specially
+            if (filterType === 'label' && labelNames[value]) {
+                displayValue = labelNames[value];
+            }
 
             tag.innerHTML = `
                     <span>${filterLabels[filterType]}: ${displayValue}</span>
@@ -756,7 +1034,8 @@
             dateRange: [],
             batch: [],
             postType: [],
-            sortBy: []
+            sortBy: [],
+            label: []
         };
         selectedFiltersOrder = [];
 
@@ -803,6 +1082,13 @@
         if (selectedFilters.postType.length > 0) {
             selectedFilters.postType.forEach(type => {
                 params.append('post_type[]', type);
+            });
+        }
+
+        // Add label filters
+        if (selectedFilters.label.length > 0) {
+            selectedFilters.label.forEach(labelId => {
+                params.append('label[]', labelId);
             });
         }
 
@@ -916,8 +1202,12 @@
                                             <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
                                         </svg>
                                     </button>
+                                    <button class="flag-button" onclick="openReportModal(${post.id}, this)" title="Report this post">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="flag-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" x2="4" y1="22" y2="15"></line></svg>
+                                    </button>
                                 </div>
                             ` : `
+                                <div class="post-header-right">
                                 <button onclick="togglePin(${post.id}, this)" class="pin-button"
                                     title="Pin this post">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
@@ -926,6 +1216,10 @@
                                         <path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path>
                                     </svg>
                                   </button>
+                                  <button class="flag-button" onclick="openReportModal(${post.id}, this)" title="Report this post">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="flag-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" x2="4" y1="22" y2="15"></line></svg>
+                                    </button>
+                                </div>
                             `}
                         </div>
 
@@ -997,6 +1291,12 @@
                                         onmouseout="replyUnhover(this)"
                                         onclick="toggleReplyForm(this, ${post.id})">
                                         <i class="fa-solid fa-arrow-turn-up fa-rotate-270 fa-sm"></i> Reply
+                                    </button>
+
+                                    <!-- Report Flag Button -->
+                                    <button onclick="openReportModal(${post.id})" class="report-toggle-btn" title="Report Post">
+                                        <i class="fas fa-flag"></i>
+                                        Report
                                     </button>
 
                                     <!-- View Thread for desktop & tablet -->
@@ -1271,6 +1571,130 @@
             button.style.border = "none";
         }
     }
+
+    // Report Modal Functions
+    let currentReportPostId = null;
+
+    function openReportModal(postId) {
+        currentReportPostId = postId;
+        const modal = document.getElementById('reportPostModal');
+        const textarea = document.getElementById('reportReason');
+        
+        // Reset form
+        textarea.value = '';
+        updateCharCount();
+        clearReportError();
+        
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        
+        // Focus on textarea
+        setTimeout(() => {
+            textarea.focus();
+        }, 100);
+    }
+
+    function closeReportModal() {
+        const modal = document.getElementById('reportPostModal');
+        modal.classList.remove('open');
+        document.body.style.overflow = 'auto';
+        currentReportPostId = null;
+        
+        // Reset form
+        document.getElementById('reportReason').value = '';
+        updateCharCount();
+        clearReportError();
+    }
+
+    function updateCharCount() {
+        const textarea = document.getElementById('reportReason');
+        const charCount = document.querySelector('.char-count');
+        const currentLength = textarea.value.length;
+    }
+
+    function clearReportError() {
+        const textarea = document.getElementById('reportReason');
+        const errorMsg = document.querySelector('#reportPostModal .error-message');
+        
+        textarea.classList.remove('input-error');
+        errorMsg.textContent = '';
+        errorMsg.style.display = 'none';
+    }
+
+    function showReportError(message) {
+        const textarea = document.getElementById('reportReason');
+        const errorMsg = document.querySelector('#reportPostModal .error-message');
+        
+        textarea.classList.add('input-error');
+        errorMsg.textContent = message;
+        errorMsg.style.display = 'block';
+    }
+
+    function submitReport() {
+        const textarea = document.getElementById('reportReason');
+        const reason = textarea.value.trim();
+        const submitBtn = document.querySelector('.btn-submit-report');
+        
+        // Clear previous errors
+        clearReportError();
+        
+        // Validation
+        if (!reason) {
+            showReportError('Please provide a reason for reporting this post.');
+            return;
+        }
+        
+        // Show loading state
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.disabled = true;
+        
+        // Submit report
+        fetch("{{ route('alumni.forums.report') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                post_id: currentReportPostId,
+                report: reason
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Report submitted successfully.', 'success');
+                closeReportModal();
+            } else {
+                showReportError(data.message || 'Failed to submit report. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting report:', error);
+            showReportError('An error occurred while submitting the report. Please try again.');
+        })
+        .finally(() => {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        });
+    }
+
+    // Add event listeners for report modal
+    document.addEventListener('DOMContentLoaded', function() {
+        const textarea = document.getElementById('reportReason');
+        if (textarea) {
+            textarea.addEventListener('input', updateCharCount);
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            const modal = document.getElementById('reportPostModal');
+            if (event.target === modal) {
+                closeReportModal();
+            }
+        });
+    });
 </script>
 </script>
 @endsection
