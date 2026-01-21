@@ -9,7 +9,7 @@
         </div>
         <div class="multi-select-container" data-filter="location" style="min-width: 180px;">
             <div class="multi-select-display" style="padding: 8px 12px; min-height: 38px;">
-                <span class="placeholder" style="font-size: 13px;">Location</span>
+                <span class="placeholder" style="font-size: 13px;">Center Location</span>
                 <i class="fas fa-chevron-down" style="color: #9ca3af; font-size: 10px;"></i>
             </div>
             <div class="multi-select-dropdown"></div>

@@ -144,7 +144,7 @@
                         <tr id="tableHeaderRow">
                             <th class="table-header">Alumni Name</th>
                             <th class="table-header">Batch</th>
-                            <th class="table-header">Location</th>
+                            <th class="table-header">Center Location</th>
                             <th class="table-header">View profile</th>
                             <th class="table-header">Status</th>
                         </tr>
@@ -400,7 +400,7 @@
         
         const placeholderTexts = {
             batch: 'Batch',
-            location: 'Location'
+            location: 'Center Location'
         };
         
         // Remove existing badge if any
@@ -428,7 +428,7 @@
         tagsContainer.empty();
 
         let hasFilters = false;
-        const filterLabels = { batch: 'Batch', location: 'Location' };
+        const filterLabels = { batch: 'Batch', location: 'Center Location' };
 
         Object.keys(selectedFilters).forEach(filterType => {
             selectedFilters[filterType].forEach(value => {

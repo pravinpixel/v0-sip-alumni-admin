@@ -18,7 +18,7 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
 
     public function collection()
     {
-        $query = Alumnis::with(['city', 'occupation'])->orderBy('id', 'desc');
+        $query = Alumnis::with(['city', 'centerLocation', 'occupation'])->orderBy('id', 'desc');
 
         // Filters (same as your DataTable)
         if ($this->request->filled('years')) {
@@ -36,6 +36,16 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
 
             $query->whereHas('city', function ($q) use ($cities) {
                 $q->whereIn('name', $cities);
+            });
+        }
+
+        if ($this->request->filled('centerLocations')) {
+            $centerLocations = is_array($this->request->centerLocations)
+                ? $this->request->centerLocations
+                : explode(',', $this->request->centerLocations);
+
+            $query->whereHas('centerLocation', function ($q) use ($centerLocations) {
+                $q->whereIn('name', $centerLocations);
             });
         }
 
@@ -68,6 +78,8 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
             ->orWhere('mobile_number', 'like', "%{$searchValue}%")
             ->orWhereHas('occupation', fn($o) =>
                     $o->where('name', 'like', "%{$searchValue}%"))
+            ->orWhereHas('centerLocation', fn($cl) =>
+                    $cl->where('name', 'like', "%{$searchValue}%"))
             ->orWhereHas('city', fn($c) =>
                     $c->where('name', 'like', "%{$searchValue}%")
                     ->orWhereHas('state', fn($s) =>
@@ -90,6 +102,7 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
             'Created On',
             'Name',
             'Year',
+            'Center Location',
             'City & State',
             'Email',
             'Contact',
@@ -104,6 +117,7 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
             $row->created_at->format('d-m-Y') ?? '-',
             $row->full_name ?? '-',
             $row->year_of_completion ?? '-',
+            $row->centerLocation?->name ?? '-',
             $row->city?->name . ' - ' . $row->city?->state?->name,
             $row->email ?? '-',
             $row->mobile_number ?? '-',

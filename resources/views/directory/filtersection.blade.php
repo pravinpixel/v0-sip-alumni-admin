@@ -26,6 +26,16 @@
                 </button>
                 <div class="filter-dropdown-menu" data-filter="cities"></div>
             </div>
+            <div class="filter-dropdown">
+                <button type="button" class="filter-dropdown-btn" data-filter="centerLocations">
+                    <span>Center Location</span>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="filter-count" data-filter="centerLocations">0</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </button>
+                <div class="filter-dropdown-menu" data-filter="centerLocations"></div>
+            </div>
 
             <!-- Occupation Filter -->
             <div class="filter-dropdown">

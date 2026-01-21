@@ -62,6 +62,13 @@ class DirectoryController extends Controller
                 });
             }
 
+            if ($request->filled('centerLocations')) {
+                $centerLocations = is_array($request->centerLocations) ? $request->centerLocations : explode(',', $request->centerLocations);
+                $query->whereHas('centerLocation', function ($q) use ($centerLocations) {
+                    $q->whereIn('name', $centerLocations);
+                });
+            }
+
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->filter(function ($query) use ($request) {
@@ -79,6 +86,9 @@ class DirectoryController extends Controller
                                 ->orWhere('mobile_number', 'like', "%{$searchValue}%")
                                 ->orWhereHas('occupation', function ($occQuery) use ($searchValue) {
                                     $occQuery->where('name', 'like', "%{$searchValue}%");
+                                })
+                                ->orWhereHas('centerLocation', function ($centerQuery) use ($searchValue) {
+                                    $centerQuery->where('name', 'like', "%{$searchValue}%");
                                 })
                                 ->orWhereHas('city', function ($cityQuery) use ($searchValue) {
                                     $cityQuery->where('name', 'like', "%{$searchValue}%")
@@ -117,6 +127,12 @@ class DirectoryController extends Controller
                         $order
                     );
                 })
+                ->orderColumn('center_location', function ($query, $order) {
+                    $query->orderBy(
+                        DB::raw("(SELECT name FROM center_locations WHERE center_locations.id = alumnis.center_id)"),
+                        $order
+                    );
+                })
                 ->orderColumn('occupation', function ($query, $order) {
                     $query->orderBy(
                         DB::raw("(SELECT name FROM occupations WHERE id = alumnis.occupation_id)"),
@@ -150,6 +166,9 @@ class DirectoryController extends Controller
                 })
                 ->addColumn('mobile_number', function ($row) {
                     return '<span style="font-weight:600; color:#333;">' . ($row->mobile_number ?? '—') . '</span>';
+                })
+                ->addColumn('center_location', function ($row) {
+                    return ($row->centerLocation->name ?? '-');
                 })
                 ->addColumn('location', function ($row) {
                     return ($row->city?->name ?? '-') . ', ' . ($row->city?->state?->name ?? '-');
@@ -328,7 +347,7 @@ class DirectoryController extends Controller
 
                 ->addColumn(
                     'location',
-                    fn($row) => ($row->city?->name ?? '-') . ', ' . ($row->city?->state?->name ?? '-')
+                    fn($row) => ($row->centerLocation?->name ?? '-') . ', ' . ($row->city?->name ?? '-') . ', ' . ($row->city?->state?->name ?? '-')
                 )
 
                 ->addColumn(
@@ -514,6 +533,15 @@ class DirectoryController extends Controller
                 ->sort()
                 ->values();
 
+            // Get unique center locations
+            $centerLocations = Alumnis::with('centerLocation')
+                ->whereHas('centerLocation')
+                ->get()
+                ->pluck('centerLocation.name')
+                ->unique()
+                ->sort()
+                ->values();
+
             // Get unique occupations
             $occupations = Alumnis::with('occupation')
                 ->whereHas('occupation')
@@ -527,6 +555,7 @@ class DirectoryController extends Controller
                 'success' => true,
                 'years' => $years,
                 'cities' => $cities,
+                'centerLocations' => $centerLocations,
                 'occupations' => $occupations
             ]);
         } catch (\Exception $e) {

@@ -55,6 +55,7 @@
                             <th class="table-header">Profile Picture</th>
                             <th class="table-header">Name</th>
                             <th class="table-header">Year</th>
+                            <th class="table-header">Center Location</th>
                             <th class="table-header">City & State</th>
                             <th class="table-header">Email</th>
                             <th class="table-header">Contact</th>
@@ -185,6 +186,7 @@
     let selectedFilters = {
         years: [],
         cities: [],
+        centerLocations: [],
         occupations: []
     };
 
@@ -207,6 +209,7 @@
                 data: function(d) {
                     d.years = selectedFilters.years;
                     d.cities = selectedFilters.cities;
+                    d.centerLocations = selectedFilters.centerLocations;
                     d.occupations = selectedFilters.occupations;
                 }
             },
@@ -229,6 +232,11 @@
                 {
                     data: 'year_of_completion',
                     name: 'year_of_completion',
+                    orderable: true
+                },
+                {
+                    data: 'center_location',
+                    name: 'center_location',
                     orderable: true
                 },
                 {
@@ -368,6 +376,7 @@
             selectedFilters = {
                 years: [],
                 cities: [],
+                centerLocations: [],
                 occupations: []
             };
             $('.filter-dropdown-menu input[type="checkbox"]').prop('checked', false);
@@ -402,12 +411,14 @@
         
         let years = selectedFilters.years.join(',');
         let cities = selectedFilters.cities.join(',');
+        let centerLocations = selectedFilters.centerLocations.join(',');
         let occupations = selectedFilters.occupations.join(',');
         let search = $('#dataTable').DataTable().search();
 
         let url = "{{ route('admin.directory.export') }}" 
                     + "?years=" + years 
                     + "&cities=" + cities 
+                    + "&centerLocations=" + centerLocations
                     + "&occupations=" + occupations
                     + "&search=" + encodeURIComponent(search)
                     + "&format=" + format;
@@ -426,6 +437,9 @@
                     
                     // Populate Cities
                     populateFilterMenu('cities', response.cities, 'City');
+                    
+                    // Populate Center Locations
+                    populateFilterMenu('centerLocations', response.centerLocations, 'Center Location');
                     
                     // Populate Occupations
                     populateFilterMenu('occupations', response.occupations, 'Occupation');
@@ -475,7 +489,7 @@
 
     function updateFilterDisplay() {
         // Update count badges
-        ['years', 'cities', 'occupations'].forEach(filterType => {
+        ['years', 'cities', 'centerLocations', 'occupations'].forEach(filterType => {
             const count = selectedFilters[filterType].length;
             const badge = $(`.filter-count[data-filter="${filterType}"]`);
             
@@ -497,6 +511,7 @@
         const filterLabels = {
             years: 'Year',
             cities: 'City',
+            centerLocations: 'Center Location',
             occupations: 'Occupation'
         };
         
