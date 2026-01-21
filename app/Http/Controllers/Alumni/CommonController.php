@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Alumni;
 use App\Http\Controllers\Controller;
 use App\Models\AlumniConnections;
 use App\Models\Alumnis;
+use App\Models\CenterLocations;
 use App\Models\Cities;
 use App\Models\City;
 use App\Models\State;
 use App\Models\MobileOtp;
 use App\Models\Occupation;
+use App\Models\Pincodes;
 use App\Models\States;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,7 +45,9 @@ class CommonController extends Controller
                 'mobile_number' => 'required|digits:10|unique:alumnis,mobile_number,' . $alumniId,
                 'city_id' => 'required|exists:cities,id',
                 'state_id' => 'required|exists:states,id',
-                'occupation_id' => 'required|string|max:255',
+                'occupation_id' => 'required|exists:occupations,id',
+                'pincode_id' => 'required|exists:pincodes,id',
+                'center_id' => 'required|exists:center_locations,id',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             ], [
                 'full_name.required' => 'Full name is required.',
@@ -58,6 +62,8 @@ class CommonController extends Controller
                 'city_id.required' => 'City is required.',
                 'state_id.required' => 'State is required.',
                 'occupation_id.required' => 'Occupation is required.',
+                'pincode_id.required' => 'Pincode is required.',
+                'center_id.required' => 'Center location is required.',
                 'image.max' => 'Image size should not exceed 2MB.',
                 'image.mimes' => 'Invalid image format.',
             ]);
@@ -80,6 +86,13 @@ class CommonController extends Controller
             $alumni->city_id = $request->city_id;
             $alumni->state_id = $request->state_id;
             $alumni->occupation_id = $request->occupation_id;
+            $alumni->pincode_id = $request->pincode_id;
+            $alumni->center_id = $request->center_id;
+            $alumni->current_location = $request->current_location;
+            $alumni->linkedin_profile = $request->linkedin_profile;
+            $alumni->organization = $request->organization;
+            $alumni->university = $request->university;
+            $alumni->level_completed = $request->level_completed;
 
             if ($request->remove_image == 1) {
                 if ($alumni->image && Storage::disk('public')->exists($alumni->image)) {
@@ -172,7 +185,7 @@ class CommonController extends Controller
     public function getAlumni($id)
     {
         try {
-            $alumni = Alumnis::with(['city.state', 'occupation'])->findOrFail($id);
+            $alumni = Alumnis::with(['city.state', 'occupation', 'pincode', 'centerLocation'])->findOrFail($id);
 
             return response()->json([
                 'success' => true,
@@ -223,6 +236,46 @@ class CommonController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch cities: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getPincodesByCity($cityId)
+    {
+        try {
+            $pincodes = Pincodes::where('city_id', $cityId)
+                ->select('id', 'pincode')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'pincodes' => $pincodes,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching pincodes for city ID ' . $cityId . ': ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch pincodes: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getCenterLocationsByPincode($pincodeId)
+    {
+        try {
+            $centerLocations = CenterLocations::where('pincode_id', $pincodeId)
+                ->select('id', 'name')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'centerLocations' => $centerLocations,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching center locations for pincode ID ' . $pincodeId . ': ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch center locations: ' . $e->getMessage()
             ], 500);
         }
     }

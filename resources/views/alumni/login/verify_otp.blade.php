@@ -251,13 +251,23 @@
                     </a>
 
                     <h3 class="text-left fw-bold mb-2">Verify OTP</h3>
+                    @php
+                        $type = session('location_type');
+                        $value = session('verify_mobile');
+                    @endphp
                     <p class="text-left text-muted mb-4">
-                        Enter the 6-digit code sent to +91 <strong>{{ session('verify_mobile', 'your mobile') }}</strong>
+                        @if($type == 0)
+                            Enter the 6-digit code sent to +91 <strong>{{ $value }}</strong>
+                        @else
+                            Enter the 6-digit code sent to <strong>{{ $value }}</strong>
+                        @endif
+                        <!-- Enter the 6-digit code sent to +91 <strong>{{ session('verify_mobile', 'your mobile') }}</strong> -->
                     </p>
 
                     <form id="otp-form">
                         @csrf
-                        <input type="hidden" name="mobile" value="{{ session('verify_mobile') }}">
+                        <input type="hidden" name="verify_mobile" value="{{ $value }}">
+                        <input type="hidden" name="location_type" value="{{ $type }}">
 
                         <div class="otp-inputs">
                             <input type="text" class="otp-input" maxlength="1" name="otp1" required>
@@ -440,7 +450,9 @@
             // Prepare form data
             const formData = new FormData();
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-            formData.append('mobile', mobile);
+            // formData.append('mobile', mobile);
+            formData.append('value', '{{ $value }}');
+            formData.append('location_type', '{{ $type }}');
             formData.append('otp', otp);
 
             $.ajax({
@@ -484,7 +496,10 @@
 
             const formData = new FormData();
             formData.append('_token', $('meta[name="csrf-token"]').attr('content'));
-            formData.append('number', $('input[name="mobile"]').val());
+            // formData.append('number', $('input[name="mobile"]').val());
+            formData.append('number', '{{ $value }}');
+            formData.append('location_type', '{{ $type }}');
+
 
             $.ajax({
                 url: '{{ route("send.otp") }}',

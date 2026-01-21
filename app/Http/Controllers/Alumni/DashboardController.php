@@ -19,7 +19,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $alumniId = session('alumni.id');
-        $alumni = Alumnis::findOrFail($alumniId);
+        $alumni = Alumnis::with(['city.state', 'occupation', 'pincode', 'centerLocation'])->findOrFail($alumniId);
         $stats = $this->getDashboardStats($alumniId);
         $topPosts = $this->getTopPosts($alumniId);
 

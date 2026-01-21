@@ -32,7 +32,19 @@
                 <!-- Label/Tags Field -->
                 <div class="form-group">
                     <label>Labels <span style="color: #dc2626;">*</span></label>
-                    <input type="text" class="form-input" placeholder="e.g., Abacus, Training, Event (separated by commas)" name="labels" required oninput="clearFieldError(this)">
+                    <div class="multi-select-container" id="labelsContainer">
+                        <div class="multi-select-display" onclick="toggleLabelsDropdown()">
+                            <span class="placeholder">Select labels</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="multi-select-dropdown" id="labelsDropdown">
+                            <!-- Options will be loaded here -->
+                        </div>
+                        <input type="hidden" name="labels" id="selectedLabelsInput" required>
+                    </div>
+                    <div class="selected-labels-display" id="selectedLabelsDisplay">
+                        <!-- Selected labels will be shown here -->
+                    </div>
                     <small class="error-message" style="color: #dc2626; font-size: 12px; display: none;"></small>
                 </div>
             </form>
@@ -269,6 +281,150 @@
         font-style: italic;
     }
 
+    /* Multi-select styles */
+    #createPostModal .multi-select-container {
+        position: relative;
+        width: 100%;
+    }
+
+    #createPostModal .multi-select-display {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 14px;
+        background: white;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: border-color 0.3s;
+    }
+
+    #createPostModal .multi-select-display:hover {
+        border-color: #d1d5db;
+    }
+
+    #createPostModal .multi-select-display.active {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    #createPostModal .multi-select-display .placeholder {
+        color: #9ca3af;
+        flex: 1;
+    }
+
+    #createPostModal .multi-select-display .placeholder.has-selection {
+        color: #374151;
+    }
+
+    #createPostModal .multi-select-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #dc2626;
+        border-top: none;
+        border-radius: 0 0 6px 6px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 2100;
+        display: none;
+    }
+
+    #createPostModal .multi-select-dropdown.active {
+        display: block;
+    }
+
+    #createPostModal .multi-select-option {
+        padding: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background-color 0.2s;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    #createPostModal .multi-select-option:last-child {
+        border-bottom: none;
+    }
+
+    #createPostModal .multi-select-option:hover {
+        background-color: #f9fafb;
+    }
+
+    #createPostModal .multi-select-option input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #dc2626;
+        cursor: pointer;
+    }
+
+    #createPostModal .multi-select-option label {
+        flex: 1;
+        font-size: 14px;
+        color: #374151;
+        cursor: pointer;
+        margin: 0;
+        font-weight: 500;
+    }
+
+    #createPostModal .selected-labels-display {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+        min-height: 24px;
+    }
+
+    #createPostModal .selected-label-tag {
+        background: #fef2f2;
+        color: #dc2626;
+        padding: 6px 12px;
+        border-radius: 16px;
+        border: 1px solid #fecaca;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    #createPostModal .selected-label-tag:hover {
+        background: #fecaca;
+        border-color: #f87171;
+    }
+
+    #createPostModal .selected-label-tag .remove {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 1;
+        padding: 0 4px;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+    }
+
+    #createPostModal .selected-label-tag .remove:hover {
+        background-color: #dc2626;
+        color: white;
+    }
+
+    /* Error state for multi-select */
+    #createPostModal .multi-select-container.input-error .multi-select-display {
+        border-color: #dc2626;
+        background-color: #fef2f2;
+    }
+
     /* Modal Footer */
     #createPostModal .modal-body>div:last-child {
         padding-top: 4px;
@@ -397,12 +553,15 @@
 <script>
     let quill;
     const MAX_DESCRIPTION_LENGTH = 250;
+    let availableLabels = [];
+    let selectedLabels = [];
 
     function openCreatePostModal() {
         const modal = document.getElementById('createPostModal');
         if (modal) {
             modal.classList.add('open');
             clearAllPostFormErrors();
+            loadLabels(); // Load labels when opening modal
             if (!quill) {
                 quill = new Quill('#editor', {
                     theme: 'snow',
@@ -453,12 +612,145 @@
         }
     }
 
+    function loadLabels() {
+        fetch("{{ route('alumni.forums.labels') }}")
+            .then(res => res.json())
+            .then(data => {
+                availableLabels = data;
+                populateLabelsDropdown();
+            })
+            .catch(error => {
+                console.error('Error loading labels:', error);
+                showToast('Failed to load labels', 'error');
+            });
+    }
+
+    function populateLabelsDropdown() {
+        const dropdown = document.getElementById('labelsDropdown');
+        dropdown.innerHTML = '';
+        
+        availableLabels.forEach(label => {
+            const isSelected = selectedLabels.some(selected => selected.id === label.id);
+            const optionHtml = `
+                <div class="multi-select-option" data-value="${label.id}">
+                    <input type="checkbox" id="label_${label.id}" value="${label.id}" ${isSelected ? 'checked' : ''} onchange="handleLabelSelection(${label.id}, '${label.name}', this.checked)">
+                    <label for="label_${label.id}">${label.name}</label>
+                </div>
+            `;
+            dropdown.innerHTML += optionHtml;
+        });
+    }
+
+    function toggleLabelsDropdown() {
+        const dropdown = document.getElementById('labelsDropdown');
+        const display = document.querySelector('#labelsContainer .multi-select-display');
+        
+        dropdown.classList.toggle('active');
+        display.classList.toggle('active');
+    }
+
+    function handleLabelSelection(labelId, labelName, isChecked) {
+        if (isChecked) {
+            // Add label to selected list
+            if (!selectedLabels.some(label => label.id === labelId)) {
+                selectedLabels.push({ id: labelId, name: labelName });
+            }
+        } else {
+            // Remove label from selected list
+            selectedLabels = selectedLabels.filter(label => label.id !== labelId);
+        }
+        
+        updateLabelsDisplay();
+        updateLabelsInput();
+        clearLabelsError();
+    }
+
+    function updateLabelsDisplay() {
+        const display = document.querySelector('#labelsContainer .placeholder');
+        const selectedDisplay = document.getElementById('selectedLabelsDisplay');
+        
+        // Update placeholder text
+        if (selectedLabels.length > 0) {
+            display.textContent = `${selectedLabels.length} label${selectedLabels.length > 1 ? 's' : ''} selected`;
+            display.classList.add('has-selection');
+        } else {
+            display.textContent = 'Select labels';
+            display.classList.remove('has-selection');
+        }
+        
+        // Update selected labels display
+        selectedDisplay.innerHTML = '';
+        selectedLabels.forEach(label => {
+            const tag = document.createElement('div');
+            tag.className = 'selected-label-tag';
+            tag.innerHTML = `
+                <span>${label.name}</span>
+                <span class="remove" onclick="removeLabelTag(${label.id})">&times;</span>
+            `;
+            selectedDisplay.appendChild(tag);
+        });
+    }
+
+    function removeLabelTag(labelId) {
+        // Remove from selected labels
+        selectedLabels = selectedLabels.filter(label => label.id !== labelId);
+        
+        // Uncheck the checkbox
+        const checkbox = document.getElementById(`label_${labelId}`);
+        if (checkbox) {
+            checkbox.checked = false;
+        }
+        
+        updateLabelsDisplay();
+        updateLabelsInput();
+        clearLabelsError();
+    }
+
+    function updateLabelsInput() {
+        const input = document.getElementById('selectedLabelsInput');
+        input.value = selectedLabels.map(label => label.id).join(',');
+    }
+
+    function clearLabelsError() {
+        const container = document.getElementById('labelsContainer');
+        const errorMsg = container.parentElement.querySelector('.error-message');
+        
+        container.classList.remove('input-error');
+        if (errorMsg) {
+            errorMsg.textContent = '';
+            errorMsg.style.display = 'none';
+        }
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const container = document.getElementById('labelsContainer');
+        if (container && !container.contains(event.target)) {
+            const dropdown = document.getElementById('labelsDropdown');
+            const display = document.querySelector('#labelsContainer .multi-select-display');
+            dropdown.classList.remove('active');
+            display.classList.remove('active');
+        }
+    });
+
     function closeCreatePostModal() {
         const modal = document.getElementById('createPostModal');
         if (modal) {
             modal.classList.remove('open');
             document.getElementById('createPostForm').reset();
             clearAllPostFormErrors();
+            
+            // Reset labels selection
+            selectedLabels = [];
+            updateLabelsDisplay();
+            updateLabelsInput();
+            
+            // Close dropdown
+            const dropdown = document.getElementById('labelsDropdown');
+            const display = document.querySelector('#labelsContainer .multi-select-display');
+            dropdown.classList.remove('active');
+            display.classList.remove('active');
+            
             if (quill) {
                 quill.setContents([]);
             }
@@ -468,10 +760,10 @@
     function submitPost() {
         const form = document.getElementById('createPostForm');
         const titleInput = form.querySelector('input[name="title"]');
-        const labelsInput = form.querySelector('input[name="labels"]');
         const title = titleInput.value.trim();
-        const labels = labelsInput.value.trim();
         const description = quill.getText().trim();
+        const selectedLabelsInput = document.getElementById('selectedLabelsInput');
+        const labels = selectedLabels.map(l => l.id);
 
         // Clear previous errors
         clearAllPostFormErrors();
@@ -498,8 +790,8 @@
             hasError = true;
         }
 
-        if (!labels) {
-            showFieldError(labelsInput, 'At least one label is required');
+        if (selectedLabels.length === 0) {
+            showFieldError(document.getElementById('labelsContainer'), 'At least one label is required');
             hasError = true;
         }
 
@@ -507,13 +799,15 @@
             return;
         }
 
-        const formData = new FormData(form);
+        const formData = new FormData();
         const modal = document.getElementById('createPostModal');
         const alumniId = modal.getAttribute('data-alumni-id');
 
-        formData.set('description', quill.root.innerHTML);
-        formData.set('alumni_id', alumniId);
-        formData.set('status', 'pending');
+        formData.append('title', title);
+        formData.append('description', quill.root.innerHTML);
+        formData.append('labels', JSON.stringify(labels));
+        formData.append('alumni_id', alumniId);
+        formData.append('status', 'pending');
 
         if (!alumniId) {
             showToast('Alumni ID not found', 'error');
@@ -563,6 +857,10 @@
             if (editorContainer) {
                 editorContainer.classList.add('editor-error');
             }
+        } else if (element.id === 'labelsContainer') {
+            // For labels multi-select container
+            errorEl = element.parentElement.querySelector('.error-message');
+            element.classList.add('input-error');
         } else {
             // For regular inputs
             errorEl = element.parentElement.querySelector('.error-message');
@@ -596,13 +894,20 @@
             el.textContent = '';
             el.style.display = 'none';
         });
+        
+        // Clear editor errors
         const editor = document.getElementById('editor');
         editor.classList.remove('editor-error');
-        // Also clear error and focus from editor container
         const editorContainer = editor.closest('.editor-container');
         if (editorContainer) {
             editorContainer.classList.remove('editor-error');
             editorContainer.classList.remove('editor-focused');
+        }
+        
+        // Clear labels container errors
+        const labelsContainer = document.getElementById('labelsContainer');
+        if (labelsContainer) {
+            labelsContainer.classList.remove('input-error');
         }
     }
 

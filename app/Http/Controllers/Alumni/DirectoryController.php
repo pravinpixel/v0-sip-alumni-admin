@@ -43,16 +43,19 @@ class DirectoryController extends Controller
                 ->pluck('year_of_completion')
                 ->toArray();
 
-            $locations = Alumnis::with(['city.state'])
+            $locations = Alumnis::with(['city.state', 'centerLocation'])
                 ->where('id', '!=', $alumniId)
                 ->where('status', 'active')
                 ->whereNotNull('city_id')
                 ->get()
                 ->map(function ($alumni) {
-                    if ($alumni->city && $alumni->city?->state) {
+                    if ($alumni->city && $alumni->city->state) {
+                        $centerName = $alumni->centerLocation ? $alumni->centerLocation->name : 'Unknown Center';
+                        $locationString = $centerName . ', ' . $alumni->city->name . ', ' . $alumni->city->state->name;
+                        
                         return [
-                            'id' => $alumni->city?->state?->id,
-                            'name' => $alumni->city?->state?->name
+                            'id' => $alumni->center_id ?: 'no_center_' . $alumni->city->id, // Use center_id or fallback
+                            'name' => $locationString,
                         ];
                     }
                     return null;
@@ -61,6 +64,8 @@ class DirectoryController extends Controller
                 ->unique('id')
                 ->values()
                 ->toArray();
+
+            Log::info('Location filter data:', ['count' => count($locations), 'sample' => array_slice($locations, 0, 5)]);
 
             $allOtherAlumni = Alumnis::where('id', '!=', $alumniId)->where('status', 'active')->pluck('id')->toArray();
             $connections = AlumniConnections::where('sender_id', $alumniId)
@@ -92,10 +97,32 @@ class DirectoryController extends Controller
                 }
             }
 
+            // Get professions using a more direct approach
+            $profession = DB::table('alumnis')
+                ->join('occupations', 'alumnis.occupation_id', '=', 'occupations.id')
+                ->where('alumnis.id', '!=', $alumniId)
+                ->where('alumnis.status', 'active')
+                ->whereNotNull('alumnis.occupation_id')
+                ->whereNull('occupations.deleted_at') // Handle soft deletes
+                ->select('occupations.id', 'occupations.name')
+                ->distinct()
+                ->orderBy('occupations.name')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'name' => $item->name
+                    ];
+                })
+                ->toArray();
+
+            Log::info('Profession filter data:', ['count' => count($profession), 'data' => $profession]);
+
             return response()->json([
                 'batchYears' => $batchYears,
                 'locations' => $locations,
-                'connectionStatuses' => $statuses
+                'connectionStatuses' => $statuses,
+                'professions' => $profession,
             ]);
         } catch (\Throwable $e) {
             Log::error('Filter options error: ' . $e->getMessage());
@@ -108,7 +135,7 @@ class DirectoryController extends Controller
         try {
             $alumniId = session('alumni.id');
 
-            $query = Alumnis::with(['city.state', 'occupation'])
+            $query = Alumnis::with(['city.state', 'occupation', 'centerLocation'])
                 ->where('id', '!=', $alumniId)
                 ->where('status', 'active');
 
@@ -124,9 +151,29 @@ class DirectoryController extends Controller
                 $locations = is_array($request->locations) ? $request->locations : explode(',', $request->locations);
                 $locations = array_filter($locations);
                 if (!empty($locations)) {
-                    $query->whereHas('city', function ($q) use ($locations) {
-                        $q->whereIn('state_id', $locations);
+                    $query->where(function ($q) use ($locations) {
+                        foreach ($locations as $location) {
+                            if (strpos($location, 'no_center_') === 0) {
+                                // Handle fallback case (no center location)
+                                $cityId = str_replace('no_center_', '', $location);
+                                $q->orWhere(function ($subQ) use ($cityId) {
+                                    $subQ->where('city_id', $cityId)
+                                         ->whereNull('center_id');
+                                });
+                            } else {
+                                // Handle normal center location case
+                                $q->orWhere('center_id', $location);
+                            }
+                        }
                     });
+                }
+            }
+
+            if ($request->filled('professions') && $request->professions != '') {
+                $professions = is_array($request->professions) ? $request->professions : explode(',', $request->professions);
+                $professions = array_filter($professions);
+                if (!empty($professions)) {
+                    $query->whereIn('occupation_id', $professions);
                 }
             }
 
@@ -221,6 +268,9 @@ class DirectoryController extends Controller
                                             $stateQuery->where('name', 'like', "%{$searchValue}%");
                                         });
                                 })
+                                ->orWhereHas('centerLocation', function ($centerQuery) use ($searchValue) {
+                                    $centerQuery->where('name', 'like', "%{$searchValue}%");
+                                })
                             ->orWhereHas('city', function ($c) use ($searchValue) {
                                 $c->whereRaw("CONCAT(name, ', ', (SELECT name FROM states WHERE id = cities.state_id)) LIKE ?", ["%{$searchValue}%"]);
                             });
@@ -275,7 +325,7 @@ class DirectoryController extends Controller
                 })
 
                 ->addColumn('location', function ($row) {
-                    return ($row->city?->name ?? '-') . ', ' . ($row->city?->state?->name ?? '-');
+                    return ($row->centerLocation?->name ?? '-') . ', ' . ($row->city?->name ?? '-') . ', ' . ($row->city?->state?->name ?? '-');
                 })
 
                 ->addColumn('action', function ($row) use ($alumniConnections, $alumniId) {

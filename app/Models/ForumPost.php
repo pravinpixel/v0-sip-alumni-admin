@@ -17,21 +17,16 @@ class ForumPost extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $appends = ['reply_count', 'likes_count', 'views_count'];
+    protected $appends = ['reply_count', 'likes_count', 'views_count', 'labels'];
     protected $table = 'forum_post';
     protected $fillable = [
         'alumni_id',
         'title',
         'description',
-        'labels',
         'likes',
         'views',
         'status',
         'remarks'
-    ];
-
-    protected $casts = [
-        'labels' => 'array',
     ];
 
     public function alumni()
@@ -73,5 +68,16 @@ class ForumPost extends Model
     {
         return $this->hasMany(PostPinned::class, 'post_id');
     }
+
+    public function postlabels()
+    {
+        return $this->hasMany(PostLabel::class, 'post_id')->with('label');
+    }
+
+    public function getLabelsAttribute()
+    {
+        return $this->postlabels()->with('label:id,name')->get()->pluck('label.name');
+    }
+
 
 }

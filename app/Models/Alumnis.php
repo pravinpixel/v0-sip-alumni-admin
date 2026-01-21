@@ -30,6 +30,15 @@ class Alumnis extends Model
         'is_request_ribbon',
         'is_directory_ribbon',
         'remarks',
+        'center_id',
+        'pincode_id',
+        'location_type',
+        'country_code',
+        'current_location',
+        'linkedin_profile',
+        'organization',
+        'university',
+        'level_completed',
     ];
 
     public function city()
@@ -40,6 +49,16 @@ class Alumnis extends Model
     public function occupation()
     {
         return $this->belongsTo(Occupation::class, 'occupation_id');
+    }
+
+    public function pincode()
+    {
+        return $this->belongsTo(Pincodes::class, 'pincode_id');
+    }
+
+    public function centerLocation()
+    {
+        return $this->belongsTo(CenterLocations::class, 'center_id');
     }
 
     public function sendconnections()

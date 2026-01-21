@@ -398,7 +398,7 @@ table.dataTable tbody tr > .sorting_3 {
     </th>
 
     <th style="padding: 16px; font-weight: 600; text-align: left; border: none; min-width: 180px;">
-        Location 
+        Center Location 
     </th>
 
     <th style="padding: 16px; font-weight: 600; text-align: right; border: none; min-width: 180px;">Action</th>
@@ -419,13 +419,15 @@ table.dataTable tbody tr > .sorting_3 {
         let selectedFilters = {
             batch: [],
             location: [],
-            status: []
+            status: [],
+            profession: []
         };
 
         let filterOptions = {
             batch: [],
             location: [],
-            status: []
+            status: [],
+            profession: []
         };
         let selectedFiltersOrder = [];
 
@@ -435,13 +437,21 @@ table.dataTable tbody tr > .sorting_3 {
                 url: "{{ route('alumni.directory.filter-options') }}",
                 method: 'GET',
                 success: function(data) {
+                    console.log('Filter options loaded:', data); // Debug log
                     filterOptions.batch = data.batchYears.map(year => ({ id: year, name: year }));
                     filterOptions.location = data.locations;
                     filterOptions.status = data.connectionStatuses;
+                    filterOptions.profession = data.professions;
+
+                    console.log('Profession options:', filterOptions.profession); // Debug log
 
                     populateDropdown('batch', filterOptions.batch);
                     populateDropdown('location', filterOptions.location);
                     populateDropdown('status', filterOptions.status);
+                    populateDropdown('profession', filterOptions.profession);
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading filter options:', error);
                 }
             });
         }
@@ -524,8 +534,9 @@ table.dataTable tbody tr > .sorting_3 {
             } else {
                 const placeholders = {
                     batch: 'Select batch years',
-                    location: 'Select locations',
-                    status: 'Select status'
+                    location: 'Select center locations',
+                    status: 'Select status',
+                    profession: 'Select profession'
                 };
                 placeholder.text(placeholders[type]);
             }
@@ -553,7 +564,7 @@ table.dataTable tbody tr > .sorting_3 {
         // Clear all filters
         $('#clearFiltersBtn').on('click', function() {
             selectedFiltersOrder = [];
-            selectedFilters = { batch: [], location: [], status: [] };
+            selectedFilters = { batch: [], location: [], status: [], profession: [] };
             
             $('.multi-select-option input[type="checkbox"]').prop('checked', false);
             $('.selected-tags').empty();
@@ -561,6 +572,7 @@ table.dataTable tbody tr > .sorting_3 {
             updatePlaceholder('batch');
             updatePlaceholder('location');
             updatePlaceholder('status');
+            updatePlaceholder('profession');
             
             table.ajax.reload();
             updateClearButton();
@@ -569,7 +581,8 @@ table.dataTable tbody tr > .sorting_3 {
         function updateClearButton() {
             const totalCount = selectedFilters.batch.length + 
                              selectedFilters.location.length + 
-                             selectedFilters.status.length;
+                             selectedFilters.status.length +
+                             selectedFilters.profession.length;
             
             const hasFilters = totalCount > 0;
             
@@ -607,6 +620,8 @@ table.dataTable tbody tr > .sorting_3 {
                         typeLabel = 'Location: ';
                     } else if (item.type === 'status') {
                         typeLabel = 'Status: ';
+                    } else if (item.type === 'profession') {
+                        typeLabel = 'Profession: ';
                     }
                     
                     const tag = `
@@ -637,6 +652,7 @@ table.dataTable tbody tr > .sorting_3 {
                     d.batch_years = selectedFilters.batch.map(item => item.id).join(',');
                     d.locations = selectedFilters.location.map(item => item.id).join(',');
                     d.connection_statuses = selectedFilters.status.map(item => item.id).join(',');
+                    d.professions = selectedFilters.profession.map(item => item.id).join(',');
                 }
             },
             columns: [{

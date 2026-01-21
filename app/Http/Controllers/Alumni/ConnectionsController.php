@@ -143,11 +143,13 @@ class ConnectionsController extends Controller
             ->addColumn('alumni', function ($row) use ($alumniId) {
                 $alumni = $row->sender_id == $alumniId ? $row->receiver : $row->sender;
                 $img = $alumni->image_url ?? asset('images/avatar/blank.png');
+                $occ = $alumni->occupation->name ?? '—';
                 return '
                 <div style="display:flex;align-items:center;gap:12px;">
                     <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
                     <div>
                         <div style="font-weight:700;color:#333;font-size:14px;">' . $alumni->full_name . '</div>
+                        <div style="font-size:12px;color:#666;">' . $occ . '</div>
                     </div>
                 </div>';
             })
@@ -246,11 +248,13 @@ class ConnectionsController extends Controller
             ->editColumn('alumni', function ($row) {
                 $alumni = $row->sender;
                 $img = asset('images/avatar/blank.png');
+                $occ = $alumni->occupation->name ?? '—';
                 return '
                     <div style="display:flex;align-items:center;gap:12px;">
                         <img src="' . $img . '" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
                         <div>
                             <div style="font-weight:700;color:#333;font-size:14px;">' . $alumni->full_name . '</div>
+                            <div style="font-size:12px;color:#666;">' . $occ . '</div>
                         </div>
                     </div>';
             })

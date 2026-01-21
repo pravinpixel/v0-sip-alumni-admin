@@ -282,19 +282,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         display: flex;
     }
 
-    /* Modal Popup */
-    .modal-popup {
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-        width: 90%;
-        max-width: 500px;
-        max-height: 80vh;
-        display: flex;
-        flex-direction: column;
-        animation: slideIn 0.3s ease;
-    }
-
     .modal-header {
         display: block;
         padding: 20px;
@@ -569,22 +556,41 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     }
 
     function populateFormData(alumni) {
+        console.log('Alumni data:', alumni); // Debug log
         const form = document.getElementById('editProfileForm');
         const stateSelect = document.getElementById('stateSelect');
         const citySelect = document.getElementById('citySelect');
+        const pincodeSelect = document.getElementById('pincodeSelect');
+        const centerLocationSelect = document.getElementById('centerLocationSelect');
 
         form.querySelector('[data-field="full_name"]').value = alumni.full_name || '';
         form.querySelector('[data-field="year_of_completion"]').value = alumni.year_of_completion || '';
         form.querySelector('[data-field="email"]').value = alumni.email || '';
         form.querySelector('[data-field="mobile_number"]').value = alumni.mobile_number || '';
-        form.querySelector('[data-field="occupation_id"]').value = alumni.occupation?.id || '';
-
+        form.querySelector('[data-field="occupation_id"]').value = alumni.occupation_id || '';
+        form.querySelector('[data-field="linkedin_profile"]').value = alumni.linkedin_profile || '';
+        form.querySelector('[data-field="organization"]').value = alumni.organization || '';
+        form.querySelector('[data-field="university"]').value = alumni.university || '';
+        form.querySelector('[data-field="current_location"]').value = alumni.current_location || '';
+        form.querySelector('[data-field="level_completed"]').value = alumni.level_completed || '';
         // Store original mobile number
         originalMobileNumber = alumni.mobile_number || '';
 
         if (stateSelect) {
             stateSelect.value = alumni.city?.state?.id || '';
             loadCities(alumni.city?.state?.id, alumni.city?.id); // load cities based on selected state
+        }
+
+        if (citySelect) {
+            citySelect.value = alumni.city?.id || '';
+            loadPincodes(alumni.city?.id, alumni.pincode_id); // load pincodes based on selected city
+        }
+
+        if (pincodeSelect) {
+            console.log('Setting pincode value:', alumni.pincode_id); // Debug log
+            console.log('Setting center location value:', alumni.center_id); // Debug log
+            pincodeSelect.value = alumni.pincode_id || '';
+            loadCenterLocations(alumni.pincode_id, alumni.center_id); // load center locations based on selected pincode
         }
 
         const profileImg = document.querySelector('.modal-profile-img');
@@ -630,6 +636,8 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             return new Promise((resolve) => { 
                 if (!stateId) {
                     populateSelect('citySelect', [], 'Select City');
+                    populateSelect('pincodeSelect', [], 'Select Pincode');
+                    populateSelect('centerLocationSelect', [], 'Select Center Location');
                     return resolve();
                 }
 
@@ -638,6 +646,11 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     .then(data => {
                         if (data.success) {
                             populateSelect('citySelect', data.cities, 'Select City', selectedCityId);
+                            // Clear dependent dropdowns if no city is pre-selected
+                            if (!selectedCityId) {
+                                populateSelect('pincodeSelect', [], 'Select Pincode');
+                                populateSelect('centerLocationSelect', [], 'Select Center Location');
+                            }
                         }
                         resolve();  
                     })
@@ -647,19 +660,71 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     });
             });
         }
+
+        function loadPincodes(cityId, selectedPincodeId = null) {
+            return new Promise((resolve) => {
+                if (!cityId) {
+                    populateSelect('pincodeSelect', [], 'Select Pincode');
+                    populateSelect('centerLocationSelect', [], 'Select Center Location');
+                    return resolve();
+                }
+
+                fetch(`{{ route('alumni.pincodes', '') }}/${cityId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            populateSelect('pincodeSelect', data.pincodes, 'Select Pincode', selectedPincodeId);
+                            // Clear center location dropdown if no pincode is pre-selected
+                            if (!selectedPincodeId) {
+                                populateSelect('centerLocationSelect', [], 'Select Center Location');
+                            }
+                        }
+                        resolve();
+                    })
+                    .catch(err => {
+                        console.error('Pincode load error:', err);
+                        resolve();
+                    });
+            });
+        }
+
+        function loadCenterLocations(pincodeId, selectedCenterLocationId = null) {
+            return new Promise((resolve) => {
+                if (!pincodeId) {
+                    populateSelect('centerLocationSelect', [], 'Select Center Location');
+                    return resolve();
+                }
+
+                fetch(`{{ route('alumni.center.locations', '') }}/${pincodeId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            populateSelect('centerLocationSelect', data.centerLocations, 'Select Center Location', selectedCenterLocationId);
+                        }
+                        resolve();
+                    })
+                    .catch(err => {
+                        console.error('Center Location load error:', err);
+                        resolve();
+                    });
+            });
+        }
     
 
     function populateSelect(selectId, items, placeholder, selectedValue = null) {
         const select = document.getElementById(selectId);
         if (!select) return;
 
+        console.log(`Populating ${selectId} with`, items, 'selected:', selectedValue); // Debug log
+
         select.innerHTML = `<option value="">${placeholder}</option>`;
         items.forEach(item => {
             const option = document.createElement('option');
-            option.value = item.id;
-            option.textContent = item.name;
-            if (selectedValue && selectedValue == item.id) {
+            option.value = String(item.id);
+            option.textContent = item.name || item.pincode; // Handle pincode field
+            if (String(selectedValue) === String(item.id)) {
                 option.selected = true;
+                console.log(`Selected option for ${selectId}:`, item); // Debug log
             }
             select.appendChild(option);
         });
@@ -671,6 +736,25 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         if (stateSelect) {
             stateSelect.addEventListener('change', function() {
                 loadCities(this.value);
+            });
+        }
+    });
+    // When user changes city, load its pincodes dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+        const citySelect = document.getElementById('citySelect');
+        if (citySelect) {
+            citySelect.addEventListener('change', function() {
+                loadPincodes(this.value);
+            });
+        }
+    });
+
+    // When user changes pincode, load its center locations dynamically
+    document.addEventListener('DOMContentLoaded', function() {
+        const pincodeSelect = document.getElementById('pincodeSelect');
+        if (pincodeSelect) {
+            pincodeSelect.addEventListener('change', function() {
+                loadCenterLocations(this.value);
             });
         }
     });

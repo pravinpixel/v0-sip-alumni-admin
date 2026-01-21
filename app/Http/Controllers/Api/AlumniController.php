@@ -10,11 +10,16 @@ use App\Models\Alumnis;
 use App\Models\Cities;
 use App\Models\MobileOtp;
 use App\Models\Occupation;
+use App\Models\CenterLocations;
+use App\Models\CurrentLocation;
+use App\Models\EmailOtp;
+use App\Models\Pincodes;
 use App\Models\Role;
 use App\Models\States;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Current;
 
 class AlumniController extends Controller
 {
@@ -23,14 +28,21 @@ class AlumniController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
+                'location_type'          => 'required',
+                'country_code'         => 'required|string',
                 'full_name'            => 'required|string|max:255',
                 'year_of_completion'   => 'required|integer|digits:4',
                 'state_id'             => 'required|integer',
                 'city_id'              => 'required',
+                'pincode_id'              => 'required|integer',
+                'center_id'            => 'required',
                 'email'                => 'required|email:rfc,dns|unique:alumnis,email',
                 'mobile_number'        => 'required|digits:10|unique:alumnis,mobile_number',
                 'occupation'           => 'required|string|max:255',
-                'other_city'           => 'required_if:city_id,others|string|max:255',
+                // 'other_city'           => 'required_if:city_id,others|string|max:255',
+                'other_center'         => 'required_if:center_id,others|string|max:255',
+                'current_location'     => 'nullable|string|max:255',
+                'level_completed'     => 'required|string|max:255',
             ]);
 
             if ($validator->fails()) {
@@ -40,28 +52,65 @@ class AlumniController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-            $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
+            // $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
 
-            if (!$otpRecord || $otpRecord->is_verified == 0) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please verify OTP before registration.'
-                ], 400);
-            }
+            // if (!$otpRecord || $otpRecord->is_verified == 0) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Please verify OTP before registration.'
+            //     ], 400);
+            // }
+
+            // if ($request->location_type == 0) {
+            //     $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
+
+            //     if (!$otpRecord || $otpRecord->is_verified == 0) {
+            //         return response()->json([
+            //             'success' => false,
+            //             'message' => 'Please verify mobile OTP first.'
+            //         ], 400);
+            //     }
+            // } else {
+            //     $emailVerify = EmailOtp::where('email', $request->email)->first();
+
+            //     if (!$emailVerify || $emailVerify->is_verified == 0) {
+            //         return response()->json([
+            //             'success' => false,
+            //             'message' => 'Please verify your email before registration.'
+            //         ], 400);
+            //     }
+            // }
+
             $cityId = $request->city_id;
 
-            if ($request->city_id == "others") {
+            // if ($request->city_id == "others") {
 
-                $cityName = ucfirst(strtolower($request->other_city));
+            //     $cityName = ucfirst(strtolower($request->other_city));
 
-                $city = Cities::firstOrCreate([
-                    'name'     => $cityName,
-                    'state_id' => $request->state_id
+            //     $city = Cities::firstOrCreate([
+            //         'name'     => $cityName,
+            //         'state_id' => $request->state_id
+            //     ], [
+            //         'is_custom' => 1
+            //     ]);
+
+            //     $cityId = $city->id;
+            // }
+
+            $centerId = $request->center_id;
+
+            if ($request->center_id == "others") {
+
+                $centerName = ucfirst(strtolower($request->other_center));
+
+                $center = CenterLocations::firstOrCreate([
+                    'name'     => $centerName,
+                    'pincode_id' => $request->pincode_id
                 ], [
                     'is_custom' => 1
                 ]);
 
-                $cityId = $city->id;
+                $centerId = $center->id;
             }
 
             $occupationName = ucfirst(strtolower($request->occupation));
@@ -70,18 +119,34 @@ class AlumniController extends Controller
                 'name' => $occupationName
             ]);
 
+            // $currentLocationName = ucfirst(strtolower($request->current_location));
+            // $currentLocation = CurrentLocation::firstOrCreate([
+            //     'name'     => $currentLocationName,
+            // ]);
+
             $alumni = Alumnis::create([
+                'location_type'      => $request->location_type,
+                'country_code'       => $request->country_code,
                 'full_name'          => $request->full_name,
                 'year_of_completion' => $request->year_of_completion,
                 'state_id'           => $request->state_id,
                 'city_id'            => $cityId,
+                'center_id'          => $centerId,
+                'pincode_id'            => $request->pincode_id,
+                'current_location'   => $request->current_location,
+                'level_completed'   => $request->level_completed,
                 'email'              => $request->email,
                 'mobile_number'      => $request->mobile_number,
                 'occupation_id'      => $occupation->id,
                 'status'             => 'active',
                 'image'              => asset('images/avatar/blank.png')
             ]);
-            $otpRecord->delete();
+            // $otpRecord->delete();
+            // if ($request->location_type == 0) {
+            //     $otpRecord->delete();
+            // } else {
+            //     $emailVerify->delete();
+            // }
 
             Alumnis::where('is_directory_ribbon', '!=', 1)
                 ->orWhereNull('is_directory_ribbon')
@@ -96,26 +161,26 @@ class AlumniController extends Controller
 
             // $role = Role::where('name', 'Super Admin')->first();
             $admins = User::where('status', 1)->whereNull('deleted_at')
-                    ->whereHas('role', function ($q) {
-                        $q->where('status', 1);
-                    })
-                    ->get();
+                ->whereHas('role', function ($q) {
+                    $q->where('status', 1);
+                })
+                ->get();
 
             $adminData = [
                 'name' => $alumni->full_name ?? '',
                 'email' => $alumni->email ?? '',
                 'mobile' => $alumni->mobile_number ?? '',
                 'year_of_passing' => $alumni->year_of_completion ?? '',
-                'department' => $alumni->occupation?->name ?? '',
+                'department' => $alumni->occupation->name ?? '',
                 'support_email' => env('SUPPORT_EMAIL'),
             ];
             foreach ($admins as $admin) {
                 Mail::to($admin->email)->queue(new AdminAlumniRegistedMail($adminData));
             }
 
-           $smsNumber = '91' . $alumni->mobile_number;
-           $smsMessage = "Your alumni registration has been completed. Welcome to the SIP Alumni community!\nTeam - SIP Academy";
-           sendSms($smsNumber, $smsMessage);
+            $smsNumber = '91' . $alumni->mobile_number;
+            $smsMessage = "Your alumni registration has been completed. Welcome to the SIP Alumni community!\nTeam - SIP Academy";
+            sendSms($smsNumber, $smsMessage);
 
             return response()->json([
                 'success' => true,
@@ -136,80 +201,108 @@ class AlumniController extends Controller
     public function sendOtp(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'mobile_number' => 'required|digits:10'
+            'location_type' => 'required|in:0,1',
+            'mobile_number' => 'required_if:location_type,0|digits:10',
+            'email'         => 'required_if:location_type,1|email:rfc,dns',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation error',
-                'errors' => $validator->errors()
+                'errors'  => $validator->errors()
             ], 422);
         }
 
-        $alumni = Alumnis::where('mobile_number', $request->mobile_number)->first();
-        if ($alumni) {
+        // INSIDE INDIA → MOBILE OTP
+        if ($request->location_type == 0) {
+            return $this->processMobileOtp($request->mobile_number);
+        }
+
+        // OUTSIDE INDIA → EMAIL OTP
+        return $this->processEmailOtp($request->email);
+    }
+
+    private function processMobileOtp($mobile)
+    {
+        $exists = Alumnis::where('mobile_number', $mobile)->first();
+        if ($exists) {
             return response()->json([
                 'success' => false,
                 'message' => 'Mobile number already registered'
             ], 400);
         }
 
-        $mobile = $request->mobile_number;
         $otp = rand(100000, 999999);
-        $smsMobile = '91' . $mobile;
-        $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 10 minutes. Please don't share this code.\nTeam - SIP Academy";
+        $record = MobileOtp::firstOrNew(['mobile_number' => $mobile]);
 
-        // Check existing OTP record
-        $existingOtp = MobileOtp::where('mobile_number', $mobile)->first();
-
-        if ($existingOtp) {
-            $seconds = now()->diffInSeconds($existingOtp->updated_at);
-
-            // Cooldown check (30 sec)
-            if ($seconds < 30) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please wait before requesting a new OTP.',
-                    'wait_seconds' => 30 - $seconds
-                ], 429);
-            }
-
-            // Update OTP (Resend)
-            $existingOtp->update([
-                'otp' => $otp,
-                'expires_at' => now()->addSeconds(30)
-            ]);
-            sendsms($smsMobile, $message);
-
+        $last = $record->updated_at ? now()->diffInSeconds($record->updated_at) : 31;
+        if ($last < 30) {
             return response()->json([
-                'success' => true,
-                'message' => 'OTP resent successfully',
-                'otp' => $otp 
-            ], 200);
-        } else {
-            // First time send OTP
-            MobileOtp::create([
-                'mobile_number' => $mobile,
-                'otp' => $otp,
-                'expires_at' => now()->addSeconds(30)
-            ]);
-            sendsms($smsMobile, $message);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'OTP sent successfully',
-                'otp' => $otp
-            ], 200);
+                'success' => false,
+                'message' => 'Please wait before requesting a new OTP.',
+                'wait_seconds' => 30 - $last
+            ], 429);
         }
+
+        $record->otp = $otp;
+        $record->expires_at = now()->addSeconds(30);
+        $record->save();
+
+        sendsms('91' . $mobile, "Your OTP is {$otp}");
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Mobile OTP sent successfully',
+            'otp' => $otp
+        ], 200);
     }
+
+    private function processEmailOtp($email)
+    {
+        $exists = Alumnis::where('email', $email)->first();
+        if ($exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email already registered'
+            ], 400);
+        }
+
+        $otp = rand(100000, 999999);
+        $record = EmailOtp::firstOrNew(['email' => $email]);
+
+        $last = $record->updated_at ? now()->diffInSeconds($record->updated_at) : 31;
+        if ($last < 30) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please wait before requesting a new OTP.',
+                'wait_seconds' => 30 - $last
+            ], 429);
+        }
+
+        $record->otp = $otp;
+        $record->expires_at = now()->addSeconds(30);
+        $record->save();
+
+        // Mail::to($email)->queue(new VerifyEmailOtpMail($otp));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Email OTP sent successfully',
+            'otp' => $otp
+        ], 200);
+    }
+
+
 
 
     public function verifyOtp(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'mobile_number' => 'required|digits:10',
-            'otp' => 'required|digits:6'
+            'location_type' => 'required|in:0,1',
+            'mobile_number' => 'required_if:location_type,0|digits:10',
+            'email'         => 'required_if:location_type,1|email:rfc,dns',
+            'otp' => 'required|digits:6',
         ]);
 
         if ($validator->fails()) {
@@ -220,33 +313,45 @@ class AlumniController extends Controller
             ], 422);
         }
 
-        $record = MobileOtp::where('mobile_number', $request->mobile_number)
-            ->where('otp', $request->otp)
+        if ($request->location_type == 0) {
+            return $this->verifyMobileOtp($request->mobile_number, $request->otp);
+        } else {
+            return $this->verifyEmailOtp($request->email, $request->otp);
+        }
+    }
+
+    private function verifyMobileOtp($mobile, $otp)
+    {
+        $record = MobileOtp::where('mobile_number', $mobile)
+            ->where('otp', $otp)
             ->first();
 
         if (!$record) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid OTP'
-            ], 400);
+            return response()->json(['success' => false, 'message' => 'Invalid OTP'], 400);
         }
-
         if (now()->gt($record->expires_at)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'OTP expired'
-            ], 400);
+            return response()->json(['success' => false, 'message' => 'OTP expired'], 400);
         }
+        $record->update(['is_verified' => 1]);
 
-        // Delete OTP after success
-        $record->update([
-            'is_verified' => 1
-        ]);
+        return response()->json(['success' => true, 'message' => 'Mobile OTP verified']);
+    }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'OTP verified successfully.'
-        ]);
+    private function verifyEmailOtp($email, $otp)
+    {
+        $record = EmailOtp::where('email', $email)
+            ->where('otp', $otp)
+            ->first();
+
+        if (!$record) {
+            return response()->json(['success' => false, 'message' => 'Invalid OTP'], 400);
+        }
+        if (now()->gt($record->expires_at)) {
+            return response()->json(['success' => false, 'message' => 'OTP expired'], 400);
+        }
+        $record->update(['is_verified' => 1]);
+
+        return response()->json(['success' => true, 'message' => 'Email OTP verified']);
     }
 
     public function essentials(Request $request)
@@ -295,6 +400,32 @@ class AlumniController extends Controller
                 $occupation = [];
                 $occupation = Occupation::select('id', 'name')->get();
                 $results['occupation'] = $occupation;
+            }
+            if (in_array("pincode", $required)) {
+                $pincode = [];
+                $pincode = Pincodes::select('id', 'pincode')->get();
+                $results['pincode'] = $pincode;
+            }
+            if (in_array("center_location", $required)) {
+                $centerLocation = [];
+                if ($request->pincode_id) {
+                    $Location = CenterLocations::select('id', 'name')
+                        ->where('pincode_id', $request->pincode_id)
+                        ->orderBy('name')
+                        ->get();
+                    $normalLocation = $Location->where('is_custom', 0)->values()->all();
+                    $customLocation = $Location->where('is_custom', 1)->values()->all();
+                } else {
+                    $Location = CenterLocations::select('id', 'name')
+                        ->orderBy('name')
+                        ->get();
+                    $normalLocation = $Location->where('is_custom', 0)->values()->all();
+                    $customLocation = $Location->where('is_custom', 1)->values()->all();
+                }
+                $results['center_location'] = [
+                    'normal' => $normalLocation,
+                    'others' => $customLocation
+                ];
             }
         } catch (\Throwable $e) {
             return response()->json(['error' => $e->getMessage()], 500);

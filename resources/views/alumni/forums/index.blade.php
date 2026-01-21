@@ -857,8 +857,7 @@
             const title = post.title || 'Untitled Post';
             const fullDescription = post.description ? post.description.replace(/<\/?[^>]+>/g, "") : 'No description available';
 
-            const tags = post.labels ?
-                post.labels.split(',').filter(tag => tag.trim() !== '') : [];
+            const tags = post.labels ?? [];
 
             const author = post.alumni ?
                 (post.alumni.full_name || 'Unknown') :

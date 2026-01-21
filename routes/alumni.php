@@ -63,9 +63,12 @@ Route::middleware(['route.access:website'])->group(function () {
             Route::post('/pinned', [ForumsController::class, 'pinnedPost'])->name('alumni.pinned.post');
             Route::post('/update-status', [ForumsController::class, 'updateStatus'])->name('alumni.update.status');
             Route::get('/view-thread/{id}', [ForumsController::class, 'viewThread'])->name('alumni.view.thread');
+            Route::get('/get-labels', [ForumsController::class, 'getLabels'])->name('alumni.forums.labels');
         });
 
     });
     Route::get('/states', [CommonController::class, 'getStates'])->name('alumni.states');
     Route::get('/cities-by-state/{stateId}', [CommonController::class, 'getCitiesByState'])->name('alumni.cities');
+    Route::get('/pincodes-by-city/{cityId}', [CommonController::class, 'getPincodesByCity'])->name('alumni.pincodes');
+    Route::get('/center-locations-by-pincode/{pincodeId}', [CommonController::class, 'getCenterLocationsByPincode'])->name('alumni.center.locations');
 });

@@ -338,7 +338,7 @@
                         Active Posts
                     </button>
                     <button id="postStatusTab" onclick="switchTab('postStatus')"
-                        style="padding: 12px 40px; background: transparent; color: #6b7280; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
+                        style="padding: 12px 40px; background: transparent; color: #6b7280; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: none;">
                         Post Status
                     </button>
                     <button id="archiveTab" onclick="switchTab('archive')"
@@ -708,7 +708,7 @@
                 }
 
                 // Parse tags/labels
-                const tags = post.labels ? post.labels.split(',').filter(tag => tag.trim() !== '') : [];
+                const tags = post.labels ?? [];
 
                 html += `
                                                                         <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 16px; position: relative;">

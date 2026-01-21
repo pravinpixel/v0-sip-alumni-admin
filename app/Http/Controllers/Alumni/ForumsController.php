@@ -12,6 +12,8 @@ use App\Models\AlumniConnections;
 use App\Models\Alumnis;
 use App\Models\ForumReplies;
 use App\Models\ForumPost;
+use App\Models\Labels;
+use App\Models\PostLabel;
 use App\Models\PostLikes;
 use App\Models\PostPinned;
 use App\Models\PostViews;
@@ -28,7 +30,7 @@ class ForumsController extends Controller
     {
         $alumniId = session('alumni.id');
         $currentUser = Alumnis::find($alumniId);
-        $forumPosts = ForumPost::with('alumni')->orderBy('created_at', 'desc')->get();
+        $forumPosts = ForumPost::with('alumni', 'postlabels.label')->orderBy('created_at', 'desc')->get();
         return view('alumni.forums.index', compact('forumPosts', 'currentUser'));
     }
 
@@ -201,7 +203,7 @@ class ForumsController extends Controller
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:255',
                 'description' => 'required|string',
-                'labels' => 'required|string|max:255',
+                'labels' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -211,15 +213,25 @@ class ForumsController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-            // $lablelsArray = $request->labels ? explode(',', $request->labels) : [];
 
-            ForumPost::create([
+            $post = ForumPost::create([
                 'alumni_id' => $alumniId,
                 'title' => $request->title,
                 'description' => $request->description,
-                'labels' => $request->labels,
-                'status' => 'pending',
+                'status' => 'approved',
             ]);
+
+            $labels = json_decode($request->labels, true);
+
+            if (!empty($labels)) {
+                foreach ($labels as $labelId) {
+                    PostLabel::create([
+                        'post_id' => $post->id,
+                        'label_id' => $labelId,
+                    ]);
+                }
+            }
+
             // Send email alumni
             if ($alumni->notify_post_comments === 1) {
                 $data = [
@@ -382,6 +394,21 @@ class ForumsController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while adding the reply.'
+            ], 500);
+        }
+    }
+
+    public function getLabels(Request $request)
+    {
+        try {
+            $labels = Labels::select('id', 'name')->orderBy('name')->get();
+
+            return response()->json($labels);
+        } catch (\Exception $e) {
+            Log::error('Error fetching labels: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while fetching labels.'
             ], 500);
         }
     }

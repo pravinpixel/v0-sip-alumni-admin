@@ -1,6 +1,6 @@
 {{-- Filter Section --}}
     <div id="filterSection">
-        <div class="filter-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        <div class="filter-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
             <div>
                 <label class="filter-label">
                     Batch Year
@@ -15,11 +15,11 @@
             </div>
             <div>
                 <label class="filter-label">
-                    Location
+                    Center Location
                 </label>
                 <div class="multi-select-container" data-filter="location">
                     <div class="multi-select-display">
-                        <span class="placeholder">Select locations</span>
+                        <span class="placeholder">Select Center locations</span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="multi-select-dropdown"></div>
@@ -32,6 +32,18 @@
                 <div class="multi-select-container" data-filter="status">
                     <div class="multi-select-display">
                         <span class="placeholder">Select status</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="multi-select-dropdown"></div>
+                </div>
+            </div>
+            <div>
+                <label class="filter-label">
+                    Profession
+                </label>
+                <div class="multi-select-container" data-filter="profession">
+                    <div class="multi-select-display">
+                        <span class="placeholder">Select profession</span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="multi-select-dropdown"></div>

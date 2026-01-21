@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Alumni;
 
 use App\Http\Controllers\Controller;
 use App\Models\Alumnis;
+use App\Models\EmailOtp;
 use App\Models\MobileOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,50 +20,89 @@ class AuthCheckController extends Controller
     public function sendOtp(Request $request)
     {
         try {
-            $request->validate([
-                'number' => 'required|digits:10',
-                'is_login' => 'boolean'
-            ]);
+            $locationType = $request->location_type;
+            if ($locationType == 0) {
+                $request->validate([
+                    'number' => 'required|digits:10',
+                    'is_login' => 'boolean'
+                ]);
+            } else {
+                $request->validate([
+                    'number' => 'required|email',
+                    'is_login' => 'boolean'
+                ]);
+            }
 
             $mobile = $request->number;
 
             $toast_message = "OTP has been sent to your mobile number.";
             // Check if mobile exists
-            if($request->is_login == 1) {
-                $alumni = Alumnis::where('mobile_number', $mobile)->first();
-                if (!$alumni) {
-                    return response()->json([
-                        'success' => false,
-                        'error' => 'Mobile number not registered'
-                    ], 400); // 400 Bad Request for invalid mobile
+            if ($request->is_login == 1) {
+                if ($locationType == 0) {
+                    $alumni = Alumnis::where('mobile_number', $request->number)->first();
+                    if (!$alumni) {
+                        return response()->json([
+                            'success' => false,
+                            'error' => 'Mobile number not registered'
+                        ], 400);
+                    }
+                } else {
+                    $alumni = Alumnis::where('email', $request->number)->first();
+                    if (!$alumni) {
+                        return response()->json([
+                            'success' => false,
+                            'error' => 'Email not registered'
+                        ], 400);
+                    }
                 }
-                if($alumni->status == 'blocked') {
+                // if (!$alumni) {
+                //     return response()->json([
+                //         'success' => false,
+                //         'error' => 'Mobile number not registered'
+                //     ], 400);
+                // }
+                if ($alumni->status == 'blocked') {
                     return response()->json([
                         'success' => false,
                         'error' => 'Your account has been blocked. Please contact admin.'
                     ], 400);
                 }
-                $toast_message = "OTP has been sent to your registered mobile number.";
+                // $toast_message = "OTP has been sent to your registered mobile number.";
+                $toast_message = $locationType == 0
+                                    ? "OTP has been sent to your registered mobile number."
+                                    : "OTP has been sent to your registered email address.";
+
             }
 
             // Generate new OTP
             $otp = rand(100000, 999999);
 
             // Store OTP
-            MobileOtp::updateOrCreate(
-                ['mobile_number' => $mobile],
-                [
-                    'otp' => $otp,
-                    'expires_at' => now()->addSeconds(30)
-                ]
-            );
+            if ($locationType == 0) {
+                MobileOtp::updateOrCreate(
+                    ['mobile_number' => $mobile],
+                    [
+                        'otp' => $otp,
+                        'expires_at' => now()->addSeconds(30)
+                    ]
+                );
+                $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 10 minutes. Please don't share this code.\nTeam - SIP Academy";
+                $smsNumber = '91' . $mobile;
+                sendsms($smsNumber, $message);
+            } else {
+                EmailOtp::updateOrCreate(
+                    ['email' => $mobile],
+                    [
+                        'otp' => $otp,
+                        'expires_at' => now()->addSeconds(30)
+                    ]
+                );
+            }
 
-           $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 10 minutes. Please don't share this code.\nTeam - SIP Academy";
-           $smsNumber = '91' . $mobile;
-           sendsms($smsNumber, $message);
+
 
             // Store mobile in session
-            session(['verify_mobile' => $mobile]);
+            session(['verify_mobile' => $mobile, 'location_type' => $locationType]);
 
             // TODO: Send SMS via your SMS gateway
 
@@ -96,20 +136,29 @@ class AuthCheckController extends Controller
     {
         try {
             Log::info('OTP Verification Request:', $request->all());
+            $locationType = $request->location_type;
 
             $request->validate([
                 'otp' => 'required|digits:6',
-                'mobile' => 'required|digits:10'
+                // 'mobile' => 'required|digits:10'
+                'location_type' => 'required',
             ]);
 
-            $mobile = $request->mobile;
+            $value = $request->value;
             $otp = $request->otp;
 
             // Verify OTP
-            $otpRecord = MobileOtp::where('mobile_number', $mobile)
-                ->where('otp', $otp)
-                ->where('expires_at', '>', now())
-                ->first();
+            if ($locationType == 0) {
+                $otpRecord = MobileOtp::where('mobile_number', $value)
+                    ->where('otp', $otp)
+                    ->where('expires_at', '>', now())
+                    ->first();
+            } else {
+                $otpRecord = EmailOtp::where('email', $value)
+                    ->where('otp', $otp)
+                    ->where('expires_at', '>', now())
+                    ->first();
+            }
 
             if (!$otpRecord) {
                 return response()->json([
@@ -123,7 +172,11 @@ class AuthCheckController extends Controller
             $otpRecord->save();
             $otpRecord->delete();
 
-            $alumni = Alumnis::where('mobile_number', $mobile)->first();
+            if ($locationType == 0) {
+                $alumni = Alumnis::where('mobile_number', $value)->first();
+            } else {
+                $alumni = Alumnis::where('email', $value)->first();
+            }
             if ($alumni) {
                 // Store alumni data in session instead of using Auth
                 session([

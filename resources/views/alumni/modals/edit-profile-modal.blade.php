@@ -6,7 +6,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 @endphp
 
 <!-- Edit Profile Modal Popup -->
-<div id="editProfileModal" class="modal-overlay" data-alumni-id="{{ $alumni->id ?? '' }}">
+<div id="editProfileModal" class="modal-overlay" data-alumni-id="{{ session('alumni.id') }}">
     <div class="modal-popup">
         <div class="modal-header">
             <h2>Edit Profile</h2>
@@ -28,6 +28,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             </div>
 
             <form id="editProfileForm">
+                <div class="form-row">
                 <div class="form-group">
                     <label>Full Name</label>
                     <input type="text" class="form-input" data-field="full_name" value="{{ $alumni->full_name ?? '' }}">
@@ -39,6 +40,8 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     <input type="number" class="form-input" data-field="year_of_completion" value="{{ $alumni->year_of_completion ?? '' }}">
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
+                </div>
+                <div class="form-row">
                 <div class="form-group">
                     <label>State</label>
                     <select class="form-input" data-field="state_id" id="stateSelect">
@@ -54,7 +57,25 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     </select>
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
+                </div>
+                <div class="form-row">
+                <div class="form-group">
+                    <label>Pincode</label>
+                    <select class="form-input" data-field="pincode_id" id="pincodeSelect">
+                        <option value="">Select Pincode</option>
+                    </select>
+                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                </div>
 
+                <div class="form-group">
+                    <label>Center Location</label>
+                    <select class="form-input" data-field="center_id" id="centerLocationSelect">
+                        <option value="">Select Center Location</option>
+                    </select>
+                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                </div>
+                </div>
+                <div class="form-row">
                 <div class="form-group">
                     <label>Email Address</label>
                     <input type="email" class="form-input" data-field="email" value="{{ $alumni->email ?? '' }}">
@@ -99,6 +120,8 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                         <small id="otpTimer" style="color: #6b7280; font-size: 12px; display: block; margin-top: 6px;"></small>
                     </div>
                 </div>
+                </div>
+                <div class="form-row">
                 <div class="form-group">
                     <label>Current Occupation</label>
                     <select class="form-input" data-field="occupation_id" id="occupationSelect">
@@ -106,6 +129,42 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     </select>
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
+                <div class="form-group">
+                    <label>Current Location</label>
+                    <input type="text" class="form-input" data-field="current_location" value="{{ $alumni->current_location ?? '' }}">
+                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                </div>
+                </div>
+                <div class="form-row">
+                <div class="form-group">
+                    <label>Level Completed</label>
+                    <select class="form-input" data-field="level_completed">
+                        <option value="Advanced 4 / Level 8">Advanced 4 / Level 8</option>
+                        <option value="Grandmaster A">Grandmaster A</option>
+                        <option value="Grandmaster B">Grandmaster B</option>
+                        <option value="Grandmaster C">Grandmaster C</option>
+                    </select>
+                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                </div>
+                <div class="form-group">
+                    <label>LinkedIn Profile</label>
+                    <input type="text" class="form-input" data-field="linkedin_profile" value="{{ $alumni->linkedin_profile ?? '' }}">
+                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                </div>
+                </div>
+                <div class="form-row">
+                <div class="form-group">
+                    <label>Organization</label>
+                    <input type="text" class="form-input" data-field="organization" value="{{ $alumni->organization ?? '' }}">
+                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                </div>
+                <div class="form-group">
+                    <label>University</label>
+                    <input type="text" class="form-input" data-field="university" value="{{ $alumni->university ?? '' }}">
+                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                </div>
+                </div>
+
             </form>
         </div>
         <div class="modal-footer">
@@ -140,7 +199,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         border-radius: 12px;
         box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
         width: 90%;
-        max-width: 500px;
+        max-width: 800px;
         max-height: 80vh;
         display: flex;
         flex-direction: column;
@@ -794,4 +853,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 saveBtn.disabled = false;
             });
     }
+
+    // Make sure the modal uses the existing functions from sidebar
+    // The dropdown population functions are already defined in the sidebar
 </script>

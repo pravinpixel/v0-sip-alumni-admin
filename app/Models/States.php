@@ -11,6 +11,8 @@ class States extends Model
 
     protected $table = 'states';
 
+    protected $fillable = ['name', 'country_id', 'status'];
+
     public $timestamps = false;
 
     public function city()

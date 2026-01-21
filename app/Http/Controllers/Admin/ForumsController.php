@@ -284,21 +284,21 @@ class ForumsController extends Controller
             $post = ForumPost::with(['alumni', 'replies'])->findOrFail($id);
             
             // Parse labels if stored as JSON or comma-separated
-            $labels = [];
-            if ($post->labels) {
-                if (is_string($post->labels)) {
-                    // Try to decode as JSON first
-                    $decoded = json_decode($post->labels, true);
-                    if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                        $labels = $decoded;
-                    } else {
-                        // Otherwise split by comma
-                        $labels = array_map('trim', explode(',', $post->labels));
-                    }
-                } elseif (is_array($post->labels)) {
-                    $labels = $post->labels;
-                }
-            }
+            // $labels = [];
+            // if ($post->labels) {
+            //     if (is_string($post->labels)) {
+            //         // Try to decode as JSON first
+            //         $decoded = json_decode($post->labels, true);
+            //         if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            //             $labels = $decoded;
+            //         } else {
+            //             // Otherwise split by comma
+            //             $labels = array_map('trim', explode(',', $post->labels));
+            //         }
+            //     } elseif (is_array($post->labels)) {
+            //         $labels = $post->labels;
+            //     }
+            // }
             
             return response()->json([
                 'success' => true,
@@ -306,7 +306,7 @@ class ForumsController extends Controller
                     'id' => $post->id,
                     'title' => $post->title,
                     'description' => $post->description,
-                    'labels' => $labels,
+                    'labels' => $post->labels,
                     'comments_count' => $post->replies->count(),
                     'likes_count' => $post->likes_count ?? 0,
                     'views_count' => $post->views_count ?? 0,

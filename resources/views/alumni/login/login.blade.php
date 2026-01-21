@@ -14,7 +14,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href="" />
     <link rel="icon" type="image/png" href="{{ asset('images/logo/favicon.png') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     @section('style')
     <link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ asset('css/alumni/style.css') }}" />
@@ -28,6 +28,7 @@
                 width: 350px !important;
                 margin-top: 40px !important;
             }
+
             .container {
                 margin-bottom: 60px !important;
             }
@@ -107,7 +108,7 @@
         <div class="d-flex justify-content-center align-items-center container">
             <div class="bg-body d-flex flex-column align-items-center rounded-4 w-450px p-6 log">
                 <div class="w-100" style="max-width:450px;">
-                    
+
                     <!-- Change form action to send-otp -->
                     <form id="dynamic-form" method="post" action="{{ route('send.otp') }}">
                         @csrf
@@ -119,9 +120,18 @@
                         <div class="fv-row mb-4">
                             <p class="form-label text-dark fw-bold text-center fs-3 mb-4">Welcome to SIP Abacus Alumni Portal</p>
                             <label class="form-label text-dark fs-7">Please enter your registered mobile number to receive an OTP and continue.</label>
+                            <div class="text-center mb-3">
+                                <label class="me-3">
+                                    <input type="radio" name="location_type" value="0" checked>
+                                    Inside India
+                                </label>
+                                <label>
+                                    <input type="radio" name="location_type" value="1">
+                                    Outside India
+                                </label>
+                            </div>
                             <input type="text" name="number" placeholder="Enter 10-digit mobile number"
-                                autocomplete="off" class="form-control bg-transparent" maxlength="10"
-                                oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
+                                autocomplete="off" class="form-control bg-transparent">
 
                             <span class="field-error" id="number-error" style="color:red"></span>
                         </div>
@@ -147,19 +157,76 @@
     <script src="{{ asset('js/alumniCommon.js') }}"></script>
 
     <script>
-        document.querySelector('input[name="number"]').addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
-            // Clear error message when user starts typing
-            $("#number-error").text("");
+        $(document).ready(function() {
+
+            const $input = $('input[name="number"]');
+
+            function setInputByLocation(type) {
+                $input.off('input'); // remove any previous listeners
+                $input.val(''); // clear value
+
+                if (type === '0') { // Inside India
+                    $input.attr('type', 'text');
+                    $input.attr('placeholder', 'Enter 10-digit mobile number');
+
+                    $input.on('input', function() {
+                        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+                        $('#number-error').text('');
+                    });
+
+                } else { // Outside India
+                    $input.attr('type', 'email');
+                    $input.attr('placeholder', 'Enter your registered email');
+
+                    $input.on('input', function() {
+                        // allow any email characters
+                        $('#number-error').text('');
+                    });
+                }
+            }
+
+            // Initial setup
+            setInputByLocation($('input[name="location_type"]:checked').val());
+
+            // When user changes location
+            $('input[name="location_type"]').change(function() {
+                setInputByLocation($(this).val());
+            });
+
+            // Form submit
+            $('#dynamic-form').on('submit', function(e) {
+                e.preventDefault();
+                const locationType = $('input[name="location_type"]:checked').val();
+                const value = $input.val().trim();
+
+                $('#number-error').text('');
+
+                if (locationType === '0') {
+                    if (!/^\d{10}$/.test(value)) {
+                        $('#number-error').text('Please enter a valid 10-digit mobile number');
+                        return;
+                    }
+                } else {
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                        $('#number-error').text('Please enter a valid email address');
+                        return;
+                    }
+                }
+
+                // proceed with your Ajax logic here
+                // formData.append('number', value);
+                // formData.append('location_type', locationType);
+            });
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            $('#dynamic-form').on('submit', function (e) {
+
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#dynamic-form').on('submit', function(e) {
                 sendOtp(e);
             });
         });
 
-        window.addEventListener('pageshow', function (event) {
+        window.addEventListener('pageshow', function(event) {
             const btn = $('#dynamic-submit');
             if (event.persisted) {
                 btn.prop('disabled', false);
@@ -168,6 +235,44 @@
             }
         });
 
+        function attachNumberInputListener(type) {
+            const input = $('input[name="number"]');
+            input.off('input'); // remove old listeners
+
+            if (type == '0') { // Inside India
+                input.on('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+                    $("#number-error").text("");
+                });
+            } else { // Outside India
+                input.on('input', function() {
+                    $("#number-error").text("");
+                });
+            }
+        }
+
+        // initial setup
+        let initialType = $('input[name="location_type"]:checked').val();
+        attachNumberInputListener(initialType);
+
+        // change handler
+        $('input[name="location_type"]').change(function() {
+            let type = $(this).val();
+
+            if (type == '0') { // Inside India
+                $('input[name="number"]').attr('placeholder', 'Enter 10-digit mobile number');
+                $('input[name="number"]').attr('type', 'text');
+                $('input[name="number"]').val('');
+                $("#number-error").text("");
+            } else { // Outside India
+                $('input[name="number"]').attr('placeholder', 'Enter your registered email');
+                $('input[name="number"]').attr('type', 'email');
+                $('input[name="number"]').val('');
+                $("#number-error").text("");
+            }
+
+            attachNumberInputListener(type);
+        });
 
         function sendOtp(event) {
             event.preventDefault();
@@ -189,20 +294,21 @@
                 return;
             }
 
-            if (mobileNumber.length !== 10) {
-                $("#number-error").text("Please enter a valid 10-digit mobile number");
-                btn.prop('disabled', false);
-                return;
-            }
+            // if (mobileNumber.length !== 10) {
+            //     $("#number-error").text("Please enter a valid 10-digit mobile number");
+            //     btn.prop('disabled', false);
+            //     return;
+            // }
 
-            if (!/^\d{10}$/.test(mobileNumber)) {
-                $("#number-error").text("Please enter a valid 10-digit mobile number");
-                btn.prop('disabled', false);
-                return;
-            }
+            // if (!/^\d{10}$/.test(mobileNumber)) {
+            //     $("#number-error").text("Please enter a valid 10-digit mobile number");
+            //     btn.prop('disabled', false);
+            //     return;
+            // }
 
             let formData = new FormData(document.getElementById('dynamic-form'));
             formData.append('is_login', 1);
+            // formData.append('location_type', $('input[name="location_type"]:checked').val());
 
             $('#dynamic-submit .indicator-label').hide();
             $('#dynamic-submit .indicator-progress').show();
@@ -220,7 +326,7 @@
                 success: function(response) {
                     if (response.success) {
                         showToast(response.message, 'success');
-                        
+
                         setTimeout(function() {
                             window.location.href = response.redirect || '{{ route("verify.otp") }}';
                         }, 1000);
@@ -245,4 +351,5 @@
     @show
 
 </body>
+
 </html>
