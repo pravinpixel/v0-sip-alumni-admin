@@ -62,25 +62,25 @@ class AlumniController extends Controller
             //     ], 400);
             // }
 
-            // if ($request->location_type == 0) {
-            //     $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
+            if ($request->location_type == 0) {
+                $otpRecord = MobileOtp::where('mobile_number', $request->mobile_number)->first();
 
-            //     if (!$otpRecord || $otpRecord->is_verified == 0) {
-            //         return response()->json([
-            //             'success' => false,
-            //             'message' => 'Please verify mobile OTP first.'
-            //         ], 400);
-            //     }
-            // } else {
-            //     $emailVerify = EmailOtp::where('email', $request->email)->first();
+                if (!$otpRecord || $otpRecord->is_verified == 0) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Please verify mobile OTP first.'
+                    ], 400);
+                }
+            } else {
+                $emailVerify = EmailOtp::where('email', $request->email)->first();
 
-            //     if (!$emailVerify || $emailVerify->is_verified == 0) {
-            //         return response()->json([
-            //             'success' => false,
-            //             'message' => 'Please verify your email before registration.'
-            //         ], 400);
-            //     }
-            // }
+                if (!$emailVerify || $emailVerify->is_verified == 0) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Please verify your email before registration.'
+                    ], 400);
+                }
+            }
 
             $cityId = $request->city_id;
 
@@ -142,12 +142,12 @@ class AlumniController extends Controller
                 'status'             => 'active',
                 'image'              => asset('images/avatar/blank.png')
             ]);
-            // $otpRecord->delete();
-            // if ($request->location_type == 0) {
-            //     $otpRecord->delete();
-            // } else {
-            //     $emailVerify->delete();
-            // }
+            $otpRecord->delete();
+            if ($request->location_type == 0) {
+                $otpRecord->delete();
+            } else {
+                $emailVerify->delete();
+            }
 
             Alumnis::where('is_directory_ribbon', '!=', 1)
                 ->orWhereNull('is_directory_ribbon')
