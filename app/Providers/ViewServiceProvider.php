@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Alumnis;
+use App\Models\Announcements;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,7 @@ class ViewServiceProvider extends ServiceProvider
  
             if (!$alumniSession || !isset($alumniSession['id'])) {
                 $view->with('alumni', null);
+                $view->with('announcements', collect()); // Empty collection for non-authenticated users
                 return;
             }
  
@@ -33,7 +35,18 @@ class ViewServiceProvider extends ServiceProvider
                     ->with('error', 'Your account has been blocked.')
                     ->send();
             }
+
+            // Get active announcements for authenticated alumni
+            $announcements = Announcements::where('status', 1)
+                ->where(function($query) {
+                    $query->whereNull('expiry_date')
+                          ->orWhere('expiry_date', '>=', now());
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
             $view->with('alumni', $alumni);
+            $view->with('announcements', $announcements);
         });
     }
 }

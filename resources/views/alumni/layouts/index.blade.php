@@ -66,7 +66,7 @@
             /* border-right: 1px solid #e5e7eb; */
             position: fixed;
             left: 0;
-            top: 81px;
+            top: 127px;
             /* Below header */
             bottom: 0;
             overflow-y: auto;
@@ -107,7 +107,6 @@
 
         .profile-info {
             padding: 20px;
-            flex: 1;
         }
 
         .info-item {
@@ -218,6 +217,56 @@
             background: #9ca3af;
         }
 
+        .announcements-global-container {
+            z-index: 100;
+        }
+
+        .announcement-content {
+            display: inline-block;
+            background: linear-gradient(30deg, #E2001D 0%, #FCD116 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+
+        .announcement-banner {
+            background:  #faebed;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Announcements Styles */
+        @keyframes scroll-announcements {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+        
+        .announcement-scroll-content {
+            display: flex;
+            align-items: center;
+            top: 10px;
+        }
+        
+        .announcement-item {
+            font-size: 16px;
+            font-weight: 500;
+            margin-right: 80px;
+            white-space: nowrap;
+        }
+        
+        .announcement-banner:hover .announcement-scroll-content {
+            animation-play-state: paused;
+        }
+        
+        
+        .announcement-scroll-content.paused {
+            animation-play-state: paused;
+        }
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
@@ -231,9 +280,14 @@
                 width: 230px;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
-                top: 38.5px;
+                top: 60px;
                 height: 98%;
                 overflow: hidden;
+            }
+
+            .profile-img {
+                width: 70px;
+                height: 70px;
             }
 
             .sidebar.active {
@@ -286,6 +340,7 @@
         <!-- Header -->
         @include('alumni.layouts.header')
 
+        @include('alumni.layouts.announcement_banner')
         <!-- Main Layout -->
         <div class="body-wrapper">
             <!-- Sidebar -->
