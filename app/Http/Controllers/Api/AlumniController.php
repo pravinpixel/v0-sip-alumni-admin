@@ -404,7 +404,10 @@ class AlumniController extends Controller
             }
             if (in_array("pincode", $required)) {
                 $pincode = [];
-                $pincode = Pincodes::select('id', 'pincode')->get();
+                $pincode = Pincodes::select('id', 'pincode', 'city_id')->get();
+                if($request->city_id){
+                    $pincode = $pincode->where('city_id', $request->city_id)->values()->all();
+                }
                 $results['pincode'] = $pincode;
             }
             if (in_array("country_code", $required)) {
