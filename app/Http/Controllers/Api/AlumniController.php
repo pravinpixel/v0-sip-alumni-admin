@@ -8,6 +8,7 @@ use App\Mail\AlumniWelcomeMail;
 use Illuminate\Http\Request;
 use App\Models\Alumnis;
 use App\Models\Cities;
+use App\Models\CountryCodes;
 use App\Models\MobileOtp;
 use App\Models\Occupation;
 use App\Models\CenterLocations;
@@ -405,6 +406,16 @@ class AlumniController extends Controller
                 $pincode = [];
                 $pincode = Pincodes::select('id', 'pincode')->get();
                 $results['pincode'] = $pincode;
+            }
+            if (in_array("country_code", $required)) {
+                $countryCode = [];
+                $countryCodes = CountryCodes::select('id', 'dial_code', 'is_inside')->get();
+                if($request->location_type == 0){
+                    $countryCode = $countryCodes->where('is_inside', 1)->values()->all();
+                } else {
+                    $countryCode = $countryCodes->where('is_inside', 0)->values()->all();
+                }
+                $results['country_code'] = $countryCode;
             }
             if (in_array("center_location", $required)) {
                 $centerLocation = [];
