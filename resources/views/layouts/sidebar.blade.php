@@ -94,6 +94,15 @@
                         </a>
                     </div>
                 @endcan
+                @can('forum.view')
+                    <div class="menu-item">
+                        <a class="menu-link {{ (request()->is('admin/announcements*')) ? 'active' : '' }}"
+                            href="{{ route('admin.announcements.index') }}">
+                            <i class="custom_icon fas fa-comments"></i>
+                            <span class="menu-title"><b>Announcements</b></span>
+                        </a>
+                    </div>
+                @endcan
 
                 @can('user.view')
                     <div class="menu-item">

@@ -5,19 +5,12 @@ use App\Http\Controllers\Admin\TestController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\DepartmentController;
-use App\Http\Controllers\Admin\LocationController;
-use App\Http\Controllers\Admin\DesignationController;
 use App\Http\Controllers\Admin\DirectoryController;
-use App\Http\Controllers\Admin\OrganizationController;
-use App\Http\Controllers\Admin\TaskCategoryController;
 use App\Http\Controllers\Admin\RoleManagementController;
-use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\AnnouncementsController;
 use App\Http\Controllers\Admin\ForumsController;
 
 /*
@@ -103,6 +96,15 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{id}', 'edit')->name('user.edit')->middleware('checkAccess:user.edit');
         Route::delete('/{id}', 'delete')->name('user.delete')->middleware('checkAccess:user.delete');
     });
-});
-});
 
+    #..announcements ...
+    Route::prefix('announcements')->controller(AnnouncementsController::class)->group(function () {
+        Route::get('/', 'index')->name('admin.announcements.index');
+        Route::get('/add_edit', 'create')->name('admin.announcements.create');
+        Route::post('/save', 'save')->name('admin.announcements.save');
+        Route::post('/toggle-status', 'toggleStatus')->name('admin.announcements.toggle-status');
+        Route::get('/{id}', 'edit')->name('admin.announcements.edit');
+        Route::delete('/{id}', 'delete')->name('admin.announcements.delete');
+    });
+});
+});
