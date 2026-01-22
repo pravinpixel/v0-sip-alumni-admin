@@ -15,6 +15,20 @@
                 </div>
             </div>
 
+            <!-- Center Location Filter Dropdown -->
+            <div class="filter-dropdown">
+                <button type="button" class="filter-dropdown-btn" data-filter="centerLocations">
+                    <span>Center Location</span>
+                    <div class="d-flex align-items-center gap-1">
+                        <span class="filter-count" data-filter="centerLocations">0</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </button>
+                <div class="filter-dropdown-menu" data-filter="centerLocations">
+                    <!-- Options will be loaded here -->
+                </div>
+            </div>
+
             <!-- From Date -->
             <div class="date-filter">
                 <input type="date" id="filterFromDate" placeholder="From Date">

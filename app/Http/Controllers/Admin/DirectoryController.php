@@ -222,6 +222,14 @@ class DirectoryController extends Controller
                                 <i class="fa-regular fa-eye me-2"></i>View Profile Pic
                                 </a>
                             </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:void(0)" 
+                                onclick="openDetailsModal(' . $row->id . ')"
+                                onmouseover="this.style.backgroundColor=\'#ba0028\';this.style.color=\'#fff\';"
+                                onmouseout="this.style.backgroundColor=\'#fff\';this.style.color=\'#000\'">
+                                <i class="fa fa-info me-2"></i>View Other Info
+                                </a>
+                            </li>
                     ';
                     if ($user->can('directory.edit')) {
                         if ($status == 'blocked') {

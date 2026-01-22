@@ -26,11 +26,12 @@
         <div class="table-container">
             <!-- Table Wrapper (Scrollable) -->
             <div class="table-responsive" style="overflow-x: auto;">
-                <table id="dataTable">
+                <table id="dataTable" style="min-width: 1200px;">
                     <thead>
                         <tr id="tableHeaderRow">
                             <th class="table-header">Created On</th>
                             <th class="table-header">Alumni</th>
+                            <th class="table-header">Center Location</th>
                             <th class="table-header">Contact</th>
                             <th class="table-header">View Post</th>
                             <th class="table-header">Action Taken On</th>
@@ -326,7 +327,8 @@
 
 <script>
     let selectedFilters = {
-        statuses: []
+        statuses: [],
+        centerLocations: []
     };
 
     $(document).ready(function() {
@@ -347,6 +349,7 @@
                 type: 'GET',
                 data: function(d) {
                     d.statuses = selectedFilters.statuses;
+                    d.centerLocations = selectedFilters.centerLocations;
                     d.from_date = $('#filterFromDate').val();
                     d.to_date = $('#filterToDate').val();
                 }
@@ -362,6 +365,11 @@
                     name: 'alumni',
                     orderable: true,
                     searchable: false
+                },
+                {
+                    data: 'center_location',
+                    name: 'center_location',
+                    orderable: true,
                 },
                 {
                     data: 'contact',
@@ -505,7 +513,8 @@
         // Clear all filters
         $('#clearAllFiltersBtn').on('click', function() {
             selectedFilters = {
-                statuses: []
+                statuses: [],
+                centerLocations: []
             };
             $('#filterFromDate').val('');
             $('#filterToDate').val('');
@@ -528,6 +537,11 @@
                 if (response.success) {
                     // Populate Statuses
                     populateFilterMenu('statuses', response.statuses, 'Status');
+                    // Populate Center Locations
+                    populateFilterMenu('centerLocations', response.centerLocations.map(loc => ({
+                        value: loc.id,
+                        label: loc.name
+                    })), 'Center Location');
                 }
             },
             error: function(xhr) {
@@ -541,18 +555,22 @@
         menu.empty();
         
         options.forEach(option => {
-            const isChecked = selectedFilters[filterType].includes(option);
+            // Handle both simple strings and objects with value/label
+            const value = typeof option === 'object' ? option.value : option;
+            const displayLabel = typeof option === 'object' ? option.label : option;
+            
+            const isChecked = selectedFilters[filterType].includes(value);
             const item = $(`
                 <label style="display: flex; align-items: center; padding: 10px 16px; cursor: pointer; transition: background 0.2s;"
                     onmouseover="this.style.background='#f3f4f6'" onmouseout="this.style.background='white'">
-                    <input type="checkbox" value="${option}" ${isChecked ? 'checked' : ''}
+                    <input type="checkbox" value="${value}" ${isChecked ? 'checked' : ''}
                         style="margin-right: 10px; width: 16px; height: 16px; cursor: pointer;">
-                    <span style="font-size: 14px; color: #374151; text-transform: capitalize;">${option.replace(/_/g, ' ')}</span>
+                    <span style="font-size: 14px; color: #374151; text-transform: capitalize;">${displayLabel.replace(/_/g, ' ')}</span>
                 </label>
             `);
             
             item.find('input').on('change', function() {
-                toggleFilter(filterType, option, this.checked);
+                toggleFilter(filterType, value, this.checked);
             });
             
             menu.append(item);
@@ -574,7 +592,7 @@
 
     function updateFilterDisplay() {
         // Update count badges
-        ['statuses'].forEach(filterType => {
+        ['statuses', 'centerLocations'].forEach(filterType => {
             const count = selectedFilters[filterType].length;
             const badge = $(`.filter-count[data-filter="${filterType}"]`);
             
@@ -599,6 +617,27 @@
                 <div class="filter-chip">
                     <span>Status: ${value.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase())}</span>
                     <button onclick="removeFilter('statuses', '${value}')" >
+                        ×
+                    </button>
+                </div>
+            `);
+            chipsContainer.append(chip);
+        });
+
+        // Add chips for center location filters
+        selectedFilters.centerLocations.forEach(value => {
+            hasFilters = true;
+            // Find the display name for this center location
+            let displayName = value;
+            $(`.filter-dropdown-menu[data-filter="centerLocations"] input[value="${value}"]`).each(function() {
+                const label = $(this).parent().find('span').text();
+                if (label) displayName = label;
+            });
+            
+            const chip = $(`
+                <div class="filter-chip">
+                    <span>Center: ${displayName}</span>
+                    <button onclick="removeFilter('centerLocations', '${value}')" >
                         ×
                     </button>
                 </div>

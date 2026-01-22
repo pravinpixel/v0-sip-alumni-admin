@@ -33,9 +33,35 @@ class ForumsController extends Controller
                 ->pluck('status')
                 ->toArray();
 
+            // Get unique center locations from forum posts
+            $centerLocations = ForumPost::with(['alumni.centerLocation', 'alumni.city.state'])
+                ->whereHas('alumni', function ($query) {
+                    $query->whereNotNull('center_id');
+                })
+                ->get()
+                ->map(function ($post) {
+                    if ($post->alumni && $post->alumni->centerLocation && $post->alumni->city && $post->alumni->city->state) {
+                        $centerName = $post->alumni->centerLocation->name;
+                        $cityName = $post->alumni->city->name;
+                        $stateName = $post->alumni->city->state->name;
+                        $locationString = $centerName . ', ' . $cityName . ', ' . $stateName;
+                        
+                        return [
+                            'id' => $post->alumni->center_id,
+                            'name' => $locationString,
+                        ];
+                    }
+                    return null;
+                })
+                ->filter()
+                ->unique('id')
+                ->values()
+                ->toArray();
+
             return response()->json([
                 'success' => true,
-                'statuses' => $statuses
+                'statuses' => $statuses,
+                'centerLocations' => $centerLocations
             ]);
         } catch (\Exception $e) {
             Log::error('Error loading filter options: ' . $e->getMessage());
@@ -49,11 +75,18 @@ class ForumsController extends Controller
     public function getData(Request $request)
     {
         try {
-            $query = ForumPost::with('alumni');
+            $query = ForumPost::with('alumni', 'alumni.centerLocation');
 
             // Apply status filter
             if ($request->has('statuses') && !empty($request->statuses)) {
                 $query->whereIn('status', $request->statuses);
+            }
+
+            // Apply center location filter
+            if ($request->has('centerLocations') && !empty($request->centerLocations)) {
+                $query->whereHas('alumni', function ($alumniQuery) use ($request) {
+                    $alumniQuery->whereIn('center_id', $request->centerLocations);
+                });
             }
 
             if ($request->filled('from_date') && $request->filled('to_date')) {
@@ -115,6 +148,13 @@ class ForumsController extends Controller
                         DB::raw("(SELECT alumnis.mobile_number FROM alumnis WHERE alumnis.id = forum_post.alumni_id)"),
                         $order);
                 })
+                ->orderColumn('center_location', function ($query, $order) {
+                    $query->orderBy(
+                        DB::raw("(SELECT center_locations.name FROM center_locations 
+                            JOIN alumnis ON alumnis.center_id = center_locations.id 
+                            WHERE alumnis.id = forum_post.alumni_id)"),
+                        $order);
+                })
                 ->orderColumn('action_taken_on', function ($query, $order) {
                     $query->orderBy('forum_post.updated_at', $order);
                 })
@@ -138,6 +178,11 @@ class ForumsController extends Controller
                     </div>';
                 })
 
+                ->addColumn('center_location', function ($row) {
+                    return ($row->alumni?->centerLocation?->name ?? '—')
+                        . ', ' . ($row->alumni?->city?->name ?? '—')
+                        . ', ' . ($row->alumni?->city?->state?->name ?? '—');
+                })
                 ->addColumn('contact', function ($row) {
                     return '<span style="font-size:12px;font-weight:600;">'
                         . ($row->alumni->mobile_number ?? '—') . '</span>';
@@ -279,7 +324,7 @@ class ForumsController extends Controller
                     ';
                 })
 
-                ->rawColumns(['alumni', 'contact', 'view_post', 'status', 'action', 'report'])
+                ->rawColumns(['alumni', 'contact', 'view_post', 'status', 'action', 'report', 'center_location'])
                 ->make(true);
         } catch (\Throwable $e) {
             Log::error('Directory DataTable error: ' . $e->getMessage(), [
