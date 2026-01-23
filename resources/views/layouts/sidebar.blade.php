@@ -98,7 +98,7 @@
                     <div class="menu-item">
                         <a class="menu-link {{ (request()->is('admin/announcements*')) ? 'active' : '' }}"
                             href="{{ route('admin.announcements.index') }}">
-                            <i class="custom_icon fas fa-comments"></i>
+                            <i class="custom_icon fas fa-bullhorn"></i>
                             <span class="menu-title"><b>Announcements</b></span>
                         </a>
                     </div>

@@ -96,10 +96,7 @@
                         <tbody>
                             @if($datas->isEmpty())
                                 <tr>
-                                    <td colspan="6" style="text-align: center; padding: 40px; color: #6b7280;">
-                                        <i class="fas fa-bullhorn" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
-                                        <div style="font-size: 18px; margin-bottom: 8px;">No announcements found</div>
-                                        <div style="font-size: 14px;">Create your first announcement to get started</div>
+                                    <td colspan="6" class="text-center">No results found.
                                     </td>
                                 </tr>
                             @else
@@ -118,7 +115,7 @@
                                                         style="opacity: 0; width: 0; height: 0;">
                                                     <span class="toggle-slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; transition: 0.4s; border-radius: 24px;"></span>
                                                 </label>
-                                                <span class="status-badge {{ $data->status == 1 ? 'status-active' : 'status-inactive' }}">
+                                                <span class="status-badge {{ $data->status == 1 ? 'status-active' : 'status-inactive' }}" style="border-radius: 1rem;">
                                                     {{ $data->status == 1 ? 'Active' : 'Inactive' }}
                                                 </span>
                                             </div>
