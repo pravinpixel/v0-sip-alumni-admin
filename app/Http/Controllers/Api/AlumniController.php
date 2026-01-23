@@ -142,7 +142,7 @@ class AlumniController extends Controller
                 'status'             => 'active',
                 'image'              => asset('images/avatar/blank.png')
             ]);
-            $otpRecord->delete();
+            // $otpRecord->delete();
             if ($request->location_type == 0) {
                 $otpRecord->delete();
             } else {
