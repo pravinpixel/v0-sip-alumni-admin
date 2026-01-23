@@ -5,10 +5,20 @@
 @push('styles')
     <style>
         .toggle-switch input:checked+.toggle-slider {
-            background-color: #16a34a !important;
+            background-color: #ba0028 !important;
+        }
+
+        .status-active {
+            background-color: #ba0028;
+            color: white;
+        }
+
+        .status-inactive {
+            background-color: #fcd176;
+            color: black;
         }
         .toggle-slider {
-            background-color: #dc2626 !important;
+            background-color: #dedede !important;
         }
 
         .toggle-slider:before {
@@ -74,9 +84,9 @@
                         <thead>
                             <tr id="tableHeaderRow">
                                 <th class="table-header">Created On</th>
-                                <th class="table-header">Title</th>
-                                <th class="table-header">Description</th>
-                                <th class="table-header">Expiry Date</th>
+                                <th class="table-header">Announcement Title</th>
+                                <th class="table-header">Announcement Description</th>
+                                <th class="table-header">Announcement Expiry</th>
                                 <th class="table-header">Status</th>
                                 @if(auth()->user()->can('announcement.edit') || auth()->user()->can('announcement.delete'))
                                 <th class="table-header">Actions</th>

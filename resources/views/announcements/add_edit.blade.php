@@ -21,7 +21,7 @@
                     @endif
                 </h1>
             </div>
-            <p style="font-size: 0.875rem; color: #6b7280; margin-left: 3.5rem;">
+            <p style="font-size: 1rem; color: #6b7280; margin-left: 2rem;">
                 @if(isset($announcement))
                     Update announcement details
                 @else
@@ -30,8 +30,7 @@
             </p>
         </div>
 
-        <!-- Form Card -->
-        <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 2rem;">
+        <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 2rem; width: 70%;">
 
             <form id="dynamic-form" method="post" action="{{ route('admin.announcements.save') }}">
                 @csrf
@@ -66,8 +65,14 @@
                     <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
                         Expiry Date <span style="color: #dc2626;">*</span>
                     </label>
-                    <input type="date" id="expiry_date" name="expiry_date" value="{{$announcement->expiry_date ?? ''}}"
-                        style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;">
+                    @php
+                        $expiry = isset($announcement) && $announcement->expiry_date
+                            ? \Carbon\Carbon::parse($announcement->expiry_date)->format('Y-m-d\TH:i')
+                            : '';
+                    @endphp
+                    <input type="datetime-local" id="expiry_date" name="expiry_date"
+                        value="{{ $expiry }}"
+                        style="width:100%; padding:0.75rem; border:1px solid #e5e7eb; border-radius:0.5rem; font-size:0.875rem;">
                     <span class="field-error" id="expiry_date-error"
                         style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
                 </div>
@@ -85,7 +90,7 @@
                             <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e7eb; transition: 0.3s; border-radius: 24px;"></span>
                             <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%;"></span>
                         </label>
-                        <span id="status-label" style="font-size: 0.875rem; font-weight: 600; color: {{ isset($announcement) && $announcement->status == 1 ? '#16a34a' : (!isset($announcement) ? '#16a34a' : '#dc2626') }}; transition: color 0.3s;">
+                        <span id="status-label" style="font-size: 0.875rem; font-weight: 600; transition: color 0.3s;">
                             {{ isset($announcement) && $announcement->status == 1 ? 'Active' : (!isset($announcement) ? 'Active' : 'Inactive') }}
                         </span>
                     </div>
@@ -121,10 +126,10 @@
     <style>
         /* Toggle Switch Styles */
         #status-toggle:checked + span {
-            background-color: #16a34a !important;
+            background-color: #ba0028 !important;
         }
         #status-toggle + span {
-            background-color: #dc2626 !important;
+            background-color: #dedede !important;
         }
         #status-toggle:checked + span + span {
             transform: translateX(24px);
@@ -136,16 +141,21 @@
             $('#status-toggle').on('change', function() {
                 if ($(this).is(':checked')) {
                     $('#status').val('1');
-                    $('#status-label').text('Active').css('color', '#16a34a');
+                    $('#status-label').text('Active');
                 } else {
                     $('#status').val('0');
-                    $('#status-label').text('Inactive').css('color', '#dc2626');
+                    $('#status-label').text('Inactive');
                 }
             });
 
             $('#dynamic-submit').on('click', function (e) {
                 saveUpdateAnnouncement(e);
             });
+
+            document.getElementById('expiry_date').addEventListener('click', function () {
+                this.showPicker();
+            });
+
         });
 
         function saveUpdateAnnouncement(event) {
