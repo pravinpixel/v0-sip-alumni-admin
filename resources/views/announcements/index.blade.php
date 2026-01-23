@@ -56,7 +56,7 @@
                 <div class="search-box">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput"
-                        placeholder="Search announcements...">
+                        placeholder="Search by announcement title...">
                 </div>
 
                 <!-- Action Buttons -->
