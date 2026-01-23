@@ -66,7 +66,7 @@
             /* border-right: 1px solid #e5e7eb; */
             position: fixed;
             left: 0;
-            top: 127px;
+            top: 81px;
             /* Below header */
             bottom: 0;
             overflow-y: auto;
@@ -86,8 +86,10 @@
 
         /* Profile Section in Sidebar */
         .profile-section {
+            position: relative;
             text-align: center;
             padding: 10px;
+            margin-top: 40px;
         }
 
         .profile-img {
@@ -218,7 +220,11 @@
         }
 
         .announcements-global-container {
-            z-index: 100;
+            position: sticky;
+            top: 81px; /* Below header */
+            left: 0;
+            right: 0;
+            z-index: 11;
         }
 
         .announcement-content {
@@ -280,7 +286,7 @@
                 width: 230px;
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
-                top: 60px;
+                top: 38.5px;
                 height: 98%;
                 overflow: hidden;
             }
@@ -317,6 +323,10 @@
             .navbar {
                 padding: 12px 20px;
                 top: 10px;
+            }
+
+            .announcements-global-container {
+                top: 77px;
             }
 
             .content {

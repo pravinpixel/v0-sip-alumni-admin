@@ -13,7 +13,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     </button>
 
     <!-- Profile Section -->
-    <div class="profile-section" style="position: relative;">
+    <div class="profile-section">
         <!-- <button class="close-btn" onclick="closeSidebar()">×</button> -->
          <button class="close-btn" onclick="closeSidebar()"><span style="
             position: relative;
@@ -90,7 +90,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     /* Drawer Toggle Button */
     .drawer-toggle {
         position: absolute;
-        top: 4%;
+        top: 10%;
         right: 6px;
         transform: translateY(-50%);
         width: 30px;
