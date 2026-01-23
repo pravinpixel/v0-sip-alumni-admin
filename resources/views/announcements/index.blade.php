@@ -56,10 +56,12 @@
                         <span id="filterBtnText">Filter</span>
                     </button>
 
+                    @can('announcement.create')
                     <button type="button" class="create-button" onclick="window.location='{{ route('admin.announcements.create') }}'">
                         <i class="fas fa-plus"></i>
                         Create Announcement
                     </button>
+                    @endcan
                 </div>
             </div>
 
@@ -76,7 +78,9 @@
                                 <th class="table-header">Description</th>
                                 <th class="table-header">Expiry Date</th>
                                 <th class="table-header">Status</th>
+                                @if(auth()->user()->can('announcement.edit') || auth()->user()->can('announcement.delete'))
                                 <th class="table-header">Actions</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -109,6 +113,7 @@
                                                 </span>
                                             </div>
                                         </td>
+                                        @if(auth()->user()->can('announcement.edit') || auth()->user()->can('announcement.delete'))
                                         <td style="position: relative;">
                                             <button class="action-menu-btn"
                                                 style="background: none; border: none; cursor: pointer; padding: 0.5rem;">
@@ -116,12 +121,15 @@
                                             </button>
                                             <div class="action-menu"
                                                 style="display: none; position: absolute; right: 7rem; bottom: 2rem; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 0.5rem; padding: 0.5rem; z-index: 100; min-width: 150px;">
+                                                @can('announcement.edit')
                                                 <a href="{{ route('admin.announcements.edit', $data->id) }}" 
                                                    style="display: block; padding: 0.5rem 1rem; color: #111827; text-decoration: none; font-size: 12px; border-radius: 0.375rem; transition: background 0.2s;"
                                                    onmouseover="this.style.background='#f3f4f6'"
                                                    onmouseout="this.style.background='transparent'">
                                                     <i class="fas fa-edit" style="margin-right: 0.5rem;"></i>Edit
                                                 </a>
+                                                @endcan
+                                                @can('announcement.delete')
                                                 <button class="delete-announcement-btn" 
                                                         data-announcement-id="{{ $data->id }}"
                                                         style="display: block; width: 100%; text-align: left; padding: 0.5rem 1rem; background: none; border: none; color: #dc2626; cursor: pointer; font-size: 12px; border-radius: 0.375rem; transition: background 0.2s;"
@@ -129,8 +137,10 @@
                                                         onmouseout="this.style.background='transparent'">
                                                     <i class="fas fa-trash" style="margin-right: 0.5rem;"></i>Delete
                                                 </button>
+                                                @endcan
                                             </div>
                                         </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             @endif

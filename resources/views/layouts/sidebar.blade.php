@@ -94,7 +94,7 @@
                         </a>
                     </div>
                 @endcan
-                @can('forum.view')
+                @can('announcement.view')
                     <div class="menu-item">
                         <a class="menu-link {{ (request()->is('admin/announcements*')) ? 'active' : '' }}"
                             href="{{ route('admin.announcements.index') }}">

@@ -75,6 +75,21 @@ class UserPermissionsSeeder extends Seeder
             );
         }
 
+        // Create announcement management permissions
+        $announcementPermissions = [
+            ['name' => 'announcement.view', 'guard_name' => 'web'],
+            ['name' => 'announcement.create', 'guard_name' => 'web'],
+            ['name' => 'announcement.edit', 'guard_name' => 'web'],
+            ['name' => 'announcement.delete', 'guard_name' => 'web'],
+        ];
+
+        foreach ($announcementPermissions as $permission) {
+            Permission::firstOrCreate(
+                ['name' => $permission['name']],
+                $permission
+            );
+        }
+
         // Assign all permissions to Super Admin role (if exists)
         $superAdminRole = Role::where('name', 'Super Admin')->first();
 
@@ -96,7 +111,11 @@ class UserPermissionsSeeder extends Seeder
                 'forum.create',
                 'forum.edit',
                 'forum.delete',
-                'forum.approve'
+                'forum.approve',
+                'announcement.view',
+                'announcement.create',
+                'announcement.edit',
+                'announcement.delete',
             ];
             $permissions = Permission::whereIn('name', $allPermissionNames)->get();
             $superAdminRole->syncPermissions($permissions);

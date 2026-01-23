@@ -222,6 +222,46 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Announcement Management -->
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                        <div style="min-width: 150px;">
+                            <span style="font-weight: 600; color: #111827;">Announcement</span>
+                        </div>
+                        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" class="select-all-row" data-group="announcement"
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem; font-weight: 600;">All</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="permissions[]" value="announcement.view" class="permission-announcement"
+                                    @if(isset($role)) {{ $role->hasPermissionTo('announcement.view') ? 'checked' : '' }} @endif
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem;">View</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="permissions[]" value="announcement.create" class="permission-announcement"
+                                    @if(isset($role)) {{ $role->hasPermissionTo('announcement.create') ? 'checked' : '' }} @endif
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem;">Create</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="permissions[]" value="announcement.edit" class="permission-announcement"
+                                    @if(isset($role)) {{ $role->hasPermissionTo('announcement.edit') ? 'checked' : '' }} @endif
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem;">Edit</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" name="permissions[]" value="announcement.delete" class="permission-announcement"
+                                    @if(isset($role)) {{ $role->hasPermissionTo('announcement.delete') ? 'checked' : '' }} @endif
+                                    style="width: 18px; height: 18px; cursor: pointer;">
+                                <span style="font-size: 0.875rem;">Delete</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
             </div>
 
                     <div>

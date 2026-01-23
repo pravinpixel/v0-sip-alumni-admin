@@ -42,6 +42,11 @@ class DirectoryController extends Controller
         try {
             $query = Alumnis::with(['city', 'occupation']);
 
+            $user = auth()->user();
+            if ($user && $user->role->name === 'Franchisee') {
+                $query->where('center_id', $user->center_location_id);
+            }
+
             // Apply filters - handle multiple selections
             if ($request->filled('years')) {
                 $years = is_array($request->years) ? $request->years : explode(',', $request->years);

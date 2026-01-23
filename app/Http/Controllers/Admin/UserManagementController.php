@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
+use App\Models\CenterLocations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
@@ -74,7 +75,8 @@ class UserManagementController extends Controller
         $roles = $roles->reject(function ($role) {
             return $role->permissions->isEmpty();
         });
-        return view("masters.user.add_edit", ['roles' => $roles]);
+        $locations = CenterLocations::All();
+        return view("masters.user.add_edit", ['roles' => $roles, 'locations' => $locations]);
     }
 
     public function edit($id)
@@ -88,7 +90,8 @@ class UserManagementController extends Controller
         $roles = $roles->reject(function ($role) {
             return $role->permissions->isEmpty();
         });
-        return view("masters.user.add_edit", ['user' => $user, 'roles' => $roles]);
+        $locations = CenterLocations::All();
+        return view("masters.user.add_edit", ['user' => $user, 'roles' => $roles, 'locations' => $locations]);
     }
 
     public function getValidationRules($id = null, $isUpdatingPassword = false)
@@ -102,6 +105,11 @@ class UserManagementController extends Controller
             'retype_password' => 'required|same:password|min:6',
         ];
 
+        $role = Role::find(request()->role_id);
+        if($role && $role->name === 'Franchisee'){
+            $rule_arr['center_location_id'] = 'required|exists:center_locations,id';
+        }
+
         return $rule_arr;
     }
 
@@ -112,6 +120,7 @@ class UserManagementController extends Controller
             'retype_password.same' => 'The confirm password field must match password.',
             'retype_password.min' => 'The confirm password field must be at least 6 characters.',
             'role_id.required' => 'The role field is required.',
+            'center_location_id.required' => 'The center location field is required for Franchisee role.',
         ];
     }
 
@@ -139,6 +148,7 @@ class UserManagementController extends Controller
                     $user->hash_password = Crypt::encryptString($request->input('password'));
                 }
 
+                $user->center_location_id = $request->input('center_location_id');
                 $user->update();
                 $user->roles()->detach();
                 if ($request->input('role_id')) {
@@ -155,6 +165,7 @@ class UserManagementController extends Controller
                 $user->password = bcrypt($request->input('password'));
                 $user->hash_password = Crypt::encryptString($request->input('password'));
                 $user->role_id = $request->input('role_id');
+                $user->center_location_id = $request->input('center_location_id');
                 $user->save();
                 if ($request->input('role_id')) {
                     $role = Role::find($request->input('role_id'));

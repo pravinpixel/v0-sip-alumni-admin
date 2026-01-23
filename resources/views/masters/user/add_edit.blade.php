@@ -179,6 +179,28 @@
                     </div>
                 </div>
 
+                <!-- Center Location (hidden by default) -->
+                    <div id="center-location-wrapper" style="display: none; margin-bottom: 1.5rem;">
+                        <label style="display:block; font-size:0.875rem; font-weight:600; color:#111827; margin-bottom:0.5rem;">
+                            Center Location <span style="color:#dc2626;">*</span>
+                        </label>
+
+                        <select name="center_location_id" id="center_location"
+                            style="width:100%; padding:0.75rem; border:1px solid #e5e7eb; border-radius:0.5rem; font-size:0.875rem; background:white;">
+                            <option value="">Select Center</option>
+                            @foreach($locations as $loc)
+                                <option value="{{ $loc->id }}"
+                                    {{ isset($user) && $user->center_location_id == $loc->id ? 'selected' : '' }}>
+                                    {{ $loc->name }}
+                                </option>
+                            @endforeach
+                        </select>
+
+                        <span class="field-error" id="center_location_id-error"
+                            style="color:#dc2626; font-size:0.75rem; margin-top:0.25rem; display:block;">
+                        </span>
+                    </div>
+
                 <!-- Action Buttons -->
                 <div
                     style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
@@ -249,6 +271,23 @@
             $('#dynamic-submit').on('click', function (e) {
                 saveUpdateUser(e);
             });
+
+                    function toggleCenterLocation() {
+                        let selectedText = $("#role_id option:selected").text().trim();
+
+                        if (selectedText === "Franchisee") {
+                            $("#center-location-wrapper").show();
+                            $("#center_location").prop("disabled", false);
+                        } else {
+                            $("#center-location-wrapper").hide();
+                            $("#center_location").prop("disabled", true);
+                            $("#center_location-error").text('');
+                        }
+                    }
+
+                $("#role_id").on("change", toggleCenterLocation);
+                toggleCenterLocation(); // load on edit
+
         });
 
         function saveUpdateUser(event) {
