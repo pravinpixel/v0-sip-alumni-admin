@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PixelLocation extends Model
 {
     use HasFactory;
-    protected $table = 'pixel_locations';
-    protected $fillable = ['state', 'city', 'pincode', 'area'];
+    protected $table = 'franchisee';
+    protected $fillable = ['state', 'city', 'zip', 'prefered_center_location'];
 }

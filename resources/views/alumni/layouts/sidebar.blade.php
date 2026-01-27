@@ -90,7 +90,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     /* Drawer Toggle Button */
     .drawer-toggle {
         position: absolute;
-        top: 10%;
+        top: 12%;
         right: 6px;
         transform: translateY(-50%);
         width: 30px;

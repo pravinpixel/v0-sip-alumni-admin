@@ -86,17 +86,17 @@ class Controller extends BaseController
         // ==========
         // 3. IMPORT PINCODES (mapping with cities)
         // ==========
-        $pincodes = PixelLocation::whereNotNull('pincode')
-            ->where('pincode', '!=', '')
+        $pincodes = PixelLocation::whereNotNull('zip')
+            ->where('zip', '!=', '')
             ->whereNotNull('city')
             ->where('city', '!=', '')
-            ->select('pincode', 'city')
+            ->select('zip', 'city')
             ->distinct()
             ->get();
 
         foreach ($pincodes as $row) {
             $cityName = trim($row->city);
-            $pincodeVal = preg_replace('/\D/', '', $row->pincode);
+            $pincodeVal = preg_replace('/\D/', '', $row->zip);
 
             // Validate length (India specific)
             if (strlen($pincodeVal) !== 6) {
@@ -113,47 +113,45 @@ class Controller extends BaseController
             }
         }
 
-        // 4. IMPORT AREAS / LOCATIONS (mapping with pincodes)
+        // 4. IMPORT AREAS / LOCATIONS (mapping with cities)
         // ==========
-        $rows = PixelLocation::whereNotNull('area')
-            ->where('area', '!=', '')
-            ->select('city', 'area', 'pincode')
-            ->distinct()
-            ->get();
+$rows = PixelLocation::whereNotNull('prefered_center_location')
+    ->where('prefered_center_location', '!=', '')
+    ->whereNotNull('zip')
+    ->select('city', 'prefered_center_location', 'zip')
+    ->distinct()
+    ->get();
 
-        foreach ($rows as $row) {
+foreach ($rows as $row) {
 
-            $cityName = trim($row->city);
-            $areaName = trim($row->area);
+    // 1. Clean ZIP to 6 digit
+    $zip = preg_replace('/\D/', '', $row->zip);
+    if (strlen($zip) !== 6) continue;
 
-            $pincodeVal = preg_replace('/\D/', '', $row->pincode);
+    // 3. Resolve city via pincode
+    $cityName = trim($row->city);
+    $city = Cities::where('name', $cityName)->first();
+    if (!$city) continue;
+    // 2. Resolve pincode
+    $pincode = Pincodes::where('pincode', $zip)->where('city_id', $city->id)->first();
+    if (!$pincode) continue;  // cannot map city
 
-            if (strlen($pincodeVal) !== 6) {
-                continue; // skip invalid
-            }
 
-            // map city
-            $city = Cities::where('name', $cityName)->first();
-            if (!$city) continue;
+    // 4. Create center
+    CenterLocations::firstOrCreate(
+        [
+            'name' => trim($row->prefered_center_location),
+            'city_id' => $city->id,
+            'pincode_id' => $pincode->id
+        ],
+        [
+            'is_custom' => 0
+        ]
+    );
+}
 
-            // get pincode
-            $pincode = Pincodes::where('pincode', $pincodeVal)
-                ->where('city_id', $city->id)
-                ->first();
 
-            if (!$pincode) continue; // pincode not imported yet
 
-            // insert center
-            CenterLocations::firstOrCreate(
-                [
-                    'name' => $areaName,
-                    'pincode_id' => $pincode->id
-                ],
-                [
-                    'is_custom' => 0
-                ]
-            );
-        }
         return $this->returnSuccess([], 'Import completed successfully.');
     }
 }
