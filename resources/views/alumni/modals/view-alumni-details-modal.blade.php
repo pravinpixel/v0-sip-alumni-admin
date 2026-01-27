@@ -6,7 +6,7 @@
                 <h2 class="modal-title fs-1" id="alumniDetailsModalLabel">
                     Alumni Details
                 </h2>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-black" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="alumniDetailsContent">
                 <!-- Loading state -->
@@ -21,7 +21,7 @@
                 <div id="detailsContent" style="display: none;">
                     <div class="row">
                         <!-- Profile Picture Section -->
-                        <div class="col-md-4 text-center mb-4">
+                        <div class="col-md-4 text-center border-end border-2 border-gray-300">
                             <div class="profile-picture-container" style="position: relative; display: inline-block;">
                                 <img id="modalProfilePic" src="" alt="Profile Picture" 
                                      class="img-fluid rounded-circle shadow" 
@@ -192,11 +192,6 @@
                         <i class="fas fa-redo me-2"></i>Retry
                     </button>
                 </div>
-            </div>
-            <div class="modal-footer border-top-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    <i class="fas fa-times me-2"></i>Close
-                </button>
             </div>
         </div>
     </div>
