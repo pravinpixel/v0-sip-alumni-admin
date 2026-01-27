@@ -245,7 +245,7 @@
         /* Announcements Styles */
         @keyframes scroll-announcements {
             0% {
-                transform: translateX(0);
+                transform: translateX(5%);
             }
             100% {
                 transform: translateX(-50%);

@@ -36,7 +36,7 @@
                             <th class="table-header">View Post</th>
                             <th class="table-header">Action Taken On</th>
                             <th class="table-header">Status</th>
-                            <th class="table-header">Reports</th>
+                            <th class="table-header">Report</th>
                             <th class="table-header">Actions</th>
                         </tr>
                     </thead>

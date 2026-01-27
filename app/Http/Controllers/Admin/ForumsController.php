@@ -620,7 +620,7 @@ class ForumsController extends Controller
                         'report' => $report->report,
                         'alumni_name' => $report->alumni->full_name ?? 'Unknown',
                         'alumni_image' => $report->alumni->image_url ?? asset('images/avatar/blank.png'),
-                        'location' => $report->alumni?->city?->state?->name ?? 'Unknown',
+                        'location' => $report->alumni?->centerLocation?->name ?? 'Unknown',
                         'created_at' => \Carbon\Carbon::parse($report->created_at)
                             ->setTimezone('Asia/Kolkata')
                             ->format('M j, Y')
