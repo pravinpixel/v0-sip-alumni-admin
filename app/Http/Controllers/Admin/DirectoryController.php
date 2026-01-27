@@ -494,7 +494,7 @@ class DirectoryController extends Controller
     public function viewProfileDetails(Request $request, $id)
     {
         try {
-            $alumni = Alumnis::findOrFail($id);
+            $alumni = Alumnis::with(['city.state', 'occupation', 'centerLocation'])->findOrFail($id);
             if (!$alumni) {
                 return response()->json([
                     'success' => false,
@@ -511,6 +511,16 @@ class DirectoryController extends Controller
                 'company' => $alumni->company_name ?? '-',
                 'mobile_number' => $alumni->mobile_number,
                 'image_url' => $alumni->image_url ?? asset('images/avatar/blank.png'),
+                'status' => $alumni->status ?? 'inactive',
+                'center_location' => $alumni->centerLocation->name ?? '-',
+                'state' => $alumni->city?->state?->name ?? '-',
+                'city' => $alumni->city?->name ?? '-',
+                'pincode' => $alumni->pincode->pincode ?? '-',
+                'current_location' => $alumni->current_location ?? '-',
+                'linkedin_profile' => $alumni->linkedin_profile ?? '-',
+                'organization' => $alumni->organization ?? '-',
+                'university' => $alumni->university ?? '-',
+                'level_completed' => $alumni->level_completed ?? '-',
             ];
 
             return response()->json([
