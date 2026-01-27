@@ -221,7 +221,7 @@
 
         .announcements-global-container {
             position: sticky;
-            top: 81px; /* Below header */
+            top: 81px;
             left: 0;
             right: 0;
             z-index: 11;
@@ -238,26 +238,32 @@
 
 
         .announcement-banner {
-            background:  #faebed;
+            background: #faebed;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Announcements Styles */
         @keyframes scroll-announcements {
             0% {
-                transform: translateX(100%);
+                transform: translateX(0);
             }
             100% {
-                transform: translateX(-100%);
+                transform: translateX(-50%);
             }
         }
-        
-        .announcement-scroll-content {
-            display: flex;
-            align-items: center;
-            top: 10px;
+
+        .announcement-scroll-container {
+            width: 100%;
         }
-        
+
+        .announcement-scroll-content {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 0;
+            animation: scroll-announcements 40s linear infinite;
+            will-change: transform;
+        }
+
         .announcement-item {
             font-size: 16px;
             font-weight: 500;

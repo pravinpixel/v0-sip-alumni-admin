@@ -587,8 +587,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         }
 
         if (pincodeSelect) {
-            console.log('Setting pincode value:', alumni.pincode_id); // Debug log
-            console.log('Setting center location value:', alumni.center_id); // Debug log
             pincodeSelect.value = alumni.pincode_id || '';
             loadCenterLocations(alumni.pincode_id, alumni.center_id); // load center locations based on selected pincode
         }
