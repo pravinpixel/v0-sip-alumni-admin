@@ -499,6 +499,7 @@
             // formData.append('number', $('input[name="mobile"]').val());
             formData.append('number', '{{ $value }}');
             formData.append('location_type', '{{ $type }}');
+            formData.append('is_login', 1);
 
 
             $.ajax({
