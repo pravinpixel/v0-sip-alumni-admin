@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Alumni;
 
 use App\Http\Controllers\Controller;
+use App\Mail\AlumniOtpMail;
 use App\Models\Alumnis;
 use App\Models\EmailOtp;
 use App\Models\MobileOtp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class AuthCheckController extends Controller
 {
@@ -97,6 +99,14 @@ class AuthCheckController extends Controller
                         'expires_at' => now()->addSeconds(30)
                     ]
                 );
+                // Send OTP via email
+                $data = [
+                    'name' => $alumni->full_name,
+                    'otp' => $otp,
+                    'support_email' => env('SUPPORT_EMAIL'),
+                ];
+                Mail::to($alumni->email)->queue(new AlumniOtpMail($data));
+                Log::info('OTP Mail Sent');
             }
 
 

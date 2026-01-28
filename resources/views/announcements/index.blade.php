@@ -104,7 +104,7 @@
                                     <tr>
                                         <td>{{ $data->created_at->format('M j, Y') }}</td>
                                         <td>{{ $data->title }}</td>
-                                        <td>{{ \Illuminate\Support\Str::limit($data->description, 50) }}</td>
+                                        <td title="{{ $data->description }}">{{ \Illuminate\Support\Str::limit($data->description, 50) }}</td>
                                         <td>{{ \Carbon\Carbon::parse($data->expiry_date)->format('M j, Y') }}</td>
                                         <td>
                                             <div style="display: flex; align-items: center; gap: 12px;">
