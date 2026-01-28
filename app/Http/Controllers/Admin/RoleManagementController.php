@@ -129,6 +129,9 @@ class RoleManagementController extends Controller
         if ($users) {
             return $this->returnError('This role is already in use by user');
         }
+        if ($role->name == 'Franchisee') {
+            return $this->returnError('Cannot delete Franchisee role');
+        }
         $role->delete();
         return $this->returnSuccess($id, "Role deleted successfully");
     }

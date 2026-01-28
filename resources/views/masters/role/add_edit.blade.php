@@ -52,13 +52,17 @@
 
             <!-- Hidden status field - default to active -->
             <input type="hidden" name="status" value="{{$role->status??1}}">
+            @php
+            $isFranchisee = isset($role) && $role->name === 'Franchisee';
+            $block = 'user';
+            @endphp
 
             <!-- Permissions Section -->
             <div style="border-top: 1px solid #e5e7eb; padding-top: 2rem;">
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 1.5rem 0;">Permissions</h2>
                 <span class="field-error" id="role_permissions-error" style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
                 <!-- User Management -->
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;" class="perm-block {{ $isFranchisee && $block !== 'directory' ? 'disabled' : '' }}">
                     <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
                         <div style="min-width: 150px;">
                             <span style="font-weight: 600; color: #111827;">User Management</span>
@@ -98,7 +102,7 @@
                 </div>
 
                 <!-- Role Management -->
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;" class="perm-block {{ $isFranchisee && $block !== 'directory' ? 'disabled' : '' }}">
                     <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
                         <div style="min-width: 150px;">
                             <span style="font-weight: 600; color: #111827;">Role Management</span>
@@ -178,7 +182,7 @@
                 </div>
 
                 <!-- Forum Management -->
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;" class="perm-block {{ $isFranchisee && $block !== 'directory' ? 'disabled' : '' }}">
                     <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
                         <div style="min-width: 150px;">
                             <span style="font-weight: 600; color: #111827;">Forum</span>
@@ -224,7 +228,7 @@
                 </div>
 
                 <!-- Announcement Management -->
-                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;">
+                <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;" class="perm-block {{ $isFranchisee && $block !== 'directory' ? 'disabled' : '' }}">
                     <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
                         <div style="min-width: 150px;">
                             <span style="font-weight: 600; color: #111827;">Announcement</span>
@@ -320,6 +324,10 @@
         }
         #status-toggle:checked + span + span {
             transform: translateX(24px);
+        }
+        .perm-block.disabled {
+            opacity: .5;
+            pointer-events: none;
         }
     </style>
 <script>
