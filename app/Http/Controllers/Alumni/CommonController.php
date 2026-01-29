@@ -8,8 +8,10 @@ use App\Models\Alumnis;
 use App\Models\CenterLocations;
 use App\Models\Cities;
 use App\Models\City;
+use App\Models\CountryCodes;
 use App\Models\State;
 use App\Models\MobileOtp;
+use App\Models\EmailOtp;
 use App\Models\Occupation;
 use App\Models\Pincodes;
 use App\Models\States;
@@ -41,8 +43,22 @@ class CommonController extends Controller
             $validator      = Validator::make($request->all(), [
                 'full_name' => 'required|string|max:255',
                 'year_of_completion' => 'required|digits:4',
-                'email' => 'required|email:rfc,dns|unique:alumnis,email,' . $alumniId,
+                'email' => 'required|email:rfc|regex:/^[^@]+@[^@]+\.[^@]+$/|unique:alumnis,email,' . $alumniId,
                 'mobile_number' => 'required|digits:10|unique:alumnis,mobile_number,' . $alumniId,
+                'country_code' => [
+                    'required',
+                    'string',
+                    function ($attribute, $value, $fail) {
+                        // Check if country code exists with or without + prefix
+                        $exists = CountryCodes::where('dial_code', $value)
+                            ->orWhere('dial_code', '+' . $value)
+                            ->exists();
+                        
+                        if (!$exists) {
+                            $fail('Invalid country code selected.');
+                        }
+                    }
+                ],
                 'city_id' => 'required|exists:cities,id',
                 'state_id' => 'required|exists:states,id',
                 'occupation_id' => 'required|exists:occupations,id',
@@ -59,6 +75,8 @@ class CommonController extends Controller
                 'mobile_number.required' => 'Mobile number is required.',
                 'mobile_number.digits' => 'Mobile number must be 10 digits.',
                 'mobile_number.unique' => 'Mobile number already exists.',
+                'country_code.required' => 'Country code is required.',
+                'country_code.exists' => 'Invalid country code selected.',
                 'city_id.required' => 'City is required.',
                 'state_id.required' => 'State is required.',
                 'occupation_id.required' => 'Occupation is required.',
@@ -83,11 +101,13 @@ class CommonController extends Controller
             $alumni->year_of_completion = $request->year_of_completion;
             $alumni->email = $request->email;
             $alumni->mobile_number = $request->mobile_number;
+            $alumni->country_code = $request->country_code;
             $alumni->city_id = $request->city_id;
             $alumni->state_id = $request->state_id;
             $alumni->occupation_id = $request->occupation_id;
             $alumni->pincode_id = $request->pincode_id;
             $alumni->center_id = $request->center_id;
+            $alumni->location_type = $request->location_type ?? 0;
             $alumni->current_location = $request->current_location;
             $alumni->linkedin_profile = $request->linkedin_profile;
             $alumni->organization = $request->organization;
@@ -140,17 +160,48 @@ class CommonController extends Controller
 
             $request->validate([
                 'otp' => 'required|digits:6',
-                'mobile' => 'required|digits:10'
             ]);
 
-            $mobile = $request->mobile;
             $otp = $request->otp;
+            $otpRecord = null;
 
-            // Verify OTP
-            $otpRecord = MobileOtp::where('mobile_number', $mobile)
-                ->where('otp', $otp)
-                ->where('expires_at', '>', now())
-                ->first();
+            // Check if it's mobile or email verification
+            if ($request->has('mobile')) {
+                $request->validate(['mobile' => 'required|digits:10']);
+                $mobile = $request->mobile;
+                
+                // Verify Mobile OTP
+                $otpRecord = MobileOtp::where('mobile_number', $mobile)
+                    ->where('otp', $otp)
+                    ->where('expires_at', '>', now())
+                    ->first();
+
+                if ($otpRecord) {
+                    $alumni = Alumnis::find($alumniId);
+                    $alumni->mobile_number = $mobile;
+                    $alumni->save();
+                }
+            } elseif ($request->has('email')) {
+                $request->validate(['email' => 'required|email']);
+                $email = $request->email;
+                
+                // Verify Email OTP
+                $otpRecord = EmailOtp::where('email', $email)
+                    ->where('otp', $otp)
+                    ->where('expires_at', '>', now())
+                    ->first();
+
+                if ($otpRecord) {
+                    $alumni = Alumnis::find($alumniId);
+                    $alumni->email = $email;
+                    $alumni->save();
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'Mobile number or email is required'
+                ], 400);
+            }
 
             if (!$otpRecord) {
                 return response()->json([
@@ -159,14 +210,10 @@ class CommonController extends Controller
                 ], 400);
             }
 
-            // OTP verified - Store alumni in session instead of Auth
+            // OTP verified - Mark as verified and delete
             $otpRecord->is_verified = 1;
             $otpRecord->save();
             $otpRecord->delete();
-
-            $alumni = Alumnis::find($alumniId);
-            $alumni->mobile_number = $mobile;
-            $alumni->save();
 
             return response()->json([
                 'success' => true,
@@ -205,10 +252,15 @@ class CommonController extends Controller
         try {
             $states = States::select('id', 'name')->orderBy('name')->get();
             $occupations = Occupation::select('id', 'name')->orderBy('name')->get();
+            $countryCodes = CountryCodes::select('id', 'country_name', 'dial_code', 'country_code')
+                ->orderBy('country_name')
+                ->get();
+                
             return response()->json([
                 'success' => true,
                 'states' => $states,
                 'occupations' => $occupations,
+                'countryCodes' => $countryCodes,
             ]);
         } catch (\Exception $e) {
             Log::error('Error fetching cities and states: ' . $e->getMessage());
@@ -358,6 +410,36 @@ class CommonController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update ribbon preference: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getCountryCodesByLocation($locationType)
+    {
+        try {
+            if ($locationType == 0) {
+                // Inside India - only show +91
+                $countryCodes = CountryCodes::select('id', 'country_name', 'dial_code', 'country_code')
+                    ->where('is_inside', 1)
+                    ->orderBy('country_name')
+                    ->get();
+            } else {
+                // Outside India - show all international codes except India
+                $countryCodes = CountryCodes::select('id', 'country_name', 'dial_code', 'country_code')
+                    ->where('is_inside', 0)
+                    ->orderBy('country_name')
+                    ->get();
+            }
+                
+            return response()->json([
+                'success' => true,
+                'countryCodes' => $countryCodes,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error fetching country codes: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch country codes: ' . $e->getMessage()
             ], 500);
         }
     }

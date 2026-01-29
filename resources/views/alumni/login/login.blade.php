@@ -130,10 +130,12 @@
                                     Outside India
                                 </label>
                             </div>
-                            <input type="text" name="number" placeholder="Enter 10-digit mobile number"
-                                autocomplete="off" class="form-control bg-transparent">
-
-                            <span class="field-error" id="number-error" style="color:red"></span>
+                            <div class="input-group">
+                                <span class="input-group-text" id="country-code">+91</span>
+                                <input type="text" name="number" placeholder="Enter 10-digit mobile number"
+                                    autocomplete="off" class="form-control bg-transparent">
+                                </div>
+                                <span class="field-error" id="number-error" style="color:red"></span>
                         </div>
 
                         <div class="d-grid mt-2">
@@ -160,12 +162,14 @@
         $(document).ready(function() {
 
             const $input = $('input[name="number"]');
+            const $countryCode = $('#country-code');
 
             function setInputByLocation(type) {
                 $input.off('input'); // remove any previous listeners
                 $input.val(''); // clear value
 
                 if (type === '0') { // Inside India
+                    $countryCode.show();
                     $input.attr('type', 'text');
                     $input.attr('placeholder', 'Enter 10-digit mobile number');
 
@@ -175,6 +179,7 @@
                     });
 
                 } else { // Outside India
+                    $countryCode.hide();
                     $input.attr('type', 'email');
                     $input.attr('placeholder', 'Enter your registered email');
 
@@ -307,8 +312,13 @@
             // }
 
             let formData = new FormData(document.getElementById('dynamic-form'));
+            const locationType = $('input[name="location_type"]:checked').val();
             formData.append('is_login', 1);
-            // formData.append('location_type', $('input[name="location_type"]:checked').val());
+            if (locationType === '0') {
+                formData.set('country_code', '91'); 
+            } else {
+                formData.set('country_code', null);
+            }
 
             $('#dynamic-submit .indicator-label').hide();
             $('#dynamic-submit .indicator-progress').show();

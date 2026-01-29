@@ -48,6 +48,12 @@ class AuthCheckController extends Controller
                             'error' => 'Mobile number not registered'
                         ], 400);
                     }
+                    if ($request->country_code !== $alumni->country_code) {
+                        return response()->json([
+                            'success' => false,
+                            'error' => 'Country code mismatch'
+                        ], 400);
+                    }
                 } else {
                     $alumni = Alumnis::where('email', $request->number)->first();
                     if (!$alumni) {
@@ -74,6 +80,24 @@ class AuthCheckController extends Controller
                                     ? "OTP has been sent to your registered mobile number."
                                     : "OTP has been sent to your registered email address.";
 
+            } else {
+                if ($locationType == 0) {
+                    $alumni = Alumnis::where('mobile_number', $request->number)->first();
+                    if ($alumni) {
+                        return response()->json([
+                            'success' => false,
+                            'error' => 'Mobile number already registered'
+                        ], 400);
+                    }
+                } else {
+                    $alumni = Alumnis::where('email', $request->number)->first();
+                    if ($alumni) {
+                        return response()->json([
+                            'success' => false,
+                            'error' => 'Email already registered'
+                        ], 400);
+                    }
+                }
             }
 
             // Generate new OTP
@@ -101,11 +125,11 @@ class AuthCheckController extends Controller
                 );
                 // Send OTP via email
                 $data = [
-                    'name' => $alumni->full_name,
+                    'name' => $locationType == 0 ? $alumni->full_name : 'Alumni',
                     'otp' => $otp,
                     'support_email' => env('SUPPORT_EMAIL'),
                 ];
-                Mail::to($alumni->email)->queue(new AlumniOtpMail($data));
+                Mail::to($mobile)->queue(new AlumniOtpMail($data));
                 Log::info('OTP Mail Sent');
             }
 

@@ -3,6 +3,8 @@ $alumni = $alumni ?? null;
 $city = $alumni && isset($alumni->city) ? $alumni->city : null;
 $state = $city && isset($city->state) ? $city->state : null;
 $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null;
+$locationTypeChecked = $alumni && $alumni->location_type == 1 ? '' : 'checked';
+$outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
 @endphp
 
 <!-- Edit Profile Modal Popup -->
@@ -25,6 +27,16 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                         <i class="fa fa-trash"></i> Remove Profile
                     </button>
                 </div>
+            </div>
+            <div class="text-center mb-3">
+                <label class="me-3">
+                    <input type="radio" name="location_type" value="0" {{ $locationTypeChecked }} onchange="toggleVerificationMethod()">
+                    Inside India
+                </label>
+                <label>
+                    <input type="radio" name="location_type" value="1" {{ $outsideIndiaChecked }} onchange="toggleVerificationMethod()">
+                    Outside India
+                </label>
             </div>
 
             <form id="editProfileForm">
@@ -77,10 +89,41 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 </div>
                 <div class="form-row">
                 <div class="form-group">
-                    <label>Email Address</label>
-                    <input type="email" class="form-input" data-field="email" value="{{ $alumni->email ?? '' }}">
-                    <small class="error-message" style="color:red;font-size:12px;"></small>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label>Email Address</label>
+                        <button type="button" id="editCancelEmailBtn" class="btn-edit-cancel-mobile" onclick="toggleEmailEdit()" 
+                            style="background: none; border: none; color: #dc2626; font-size: 11px; font-weight: 600; cursor: pointer; padding: 0 8px; text-decoration: underline; display: none;">
+                            Edit
+                        </button>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <div style="flex: 1;">
+                            <input type="email" class="form-input" data-field="email" id="emailInput" value="{{ $alumni->email ?? '' }}"
+                                oninput="validateEmailVerification(this)" readonly>
+                            <small class="error-message" style="color:red;font-size:12px;display:block;margin-top:4px;"></small>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
+                            <button type="button" id="verifyEmailBtn" class="btn-verify" disabled onclick="sendEmailOTP()"
+                                style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.5; white-space: nowrap; display: none;">
+                                Verify
+                            </button>
+                        </div>
+                    </div>
+                    <div id="emailOtpSection" style="display: none; margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;">
+                        <label style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 8px; display: block;">Enter OTP</label>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="emailOtpInput" class="form-input" maxlength="6" placeholder="Enter 6 digit OTP"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                style="flex: 1;">
+                            <button type="button" onclick="verifyEmailOTP()" class="btn-verify"
+                                style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+                                Verify OTP
+                            </button>
+                        </div>
+                        <small id="emailOtpTimer" style="color: #6b7280; font-size: 12px; display: block; margin-top: 6px;"></small>
+                    </div>
                 </div>
+                
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <label>Contact Number</label>
@@ -90,34 +133,42 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                         </button>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: flex-start;">
-                        <div style="flex: 1;">
+                        <div style="position: relative; display: flex; flex: 1;">
+                            <select class="form-input" data-field="country_code" id="countryCodeSelect" 
+                                style="width: 80px; border-radius: 6px 0 0 6px; font-size: 14px; padding: 10px 8px; background-color: #f8f9fa;">
+                                <option value="">+91</option>
+                            </select>
                             <input type="text" class="form-input" data-field="mobile_number" id="mobileNumberInput"
                                 value="{{ $alumni->mobile_number ?? '' }}"
                                 maxlength="10"
-                                placeholder="Enter 10 digit mobile number"
+                                placeholder="Enter 10-digit mobile number"
                                 oninput="validateMobileNumber(this)"
+                                style="flex: 1; border-radius: 0 6px 6px 0; padding-left: 15px;"
                                 readonly>
-                            <small class="error-message" style="color:red;font-size:12px;display:block;margin-top:4px;"></small>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
-                            <button type="button" id="verifyMobileBtn" class="btn-verify" disabled onclick="sendOTP()"
-                                style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.5; white-space: nowrap;">
+                            <button type="button" id="verifyMobileBtn" class="btn-verify" disabled onclick="sendMobileOTP()"
+                                style="padding: 10px 16px; background: #dc2626; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: not-allowed; opacity: 0.5; white-space: nowrap; display: none;">
                                 Verify
                             </button>
                         </div>
                     </div>
-                    <div id="otpSection" style="display: none; margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;">
+                    <div style="display: flex;">
+                        <small class="error-message" style="color:red;font-size:12px;width: 80px;"></small>
+                        <small class="error-message" style="color:red;font-size:12px;flex: 1;margin-left: 15px;"></small>
+                    </div>
+                    <div id="mobileOtpSection" style="display: none; margin-top: 12px; padding: 12px; background: #f9fafb; border-radius: 6px; border: 1px solid #e5e7eb;">
                         <label style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 8px; display: block;">Enter OTP</label>
                         <div style="display: flex; gap: 10px;">
-                            <input type="text" id="otpInput" class="form-input" maxlength="6" placeholder="Enter 6 digit OTP"
+                            <input type="text" id="mobileOtpInput" class="form-input" maxlength="6" placeholder="Enter 6 digit OTP"
                                 oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 style="flex: 1;">
-                            <button type="button" onclick="verifyOTP()" class="btn-verify"
+                            <button type="button" onclick="verifyMobileOTP()" class="btn-verify"
                                 style="padding: 10px 16px; background: #10b981; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap;">
                                 Verify OTP
                             </button>
                         </div>
-                        <small id="otpTimer" style="color: #6b7280; font-size: 12px; display: block; margin-top: 6px;"></small>
+                        <small id="mobileOtpTimer" style="color: #6b7280; font-size: 12px; display: block; margin-top: 6px;"></small>
                     </div>
                 </div>
                 </div>
@@ -431,6 +482,16 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         transform: scale(0.95);
     }
 
+    #emailInput[readonly] {
+        background-color: #f9fafb;
+        cursor: not-allowed;
+    }
+
+    #emailInput:not([readonly]) {
+        background-color: white;
+        cursor: text;
+    }
+
     #mobileNumberInput[readonly] {
         background-color: #f9fafb;
         cursor: not-allowed;
@@ -445,14 +506,168 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 <script>
     let selectedFile = null;
     let originalMobileNumber = '';
+    let originalEmailAddress = '';
     let isMobileVerified = false;
-    let otpTimer = null;
+    let isEmailVerified = false;
+    let mobileOtpTimer = null;
+    let emailOtpTimer = null;
+    let currentLocationType = 0; // 0 = Inside India, 1 = Outside India
 
-    // Initialize original mobile number when modal opens
+    // Initialize original values when modal opens
     function initializeModal() {
         const mobileInput = document.getElementById('mobileNumberInput');
-        originalMobileNumber = mobileInput.value;
-        isMobileVerified = true; // Original number is considered verified
+        const emailInput = document.getElementById('emailInput');
+        const locationType = document.querySelector('input[name="location_type"]:checked').value;
+        
+        currentLocationType = parseInt(locationType);
+        
+        // Only set original values if they haven't been set already by populateFormData
+        if (!originalMobileNumber) {
+            originalMobileNumber = mobileInput.value;
+        }
+        if (!originalEmailAddress) {
+            originalEmailAddress = emailInput.value;
+        }
+        
+        isMobileVerified = true; // Original values are considered verified
+        isEmailVerified = true;
+        
+        toggleVerificationMethod(true); // Set up the UI based on location type, preserve country code
+    }
+
+    // Toggle verification method based on location type
+    function toggleVerificationMethod(preserveCountryCode = false) {
+        const locationType = document.querySelector('input[name="location_type"]:checked').value;
+        currentLocationType = parseInt(locationType);
+        
+        // Only load country codes if not preserving existing selection
+        if (!preserveCountryCode) {
+            // Get current selected country code before reloading
+            const countryCodeSelect = document.getElementById('countryCodeSelect');
+            const currentSelection = countryCodeSelect ? countryCodeSelect.value : null;
+            
+            // Load country codes based on location type, preserving current selection
+            loadCountryCodesByLocation(currentLocationType, currentSelection);
+        }
+        
+        const editCancelEmailBtn = document.getElementById('editCancelEmailBtn');
+        const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+        const emailInput = document.getElementById('emailInput');
+        
+        const editCancelMobileBtn = document.getElementById('editCancelMobileBtn');
+        const verifyMobileBtn = document.getElementById('verifyMobileBtn');
+        const mobileInput = document.getElementById('mobileNumberInput');
+        
+        if (currentLocationType === 1) {
+            // Outside India - Email verification required, mobile is free to edit
+            editCancelEmailBtn.style.display = 'block';
+            verifyEmailBtn.style.display = 'block';
+            emailInput.readOnly = true; // Email requires verification like mobile does for Inside India
+            
+            // Hide all mobile verification controls
+            editCancelMobileBtn.style.display = 'none';
+            verifyMobileBtn.style.display = 'none';
+            mobileInput.readOnly = false; // Mobile is free to edit
+            
+            // Mark mobile as verified since no verification needed
+            isMobileVerified = true;
+        } else {
+            // Inside India - Mobile verification required, email is free to edit
+            editCancelEmailBtn.style.display = 'none';
+            verifyEmailBtn.style.display = 'none';
+            emailInput.readOnly = false; // Email is free to edit
+            
+            // Show mobile verification controls
+            editCancelMobileBtn.style.display = 'block';
+            verifyMobileBtn.style.display = 'block';
+            mobileInput.readOnly = true; // Mobile requires verification
+            
+            // Mark email as verified since no verification needed
+            isEmailVerified = true;
+        }
+        
+        // Reset verification states
+        resetMobileVerificationState();
+        resetEmailVerificationState();
+    }
+
+    // Add new function to load country codes by location
+    function loadCountryCodesByLocation(locationType, selectedCountryCode = null) {
+        const url = `{{ route('alumni.country-codes', '') }}/${locationType}`;
+        
+        return fetch(url, { credentials: "include" })
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to load country codes');
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const countryCodeSelect = document.getElementById('countryCodeSelect');
+                    if (!countryCodeSelect) {
+                        return;
+                    }
+
+                    // Clear existing options
+                    countryCodeSelect.innerHTML = '';
+                    
+                    if (locationType == 0) {
+                        // Inside India - show only +91
+                        countryCodeSelect.innerHTML = '<option value="91" selected>+91</option>';
+                        countryCodeSelect.disabled = true;
+                        countryCodeSelect.style.backgroundColor = '#f8f9fa';
+                    } else {
+                        // Outside India - show all international codes
+                        countryCodeSelect.disabled = false;
+                        countryCodeSelect.style.backgroundColor = 'white';
+                        
+                        // Build options HTML
+                        let optionsHTML = '<option value="">Select</option>';
+                        let selectedFound = false;
+                        
+                        data.countryCodes.forEach(country => {
+                            // Store value without +, but display with +
+                            const valueWithoutPlus = country.dial_code.replace('+', '');
+                            const displayWithPlus = country.dial_code.startsWith('+') ? country.dial_code : '+' + country.dial_code;
+                            
+                            const isSelected = selectedCountryCode && (
+                                valueWithoutPlus === selectedCountryCode ||
+                                valueWithoutPlus === selectedCountryCode.replace('+', '') ||
+                                country.dial_code === selectedCountryCode ||
+                                displayWithPlus === selectedCountryCode
+                            );
+                            
+                            if (isSelected) {
+                                selectedFound = true;
+                            }
+                            
+                            optionsHTML += `<option value="${valueWithoutPlus}" ${isSelected ? 'selected' : ''} title="${country.country_name}">${displayWithPlus}</option>`;
+                        });
+                        
+                        // Set all options at once
+                        countryCodeSelect.innerHTML = optionsHTML;
+                        
+                        // Double-check selection
+                        if (selectedCountryCode && selectedFound) {
+                            // Force set value again
+                            setTimeout(() => {
+                                const cleanSelected = selectedCountryCode.replace('+', '');
+                                for (let option of countryCodeSelect.options) {
+                                    if (option.value === cleanSelected) {
+                                        countryCodeSelect.value = option.value;
+                                        break;
+                                    }
+                                }
+                            }, 50);
+                        }
+                        
+                    }
+                }
+                return data;
+            })
+            .catch(err => {
+                console.error(' Error loading country codes:', err);
+                throw err;
+            });
     }
 
     function closeEditProfileModal() {
@@ -461,37 +676,14 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             modal.classList.remove('open');
         }
 
-        // Reset mobile input to readonly
-        const mobileInput = document.getElementById('mobileNumberInput');
-        mobileInput.readOnly = true;
-        mobileInput.disabled = false;
-        mobileInput.value = originalMobileNumber;
+        // Reset mobile verification
+        resetMobileVerificationState();
+        // Reset email verification
+        resetEmailVerificationState();
 
-        // Reset OTP section
-        document.getElementById('otpSection').style.display = 'none';
-        document.getElementById('otpInput').value = '';
-        if (otpTimer) clearInterval(otpTimer);
-
-        // Reset edit/cancel button
-        const editCancelBtn = document.getElementById('editCancelMobileBtn');
-        const verifyBtn = document.getElementById('verifyMobileBtn');
-        if (editCancelBtn) {
-            editCancelBtn.textContent = 'Edit';
-            editCancelBtn.style.color = '#dc2626';
-        }
-        verifyBtn.textContent = 'Verify';
-        verifyBtn.disabled = true;
-        verifyBtn.style.opacity = '0.5';
-        verifyBtn.style.cursor = 'not-allowed';
-
-        // Reset save button
-        const saveBtn = document.querySelector('.btn-save');
-        saveBtn.disabled = false;
-        saveBtn.style.opacity = '1';
-        saveBtn.style.cursor = 'pointer';
-
-        // Reset verification flag
+        // Reset verification flags
         isMobileVerified = false;
+        isEmailVerified = false;
         selectedFile = null;
         window.removeImage = false;
 
@@ -503,12 +695,129 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         });
     }
 
-    // Toggle mobile number editing
-    function toggleMobileEdit() {
+    // Reset mobile verification state
+    function resetMobileVerificationState() {
         const mobileInput = document.getElementById('mobileNumberInput');
         const editCancelBtn = document.getElementById('editCancelMobileBtn');
         const verifyBtn = document.getElementById('verifyMobileBtn');
         const saveBtn = document.querySelector('.btn-save');
+
+        // Reset mobile input value
+        mobileInput.disabled = false;
+        mobileInput.value = originalMobileNumber;
+        
+        if (currentLocationType === 0) {
+            // Inside India - Mobile verification required
+            editCancelBtn.textContent = 'Edit';
+            editCancelBtn.style.color = '#dc2626';
+            editCancelBtn.style.display = 'block';
+            
+            mobileInput.readOnly = true;
+            verifyBtn.style.display = 'block';
+            verifyBtn.disabled = true;
+            verifyBtn.style.cursor = 'not-allowed';
+            verifyBtn.style.opacity = '0.5';
+            verifyBtn.textContent = 'Verify';
+            verifyBtn.style.background = '#dc2626';
+            
+            isMobileVerified = true; // Original number is considered verified
+        } else {
+            // Outside India - No mobile verification needed
+            editCancelBtn.style.display = 'none';
+            verifyBtn.style.display = 'none';
+            mobileInput.readOnly = false;
+            
+            isMobileVerified = true; // Always verified for outside India
+        }
+
+        // Hide OTP section
+        document.getElementById('mobileOtpSection').style.display = 'none';
+        document.getElementById('mobileOtpInput').value = '';
+        if (mobileOtpTimer) clearInterval(mobileOtpTimer);
+
+        // Update save button state
+        updateSaveButtonState();
+    }
+
+    // Reset email verification state
+    function resetEmailVerificationState() {
+        const emailInput = document.getElementById('emailInput');
+        const editCancelBtn = document.getElementById('editCancelEmailBtn');
+        const verifyBtn = document.getElementById('verifyEmailBtn');
+        const saveBtn = document.querySelector('.btn-save');
+
+        // Reset email input value
+        emailInput.disabled = false;
+        emailInput.value = originalEmailAddress;
+        
+        if (currentLocationType === 1) {
+            // Outside India - Email verification required
+            editCancelBtn.textContent = 'Edit';
+            editCancelBtn.style.color = '#dc2626';
+            editCancelBtn.style.display = 'block';
+            
+            emailInput.readOnly = true;
+            verifyBtn.style.display = 'block';
+            verifyBtn.disabled = true;
+            verifyBtn.style.cursor = 'not-allowed';
+            verifyBtn.style.opacity = '0.5';
+            verifyBtn.textContent = 'Verify';
+            verifyBtn.style.background = '#dc2626';
+            
+            isEmailVerified = true; // Original email is considered verified
+        } else {
+            // Inside India - No email verification needed
+            editCancelBtn.style.display = 'none';
+            verifyBtn.style.display = 'none';
+            emailInput.readOnly = false;
+            
+            isEmailVerified = true; // Always verified for inside India
+        }
+
+        // Hide OTP section
+        document.getElementById('emailOtpSection').style.display = 'none';
+        document.getElementById('emailOtpInput').value = '';
+        if (emailOtpTimer) clearInterval(emailOtpTimer);
+
+        // Update save button state
+        updateSaveButtonState();
+    }
+
+    // Update save button state based on verification requirements
+    function updateSaveButtonState() {
+        const saveBtn = document.querySelector('.btn-save');
+        
+        let canSave = true;
+        
+        if (currentLocationType === 0) {
+            // Inside India - Only mobile verification required
+            canSave = isMobileVerified;
+        } else {
+            // Outside India - Only email verification required
+            canSave = isEmailVerified;
+        }
+        
+        if (canSave) {
+            saveBtn.disabled = false;
+            saveBtn.style.cursor = 'pointer';
+            saveBtn.style.opacity = '1';
+        } else {
+            saveBtn.disabled = true;
+            saveBtn.style.cursor = 'not-allowed';
+            saveBtn.style.opacity = '0.5';
+        }
+    }
+
+    // Toggle mobile editing
+    function toggleMobileEdit() {
+        // This function should only work for Inside India (location_type = 0)
+        if (currentLocationType !== 0) {
+            return; // Do nothing for Outside India
+        }
+        
+        const mobileInput = document.getElementById('mobileNumberInput');
+        const editCancelBtn = document.getElementById('editCancelMobileBtn');
+        const verifyBtn = document.getElementById('verifyMobileBtn');
 
         if (mobileInput.readOnly) {
             // Enable editing mode
@@ -519,42 +828,37 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
             // Reset verification state
             isMobileVerified = false;
-
-            // Disable save button until verified
-            saveBtn.disabled = true;
-            saveBtn.style.cursor = 'not-allowed';
-            saveBtn.style.opacity = '0.5';
+            updateSaveButtonState();
         } else {
             // Cancel editing mode
-            mobileInput.readOnly = true;
-            mobileInput.disabled = false;
-            mobileInput.value = originalMobileNumber;
-            editCancelBtn.textContent = 'Edit';
-            editCancelBtn.style.color = '#dc2626';
+            resetMobileVerificationState();
+        }
+    }
 
-            // Reset verify button
-            verifyBtn.disabled = true;
-            verifyBtn.style.cursor = 'not-allowed';
-            verifyBtn.style.opacity = '0.5';
-            verifyBtn.textContent = 'Verify';
-            verifyBtn.style.background = '#dc2626';
+    // Toggle email editing
+    function toggleEmailEdit() {
+        // This function should only work for Outside India (location_type = 1)
+        if (currentLocationType !== 1) {
+            return; // Do nothing for Inside India
+        }
+        
+        const emailInput = document.getElementById('emailInput');
+        const editCancelBtn = document.getElementById('editCancelEmailBtn');
+        const verifyBtn = document.getElementById('verifyEmailBtn');
 
-            // Hide OTP section
-            document.getElementById('otpSection').style.display = 'none';
-            document.getElementById('otpInput').value = '';
-            if (otpTimer) clearInterval(otpTimer);
+        if (emailInput.readOnly) {
+            // Enable editing mode
+            emailInput.readOnly = false;
+            emailInput.focus();
+            editCancelBtn.textContent = 'Cancel';
+            editCancelBtn.style.color = '#6b7280';
 
-            // Enable save button
-            saveBtn.disabled = false;
-            saveBtn.style.cursor = 'pointer';
-            saveBtn.style.opacity = '1';
-
-            isMobileVerified = true;
-
-            const errorEl = mobileInput.parentElement.querySelector('.error-message');
-            if (errorEl) {
-                errorEl.textContent = '';
-            }
+            // Reset verification state
+            isEmailVerified = false;
+            updateSaveButtonState();
+        } else {
+            // Cancel editing mode
+            resetEmailVerificationState();
         }
     }
 
@@ -565,8 +869,16 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
 
         const mobileNumber = input.value;
         const verifyBtn = document.getElementById('verifyMobileBtn');
-        const saveBtn = document.querySelector('.btn-save');
 
+        // For Outside India (location_type = 1), no mobile verification needed
+        if (currentLocationType === 1) {
+            // Just mark as verified since no verification is required
+            isMobileVerified = true;
+            updateSaveButtonState();
+            return;
+        }
+
+        // For Inside India (location_type = 0), mobile verification is required
         // Check if number changed and is 10 digits
         if (mobileNumber.length === 10 && mobileNumber !== originalMobileNumber) {
             verifyBtn.disabled = false;
@@ -575,31 +887,61 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             verifyBtn.style.background = '#dc2626';
             verifyBtn.textContent = 'Verify';
             isMobileVerified = false;
-
-            // Disable save button until verified
-            saveBtn.disabled = true;
-            saveBtn.style.cursor = 'not-allowed';
-            saveBtn.style.opacity = '0.5';
         } else if (mobileNumber === originalMobileNumber) {
             // Same number - no verification needed
             verifyBtn.disabled = true;
             verifyBtn.style.cursor = 'not-allowed';
             verifyBtn.style.opacity = '0.5';
             isMobileVerified = true;
-
-            // Enable save button
-            saveBtn.disabled = false;
-            saveBtn.style.cursor = 'pointer';
-            saveBtn.style.opacity = '1';
         } else {
             verifyBtn.disabled = true;
             verifyBtn.style.cursor = 'not-allowed';
             verifyBtn.style.opacity = '0.5';
+            isMobileVerified = false;
         }
+        
+        updateSaveButtonState();
     }
 
-    // Send OTP
-    function sendOTP() {
+    // Email validation
+    function validateEmailVerification(input) {
+        const emailValue = input.value;
+        const verifyBtn = document.getElementById('verifyEmailBtn');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        // For Inside India (location_type = 0), email is free to edit - no verification needed
+        if (currentLocationType === 0) {
+            isEmailVerified = true;
+            updateSaveButtonState();
+            return;
+        }
+        
+        // For Outside India (location_type = 1), email verification is required
+        if (emailRegex.test(emailValue) && emailValue !== originalEmailAddress) {
+            verifyBtn.disabled = false;
+            verifyBtn.style.cursor = 'pointer';
+            verifyBtn.style.opacity = '1';
+            verifyBtn.style.background = '#dc2626';
+            verifyBtn.textContent = 'Verify';
+            isEmailVerified = false;
+        } else if (emailValue === originalEmailAddress) {
+            // Same email - no verification needed
+            verifyBtn.disabled = true;
+            verifyBtn.style.cursor = 'not-allowed';
+            verifyBtn.style.opacity = '0.5';
+            isEmailVerified = true;
+        } else {
+            verifyBtn.disabled = true;
+            verifyBtn.style.cursor = 'not-allowed';
+            verifyBtn.style.opacity = '0.5';
+            isEmailVerified = false;
+        }
+        
+        updateSaveButtonState();
+    }
+
+    // Send Mobile OTP
+    function sendMobileOTP() {
         const mobileNumber = document.getElementById('mobileNumberInput').value;
 
         if (mobileNumber.length !== 10) {
@@ -620,16 +962,17 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 },
                 body: JSON.stringify({
                     number: mobileNumber,
+                    location_type: 0,
                     is_login: 0
                 })
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    showToast(data.message || 'OTP sent successfully');
-                    document.getElementById('otpSection').style.display = 'block';
+                    showToast('OTP sent to your mobile number successfully');
+                    document.getElementById('mobileOtpSection').style.display = 'block';
                     document.getElementById('mobileNumberInput').disabled = true;
-                    startOTPTimer();
+                    startMobileOTPTimer();
                 } else {
                     showToast(data.message || 'Failed to send OTP', 'error');
                     verifyBtn.disabled = false;
@@ -645,14 +988,74 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             });
     }
 
+    // Send Email OTP
+    function sendEmailOTP() {
+        const emailAddress = document.getElementById('emailInput').value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(emailAddress)) {
+            showToast('Please enter a valid email address', 'error');
+            return;
+        }
+
+        const verifyBtn = document.getElementById('verifyEmailBtn');
+        verifyBtn.textContent = 'Sending...';
+        verifyBtn.disabled = true;
+
+        fetch('{{ route("send.otp") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    number: emailAddress,
+                    location_type: 1,
+                    is_login: 0
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('OTP sent to your email address successfully');
+                    document.getElementById('emailOtpSection').style.display = 'block';
+                    document.getElementById('emailInput').disabled = true;
+                    startEmailOTPTimer();
+                } else {
+                    showToast(data.error || 'Failed to send OTP', 'error');
+                    verifyBtn.disabled = false;
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                showToast('Failed to send OTP', 'error');
+                verifyBtn.disabled = false;
+            })
+            .finally(() => {
+                verifyBtn.textContent = 'Verify';
+            });
+    }
+
     // Verify OTP
     function verifyOTP() {
-        const mobileNumber = document.getElementById('mobileNumberInput').value;
+        const contactValue = document.getElementById('contactInput').value;
         const otp = document.getElementById('otpInput').value;
 
         if (otp.length !== 6) {
             showToast('Please enter a valid 6 digit OTP', 'error');
             return;
+        }
+
+        const requestData = {
+            otp: otp
+        };
+
+        // Set the correct field based on location type
+        if (currentLocationType === 0) {
+            requestData.mobile = contactValue;
+        } else {
+            requestData.email = contactValue;
         }
 
         fetch('{{ route("alumni.edit.verify.otp") }}', {
@@ -662,19 +1065,19 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify({
-                    mobile: mobileNumber,
-                    otp: otp
-                })
+                body: JSON.stringify(requestData)
             })
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Mobile number verified successfully');
-                    isMobileVerified = true;
+                    const message = currentLocationType === 0 
+                        ? 'Mobile number verified successfully'
+                        : 'Email address verified successfully';
+                    showToast(message);
+                    isContactVerified = true;
                     document.getElementById('otpSection').style.display = 'none';
 
-                    const verifyBtn = document.getElementById('verifyMobileBtn');
+                    const verifyBtn = document.getElementById('verifyContactBtn');
                     verifyBtn.textContent = 'Verified ✓';
                     verifyBtn.style.background = '#10b981';
                     verifyBtn.disabled = true;
@@ -713,6 +1116,144 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 timerEl.textContent = 'OTP expired. Please request a new one.';
                 document.getElementById('otpSection').style.display = 'none';
                 document.getElementById('mobileNumberInput').disabled = false;
+            }
+        }, 1000);
+    }
+
+    // Verify Mobile OTP
+    function verifyMobileOTP() {
+        const mobileNumber = document.getElementById('mobileNumberInput').value;
+        const otp = document.getElementById('mobileOtpInput').value;
+
+        if (otp.length !== 6) {
+            showToast('Please enter a valid 6 digit OTP', 'error');
+            return;
+        }
+
+        fetch('{{ route("alumni.edit.verify.otp") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    mobile: mobileNumber,
+                    otp: otp
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Mobile number verified successfully');
+                    isMobileVerified = true;
+                    document.getElementById('mobileOtpSection').style.display = 'none';
+
+                    const verifyBtn = document.getElementById('verifyMobileBtn');
+                    verifyBtn.textContent = 'Verified ✓';
+                    verifyBtn.style.background = '#10b981';
+                    verifyBtn.disabled = true;
+
+                    // Update save button state
+                    updateSaveButtonState();
+
+                    if (mobileOtpTimer) clearInterval(mobileOtpTimer);
+                } else {
+                    showToast(data.message || 'Invalid OTP', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                showToast('Failed to verify OTP', 'error');
+            });
+    }
+
+    // Verify Email OTP
+    function verifyEmailOTP() {
+        const emailAddress = document.getElementById('emailInput').value;
+        const otp = document.getElementById('emailOtpInput').value;
+
+        if (otp.length !== 6) {
+            showToast('Please enter a valid 6 digit OTP', 'error');
+            return;
+        }
+
+        fetch('{{ route("alumni.edit.verify.otp") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: emailAddress,
+                    otp: otp
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Email address verified successfully');
+                    isEmailVerified = true;
+                    document.getElementById('emailOtpSection').style.display = 'none';
+
+                    const verifyBtn = document.getElementById('verifyEmailBtn');
+                    verifyBtn.textContent = 'Verified ✓';
+                    verifyBtn.style.background = '#10b981';
+                    verifyBtn.disabled = true;
+
+                    // Update save button state
+                    updateSaveButtonState();
+
+                    if (emailOtpTimer) clearInterval(emailOtpTimer);
+                } else {
+                    showToast(data.message || 'Invalid OTP', 'error');
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                showToast('Failed to verify OTP', 'error');
+            });
+    }
+
+    // Mobile OTP Timer
+    function startMobileOTPTimer() {
+        let timeLeft = 30;
+        const timerEl = document.getElementById('mobileOtpTimer');
+
+        if (mobileOtpTimer) clearInterval(mobileOtpTimer);
+
+        mobileOtpTimer = setInterval(() => {
+            timeLeft--;
+            const seconds = timeLeft;
+            timerEl.textContent = `OTP expires in ${seconds} seconds`;
+
+            if (timeLeft <= 0) {
+                clearInterval(mobileOtpTimer);
+                timerEl.textContent = 'OTP expired. Please request a new one.';
+                document.getElementById('mobileOtpSection').style.display = 'none';
+                document.getElementById('mobileNumberInput').disabled = false;
+            }
+        }, 1000);
+    }
+
+    // Email OTP Timer
+    function startEmailOTPTimer() {
+        let timeLeft = 30;
+        const timerEl = document.getElementById('emailOtpTimer');
+
+        if (emailOtpTimer) clearInterval(emailOtpTimer);
+
+        emailOtpTimer = setInterval(() => {
+            timeLeft--;
+            const seconds = timeLeft;
+            timerEl.textContent = `OTP expires in ${seconds} seconds`;
+
+            if (timeLeft <= 0) {
+                clearInterval(emailOtpTimer);
+                timerEl.textContent = 'OTP expired. Please request a new one.';
+                document.getElementById('emailOtpSection').style.display = 'none';
+                document.getElementById('emailInput').disabled = false;
             }
         }, 1000);
     }
@@ -765,10 +1306,17 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     function saveProfile() {
         const form = document.getElementById('editProfileForm');
         const mobileNumber = document.getElementById('mobileNumberInput').value;
+        const emailAddress = document.getElementById('emailInput').value;
 
-        // Check if mobile number changed but not verified
-        if (mobileNumber !== originalMobileNumber && !isMobileVerified) {
+        // Check if mobile number changed but not verified (only for Inside India)
+        if (currentLocationType === 0 && mobileNumber !== originalMobileNumber && !isMobileVerified) {
             showToast('Please verify your new mobile number before saving', 'error');
+            return;
+        }
+
+        // Check if email changed but not verified (only for Outside India)
+        if (currentLocationType === 1 && emailAddress !== originalEmailAddress && !isEmailVerified) {
+            showToast('Please verify your new email address before saving', 'error');
             return;
         }
 
@@ -780,8 +1328,19 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         const inputs = form.querySelectorAll('.form-input');
         inputs.forEach(input => {
             const fieldName = input.getAttribute('data-field');
-            formData.append(fieldName, input.value.trim());
+            let value = input.value.trim();
+            
+            // Remove + symbol from country code before sending to backend
+            if (fieldName === 'country_code' && value.startsWith('+')) {
+                value = value.substring(1);
+            }
+            
+            formData.append(fieldName, value);
         });
+
+        // Add location_type from radio button
+        const locationType = document.querySelector('input[name="location_type"]:checked').value;
+        formData.append('location_type', locationType);
 
         if (selectedFile) {
             formData.append('image', selectedFile);
@@ -819,9 +1378,26 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                         for (const [key, messages] of Object.entries(data.errors)) {
                             const input = form.querySelector(`.form-input[data-field="${key}"]`);
                             if (input) {
-                                const errorEl = input.parentElement.querySelector('.error-message');
+                                let errorEl;
+                                
+                                if (key === 'country_code') {
+                                    // For country code, find the first error message in the contact number section
+                                    const contactSection = input.closest('.form-group');
+                                    const errorMessages = contactSection.querySelectorAll('.error-message');
+                                    errorEl = errorMessages[0]; // First error message is for country code
+                                } else if (key === 'mobile_number') {
+                                    // For mobile number, find the second error message in the contact number section
+                                    const contactSection = input.closest('.form-group');
+                                    const errorMessages = contactSection.querySelectorAll('.error-message');
+                                    errorEl = errorMessages[1]; // Second error message is for mobile number
+                                } else {
+                                    // For other fields, use the standard logic
+                                    errorEl = input.parentElement.querySelector('.error-message');
+                                }
+                                
                                 if (errorEl) {
                                     errorEl.textContent = messages[0];
+                                    console.log('✅ Error displayed for', key, ':', messages[0]);
                                 }
                             }
                             if (key === 'image') {

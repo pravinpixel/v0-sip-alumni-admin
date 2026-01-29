@@ -72,4 +72,5 @@ Route::middleware(['route.access:website'])->group(function () {
     Route::get('/cities-by-state/{stateId}', [CommonController::class, 'getCitiesByState'])->name('alumni.cities');
     Route::get('/pincodes-by-city/{cityId}', [CommonController::class, 'getPincodesByCity'])->name('alumni.pincodes');
     Route::get('/center-locations-by-pincode/{pincodeId}', [CommonController::class, 'getCenterLocationsByPincode'])->name('alumni.center.locations');
+    Route::get('/country-codes/{locationType}', [CommonController::class, 'getCountryCodesByLocation'])->name('alumni.country-codes');
 });

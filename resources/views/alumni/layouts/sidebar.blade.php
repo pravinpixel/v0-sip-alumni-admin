@@ -61,7 +61,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             </div>
             <div class="info-content">
                 <span class="info-label">Contact Number</span>
-                <div class="info-value" title="{{ $alumni->mobile_number ?? '-' }}">{{ $alumni->mobile_number ?? '-' }}</div>
+                <div class="info-value" title="+{{ $alumni->country_code ?? '' }} {{ $alumni->mobile_number ?? '-' }}">+{{ $alumni->country_code ?? '' }} {{ $alumni->mobile_number ?? '-' }}</div>
             </div>
         </div>
 
@@ -478,6 +478,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         if (modal) {
             // Reset form state
             isMobileVerified = false;
+            isEmailVerified = false;
             selectedFile = null;
             window.removeImage = false;
             
@@ -487,19 +488,39 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 mobileInput.readOnly = true;
             }
             
-            // Reset edit/cancel button
-            const editCancelBtn = document.getElementById('editCancelMobileBtn');
-            const verifyBtn = document.getElementById('verifyMobileBtn');
-            if (editCancelBtn) {
-                editCancelBtn.textContent = 'Edit';
-                editCancelBtn.style.color = '#dc2626';
+            // Reset email input
+            const emailInput = document.getElementById('emailInput');
+            if (emailInput) {
+                emailInput.readOnly = true;
             }
-            if (verifyBtn) {
-                verifyBtn.textContent = 'Verify';
-                verifyBtn.style.background = '#dc2626';
-                verifyBtn.disabled = true;
-                verifyBtn.style.opacity = '0.5';
-                verifyBtn.style.cursor = 'not-allowed';
+            
+            // Reset edit/cancel buttons
+            const editCancelMobileBtn = document.getElementById('editCancelMobileBtn');
+            const editCancelEmailBtn = document.getElementById('editCancelEmailBtn');
+            const verifyMobileBtn = document.getElementById('verifyMobileBtn');
+            const verifyEmailBtn = document.getElementById('verifyEmailBtn');
+            
+            if (editCancelMobileBtn) {
+                editCancelMobileBtn.textContent = 'Edit';
+                editCancelMobileBtn.style.color = '#dc2626';
+            }
+            if (editCancelEmailBtn) {
+                editCancelEmailBtn.textContent = 'Edit';
+                editCancelEmailBtn.style.color = '#dc2626';
+            }
+            if (verifyMobileBtn) {
+                verifyMobileBtn.textContent = 'Verify';
+                verifyMobileBtn.style.background = '#dc2626';
+                verifyMobileBtn.disabled = true;
+                verifyMobileBtn.style.opacity = '0.5';
+                verifyMobileBtn.style.cursor = 'not-allowed';
+            }
+            if (verifyEmailBtn) {
+                verifyEmailBtn.textContent = 'Verify';
+                verifyEmailBtn.style.background = '#dc2626';
+                verifyEmailBtn.disabled = true;
+                verifyEmailBtn.style.opacity = '0.5';
+                verifyEmailBtn.style.cursor = 'not-allowed';
             }
             
             // Reset save button
@@ -510,10 +531,14 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                 saveBtn.style.cursor = 'pointer';
             }
             
-            // Hide OTP section
-            const otpSection = document.getElementById('otpSection');
-            if (otpSection) {
-                otpSection.style.display = 'none';
+            // Hide OTP sections
+            const mobileOtpSection = document.getElementById('mobileOtpSection');
+            const emailOtpSection = document.getElementById('emailOtpSection');
+            if (mobileOtpSection) {
+                mobileOtpSection.style.display = 'none';
+            }
+            if (emailOtpSection) {
+                emailOtpSection.style.display = 'none';
             }
             
             const dropdownData = await loadStates();
@@ -556,7 +581,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
     }
 
     function populateFormData(alumni) {
-        console.log('Alumni data:', alumni); // Debug log
         const form = document.getElementById('editProfileForm');
         const stateSelect = document.getElementById('stateSelect');
         const citySelect = document.getElementById('citySelect');
@@ -573,8 +597,25 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         form.querySelector('[data-field="university"]').value = alumni.university || '';
         form.querySelector('[data-field="current_location"]').value = alumni.current_location || '';
         form.querySelector('[data-field="level_completed"]').value = alumni.level_completed || '';
-        // Store original mobile number
+
+        // Store original values BEFORE setting location type
         originalMobileNumber = alumni.mobile_number || '';
+        originalEmailAddress = alumni.email || '';
+
+        // Set location_type radio buttons
+        const locationType = alumni.location_type || 0;
+        const locationTypeRadios = document.querySelectorAll('input[name="location_type"]');
+        locationTypeRadios.forEach(radio => {
+            radio.checked = (radio.value == locationType);
+        });
+        loadCountryCodesByLocation(locationType, alumni.country_code);
+        
+        // Update verification method based on location type
+        // Don't call toggleVerificationMethod here as it will reload country codes and reset selection
+        // The verification method setup is already handled by the country code loading
+        // if (typeof toggleVerificationMethod === 'function') {
+        //     toggleVerificationMethod();
+        // }
 
         if (stateSelect) {
             stateSelect.value = alumni.city?.state?.id || '';
@@ -608,6 +649,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
                     if (data.success) {
                         populateSelect('stateSelect', data.states, 'Select State');
                         populateSelect('occupationSelect', data.occupations, 'Select Occupation');
+                        populateSelect('countryCodeSelect', data.countryCodes, 'Select Code', null, 'dial_code', 'country_name');
                         return data;
                     } else {
                         throw new Error(data.message || 'Failed to load states');
@@ -709,20 +751,24 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         }
     
 
-    function populateSelect(selectId, items, placeholder, selectedValue = null) {
+    function populateSelect(selectId, items, placeholder, selectedValue = null, valueField = 'id', textField = 'name') {
         const select = document.getElementById(selectId);
         if (!select) return;
-
-        console.log(`Populating ${selectId} with`, items, 'selected:', selectedValue); // Debug log
 
         select.innerHTML = `<option value="">${placeholder}</option>`;
         items.forEach(item => {
             const option = document.createElement('option');
-            option.value = String(item.id);
-            option.textContent = item.name || item.pincode; // Handle pincode field
-            if (String(selectedValue) === String(item.id)) {
+            option.value = String(item[valueField]);
+            
+            // Handle different text field combinations
+            if (selectId === 'countryCodeSelect') {
+                option.textContent = `+${item.dial_code}`;
+            } else {
+                option.textContent = item[textField] || item.pincode; // Handle pincode field
+            }
+            
+            if (String(selectedValue) === String(item[valueField])) {
                 option.selected = true;
-                console.log(`Selected option for ${selectId}:`, item); // Debug log
             }
             select.appendChild(option);
         });
