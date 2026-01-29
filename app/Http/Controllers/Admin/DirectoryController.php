@@ -170,7 +170,7 @@ class DirectoryController extends Controller
                     return '<span style="background-color:#fff3cd;color:#ff8c42;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;">' . ($row->year_of_completion ?? '—') . '</span>';
                 })
                 ->addColumn('mobile_number', function ($row) {
-                    return '<span style="font-weight:600; color:#333;">' . ($row->mobile_number ?? '—') . '</span>';
+                    return '<span style="font-weight:600; color:#333;">' . '+' . ($row->country_code ?? '') . ' ' . ($row->mobile_number ?? '—') . '</span>';
                 })
                 ->addColumn('center_location', function ($row) {
                     return ($row->centerLocation->name ?? '-');
@@ -509,7 +509,7 @@ class DirectoryController extends Controller
                 'location' => ($alumni->city?->state?->name ?? '-') . ', ' . ($alumni->city?->name ?? '-'),
                 'occupation' => $alumni->occupation->name ?? '-',
                 'company' => $alumni->company_name ?? '-',
-                'mobile_number' => $alumni->mobile_number,
+                'mobile_number' => ('+' . $alumni->country_code . ' ' . $alumni->mobile_number ) ?? '-',
                 'image_url' => $alumni->image_url ?? asset('images/avatar/blank.png'),
                 'status' => $alumni->status ?? 'inactive',
                 'center_location' => $alumni->centerLocation->name ?? '-',

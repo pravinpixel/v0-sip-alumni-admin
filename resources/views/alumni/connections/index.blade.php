@@ -708,7 +708,7 @@
                 $('#profileEmail2').text(data.email || '-');
                 $('#profileBatch').text(data.batch || '-');
                 $('#profileLocation').text(data.location || '-');
-                $('#profileContact').text(data.contact ? '+91 ' + data.contact : '-');
+                $('#profileContact').text(data.contact ? '+' + data.country_code + ' ' + data.contact : '-');
                 $('#profileOccupation').text(data.occupation || '-');
                 $('#profileOccupationMain').text(data.occupation || '-');
 

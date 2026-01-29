@@ -185,7 +185,7 @@ class ForumsController extends Controller
                 })
                 ->addColumn('contact', function ($row) {
                     return '<span style="font-size:12px;font-weight:600;">'
-                        . ($row->alumni->mobile_number ?? '—') . '</span>';
+                        . '+' . ($row->alumni->country_code ?? '') . ' '. ($row->alumni->mobile_number ?? '—') . '</span>';
                 })
 
                 ->addColumn('view_post', function ($row) {

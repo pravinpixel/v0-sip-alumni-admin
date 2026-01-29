@@ -285,6 +285,7 @@ class ConnectionsController extends Controller
             'occupation' => $alumni->occupation->name ?? '-',
             'contact' => $alumni->mobile_number ?? '-',
             'image' => $alumni->image_url ?? asset('images/avatar/blank.png'),
+            'country_code' => $alumni->country_code ?? '',
         ]);
     }
 
