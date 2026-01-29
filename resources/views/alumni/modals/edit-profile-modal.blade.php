@@ -87,7 +87,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
                 </div>
-                <div class="form-row">
+                <!-- <div class="form-row"> -->
                 <div class="form-group">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <label>Email Address</label>
@@ -133,17 +133,17 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                         </button>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: flex-start;">
+                        <select class="form-input" data-field="country_code" id="countryCodeSelect" 
+                            style="width: 80px; font-size: 14px; padding: 10px 8px; background-color: #f8f9fa;">
+                            <option value="">+91</option>
+                        </select>
                         <div style="position: relative; display: flex; flex: 1;">
-                            <select class="form-input" data-field="country_code" id="countryCodeSelect" 
-                                style="width: 80px; border-radius: 6px 0 0 6px; font-size: 14px; padding: 10px 8px; background-color: #f8f9fa;">
-                                <option value="">+91</option>
-                            </select>
                             <input type="text" class="form-input" data-field="mobile_number" id="mobileNumberInput"
                                 value="{{ $alumni->mobile_number ?? '' }}"
                                 maxlength="10"
                                 placeholder="Enter 10-digit mobile number"
                                 oninput="validateMobileNumber(this)"
-                                style="flex: 1; border-radius: 0 6px 6px 0; padding-left: 15px;"
+                                style="flex: 1; padding-left: 15px;"
                                 readonly>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 4px; align-items: center;">
@@ -171,7 +171,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                         <small id="mobileOtpTimer" style="color: #6b7280; font-size: 12px; display: block; margin-top: 6px;"></small>
                     </div>
                 </div>
-                </div>
+                <!-- </div> -->
                 <div class="form-row">
                 <div class="form-group">
                     <label>Current Occupation</label>
@@ -391,11 +391,6 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         margin-bottom: 15px;
     }
 
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
 
     .form-group label {
         display: block;
@@ -511,6 +506,8 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
     let isEmailVerified = false;
     let mobileOtpTimer = null;
     let emailOtpTimer = null;
+    let mobileCooldownTimer = null;
+    let emailCooldownTimer = null;
     let currentLocationType = 0; // 0 = Inside India, 1 = Outside India
 
     // Initialize original values when modal opens
@@ -676,6 +673,24 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
             modal.classList.remove('open');
         }
 
+        // Clear all timers
+        if (mobileOtpTimer) {
+            clearInterval(mobileOtpTimer);
+            mobileOtpTimer = null;
+        }
+        if (emailOtpTimer) {
+            clearInterval(emailOtpTimer);
+            emailOtpTimer = null;
+        }
+        if (mobileCooldownTimer) {
+            clearInterval(mobileCooldownTimer);
+            mobileCooldownTimer = null;
+        }
+        if (emailCooldownTimer) {
+            clearInterval(emailCooldownTimer);
+            emailCooldownTimer = null;
+        }
+
         // Reset mobile verification
         resetMobileVerificationState();
         // Reset email verification
@@ -701,6 +716,16 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         const editCancelBtn = document.getElementById('editCancelMobileBtn');
         const verifyBtn = document.getElementById('verifyMobileBtn');
         const saveBtn = document.querySelector('.btn-save');
+
+        // Clear mobile timers
+        if (mobileOtpTimer) {
+            clearInterval(mobileOtpTimer);
+            mobileOtpTimer = null;
+        }
+        if (mobileCooldownTimer) {
+            clearInterval(mobileCooldownTimer);
+            mobileCooldownTimer = null;
+        }
 
         // Reset mobile input value
         mobileInput.disabled = false;
@@ -733,7 +758,6 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         // Hide OTP section
         document.getElementById('mobileOtpSection').style.display = 'none';
         document.getElementById('mobileOtpInput').value = '';
-        if (mobileOtpTimer) clearInterval(mobileOtpTimer);
 
         // Update save button state
         updateSaveButtonState();
@@ -745,6 +769,16 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         const editCancelBtn = document.getElementById('editCancelEmailBtn');
         const verifyBtn = document.getElementById('verifyEmailBtn');
         const saveBtn = document.querySelector('.btn-save');
+
+        // Clear email timers
+        if (emailOtpTimer) {
+            clearInterval(emailOtpTimer);
+            emailOtpTimer = null;
+        }
+        if (emailCooldownTimer) {
+            clearInterval(emailCooldownTimer);
+            emailCooldownTimer = null;
+        }
 
         // Reset email input value
         emailInput.disabled = false;
@@ -777,7 +811,6 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         // Hide OTP section
         document.getElementById('emailOtpSection').style.display = 'none';
         document.getElementById('emailOtpInput').value = '';
-        if (emailOtpTimer) clearInterval(emailOtpTimer);
 
         // Update save button state
         updateSaveButtonState();
@@ -972,18 +1005,20 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     showToast('OTP sent to your mobile number successfully');
                     document.getElementById('mobileOtpSection').style.display = 'block';
                     document.getElementById('mobileNumberInput').disabled = true;
+                    
+                    // Start 30-second cooldown timer
+                    startMobileOTPCooldown();
                     startMobileOTPTimer();
                 } else {
                     showToast(data.message || 'Failed to send OTP', 'error');
                     verifyBtn.disabled = false;
+                    verifyBtn.textContent = 'Verify';
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
                 showToast('Failed to send OTP', 'error');
                 verifyBtn.disabled = false;
-            })
-            .finally(() => {
                 verifyBtn.textContent = 'Verify';
             });
     }
@@ -1021,18 +1056,20 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     showToast('OTP sent to your email address successfully');
                     document.getElementById('emailOtpSection').style.display = 'block';
                     document.getElementById('emailInput').disabled = true;
+                    
+                    // Start 30-second cooldown timer
+                    startEmailOTPCooldown();
                     startEmailOTPTimer();
                 } else {
                     showToast(data.error || 'Failed to send OTP', 'error');
                     verifyBtn.disabled = false;
+                    verifyBtn.textContent = 'Verify';
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
                 showToast('Failed to send OTP', 'error');
                 verifyBtn.disabled = false;
-            })
-            .finally(() => {
                 verifyBtn.textContent = 'Verify';
             });
     }
@@ -1130,6 +1167,11 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
             return;
         }
 
+        const verifyOtpBtn = document.querySelector('#mobileOtpSection button');
+        const originalText = verifyOtpBtn.textContent;
+        verifyOtpBtn.textContent = 'Verifying...';
+        verifyOtpBtn.disabled = true;
+
         fetch('{{ route("alumni.edit.verify.otp") }}', {
                 method: 'POST',
                 headers: {
@@ -1148,6 +1190,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     showToast('Mobile number verified successfully');
                     isMobileVerified = true;
                     document.getElementById('mobileOtpSection').style.display = 'none';
+                    document.getElementById('mobileOtpInput').value = ''; // Clear OTP input
 
                     const verifyBtn = document.getElementById('verifyMobileBtn');
                     verifyBtn.textContent = 'Verified ✓';
@@ -1157,14 +1200,25 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     // Update save button state
                     updateSaveButtonState();
 
-                    if (mobileOtpTimer) clearInterval(mobileOtpTimer);
+                    if (mobileOtpTimer) {
+                        clearInterval(mobileOtpTimer);
+                        mobileOtpTimer = null;
+                    }
+                    if (mobileCooldownTimer) {
+                        clearInterval(mobileCooldownTimer);
+                        mobileCooldownTimer = null;
+                    }
                 } else {
                     showToast(data.message || 'Invalid OTP', 'error');
+                    verifyOtpBtn.textContent = originalText;
+                    verifyOtpBtn.disabled = false;
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
                 showToast('Failed to verify OTP', 'error');
+                verifyOtpBtn.textContent = originalText;
+                verifyOtpBtn.disabled = false;
             });
     }
 
@@ -1177,6 +1231,11 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
             showToast('Please enter a valid 6 digit OTP', 'error');
             return;
         }
+
+        const verifyOtpBtn = document.querySelector('#emailOtpSection button');
+        const originalText = verifyOtpBtn.textContent;
+        verifyOtpBtn.textContent = 'Verifying...';
+        verifyOtpBtn.disabled = true;
 
         fetch('{{ route("alumni.edit.verify.otp") }}', {
                 method: 'POST',
@@ -1196,6 +1255,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     showToast('Email address verified successfully');
                     isEmailVerified = true;
                     document.getElementById('emailOtpSection').style.display = 'none';
+                    document.getElementById('emailOtpInput').value = ''; // Clear OTP input
 
                     const verifyBtn = document.getElementById('verifyEmailBtn');
                     verifyBtn.textContent = 'Verified ✓';
@@ -1205,14 +1265,25 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     // Update save button state
                     updateSaveButtonState();
 
-                    if (emailOtpTimer) clearInterval(emailOtpTimer);
+                    if (emailOtpTimer) {
+                        clearInterval(emailOtpTimer);
+                        emailOtpTimer = null;
+                    }
+                    if (emailCooldownTimer) {
+                        clearInterval(emailCooldownTimer);
+                        emailCooldownTimer = null;
+                    }
                 } else {
                     showToast(data.message || 'Invalid OTP', 'error');
+                    verifyOtpBtn.textContent = originalText;
+                    verifyOtpBtn.disabled = false;
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
                 showToast('Failed to verify OTP', 'error');
+                verifyOtpBtn.textContent = originalText;
+                verifyOtpBtn.disabled = false;
             });
     }
 
@@ -1237,6 +1308,34 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         }, 1000);
     }
 
+    // Mobile OTP Cooldown Timer (30 seconds before allowing to send again)
+    function startMobileOTPCooldown() {
+        let cooldownTime = 30;
+        const verifyBtn = document.getElementById('verifyMobileBtn');
+        
+        // Clear existing cooldown timer
+        if (mobileCooldownTimer) {
+            clearInterval(mobileCooldownTimer);
+        }
+        
+        mobileCooldownTimer = setInterval(() => {
+            cooldownTime--;
+            verifyBtn.textContent = `Wait ${cooldownTime}s`;
+            verifyBtn.disabled = true;
+            verifyBtn.style.opacity = '0.5';
+            verifyBtn.style.cursor = 'not-allowed';
+
+            if (cooldownTime <= 0) {
+                clearInterval(mobileCooldownTimer);
+                mobileCooldownTimer = null;
+                verifyBtn.textContent = 'Verify';
+                verifyBtn.disabled = false;
+                verifyBtn.style.opacity = '1';
+                verifyBtn.style.cursor = 'pointer';
+            }
+        }, 1000);
+    }
+
     // Email OTP Timer
     function startEmailOTPTimer() {
         let timeLeft = 30;
@@ -1254,6 +1353,34 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                 timerEl.textContent = 'OTP expired. Please request a new one.';
                 document.getElementById('emailOtpSection').style.display = 'none';
                 document.getElementById('emailInput').disabled = false;
+            }
+        }, 1000);
+    }
+
+    // Email OTP Cooldown Timer (30 seconds before allowing to send again)
+    function startEmailOTPCooldown() {
+        let cooldownTime = 30;
+        const verifyBtn = document.getElementById('verifyEmailBtn');
+        
+        // Clear existing cooldown timer
+        if (emailCooldownTimer) {
+            clearInterval(emailCooldownTimer);
+        }
+        
+        emailCooldownTimer = setInterval(() => {
+            cooldownTime--;
+            verifyBtn.textContent = `Wait ${cooldownTime}s`;
+            verifyBtn.disabled = true;
+            verifyBtn.style.opacity = '0.5';
+            verifyBtn.style.cursor = 'not-allowed';
+
+            if (cooldownTime <= 0) {
+                clearInterval(emailCooldownTimer);
+                emailCooldownTimer = null;
+                verifyBtn.textContent = 'Verify';
+                verifyBtn.disabled = false;
+                verifyBtn.style.opacity = '1';
+                verifyBtn.style.cursor = 'pointer';
             }
         }, 1000);
     }
@@ -1397,7 +1524,6 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                                 
                                 if (errorEl) {
                                     errorEl.textContent = messages[0];
-                                    console.log('✅ Error displayed for', key, ':', messages[0]);
                                 }
                             }
                             if (key === 'image') {

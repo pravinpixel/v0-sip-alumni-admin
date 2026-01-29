@@ -442,6 +442,12 @@ body {
   gap: 12px;
 }
 
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
 
 @keyframes slideInUp {
   from {
@@ -535,6 +541,10 @@ body {
 
   .search-filter-container {
     gap: 8px;
+  }
+
+  .form-row {
+    display: block;
   }
 }
 

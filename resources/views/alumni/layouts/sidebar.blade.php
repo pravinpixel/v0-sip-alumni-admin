@@ -360,11 +360,6 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
         margin-bottom: 15px;
     }
 
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-    }
 
     .form-group label {
         display: block;
