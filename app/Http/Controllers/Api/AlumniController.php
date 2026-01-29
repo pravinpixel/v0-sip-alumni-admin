@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Mail\AdminAlumniRegistedMail;
+use App\Mail\AlumniOtpMail;
 use App\Mail\AlumniWelcomeMail;
 use Illuminate\Http\Request;
 use App\Models\Alumnis;
@@ -18,6 +19,7 @@ use App\Models\Pincodes;
 use App\Models\Role;
 use App\Models\States;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTimeExcel\Current;
@@ -285,7 +287,13 @@ class AlumniController extends Controller
         $record->expires_at = now()->addSeconds(30);
         $record->save();
 
-        // Mail::to($email)->queue(new VerifyEmailOtpMail($otp));
+        $data = [
+            'name' => 'Alumni',
+            'otp' => $otp,
+            'support_email' => env('SUPPORT_EMAIL'),
+        ];
+        Mail::to($email)->queue(new AlumniOtpMail($data));
+        Log::info('OTP Mail Sent');
 
         return response()->json([
             'success' => true,
