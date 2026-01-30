@@ -276,7 +276,12 @@ class DirectoryController extends Controller
 
     public function connectionViewPage($id)
     {
-        return view('directory.connectionview', compact('id'));
+        $connections = AlumniConnections::where(function ($q) use ($id) {
+                $q->where('sender_id', $id)->orWhere('receiver_id', $id);
+            })
+            ->where('status', 'accepted')
+            ->get();
+        return view('directory.connectionview', compact('id', 'connections'));
     }
 
     public function viewConnectionList(Request $request, $id)

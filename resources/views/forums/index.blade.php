@@ -26,7 +26,7 @@
         <div class="table-container">
             <!-- Table Wrapper (Scrollable) -->
             <div class="table-responsive" style="overflow-x: auto;">
-                <table id="dataTable" style="min-width: 1200px;">
+                <table id="dataTable" style="min-width: 1250px;">
                     <thead>
                         <tr id="tableHeaderRow">
                             <th class="table-header">Created On</th>

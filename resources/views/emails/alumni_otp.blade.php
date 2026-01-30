@@ -1,15 +1,24 @@
 @extends('emails.index')
 
 @section('content')
+<style>
+    .gap {
+        margin-bottom: 10px;
+    }
+</style>
 
-<p class="gap">Dear {{ $data['name'] }},</p>
+<p class="gap">Welcome to the <strong>SIP Abacus Alumni Network</strong></p>
 
+<p class="gap">Your One-Time Password (OTP) for SIP Abacus Alumni Portal verification is:</p>
 
+<p>🔐 {{ $data['otp'] }}</p>
+<p class="gap">⏳ Valid for 10 minutes</p>
 
-<p class="gap">Your One-Time Password (OTP) for accessing the <strong>Alumni Portal</strong> is: <strong>{{ $data['otp'] }}.</strong></p>
-<p class="gap">This OTP is valid for the next 30 seconds. Please use this code to complete your login process.</p>
+<p class="gap">Please enter this code to continue.</p>
 
+<p class="gap">For your security, do not share this OTP with anyone.</p>
 
+<p class="gap">If you did not request this verification, please ignore this email or contact us for assistance.</p>
 
 <p>Warm regards,
 <strong>Alumni Portal System</strong>

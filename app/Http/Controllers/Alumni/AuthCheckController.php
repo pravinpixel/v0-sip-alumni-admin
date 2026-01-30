@@ -125,7 +125,6 @@ class AuthCheckController extends Controller
                 );
                 // Send OTP via email
                 $data = [
-                    'name' => $locationType == 0 ? $alumni->full_name : 'Alumni',
                     'otp' => $otp,
                     'support_email' => env('SUPPORT_EMAIL'),
                 ];

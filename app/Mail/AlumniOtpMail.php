@@ -19,7 +19,7 @@ class AlumniOtpMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Your OTP for Alumni Portal')
+        return $this->subject('Your OTP Code for SIP Abacus Alumni Portal Verification')
                     ->view('emails.alumni_otp')
                     ->with('data', $this->data);
     }

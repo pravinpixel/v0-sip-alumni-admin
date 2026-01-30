@@ -290,7 +290,6 @@ class AlumniController extends Controller
         $record->save();
 
         $data = [
-            'name' => 'Alumni',
             'otp' => $otp,
             'support_email' => env('SUPPORT_EMAIL'),
         ];
