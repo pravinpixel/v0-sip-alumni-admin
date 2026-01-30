@@ -252,7 +252,9 @@ class AlumniController extends Controller
         $record->expires_at = now()->addSeconds(30);
         $record->save();
 
-        sendsms('91' . $mobile, "Your OTP is {$otp}");
+        $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 10 minutes. Please don't share this code.\nTeam - SIP Academy";
+        $smsNumber = '91' . $mobile;
+        sendsms($smsNumber, $message);
 
         return response()->json([
             'success' => true,
