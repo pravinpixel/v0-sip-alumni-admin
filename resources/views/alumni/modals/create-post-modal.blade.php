@@ -832,6 +832,7 @@
                 if (data.success) {
                     showToast('Post submitted successfully. Awaiting Admin approval.');
                     closeCreatePostModal();
+                    window.location.reload();   
                 } else {
                     showToast(data.message || 'Failed to create post', 'error');
                 }
