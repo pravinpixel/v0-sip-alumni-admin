@@ -118,9 +118,9 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
             $row->full_name ?? '-',
             $row->year_of_completion ?? '-',
             $row->centerLocation?->name ?? '-',
-            $row->city?->name . ' - ' . $row->city?->state?->name,
+            $row->city?->name . ' , ' . $row->city?->state?->name,
             $row->email ?? '-',
-            $row->mobile_number ?? '-',
+            '+' .$row->country_code . ' ' . $row->mobile_number ?? '-',
             $row->occupation->name ?? '-',
             ucfirst($row->status) ?? '-',
         ];

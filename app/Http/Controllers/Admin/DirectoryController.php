@@ -310,7 +310,7 @@ class DirectoryController extends Controller
             
             if ($request->filled('location')) {
                 $locations = is_array($request->location) ? $request->location : [$request->location];
-                $query->whereHas('city', function ($q) use ($locations) {
+                $query->whereHas('centerLocation', function ($q) use ($locations) {
                     $q->whereIn('name', $locations);
                 });
             }
@@ -408,9 +408,9 @@ class DirectoryController extends Controller
 
             // Get unique locations from connected alumni
             $locations = Alumnis::whereIn('id', $connectedAlumniIds)
-                ->with('city')
+                ->with('centerLocation')
                 ->get()
-                ->pluck('city.name')
+                ->pluck('centerLocation.name')
                 ->filter()
                 ->unique()
                 ->sort()
