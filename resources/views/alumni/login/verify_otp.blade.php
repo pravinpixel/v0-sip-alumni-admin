@@ -500,6 +500,7 @@
             formData.append('number', '{{ $value }}');
             formData.append('location_type', '{{ $type }}');
             formData.append('is_login', 1);
+            formData.append('country_code', '91');
 
 
             $.ajax({
