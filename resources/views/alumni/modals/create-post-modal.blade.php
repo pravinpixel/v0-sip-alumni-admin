@@ -49,7 +49,7 @@
                 </div>
             </form>
         </div>
-        <div class="modal-footer border-0 bg-white pt-0">
+        <div class="modal-footer border-0 bg-white">
             <button class="btn-submit" onclick="submitPost()">Submit Post</button>
         </div>
     </div>
@@ -319,24 +319,6 @@
         color: #374151;
     }
 
-    #createPostModal .multi-select-dropdown {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background: white;
-        border: 2px solid #dc2626;
-        border-top: none;
-        border-radius: 0 0 6px 6px;
-        max-height: 200px;
-        overflow-y: auto;
-        z-index: 2100;
-        display: none;
-    }
-
-    #createPostModal .multi-select-dropdown.active {
-        display: block;
-    }
 
     #createPostModal .multi-select-option {
         padding: 10px;
@@ -373,11 +355,12 @@
     }
 
     #createPostModal .selected-labels-display {
-        display: flex;
+        display: none;
         flex-wrap: wrap;
         gap: 8px;
         margin-top: 10px;
         min-height: 24px;
+        align-items: center;
     }
 
     #createPostModal .selected-label-tag {
@@ -395,7 +378,6 @@
     }
 
     #createPostModal .selected-label-tag:hover {
-        background: #fecaca;
         border-color: #f87171;
     }
 
@@ -415,8 +397,8 @@
     }
 
     #createPostModal .selected-label-tag .remove:hover {
-        background-color: #dc2626;
-        color: white;
+        color: #a00909;
+        scale: 1.1;
     }
 
     /* Error state for multi-select */
@@ -668,6 +650,12 @@
     function updateLabelsDisplay() {
         const display = document.querySelector('#labelsContainer .placeholder');
         const selectedDisplay = document.getElementById('selectedLabelsDisplay');
+
+        if (selectedLabels.length > 0) {
+            selectedDisplay.style.display = 'flex';
+        } else {
+            selectedDisplay.style.display = 'none';
+        }
         
         // Update placeholder text
         if (selectedLabels.length > 0) {

@@ -24,7 +24,9 @@ class AnnouncementsController extends Controller
 
             $query->where(function ($q) use ($search, $searchStatus) {
                 $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereRaw("DATE_FORMAT(created_at, '%b %e, %Y') LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("DATE_FORMAT(expiry_date, '%b %e, %Y') LIKE ?", ["%{$search}%"]);
 
                 if ($searchStatus !== null) {
                     $q->orWhere('status', $searchStatus);
@@ -65,8 +67,14 @@ class AnnouncementsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'expiry_date' => 'required|date',
+            'expiry_date' => 'required|date|after_or_equal:today',
             'status' => 'required|in:0,1',
+        ], [
+            'title.required' => 'Announcement title field is required.',
+            'description.required' => 'Announcement description field is required.',
+            'expiry_date.required' => 'Expiry date field is required.',
+            'expiry_date.after_or_equal' => 'Expiry date cannot be in the past.',
+            'status.required' => 'Status field is required.',
         ]);
 
         if ($validator->fails()) {
