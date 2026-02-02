@@ -109,7 +109,8 @@ class AuthCheckController extends Controller
                     ['mobile_number' => $mobile],
                     [
                         'otp' => $otp,
-                        'expires_at' => now()->addSeconds(30)
+                        'expires_at' => now()->addSeconds(30),
+                        'is_verified' => 0
                     ]
                 );
                 $message = "Welcome to SIP Academy Alumni!\nYour verification code is {$otp}. It expires in 10 minutes. Please don't share this code.\nTeam - SIP Academy";
@@ -120,7 +121,8 @@ class AuthCheckController extends Controller
                     ['email' => $mobile],
                     [
                         'otp' => $otp,
-                        'expires_at' => now()->addSeconds(30)
+                        'expires_at' => now()->addSeconds(30),
+                        'is_verified' => 0
                     ]
                 );
                 // Send OTP via email

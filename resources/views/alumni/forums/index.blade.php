@@ -1141,7 +1141,7 @@
 
         posts.forEach((post, index) => {
             const title = post.title || 'Untitled Post';
-            const fullDescription = post.description ? post.description.replace(/<\/?[^>]+>/g, "") : 'No description available';
+            const fullDescription = post.description || 'No description available';
 
             const tags = post.labels ?? [];
 
@@ -1223,10 +1223,10 @@
                             `}
                         </div>
 
-                        <p class="post-description mb-4"
-                           title="${escapeHtml(fullDescription)}">
-                             ${escapeHtml(fullDescription)}
-                        </p>
+                         <div class="post-description mb-4"
+                         title="${post.description.replace(/<[^>]*>/g,'')}">
+                            ${fullDescription}
+                        </div>
 
                         ${tags.length > 0 ? `
                             <div class="post-tags mb-4">
@@ -1437,6 +1437,13 @@
             button.style.cursor = "not-allowed";
         }
     }
+
+    html += `
+<div class="post-description">
+    ${post.description || 'No description available'}
+</div>
+`;
+
 
     function submitReply(postId) {
         const replyInput = document.getElementById(`replyInput-${postId}`);

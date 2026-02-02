@@ -44,8 +44,20 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <div class="content-container">
-        <h1 class="main-title">Announcements</h1>
-        <p class="main-subtitle">Manage and publish announcements to alumni</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="main-title">Announcements</h1>
+                <p class="main-subtitle">Manage and publish announcements to alumni</p>
+            </div>
+            <div>
+                @can('announcement.create')
+                    <button type="button" class="create-button" onclick="window.location='{{ route('admin.announcements.create') }}'">
+                        <i class="fas fa-plus"></i>
+                        Create Announcement
+                    </button>
+                @endcan
+            </div>
+        </div>
 
         <!-- Main Card -->
         <div class="table-box-container">
@@ -66,12 +78,7 @@
                         <span id="filterBtnText">Filter</span>
                     </button>
 
-                    @can('announcement.create')
-                    <button type="button" class="create-button" onclick="window.location='{{ route('admin.announcements.create') }}'">
-                        <i class="fas fa-plus"></i>
-                        Create Announcement
-                    </button>
-                    @endcan
+                    
                 </div>
             </div>
 
@@ -104,7 +111,11 @@
                                     <tr>
                                         <td>{{ $data->created_at->format('M j, Y') }}</td>
                                         <td>{{ $data->title }}</td>
-                                        <td title="{{ $data->description }}">{{ \Illuminate\Support\Str::limit($data->description, 50) }}</td>
+                                        <td title="{{ strip_tags($data->description) }}">
+                                            <div class="line-clamp-2">
+                                                {!! $data->description !!}
+                                            </div>
+                                        </td>
                                         <td>{{ \Carbon\Carbon::parse($data->expiry_date)->format('M j, Y') }}</td>
                                         <td>
                                             <div style="display: flex; align-items: center; gap: 12px;">
@@ -286,7 +297,7 @@
                 const countBadge = $(`.filter-count[data-filter="${filterType}"]`);
                 
                 if (checkedCount > 0) {
-                    countBadge.text(checkedCount).show();
+                    countBadge.text(checkedCount).show().css('display', 'flex');
                     $('#clearFiltersBtn').show();
                 } else {
                     countBadge.hide();

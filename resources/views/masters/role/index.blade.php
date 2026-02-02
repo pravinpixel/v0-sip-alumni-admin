@@ -301,7 +301,7 @@
             const countBadge = $(`.filter-count[data-filter="${filterType}"]`);
 
             if (checkedCount > 0) {
-                countBadge.text(checkedCount).show();
+                countBadge.text(checkedCount).show().css('display', 'flex');
                 $('#clearFiltersBtn').show();
             } else {
                 countBadge.hide();
