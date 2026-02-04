@@ -219,14 +219,6 @@
             background: #9ca3af;
         }
 
-        .announcements-global-container {
-            position: sticky;
-            top: 81px;
-            left: 0;
-            right: 0;
-            z-index: 11;
-        }
-
         .announcement-content {
             display: inline-block;
             background: linear-gradient(30deg, #E2001D 0%, #FCD116 100%);
@@ -234,12 +226,6 @@
             background-clip: text;
             -webkit-text-fill-color: transparent;
             font-weight: 600;
-        }
-
-
-        .announcement-banner {
-            background: #faebed;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         /* Announcements Styles */
@@ -252,8 +238,19 @@
             }
         }
 
+        .announcement-icon svg{
+            color: #E2001D;
+        }
+
         .announcement-scroll-container {
             width: 100%;
+            position: sticky;
+            top: 81px;
+            left: 0;
+            right: 0;
+            z-index: 11;
+            background: #faebed;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .announcement-scroll-content {
@@ -271,7 +268,7 @@
             white-space: nowrap;
         }
         
-        .announcement-banner:hover .announcement-scroll-content {
+        .announcement-scroll-container:hover .announcement-scroll-content {
             animation-play-state: paused;
         }
         
@@ -331,7 +328,7 @@
                 top: 10px;
             }
 
-            .announcements-global-container {
+            .announcement-scroll-container {
                 top: 77px;
             }
 

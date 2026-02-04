@@ -232,7 +232,7 @@ class DirectoryController extends Controller
                                 onclick="openDetailsModal(' . $row->id . ')"
                                 onmouseover="this.style.backgroundColor=\'#ba0028\';this.style.color=\'#fff\';"
                                 onmouseout="this.style.backgroundColor=\'#fff\';this.style.color=\'#000\'">
-                                <i class="fa fa-info me-2"></i>View Other Info
+                                <i class="fa fa-person me-2"></i>View Other Info
                                 </a>
                             </li>
                     ';

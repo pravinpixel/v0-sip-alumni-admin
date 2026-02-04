@@ -247,7 +247,7 @@
                     // If selecting specific option, uncheck "All"
                     $(this).siblings('.filter-option[data-value="all"]').find('input[type="checkbox"]').prop('checked', false);
                     // Toggle the clicked option
-                    checkbox.prop('checked', !checkbox.prop('checked'));
+                    // checkbox.prop('checked', !checkbox.prop('checked'));
                 }
                 
                 // Update filter count

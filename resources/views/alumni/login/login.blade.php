@@ -172,6 +172,7 @@
                     $countryCode.show();
                     $input.attr('type', 'text');
                     $input.attr('placeholder', 'Enter 10-digit mobile number');
+                    $input.css('border-radius', '0 8px 8px 0');
 
                     $input.on('input', function() {
                         this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
@@ -182,6 +183,7 @@
                     $countryCode.hide();
                     $input.attr('type', 'email');
                     $input.attr('placeholder', 'Enter your registered email');
+                    $input.css('border-radius', '8px');
 
                     $input.on('input', function() {
                         // allow any email characters

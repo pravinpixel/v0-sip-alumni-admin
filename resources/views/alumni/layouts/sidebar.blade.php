@@ -41,7 +41,7 @@ $occupation = $alumni && isset($alumni->occupation) ? $alumni->occupation : null
             </div>
             <div class="info-content">
                 <span class="info-label">Location</span>
-                <div class="info-value" title="{{ $state->name ?? '-' }}, {{ $city->name ?? '-' }}">{{ $state->name ?? '-' }}, {{ $city->name ?? '-' }}</div>
+                <div class="info-value" title="{{ $alumni->centerLocation->name ?? '-' }}, {{ $city->name ?? '-' }}, {{ $state->name ?? '-' }}">{{ $alumni->centerLocation->name ?? '-' }}, {{ $city->name ?? '-' }}, {{ $state->name ?? '-' }}</div>
             </div>
         </div>
 

@@ -81,14 +81,14 @@
                             </div>
                         </button>
                         <div class="filter-dropdown-menu" data-filter="status">
-                            <div class="filter-option" data-value="1">
+                            <label class="filter-option" data-value="1">
                                 <input type="checkbox">
                                 <span>Active</span>
-                            </div>
-                            <div class="filter-option" data-value="0">
+                            </label>
+                            <label class="filter-option" data-value="0">
                                 <input type="checkbox">
                                 <span>Inactive</span>
-                            </div>
+                            </label>
                         </div>
                     </div>
 
@@ -270,7 +270,7 @@
                 // If selecting specific option, uncheck "All"
                 $(this).siblings('.filter-option[data-value="all"]').find('input[type="checkbox"]').prop('checked', false);
                 // Toggle the clicked option
-                checkbox.prop('checked', !checkbox.prop('checked'));
+                // checkbox.prop('checked', !checkbox.prop('checked'));
             }
 
             // Update filter count
