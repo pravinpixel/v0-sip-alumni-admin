@@ -28,7 +28,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     </button>
                 </div>
             </div>
-            <div class="text-center mb-3">
+            <div class="text-center mb-3 d-none">
                 <label class="me-3">
                     <input type="radio" name="location_type" value="0" {{ $locationTypeChecked }} onchange="toggleVerificationMethod()">
                     Inside India

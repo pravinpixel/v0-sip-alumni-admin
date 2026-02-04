@@ -1438,11 +1438,6 @@
         }
     }
 
-    html += `
-<div class="post-description">
-    ${post.description || 'No description available'}
-</div>
-`;
 
 
     function submitReply(postId) {
