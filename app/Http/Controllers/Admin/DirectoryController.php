@@ -545,15 +545,22 @@ class DirectoryController extends Controller
     public function getFilterOptions()
     {
         try {
+
+            $user = auth()->user();
+            $alumniQuery = Alumnis::query();
+
+            if ($user && $user->role->name === 'Franchisee') {
+                $alumniQuery->where('center_id', $user->center_location_id);
+            }
             // Get unique years
-            $years = Alumnis::whereNotNull('year_of_completion')
+            $years = (clone $alumniQuery)->whereNotNull('year_of_completion')
                 ->distinct()
                 ->pluck('year_of_completion')
                 ->sort()
                 ->values();
 
             // Get unique cities
-            $cities = Alumnis::with('city')
+            $cities = (clone $alumniQuery)->with('city')
                 ->whereHas('city')
                 ->get()
                 ->pluck('city.name')
@@ -562,7 +569,7 @@ class DirectoryController extends Controller
                 ->values();
 
             // Get unique center locations
-            $centerLocations = Alumnis::with('centerLocation')
+            $centerLocations = (clone $alumniQuery)->with('centerLocation')
                 ->whereHas('centerLocation')
                 ->get()
                 ->pluck('centerLocation.name')
@@ -571,7 +578,7 @@ class DirectoryController extends Controller
                 ->values();
 
             // Get unique occupations
-            $occupations = Alumnis::with('occupation')
+            $occupations = (clone $alumniQuery)->with('occupation')
                 ->whereHas('occupation')
                 ->get()
                 ->pluck('occupation.name')

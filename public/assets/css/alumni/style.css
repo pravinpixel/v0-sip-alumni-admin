@@ -862,6 +862,11 @@ body {
   display: block;
 }
 
+#labelsDropdown {
+  top: auto !important;
+  bottom: 50px !important;
+}
+
 .filter-label {
   font-weight: 600;
   font-size: 13px;

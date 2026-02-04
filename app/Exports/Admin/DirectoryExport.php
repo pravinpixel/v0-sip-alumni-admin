@@ -20,6 +20,11 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
     {
         $query = Alumnis::with(['city', 'centerLocation', 'occupation'])->orderBy('id', 'desc');
 
+        $user = auth()->user();
+        if ($user && $user->role->name === 'Franchisee') {
+            $query->where('center_id', $user->center_location_id);
+        }
+
         // Filters (same as your DataTable)
         if ($this->request->filled('years')) {
             $years = is_array($this->request->years)
