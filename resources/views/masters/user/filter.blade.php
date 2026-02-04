@@ -34,10 +34,10 @@
                 </button>
                 <div class="filter-dropdown-menu" data-filter="role">
                     @foreach ($roles as $role)
-                    <div class="filter-option" data-value="{{ $role->id }}">
+                    <label class="filter-option" data-value="{{ $role->id }}">
                         <input type="checkbox">
                         <span>{{ $role->name }}</span>
-                    </div>
+                    </label>
                     @endforeach
                 </div>
             </div>
