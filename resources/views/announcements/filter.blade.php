@@ -24,9 +24,21 @@
             </div>
 
             <!-- Clear Filters Button -->
-            <button type="button" id="clearFiltersBtn" style="display: none; background: #ba0028; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 500;">
+            <!-- <button type="button" id="clearFiltersBtn" style="display: none; background: #ba0028; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 500;">
                 Clear All Filters
-            </button>
+            </button> -->
         </div>
+    </div>
+</div>
+
+<div id="activeFiltersContainer" style="display: none;">
+    <div class="active-filters-wrapper">
+        <span class="active-filters-label">Active Filters:</span>
+        <div id="activeFiltersChips">
+            <!-- Filter chips will be added here -->
+        </div>
+        <button id="clearAllFiltersBtn">
+            Clear All Filters
+        </button>
     </div>
 </div>

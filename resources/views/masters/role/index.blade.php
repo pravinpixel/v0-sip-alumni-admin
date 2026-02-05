@@ -93,10 +93,22 @@
                     </div>
 
                     <!-- Clear Filters Button -->
-                    <button type="button" id="clearFiltersBtn" style="display: none; background: #ba0028; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 500;">
+                    <!-- <button type="button" id="clearFiltersBtn" style="display: none; background: #ba0028; color: white; border: none; border-radius: 6px; padding: 8px 16px; cursor: pointer; font-size: 14px; font-weight: 500;">
                         Clear All Filters
-                    </button>
+                    </button> -->
                 </div>
+            </div>
+        </div>
+
+        <div id="activeFiltersContainer" style="display: none;">
+            <div class="active-filters-wrapper">
+                <span class="active-filters-label">Active Filters:</span>
+                <div id="activeFiltersChips">
+                    <!-- Filter chips will be added here -->
+                </div>
+                <button id="clearAllFiltersBtn">
+                    Clear All Filters
+                </button>
             </div>
         </div>
 
@@ -275,18 +287,33 @@
 
             // Update filter count
             updateFilterCount(filterType);
-
+            updateActiveFilterChips();
             // Apply filters
             applyFilters();
         });
 
+            $(document).on('click', '.remove-chip', function () {
+                const chip = $(this).closest('.filter-chip');
+                const filterType = chip.data('filter');
+                const value = chip.data('value');
+
+                $(`.filter-dropdown-menu[data-filter="${filterType}"] 
+                    .filter-option[data-value="${value}"] input`)
+                    .prop('checked', false);
+
+                updateFilterCount(filterType);
+                updateActiveFilterChips();
+                applyFilters();
+            });
+
         // Clear all filters
-        $('#clearFiltersBtn').on('click', function() {
-            $('.filter-option input[type="checkbox"]').prop('checked', false);
-            $('.filter-count').hide().text('0');
-            $(this).hide();
-            applyFilters();
-        });
+            $('#clearAllFiltersBtn').on('click', function () {
+                $('.filter-option input').prop('checked', false);
+                $('.filter-count').hide().text('0');
+
+                updateActiveFilterChips();
+                applyFilters();
+            });
 
         // Close dropdowns when clicking outside
         $(document).on('click', function() {
@@ -313,6 +340,36 @@
                 }
             }
         }
+
+            function updateActiveFilterChips() {
+                const container = $('#activeFiltersContainer');
+                const chipsBox = $('#activeFiltersChips');
+                chipsBox.empty();
+                let hasFilters = false;
+                $('.filter-dropdown').each(function () {
+                    const filterType = $(this).find('.filter-dropdown-btn').data('filter');
+                    const filterName = $(this).find('.filter-dropdown-btn span:first').text();
+
+                    $(this).find('input:checked').each(function () {
+                        hasFilters = true;
+                        const valueLabel = $(this).siblings('span').text();
+                        const value = $(this).closest('.filter-option').data('value');
+
+                        const chip = $(`
+                            <span class="filter-chip"
+                                data-filter="${filterType}"
+                                data-value="${value}">
+                                ${filterName}: ${valueLabel}
+                                <button class="remove-chip">
+                                   ×
+                                </button>
+                            </span>
+                        `);
+                        chipsBox.append(chip);
+                    });
+                });
+                container.toggle(hasFilters);
+            }
 
         function applyFilters() {
             updateTableData(1); 
