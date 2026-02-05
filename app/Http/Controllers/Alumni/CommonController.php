@@ -80,6 +80,7 @@ class CommonController extends Controller
                 'pincode_id' => 'required|exists:pincodes,id',
                 'center_id' => 'required|exists:center_locations,id',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+                'level_completed' => 'required',
             ], [
                 'full_name.required' => 'Full name is required.',
                 'year_of_completion.required' => 'Year of completion is required.',

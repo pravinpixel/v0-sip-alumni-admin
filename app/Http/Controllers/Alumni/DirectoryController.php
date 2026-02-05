@@ -62,6 +62,7 @@ class DirectoryController extends Controller
                 })
                 ->filter()
                 ->unique('id')
+                ->sortBy('name')
                 ->values()
                 ->toArray();
 

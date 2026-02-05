@@ -40,7 +40,22 @@ class AlumniController extends Controller
                 'pincode_id'              => 'required|integer',
                 'center_id'            => 'required',
                 'email'                => 'required|email:rfc,dns|unique:alumnis,email',
-                'mobile_number'        => 'required|digits:10|unique:alumnis,mobile_number',
+                'mobile_number' => [
+                    'required',
+                    'regex:/^\d+$/',
+                    'unique:alumnis,mobile_number,',
+                    function ($attribute, $value, $fail) use ($request) {
+                        $length = strlen($value);
+
+                        if ($request->location_type == 0 && $length != 10) {
+                            $fail('Mobile number must be exactly 10 digits for India.');
+                        }
+
+                        if ($request->location_type != 0 && ($length < 7 || $length > 15)) {
+                            $fail('Mobile number must be 7 to 15 digits.');
+                        }
+                    }
+                ],
                 'occupation'           => 'required|string|max:255',
                 // 'other_city'           => 'required_if:city_id,others|string|max:255',
                 'other_center'         => 'required_if:center_id,others|string|max:255',
