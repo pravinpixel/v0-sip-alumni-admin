@@ -732,6 +732,9 @@ body {
   box-sizing: border-box;
   font-size: 12px;
   border-bottom: 1px solid #f0f0f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #dataTable thead th {
