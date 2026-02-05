@@ -31,7 +31,7 @@
                         <tr id="tableHeaderRow">
                             <th class="table-header">Created On</th>
                             <th class="table-header">Alumni</th>
-                            <th class="table-header">Center Location</th>
+                            <th class="table-header w-25">Center Location</th>
                             <th class="table-header">Contact</th>
                             <th class="table-header">View Post</th>
                             <th class="table-header">Action Taken On</th>
