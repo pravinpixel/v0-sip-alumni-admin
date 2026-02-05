@@ -134,7 +134,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     </div>
                     <div style="display: flex; gap: 10px; align-items: flex-start;">
                         <select class="form-input" data-field="country_code" id="countryCodeSelect" 
-                            style="width: 80px; font-size: 14px; padding: 10px 8px; background-color: #f8f9fa;">
+                            style="width: 90px; font-size: 12px; padding: 10px 8px; background-color: #f8f9fa;">
                             <option value="">+91</option>
                         </select>
                         <div style="position: relative; display: flex; flex: 1;">
@@ -525,12 +525,26 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         if (!originalEmailAddress) {
             originalEmailAddress = emailInput.value;
         }
+        updateMobileMaxLength(locationType);
         
         isMobileVerified = true; // Original values are considered verified
         isEmailVerified = true;
         
         toggleVerificationMethod(true); // Set up the UI based on location type, preserve country code
     }
+
+    function updateMobileMaxLength(locationType) {
+        const input = document.getElementById('mobileNumberInput');
+
+        if (locationType == 0) {
+            input.maxLength = 10;
+            input.placeholder = "Enter 10-digit mobile number";
+        } else {
+            input.maxLength = 15;
+            input.placeholder = "Enter mobile number (max 15 digits)";
+        }
+    }
+
 
     // Toggle verification method based on location type
     function toggleVerificationMethod(preserveCountryCode = false) {
@@ -609,7 +623,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     
                     if (locationType == 0) {
                         // Inside India - show only +91
-                        countryCodeSelect.innerHTML = '<option value="91" selected>+91</option>';
+                        countryCodeSelect.innerHTML = '<option value="91" selected>IN +91</option>';
                         countryCodeSelect.disabled = true;
                         countryCodeSelect.style.backgroundColor = '#f8f9fa';
                     } else {
@@ -624,7 +638,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                         data.countryCodes.forEach(country => {
                             // Store value without +, but display with +
                             const valueWithoutPlus = country.dial_code.replace('+', '');
-                            const displayWithPlus = country.dial_code.startsWith('+') ? country.dial_code : '+' + country.dial_code;
+                            const displayWithPlus = country.dial_code.startsWith('+') ? country.dial_code : country.country_code + ' +' + country.dial_code;
                             
                             const isSelected = selectedCountryCode && (
                                 valueWithoutPlus === selectedCountryCode ||
@@ -976,10 +990,18 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
     // Send Mobile OTP
     function sendMobileOTP() {
         const mobileNumber = document.getElementById('mobileNumberInput').value;
-
-        if (mobileNumber.length !== 10) {
-            showToast('Please enter a valid 10 digit mobile number', 'error');
-            return;
+        if (currentLocationType === 0) {
+            // India
+            if (!/^\d{10}$/.test(mobileNumber)) {
+                showToast('Please enter a valid 10 digit mobile number', 'error');
+                return;
+            }
+        } else {
+            // International (7–15 digits allowed)
+            if (!/^\d{7,15}$/.test(mobileNumber)) {
+                showToast('Please enter a valid mobile number (7 to 15 digits)', 'error');
+                return;
+            }
         }
 
         const verifyBtn = document.getElementById('verifyMobileBtn');

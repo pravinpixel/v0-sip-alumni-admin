@@ -1413,7 +1413,9 @@ body {
     background-color: #f8f9fa;
     border-radius: 6px;
     border-left: 3px solid #ba0028;
-    word-break: break-all;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .detail-item {

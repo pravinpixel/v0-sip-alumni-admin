@@ -42,9 +42,24 @@ class CommonController extends Controller
             $alumni = Alumnis::findOrFail($alumniId);
             $validator      = Validator::make($request->all(), [
                 'full_name' => 'required|string|max:255',
-                'year_of_completion' => 'required|digits:4',
+                'year_of_completion' => 'required|digits:4|lte:' . date('Y'),
                 'email' => 'required|email:rfc|regex:/^[^@]+@[^@]+\.[^@]+$/|unique:alumnis,email,' . $alumniId,
-                'mobile_number' => 'required|digits:10|unique:alumnis,mobile_number,' . $alumniId,
+                'mobile_number' => [
+                    'required',
+                    'regex:/^\d+$/',
+                    'unique:alumnis,mobile_number,' . $alumniId,
+                    function ($attribute, $value, $fail) use ($request) {
+                        $length = strlen($value);
+
+                        if ($request->location_type == 0 && $length != 10) {
+                            $fail('Mobile number must be exactly 10 digits for India.');
+                        }
+
+                        if ($request->location_type != 0 && ($length < 7 || $length > 15)) {
+                            $fail('Mobile number must be 7 to 15 digits.');
+                        }
+                    }
+                ],
                 'country_code' => [
                     'required',
                     'string',
@@ -69,11 +84,11 @@ class CommonController extends Controller
                 'full_name.required' => 'Full name is required.',
                 'year_of_completion.required' => 'Year of completion is required.',
                 'year_of_completion.digits' => 'Year of completion must be 4 digits.',
+                'year_of_completion.lte' => 'Year of completion must be less than current year.',
                 'email.required' => 'Email is required.',
                 'email.email' => 'Invalid email format.',
                 'email.unique' => 'Email already exists.',
                 'mobile_number.required' => 'Mobile number is required.',
-                'mobile_number.digits' => 'Mobile number must be 10 digits.',
                 'mobile_number.unique' => 'Mobile number already exists.',
                 'country_code.required' => 'Country code is required.',
                 'country_code.exists' => 'Invalid country code selected.',
