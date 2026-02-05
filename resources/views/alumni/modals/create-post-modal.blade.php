@@ -328,6 +328,7 @@
         gap: 8px;
         transition: background-color 0.2s;
         border-bottom: 1px solid #f3f4f6;
+        flex-direction: row-reverse;
     }
 
     #createPostModal .multi-select-option:last-child {

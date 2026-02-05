@@ -67,7 +67,7 @@
                             onblur="this.style.borderColor='#e5e7eb'"> -->
                         <textarea
                             id="replyInput"
-                            placeholder="Write your reply..."
+                            placeholder="Write a comment..."
                             rows="1"
                             class="py-2 px-3"
                             style="width:100%;

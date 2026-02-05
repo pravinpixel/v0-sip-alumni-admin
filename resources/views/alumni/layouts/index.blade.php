@@ -268,7 +268,7 @@
             white-space: nowrap;
         }
         
-        .announcement-scroll-container:hover .announcement-scroll-content {
+        .announcement-scroll-content:hover {
             animation-play-state: paused;
         }
         
