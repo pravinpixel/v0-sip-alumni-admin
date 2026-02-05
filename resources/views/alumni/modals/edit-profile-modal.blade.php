@@ -1010,13 +1010,12 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                     startMobileOTPCooldown();
                     startMobileOTPTimer();
                 } else {
-                    showToast(data.message || 'Failed to send OTP', 'error');
+                    showToast(data.error || 'Failed to send OTP', 'error');
                     verifyBtn.disabled = false;
                     verifyBtn.textContent = 'Verify';
                 }
             })
             .catch(err => {
-                console.error('Error:', err);
                 showToast('Failed to send OTP', 'error');
                 verifyBtn.disabled = false;
                 verifyBtn.textContent = 'Verify';
@@ -1067,7 +1066,6 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                 }
             })
             .catch(err => {
-                console.error('Error:', err);
                 showToast('Failed to send OTP', 'error');
                 verifyBtn.disabled = false;
                 verifyBtn.textContent = 'Verify';
