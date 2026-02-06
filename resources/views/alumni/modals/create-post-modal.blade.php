@@ -819,7 +819,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    showToast('Post submitted successfully. Awaiting Admin approval.');
+                    showToast('Your post has been published successfully.');
                     closeCreatePostModal();
                     window.location.reload();   
                 } else {
