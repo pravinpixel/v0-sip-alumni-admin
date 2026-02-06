@@ -6,14 +6,14 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div style="padding: 2rem;">
+    <div class="create-page-container">
         <!-- Header Section -->
-        <div style="margin-bottom: 2rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                <a href="{{ route('admin.announcements.index') }}" style="color: #6b7280; text-decoration: none; font-size: 1.5rem;">
+        <div class="create-page-header">
+            <div class="main-head">
+                <a href="{{ route('admin.announcements.index') }}">
                     <i class="fas fa-arrow-left"></i>
                 </a>
-                <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0;">
+                <h1>
                     @if(isset($announcement))
                         Edit Announcement
                     @else
@@ -21,7 +21,7 @@
                     @endif
                 </h1>
             </div>
-            <p style="font-size: 1rem; color: #6b7280; margin-left: 2rem;">
+            <p class="main-subhead">
                 @if(isset($announcement))
                     Update announcement details
                 @else
@@ -30,39 +30,36 @@
             </p>
         </div>
 
-        <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 2rem; width: 70%;">
+        <div class="create-page-form">
 
             <form id="dynamic-form" method="post" action="{{ route('admin.announcements.save') }}">
                 @csrf
                 <input type="hidden" name="id" id="id" value="{{$announcement->id ?? ''}}">
 
                 <!-- Announcement Title -->
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                <div class="form-group">
+                    <label class="form-label">
                         Announcement Title <span style="color: #dc2626;">*</span>
                     </label>
-                    <input type="text" id="title" name="title" value="{{$announcement->title ?? ''}}"
-                        style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                    <input class="form-input" type="text" id="title" name="title" value="{{$announcement->title ?? ''}}"
                         placeholder="Enter announcement title">
-                    <span class="field-error" id="title-error"
-                        style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    <span class="field-error" id="title-error"></span>
                 </div>
 
                 <!-- Announcement Description -->
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                <div class="form-group">
+                    <label class="form-label">
                         Announcement Description <span style="color: #dc2626;">*</span>
                     </label>
-                    <textarea id="description" name="description" rows="4"
-                        style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; resize: vertical;"
+                    <textarea class="form-input " id="description" name="description" rows="4"
+                        style="resize: vertical;"
                         placeholder="Enter announcement description">{{$announcement->description ?? ''}}</textarea>
-                    <span class="field-error" id="description-error"
-                        style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    <span class="field-error" id="description-error"></span>
                 </div>
 
                 <!-- Announcement Expiry Date -->
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                <div class="form-group">
+                    <label class="form-label">
                         Expiry Date <span style="color: #dc2626;">*</span>
                     </label>
                     @php
@@ -70,16 +67,15 @@
                             ? \Carbon\Carbon::parse($announcement->expiry_date)->format('Y-m-d\TH:i')
                             : '';
                     @endphp
-                    <input type="datetime-local" id="expiry_date" name="expiry_date"
+                    <input class="form-input" type="datetime-local" id="expiry_date" name="expiry_date"
                         value="{{ $expiry }}"
                         style="width:100%; padding:0.75rem; border:1px solid #e5e7eb; border-radius:0.5rem; font-size:0.875rem;">
-                    <span class="field-error" id="expiry_date-error"
-                        style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    <span class="field-error" id="expiry_date-error"></span>
                 </div>
 
                 <!-- Status Toggle -->
-                <div style="margin-bottom: 2rem;">
-                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                <div class="form-group mb-8">
+                    <label class="form-label">
                         Status
                     </label>
                     <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem;">
@@ -90,23 +86,22 @@
                             <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e7eb; transition: 0.3s; border-radius: 24px;"></span>
                             <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%;"></span>
                         </label>
-                        <span id="status-label" style="font-size: 0.875rem; font-weight: 600; transition: color 0.3s;">
+                        <span id="status-label">
                             {{ isset($announcement) && $announcement->status == 1 ? 'Active' : (!isset($announcement) ? 'Active' : 'Inactive') }}
                         </span>
                     </div>
                     <input type="hidden" name="status" id="status" value="{{ isset($announcement) && $announcement->status == 1 ? '1' : (!isset($announcement) ? '1' : '0') }}">
-                    <span class="field-error" id="status-error"
-                        style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    <span class="field-error" id="status-error"></span>
                 </div>
 
                 <!-- Action Buttons -->
                 <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
                     <button type="button" onclick="window.location='{{ route('admin.announcements.index') }}'"
-                        style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; color: #111827;">
+                        style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: var(--fs-6); font-weight: 600; cursor: pointer; color: #111827;">
                         Cancel
                     </button>
                     <button type="button" id="dynamic-submit"
-                        style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                        style="padding: 0.75rem 1.5rem; background: var(--dark-red-color); color: white; border: none; border-radius: 0.5rem; font-size: var(--fs-6); font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-save"></i>
                         @if(isset($announcement))
                             Update Announcement

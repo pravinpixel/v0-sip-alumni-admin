@@ -3,6 +3,39 @@
   border-color: rgb(146, 56, 81);
 }
 
+/* =========================
+   GLOBAL THEME VARIABLES
+========================= */
+:root {
+    --medium-red-color: #dc2626;
+    --dark-red-color: #ba0028;
+    --secondary-color: #10b981;
+    --bg-color: #ffffff;
+    --text-color: #1f2937;
+    --ash-color: #6b7280;
+    --border-col: #e5e7eb;
+    --dark: #000;
+
+    --font-family: 'Poppins', sans-serif;
+
+    --fs-1: 2px;
+    --fs-2: 4px;
+    --fs-3: 6px;
+    --fs-4: 8px;
+    --fs-5: 10px;
+    --fs-6: 12px;
+    --fs-7: 14px;
+    --fs-8: 16px;
+    --fs-9: 18px;
+    --fs-10: 20px;
+    --fs-11: 22px;
+    --fs-12: 24px;
+    --fs-13: 26px;
+    --fs-14: 28px;
+    --fs-15: 30px;
+}
+
+
 .btn.btn-primary:active:not(.btn-active),
 .btn.btn-primary:focus:not(.btn-active),
 .btn.btn-primary:hover:not(.btn-active) {
@@ -364,7 +397,7 @@ body {
 }
 
 #searchInput:focus {
-  border-color: #ba0028 !important;
+  border-color: var(--dark-red-color) !important;
   /* Turns border red on focus */
   outline: none;
   /* Remove default outline */
@@ -427,7 +460,7 @@ body {
 }
 
 #filterToggleBtn:hover {
-  background-color: #ba0028;
+  background-color: var(--dark-red-color);
   color: #fff;
 }
 
@@ -446,7 +479,7 @@ body {
 }
 
 #exportBtn:hover {
-  background-color: #ba0028;
+  background-color: var(--dark-red-color);
   color: #fff;
 }
 
@@ -527,7 +560,7 @@ body {
 }
 
 .filter-dropdown-btn:hover {
-  background: #ba0028;
+  background: var(--dark-red-color);
   color: #fff;
 }
 
@@ -554,7 +587,7 @@ body {
 
 /* ===== Filter Count Badge ===== */
 .filter-count {
-  background: #ba0028;
+  background: var(--dark-red-color);
   color: #fff;
   border-radius: 50%;
   width: 20px;
@@ -628,7 +661,7 @@ body {
 #clearAllFiltersBtn {
   background: transparent;
   border: none;
-  color: #ba0028;
+  color: var(--dark-red-color);
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
@@ -713,7 +746,7 @@ body {
 }
 
 #tableHeaderRow {
-  background: #ba0028;
+  background: var(--dark-red-color);
   color: white;
   font-weight: 700;
   font-size: 14px;
@@ -784,7 +817,7 @@ body {
 
 .create-button {
   padding: 10px 20px;
-  background: #ba0028;
+  background: var(--dark-red-color);
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -817,7 +850,7 @@ body {
 }
 
 .dt-pagination-custom button:hover:not(:disabled) {
-  background: #ba0028;
+  background: var(--dark-red-color);
   border-color: #9ca3af;
   color: #ffffff;
 }
@@ -865,7 +898,7 @@ body {
 }
 
 #paginationControls button:hover:not(:disabled) {
-  background: #ba0028;
+  background: var(--dark-red-color);
   border-color: #9ca3af;
   color: #ffffff;
 }
@@ -977,7 +1010,7 @@ body {
 .modal-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #ba0028;
+  color: var(--dark-red-color);
   margin: 0;
 }
 
@@ -1048,7 +1081,7 @@ body {
 /* ===== View Comments Button ===== */
 .view-comments-btn {
   width: 100%;
-  background: #ba0028;
+  background: var(--dark-red-color);
   color: #ffffff;
   border: none;
   border-radius: 4px;
@@ -1214,7 +1247,7 @@ body {
 }
 
 .back-button:hover {
-  background: #ba0028;
+  background: var(--dark-red-color);
 }
 
 .back-button:hover svg {
@@ -1416,7 +1449,7 @@ body {
     padding: 8px 12px;
     background-color: #f8f9fa;
     border-radius: 6px;
-    border-left: 3px solid #ba0028;
+    border-left: 3px solid var(--dark-red-color);
     word-break: break-word;
     overflow-wrap: break-word;
     white-space: normal;
@@ -1464,10 +1497,87 @@ body {
 }
 
 .details-grid::-webkit-scrollbar-thumb {
-    background: #ba0028;
+    background: var(--dark-red-color);
     border-radius: 3px;
 }
 
 .details-grid::-webkit-scrollbar-thumb:hover {
     background: #9a0022;
+}
+
+.create-page-container {
+  padding: 26px;
+}
+
+.create-page-header {
+  margin-bottom: 26px;;
+}
+
+.create-page-header .main-head {
+  display: flex; 
+  align-items: center; 
+  gap: 1rem; 
+  margin-bottom: 0.5rem;
+}
+
+.main-head a {
+  color: var(--ash-color);
+  text-decoration: none; 
+  font-size: var(--fs-10);
+}
+
+.main-head h1 {
+  font-size: var(--fs-15); 
+  font-weight: 700; 
+  color: var(--dark); 
+  margin: 0;
+}
+
+.create-page-header .main-subhead {
+  font-size: var(--fs-7); 
+  color: var(--ash-color); 
+  margin-left: 2rem;
+}
+
+.create-page-form {
+  background: white; 
+  border-radius: 0.75rem; 
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+  padding: 2rem; 
+  width: 80%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block; 
+  font-size: var(--fs-7); 
+  font-weight: 600; 
+  color: var(--dark);
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%; 
+  border: 1px solid var(--border-col); 
+  border-radius: 0.5rem; 
+  padding: 0.75rem; 
+  font-size: var(--fs-6);
+  color: var(--dark); 
+  transition: border-color 0.3s;
+}
+
+.field-error {
+  color:var(--medium-red-color); 
+  font-size: var(--fs-6); 
+  margin-top: 0.25rem; 
+  display: block;
+}
+
+#status-label {
+  font-size: var(--fs-6); 
+  font-weight: 600; 
+  transition: color 0.3s;
 }
