@@ -772,6 +772,10 @@ body {
   background: #f3f4f6;
 }
 
+.filter-option input {
+  cursor: pointer;
+}
+
 .filter-btns {
   display: flex;
   gap: 0.75rem;
