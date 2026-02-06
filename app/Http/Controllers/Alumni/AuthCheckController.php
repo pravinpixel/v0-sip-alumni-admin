@@ -25,7 +25,7 @@ class AuthCheckController extends Controller
             $locationType = $request->location_type;
             if ($locationType == 0) {
                 $request->validate([
-                    'number' => 'required|digits:10',
+                    'number' => 'required|numeric',
                     'is_login' => 'boolean'
                 ]);
             } else {
