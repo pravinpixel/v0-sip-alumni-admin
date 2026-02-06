@@ -1690,12 +1690,12 @@
         }
         
         // Close modal when clicking outside
-        document.addEventListener('click', function(event) {
-            const modal = document.getElementById('reportPostModal');
-            if (event.target === modal) {
-                closeReportModal();
-            }
-        });
+        // document.addEventListener('click', function(event) {
+        //     const modal = document.getElementById('reportPostModal');
+        //     if (event.target === modal) {
+        //         closeReportModal();
+        //     }
+        // });
     });
 </script>
 </script>
