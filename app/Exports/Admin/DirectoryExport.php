@@ -108,11 +108,16 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
             'Name',
             'Year',
             'Center Location',
+            'Pincode',
             'City & State',
             'Email',
             'Contact',
             'Occupation',
             'Status',
+            'Level Completed',
+            'LinkedIn Profile',
+            'Organization',
+            'University',
         ];
     }
 
@@ -123,11 +128,16 @@ class DirectoryExport implements FromCollection, WithHeadings, WithMapping
             $row->full_name ?? '-',
             $row->year_of_completion ?? '-',
             $row->centerLocation?->name ?? '-',
+            $row->pincode->pincode ?? '-',
             $row->city?->name . ' , ' . $row->city?->state?->name,
             $row->email ?? '-',
             '+' .$row->country_code . ' ' . $row->mobile_number ?? '-',
             $row->occupation->name ?? '-',
             ucfirst($row->status) ?? '-',
+            $row->level_completed ?? '-',
+            $row->linkedin_profile ?? '-',
+            $row->organization ?? '-',
+            $row->university ?? '-',
         ];
     }
 }
