@@ -388,7 +388,7 @@ class AlumniController extends Controller
 
             if (in_array("state", $required)) {
                 $states = [];
-                $states = States::select('id', 'name')->get();
+                $states = States::select('id', 'name')->orderBy('name')->get();
                 $results['state'] = $states;
             }
             if (in_array("city", $required)) {
@@ -423,12 +423,12 @@ class AlumniController extends Controller
             }
             if (in_array("occupation", $required)) {
                 $occupation = [];
-                $occupation = Occupation::select('id', 'name')->get();
+                $occupation = Occupation::select('id', 'name')->orderBy('name')->get();
                 $results['occupation'] = $occupation;
             }
             if (in_array("pincode", $required)) {
                 $pincode = [];
-                $pincode = Pincodes::select('id', 'pincode', 'city_id')->get();
+                $pincode = Pincodes::select('id', 'pincode', 'city_id')->orderBy('pincode')->get();
                 if($request->city_id){
                     $pincode = $pincode->where('city_id', $request->city_id)->values()->all();
                 }
