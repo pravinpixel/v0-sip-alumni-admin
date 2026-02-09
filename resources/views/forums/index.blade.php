@@ -721,10 +721,8 @@
                     // Set post title
                     $('#postTitle').text(post.title || 'No Title');
                     
-                    const description = post.description ?
-                    post.description.replace(/<\/?[^>]+>/g, "") :
-                    'No description available';
-                    $('#postDescription').text(description);
+                    const description = post.description || 'No description available'; 
+                    $('#postDescription').html(description);
                     
                     // Set labels
                     const labelsContainer = $('#postLabels');

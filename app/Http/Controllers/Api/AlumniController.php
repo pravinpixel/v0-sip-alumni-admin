@@ -436,7 +436,7 @@ class AlumniController extends Controller
             }
             if (in_array("country_code", $required)) {
                 $countryCode = [];
-                $countryCodes = CountryCodes::select('id', 'dial_code', 'is_inside')->get();
+                $countryCodes = CountryCodes::select('id', 'dial_code', 'is_inside', 'country_code')->get();
                 if($request->location_type == 0){
                     $countryCode = $countryCodes->where('is_inside', 1)->values()->all();
                 } else {
