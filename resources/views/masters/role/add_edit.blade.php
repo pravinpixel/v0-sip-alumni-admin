@@ -6,14 +6,14 @@
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
-<div style="padding: 2rem;">
+<div class="create-page-container">
     <!-- Header Section -->
-    <div style="margin-bottom: 2rem;">
-        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-            <a href="{{ route('role.index') }}" style="color: #6b7280; text-decoration: none; font-size: 1.5rem;">
+    <div class="create-page-header">
+        <div class="main-head">
+            <a href="{{ route('role.index') }}">
                 <i class="fas fa-arrow-left"></i>
             </a>
-            <h1 style="font-size: 3rem; font-weight: 700; color: #111827; margin: 0;">
+            <h1>
                 @if(isset($role))
                     Edit Role
                 @else
@@ -21,7 +21,7 @@
                 @endif
             </h1>
         </div>
-        <p style="font-size: 1.2rem; color: #6b7280; margin-left: 1.8rem;">
+        <p class="main-subhead">
             @if(isset($role))
                 Update role details and permissions
             @else
@@ -31,7 +31,7 @@
     </div>
 
     <!-- Form Card -->
-    <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 2rem;">
+    <div class="create-page-form w-100">
         <form id="dynamic-form" method="post" action="{{ route('role.save') }}">
             @csrf
             <input type="hidden" name="id" id="id" value="{{$role->id??''}}">
@@ -40,14 +40,14 @@
             <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 1.5rem 0;">Basic Information</h2>
             
             <!-- Role Name -->
-            <div style="margin-bottom: 2rem;">
-                <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+            <div class="form-group">
+                <label class="form-label">
                     Role Name <span style="color: #dc2626;">*</span>
                 </label>
                 <input type="text" id="role_name" name="role_name" value="{{$role->name??''}}" 
-                    style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;" 
+                    class="form-input" 
                     placeholder="e.g., Content Moderator">
-                <span class="field-error" id="role_name-error" style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                <span class="field-error" id="role_name-error"></span>
             </div>
 
             <!-- Hidden status field - default to active -->
@@ -60,7 +60,7 @@
             <!-- Permissions Section -->
             <div style="border-top: 1px solid #e5e7eb; padding-top: 2rem;">
                 <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 1.5rem 0;">Permissions</h2>
-                <span class="field-error" id="role_permissions-error" style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                <span class="field-error" id="role_permissions-error"></span>
                 <!-- User Management -->
                 <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f9fafb; border-radius: 0.5rem;" class="perm-block {{ $isFranchisee && $block !== 'directory' ? 'disabled' : '' }}">
                     <div style="display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;">
@@ -268,9 +268,9 @@
                 </div>
             </div>
 
-                    <div>
+                    <div class="form-group">
                         <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem; margin-top: 3rem;">
+                            class="form-label">
                             Status
                         </label>
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem;">
@@ -281,7 +281,7 @@
                                 <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e7eb; transition: 0.3s; border-radius: 24px;"></span>
                                 <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%;"></span>
                             </label>
-                            <span id="status-label" style="font-size: 0.875rem; font-weight: 600; color: {{ isset($role) && $role->status == 1 ? '#16a34a' : (!isset($role) ? '#16a34a' : '#dc2626') }}; transition: color 0.3s;">
+                            <span id="status-label" style="font-size: 12px; font-weight: 600; color: {{ isset($role) && $role->status == 1 ? '#16a34a' : (!isset($role) ? '#16a34a' : '#dc2626') }}; transition: color 0.3s;">
                                 {{ isset($role) && $role->status == 1 ? 'Active' : (!isset($role) ? 'Active' : 'Inactive') }}
                             </span>
                         </div>
@@ -293,11 +293,11 @@
             <!-- Action Buttons -->
             <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; margin-top: 2rem;">
                 <button type="button" onclick="window.location='{{ route('role.index') }}'" 
-                    style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; color: #111827;">
+                    style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 12px; font-weight: 600; cursor: pointer; color: #111827;">
                     Cancel
                 </button>
                 <button type="button" id="dynamic-submit" 
-                    style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                    style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                     <i class="fas fa-save"></i>
                     @if(isset($role))
                         Update Role
