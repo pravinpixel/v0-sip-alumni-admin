@@ -1574,6 +1574,7 @@ body {
   font-size: var(--fs-6); 
   margin-top: 0.25rem; 
   display: block;
+  letter-spacing: 0.5px;;
 }
 
 #status-label {
