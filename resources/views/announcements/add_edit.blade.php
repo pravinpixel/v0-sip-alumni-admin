@@ -68,8 +68,7 @@
                             : '';
                     @endphp
                     <input class="form-input" type="datetime-local" id="expiry_date" name="expiry_date"
-                        value="{{ $expiry }}"
-                        style="width:100%; padding:0.75rem; border:1px solid #e5e7eb; border-radius:0.5rem; font-size:0.875rem;">
+                        value="{{ $expiry }}">
                     <span class="field-error" id="expiry_date-error"></span>
                 </div>
 

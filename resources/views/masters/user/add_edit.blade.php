@@ -17,14 +17,14 @@
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div style="padding: 2rem;">
+    <div class="create-page-container">
         <!-- Header Section -->
-        <div style="margin-bottom: 2rem;">
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
-                <a href="{{ route('user.index') }}" style="color: #6b7280; text-decoration: none; font-size: 1.5rem;">
+        <div class="create-page-header">
+            <div class="main-head">
+                <a href="{{ route('user.index') }}">
                     <i class="fas fa-arrow-left"></i>
                 </a>
-                <h1 style="font-size: 2rem; font-weight: 700; color: #111827; margin: 0;">
+                <h1>
                     @if(isset($user))
                         Edit User
                     @else
@@ -32,7 +32,7 @@
                     @endif
                 </h1>
             </div>
-            <p style="font-size: 0.875rem; color: #6b7280; margin-left: 3.5rem;">
+            <p class="main-subhead">
                 @if(isset($user))
                     Update user details and permissions
                 @else
@@ -42,58 +42,56 @@
         </div>
 
         <!-- Form Card -->
-        <div style="background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 2rem;">
+        <div class="create-page-form w-100">
             <h2 style="font-size: 1.25rem; font-weight: 700; color: #111827; margin: 0 0 1.5rem 0;">User Details</h2>
 
             <form id="dynamic-form" method="post" action="{{ route('user.save') }}">
                 @csrf
                 <input type="hidden" name="id" id="id" value="{{$user->id ?? ''}}">
 
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
                     <!-- User ID -->
-                    <div>
+                    <div class="form-group">
                         <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            class="form-label">
                             User ID <span style="color: #dc2626;">*</span>
                         </label>
                         <input type="text"
                             value="{{isset($user) ? 'USER' . str_pad($user->id, 3, '0', STR_PAD_LEFT) : 'Auto-generated'}}"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; background: #f9fafb;"
+                            class="form-input"
                             disabled>
                     </div>
 
                     <!-- User Name -->
-                    <div>
+                    <div class="form-group">
                         <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            class="form-label">
                             User Name <span style="color: #dc2626;">*</span>
                         </label>
                         <input type="text" id="user_name" name="user_name" value="{{$user->name ?? ''}}"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                            class="form-input"
                             placeholder="e.g., John Doe">
-                        <span class="field-error" id="user_name-error"
-                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                        <span class="field-error" id="user_name-error"></span>
                     </div>
                 </div>
 
                 <!-- Email ID (Full Width) -->
-                <div style="margin-bottom: 1.5rem;">
+                <div class="form-group">
                     <label
-                        style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                        class="form-label">
                         Email ID <span style="color: #dc2626;">*</span>
                     </label>
                     <input type="email" id="email" name="email" value="{{$user->email ?? ''}}"
-                        style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                        class="form-input"
                         placeholder="e.g., john.doe@sipadmin.com">
-                    <span class="field-error" id="email-error"
-                        style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                    <span class="field-error" id="email-error"></span>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
                 <!-- Password -->
-                    <div>
+                    <div class="form-group">
                         <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            class="form-label">
                             @if(isset($user))
                                 New Password <span style="color: #6b7280; font-weight: 400;">(Leave blank to keep current)</span>
                             @else
@@ -102,20 +100,18 @@
                         </label>
                         <div style="position: relative;">
                             <input type="password" id="password" name="password" 
-                                value="{{ isset($user) && $decryptedPassword ? $decryptedPassword : '' }}"
-                                style="width: 100%; padding: 0.75rem; padding-right: 3rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                                value="{{ isset($user) && $decryptedPassword ? $decryptedPassword : '' }}" class="form-input"
                                 placeholder="Enter password">
                             <i class="fas fa-eye-slash toggle-password" data-toggle="password"
                                 style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #6b7280;"></i>
                         </div>
-                        <span class="field-error" id="password-error"
-                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                        <span class="field-error" id="password-error"></span>
                     </div>
 
                     <!-- Confirm Password -->
-                    <div>
+                    <div class="form-group">
                         <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            class="form-label">
                             @if(isset($user))
                                 Confirm New Password
                             @else
@@ -125,25 +121,24 @@
                         <div style="position: relative;">
                             <input type="password" id="retype_password" name="retype_password"
                                 value="{{ isset($user) && $decryptedPassword ? $decryptedPassword : '' }}"
-                                style="width: 100%; padding: 0.75rem; padding-right: 3rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem;"
+                                class="form-input"
                                 placeholder="Re-enter password">
                             <i class="fas fa-eye-slash toggle-password" data-toggle="retype_password"
                                 style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #6b7280;"></i>
                         </div>
-                        <span class="field-error" id="retype_password-error"
-                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                        <span class="field-error" id="retype_password-error"></span>
                     </div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;">
                     <!-- Select Role -->
-                    <div>
+                    <div class="form-group">
                         <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            class="form-label">
                             Select Role <span style="color: #dc2626;">*</span>
                         </label>
                         <select name="role_id" id="role_id"
-                            style="width: 100%; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.875rem; background: white;">
+                            class="form-input cursor-pointer">
                             <option value="">Select a role</option>
                             @foreach($roles as $role)
                                 <option value="{{ $role->id }}" {{ isset($user) && $role->id == old('role_id', $user->role_id) ? 'selected' : '' }}>
@@ -151,14 +146,13 @@
                                 </option>
                             @endforeach
                         </select>
-                        <span class="field-error" id="role_id-error"
-                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                        <span class="field-error" id="role_id-error"></span>
                     </div>
 
                     <!-- Status -->
-                    <div>
+                    <div class="form-group">
                         <label
-                            style="display: block; font-size: 0.875rem; font-weight: 600; color: #111827; margin-bottom: 0.5rem;">
+                            class="form-label">
                             Status
                         </label>
                         <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem;">
@@ -169,24 +163,23 @@
                                 <span style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #e5e7eb; transition: 0.3s; border-radius: 24px;"></span>
                                 <span style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.3s; border-radius: 50%;"></span>
                             </label>
-                            <span id="status-label" style="font-size: 0.875rem; font-weight: 600; color: {{ isset($user) && $user->status == 1 ? '#16a34a' : (!isset($user) ? '#16a34a' : '#dc2626') }}; transition: color 0.3s;">
+                            <span id="status-label" style="font-size: 12px; font-weight: 600; color: {{ isset($user) && $user->status == 1 ? '#16a34a' : (!isset($user) ? '#16a34a' : '#dc2626') }}; transition: color 0.3s;">
                                 {{ isset($user) && $user->status == 1 ? 'Active' : (!isset($user) ? 'Active' : 'Inactive') }}
                             </span>
                         </div>
                         <input type="hidden" name="status" id="status" value="{{ isset($user) && $user->status == 1 ? '1' : (!isset($user) ? '1' : '0') }}">
-                        <span class="field-error" id="status-error"
-                            style="color:#dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: block;"></span>
+                        <span class="field-error" id="status-error"></span>
                     </div>
                 </div>
 
                 <!-- Center Location (hidden by default) -->
                     <div id="center-location-wrapper" style="display: none; margin-bottom: 1.5rem;">
-                        <label style="display:block; font-size:0.875rem; font-weight:600; color:#111827; margin-bottom:0.5rem;">
+                        <label class="form-label">
                             Center Location <span style="color:#dc2626;">*</span>
                         </label>
 
                         <select name="center_location_id" id="center_location"
-                            style="width:100%; padding:0.75rem; border:1px solid #e5e7eb; border-radius:0.5rem; font-size:0.875rem; background:white;">
+                            class="form-input cursor-pointer">
                             <option value="">Select Center</option>
                             @foreach($locations as $loc)
                                 <option value="{{ $loc->id }}"
@@ -196,8 +189,7 @@
                             @endforeach
                         </select>
 
-                        <span class="field-error" id="center_location_id-error"
-                            style="color:#dc2626; font-size:0.75rem; margin-top:0.25rem; display:block;">
+                        <span class="field-error" id="center_location_id-error">
                         </span>
                     </div>
 
@@ -205,11 +197,11 @@
                 <div
                     style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
                     <button type="button" onclick="window.location='{{ route('user.index') }}'"
-                        style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; color: #111827;">
+                        style="padding: 0.75rem 1.5rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; font-size: 12px; font-weight: 600; cursor: pointer; color: #111827;">
                         Cancel
                     </button>
                     <button type="button" id="dynamic-submit"
-                        style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+                        style="padding: 0.75rem 1.5rem; background: #ba0028; color: white; border: none; border-radius: 0.5rem; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
                         <i class="fas fa-save"></i>
                         @if(isset($user))
                             Update User
