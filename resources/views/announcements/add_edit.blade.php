@@ -67,7 +67,7 @@
                             ? \Carbon\Carbon::parse($announcement->expiry_date)->format('Y-m-d\TH:i')
                             : '';
                     @endphp
-                    <input class="form-input" type="datetime-local" id="expiry_date" name="expiry_date"
+                    <input class="form-input cursor-pointer" type="datetime-local" id="expiry_date" name="expiry_date"
                         value="{{ $expiry }}">
                     <span class="field-error" id="expiry_date-error"></span>
                 </div>
