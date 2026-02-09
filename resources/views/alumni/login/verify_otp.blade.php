@@ -91,9 +91,7 @@
             color: green;
         }
 
-        .error-message {
-            color: red;
-        }
+        
 
         @media (max-width: 480px) {
             .otp-input {

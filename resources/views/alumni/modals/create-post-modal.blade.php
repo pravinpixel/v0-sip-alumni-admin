@@ -10,7 +10,7 @@
                 <div class="form-group">
                     <label>Post Title <span style="color: #dc2626;">*</span></label>
                     <input type="text" class="form-input" placeholder="Enter post title" name="title" maxlength="100" required oninput="clearFieldError(this)">
-                    <small class="error-message" style="color: #dc2626; font-size: 12px; display: none;"></small>
+                    <small class="error-message"></small>
                 </div>
 
                 <!-- Description Field with Quill Editor -->
@@ -26,7 +26,7 @@
                         </div>
                         <div id="editor" class="quill-editor form-input" data-error-field="true"></div>
                     </div>
-                    <small class="error-message" style="color: #dc2626; font-size: 12px; display: none; margin-top: 8px;"></small>
+                    <small class="error-message"></small>
                 </div>
 
                 <!-- Label/Tags Field -->
@@ -45,7 +45,7 @@
                     <div class="selected-labels-display" id="selectedLabelsDisplay">
                         <!-- Selected labels will be shown here -->
                     </div>
-                    <small class="error-message" style="color: #dc2626; font-size: 12px; display: none;"></small>
+                    <small class="error-message"></small>
                 </div>
             </form>
         </div>
@@ -550,9 +550,33 @@
                     theme: 'snow',
                     placeholder: 'Enter post description',
                     modules: {
-                        toolbar: '#editorToolbar'
-                    }
+                        toolbar: '#editorToolbar',
+                        clipboard: {
+                            matchVisual: false
+                        }
+                    },
+                     formats: [
+                        'bold',
+                        'italic',
+                        'underline',
+                        'list',
+                        'link'
+                    ]
                 });
+
+                // Remove colors, fonts, styles when pasting
+                quill.clipboard.addMatcher(Node.ELEMENT_NODE, function(node, delta) {
+                    delta.ops.forEach(op => {
+                        if (op.attributes) {
+                            delete op.attributes.color;
+                            delete op.attributes.background;
+                            delete op.attributes.font;
+                            delete op.attributes.size;
+                        }
+                    });
+                    return delta;
+                });
+
 
                 // Add focus and blur event handlers for red border
                 quill.on('selection-change', function(range) {
