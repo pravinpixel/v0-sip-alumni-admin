@@ -854,6 +854,14 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
             saveBtn.style.opacity = '0.5';
         }
     }
+    function focusCursorToEnd(input) {
+    setTimeout(() => {
+        input.focus();
+        const len = input.value.length;
+        input.setSelectionRange(len, len);
+    }, 0);
+}
+
 
     // Toggle mobile editing
     function toggleMobileEdit() {
@@ -869,7 +877,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         if (mobileInput.readOnly) {
             // Enable editing mode
             mobileInput.readOnly = false;
-            mobileInput.focus();
+            focusCursorToEnd(mobileInput);
             editCancelBtn.textContent = 'Cancel';
             editCancelBtn.style.color = '#6b7280';
 
