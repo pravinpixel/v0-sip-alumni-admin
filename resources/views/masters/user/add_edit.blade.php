@@ -249,6 +249,10 @@
                 });
             });
 
+            $('#center_location').select2({
+            });
+
+
             // Status Toggle Script
             $('#status-toggle').on('change', function() {
                 if ($(this).is(':checked')) {

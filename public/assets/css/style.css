@@ -33,6 +33,8 @@
     --fs-13: 26px;
     --fs-14: 28px;
     --fs-15: 30px;
+
+    --dropdown-bg: #f7f3f3;
 }
 
 
@@ -94,19 +96,19 @@
 }
 
 .select2-container--bootstrap5 .select2-dropdown .select2-results__option.select2-results__option--highlighted {
-  background-color: rgb(238, 224, 228);
-  color: rgb(146, 56, 81);
+  background-color: var(--dropdown-bg);
+  color: var(--dark);
   transition: color .2s ease;
 }
 
 .select2-container--bootstrap5 .select2-dropdown .select2-results__option.select2-results__option--selected {
-  background-color: rgb(238, 224, 228);
-  color: rgb(146, 56, 81);
+  background-color: var(--dropdown-bg);
+  color: var(--dark-red-color);
   transition: color .2s ease;
 }
 
 .select2-container--bootstrap5 .select2-dropdown .select2-results__option.select2-results__option--selected:after {
-  background-color: rgb(146, 56, 81);
+  background-color: rgb(253, 69, 69);
 }
 
 .btn.btn-active-color-primary:hover:not(.btn-active) .svg-icon {
