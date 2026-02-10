@@ -137,7 +137,7 @@ class DashboardController extends Controller
                 return [
                     'alumni' => $post->alumni->full_name ?? 'Unknown',
                     'title' => $post->title,
-                    'description' => strip_tags($post->description),
+                    'description' => $post->description,
                     'date' => $post->created_at->format('M d, Y'),
                     'image' => $post->alumni->image_url ?? asset('images/avatar/blank.png'),
                     'likes' => $post->likes_count,
