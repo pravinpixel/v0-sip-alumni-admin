@@ -331,7 +331,7 @@
             <div
                 style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
                 <div
-                    style="display: flex; gap: 0; background: #f3f4f6; border-radius: 8px; overflow: hidden; flex: 0 0 auto; justify-content: space-between;">
+                    style="display: inline-flex; gap: 0; background: #f3f4f6; border-radius: 8px; overflow: hidden; flex: 0 0 auto; justify-content: space-between;">
                     {{-- Tabs --}}
                     <button id="activePostsTab" onclick="switchTab('activePosts')"
                         style="padding: 12px 40px; background: #dc2626; color: white; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
