@@ -552,7 +552,7 @@ body {
   .toast-notification {
     font-size: 10px;
     padding: 10px 15px;
-    top: 76px;
+    top: 6px;
     right: 10px
   }
 
@@ -1119,110 +1119,146 @@ body {
   border-radius: 20%;
 }
 
-    @media (max-width: 768px) {
-        #settingModal {
-            padding: 15px !important;
-        }
-        
-        .settings-modal-content {
-            padding: 18px !important;
-            border-radius: 8px !important;
-        }
-        
-        .settings-header h2 {
-            font-size: 18px !important;
-        }
-        
-        .settings-header p {
-            font-size: 11px !important;
-        }
-        
-        .setting-row {
-            padding: 15px 0 !important;
-            gap: 12px !important;
-        }
-        
-        .setting-row h4 {
-            font-size: 12px !important;
-        }
-        
-        .setting-row p {
-            font-size: 11px !important;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        #settingModal {
-            padding: 10px !important;
-        }
-        
-        .settings-modal-content {
-            padding: 15px !important;
-            border-radius: 6px !important;
-        }
-        
-        .settings-header {
-            margin-bottom: 8px !important;
-        }
-        
-        .settings-header h2 {
-            font-size: 16px !important;
-        }
-        
-        .settings-header p {
-            font-size: 10px !important;
-            margin: 2px 0 !important;
-        }
-        
-        .setting-row {
-            padding: 12px 0 !important;
-            gap: 10px !important;
-        }
-        
-        .setting-row h4 {
-            font-size: 11px !important;
-            line-height: 1.3 !important;
-        }
-        
-        .setting-row p {
-            font-size: 10px !important;
-            line-height: 1.2 !important;
-            margin: 2px 0 !important;
-        }
-        
-        /* Smaller toggle switches on very small screens */
-        #adminSlider, #commentSlider {
-            width: 40px !important;
-            height: 20px !important;
-        }
-        
-        #adminCircle, #commentCircle {
-            width: 16px !important;
-            height: 16px !important;
-        }
-    }
-    
-    @media (max-width: 360px) {
-        .settings-modal-content {
-            padding: 12px !important;
-        }
-        
-        .setting-row {
-            padding: 10px 0 !important;
-        }
-        
-        .setting-row h4 {
-            font-size: 10px !important;
-        }
-        
-        .setting-row p {
-            font-size: 9px !important;
-        }
-    }
+@media (max-width: 768px) {
+  #settingModal {
+    padding: 15px !important;
+  }
 
-    .error-message{
-      --error-message-color: #dc2626;
-      /* display: none; */
-      color: var(--error-message-color);
-      font-size: 12px;
-    }
+  .settings-modal-content {
+    padding: 18px !important;
+    border-radius: 8px !important;
+  }
+
+  .settings-header h2 {
+    font-size: 18px !important;
+  }
+
+  .settings-header p {
+    font-size: 11px !important;
+  }
+
+  .setting-row {
+    padding: 15px 0 !important;
+    gap: 12px !important;
+  }
+
+  .setting-row h4 {
+    font-size: 12px !important;
+  }
+
+  .setting-row p {
+    font-size: 11px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #settingModal {
+    padding: 10px !important;
+  }
+
+  .settings-modal-content {
+    padding: 15px !important;
+    border-radius: 6px !important;
+  }
+
+  .settings-header {
+    margin-bottom: 8px !important;
+  }
+
+  .settings-header h2 {
+    font-size: 16px !important;
+  }
+
+  .settings-header p {
+    font-size: 10px !important;
+    margin: 2px 0 !important;
+  }
+
+  .setting-row {
+    padding: 12px 0 !important;
+    gap: 10px !important;
+  }
+
+  .setting-row h4 {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+  }
+
+  .setting-row p {
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    margin: 2px 0 !important;
+  }
+
+  /* Smaller toggle switches on very small screens */
+  #adminSlider,
+  #commentSlider {
+    width: 40px !important;
+    height: 20px !important;
+  }
+
+  #adminCircle,
+  #commentCircle {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .settings-modal-content {
+    padding: 12px !important;
+  }
+
+  .setting-row {
+    padding: 10px 0 !important;
+  }
+
+  .setting-row h4 {
+    font-size: 10px !important;
+  }
+
+  .setting-row p {
+    font-size: 9px !important;
+  }
+}
+
+.error-message {
+  --error-message-color: #dc2626;
+  /* display: none; */
+  color: var(--error-message-color);
+  font-size: 12px;
+}
+
+.form-input {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.custom-select {
+  position: relative;
+}
+
+.custom-select .form-input {
+  width: 100%;
+  padding-right: 36px;
+}
+
+/* arrow */
+.arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid #000;
+  border-bottom: 2px solid #000;
+  transform: translateY(-50%) rotate(45deg);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
+/* rotate when open */
+.custom-select.open .arrow {
+  transform: translateY(-50%) rotate(-135deg);
+}

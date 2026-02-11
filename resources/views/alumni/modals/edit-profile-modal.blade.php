@@ -56,34 +56,46 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                 <div class="form-row">
                 <div class="form-group">
                     <label>State</label>
-                    <select class="form-input" data-field="state_id" id="stateSelect">
-                        <option value="">Select State</option>
-                    </select>
+                    <div class="custom-select">
+                        <select class="form-input" data-field="state_id" id="stateSelect">
+                            <option value="">Select State</option>
+                        </select>
+                        <span class="arrow"></span>
+                    </div>
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
 
                 <div class="form-group">
                     <label>City</label>
-                    <select class="form-input" data-field="city_id" id="citySelect">
-                        <option value="">Select City</option>
-                    </select>
+                    <div class="custom-select">
+                        <select class="form-input" data-field="city_id" id="citySelect">
+                            <option value="">Select City</option>
+                        </select>
+                        <span class="arrow"></span>
+                    </div>
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
                 </div>
                 <div class="form-row">
                 <div class="form-group">
                     <label>Pincode</label>
-                    <select class="form-input" data-field="pincode_id" id="pincodeSelect">
-                        <option value="">Select Pincode</option>
-                    </select>
+                    <div class="custom-select">
+                        <select class="form-input" data-field="pincode_id" id="pincodeSelect">
+                            <option value="">Select Pincode</option>
+                        </select>
+                        <span class="arrow"></span>
+                    </div>
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
 
                 <div class="form-group">
                     <label>Center Location</label>
-                    <select class="form-input" data-field="center_id" id="centerLocationSelect">
-                        <option value="">Select Center Location</option>
-                    </select>
+                    <div class="custom-select">
+                        <select class="form-input" data-field="center_id" id="centerLocationSelect">
+                            <option value="">Select Center Location</option>
+                        </select>
+                        <span class="arrow"></span>
+                    </div>
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
                 </div>
@@ -133,10 +145,12 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                         </button>
                     </div>
                     <div style="display: flex; gap: 10px; align-items: flex-start;">
-                        <select class="form-input" data-field="country_code" id="countryCodeSelect" 
-                            style="width: 90px; font-size: 12px; padding: 10px 8px; background-color: #f8f9fa;">
-                            <option value="">+91</option>
-                        </select>
+                        <div class="custom-select">
+                            <select class="form-input" data-field="country_code" id="countryCodeSelect">
+                                <option value="">+91</option>
+                            </select>
+                            <span class="arrow"></span>
+                        </div>
                         <div style="position: relative; display: flex; flex: 1;">
                             <input type="text" class="form-input" data-field="mobile_number" id="mobileNumberInput"
                                 value="{{ $alumni->mobile_number ?? '' }}"
@@ -175,9 +189,12 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                 <div class="form-row">
                 <div class="form-group">
                     <label>Current Occupation</label>
-                    <select class="form-input" data-field="occupation_id" id="occupationSelect">
-                        <option value="">Select Occupation</option>
-                    </select>
+                    <div class="custom-select">
+                        <select class="form-input" data-field="occupation_id" id="occupationSelect">
+                            <option value="">Select Occupation</option>
+                        </select>
+                        <span class="arrow"></span>
+                    </div>
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
                 <div class="form-group">
@@ -189,12 +206,15 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
                 <div class="form-row">
                 <div class="form-group">
                     <label>Level Completed</label>
-                    <select class="form-input" data-field="level_completed">
-                        <option value="Advanced 4 / Level 8">Advanced 4 / Level 8</option>
-                        <option value="Grandmaster A">Grandmaster A</option>
-                        <option value="Grandmaster B">Grandmaster B</option>
-                        <option value="Grandmaster C">Grandmaster C</option>
-                    </select>
+                    <div class="custom-select">
+                        <select class="form-input" data-field="level_completed">
+                            <option value="Advanced 4 / Level 8">Advanced 4 / Level 8</option>
+                            <option value="Grandmaster A">Grandmaster A</option>
+                            <option value="Grandmaster B">Grandmaster B</option>
+                            <option value="Grandmaster C">Grandmaster C</option>
+                        </select>
+                        <span class="arrow"></span>
+                    </div>
                     <small class="error-message" style="color:red;font-size:12px;"></small>
                 </div>
                 <div class="form-group">
@@ -924,6 +944,19 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
             resetEmailVerificationState();
         }
     }
+
+    document.querySelectorAll('.custom-select select').forEach(select => {
+        const wrapper = select.parentElement;
+        select.addEventListener('mousedown', () => {
+            wrapper.classList.toggle('open');
+        });
+        select.addEventListener('blur', () => {
+            wrapper.classList.remove('open');
+        });
+        select.addEventListener('change', () => {
+            wrapper.classList.remove('open');
+        });
+    });
 
     // Mobile number validation
     function validateMobileNumber(input) {
