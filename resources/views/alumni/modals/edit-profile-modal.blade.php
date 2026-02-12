@@ -553,6 +553,10 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         toggleVerificationMethod(true); // Set up the UI based on location type, preserve country code
     }
 
+    document.addEventListener('DOMContentLoaded', function () {
+        initCustomSelectArrows();
+    });
+
     function updateMobileMaxLength(locationType) {
         const input = document.getElementById('mobileNumberInput');
 
@@ -944,19 +948,6 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
             resetEmailVerificationState();
         }
     }
-
-    document.querySelectorAll('.custom-select select').forEach(select => {
-        const wrapper = select.parentElement;
-        select.addEventListener('mousedown', () => {
-            wrapper.classList.toggle('open');
-        });
-        select.addEventListener('blur', () => {
-            wrapper.classList.remove('open');
-        });
-        select.addEventListener('change', () => {
-            wrapper.classList.remove('open');
-        });
-    });
 
     // Mobile number validation
     function validateMobileNumber(input) {
@@ -1549,7 +1540,7 @@ $outsideIndiaChecked = $alumni && $alumni->location_type == 1 ? 'checked' : '';
         const modal = document.getElementById('editProfileModal');
         const alumniId = modal.getAttribute('data-alumni-id');
         if (!alumniId) {
-            alert(' Alumni ID not found');
+            alert(' Alumni not found');
             return;
         }
 
