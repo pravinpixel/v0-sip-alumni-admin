@@ -815,9 +815,14 @@
         const formData = new FormData();
         const modal = document.getElementById('createPostModal');
         const alumniId = modal.getAttribute('data-alumni-id');
+        let descriptionHTML = quill.root.innerHTML.trim();
+        descriptionHTML = descriptionHTML
+            .replace(/(<p><br><\/p>\s*)+$/gi, '')
+            .replace(/(<p>\s*<\/p>\s*)+$/gi, '');
 
         formData.append('title', title);
-        formData.append('description', quill.root.innerHTML);
+        formData.append('description', descriptionHTML);
+        // formData.append('description', quill.root.innerHTML);
         formData.append('labels', JSON.stringify(labels));
         formData.append('alumni_id', alumniId);
         formData.append('status', 'pending');

@@ -228,7 +228,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ba0028" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square h-6 w-6 text-primary"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                 </div>
 
-                <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(3, 1fr); margin-bottom: 2rem;">
+                <div style="display: grid; gap: 1.5rem; grid-template-columns: repeat(2, 1fr); margin-bottom: 2rem;">
                     <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 6px solid #16a34a;">
                         <div style="display: flex; align-items: flex-start; justify-content: space-between;">
                             <div style="flex: 1;">
@@ -242,7 +242,7 @@
                         </div>
                     </div>
 
-                    <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 6px solid #f59e0b;">
+                    <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 6px solid #f59e0b; display: none">
                         <div style="display: flex; align-items: flex-start; justify-content: space-between;">
                             <div style="flex: 1;">
                                 <h3 style="font-size: 0.875rem; font-weight: 500; color: #4b5563; margin-bottom: 1rem;">Waiting for Approval</h3>

@@ -93,7 +93,7 @@
                         <label
                             class="form-label">
                             @if(isset($user))
-                                New Password <span style="color: #6b7280; font-weight: 400;">(Leave blank to keep current)</span>
+                                New Password <span style="color: #6b7280; font-weight: 400;"></span>
                             @else
                                 Password <span style="color: #dc2626;">*</span>
                             @endif
