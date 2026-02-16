@@ -68,7 +68,7 @@
                             : '';
                     @endphp
                     <input class="form-input cursor-pointer" type="datetime-local" id="expiry_date" name="expiry_date"
-                        value="{{ $expiry }}">
+                        value="{{ $expiry }}" min="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}">
                     <span class="field-error" id="expiry_date-error"></span>
                 </div>
 
