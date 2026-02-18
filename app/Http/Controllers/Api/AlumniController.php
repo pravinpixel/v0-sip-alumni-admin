@@ -274,7 +274,7 @@ class AlumniController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Mobile OTP sent successfully',
-            'otp' => $otp
+            // 'otp' => $otp
         ], 200);
     }
 
@@ -314,7 +314,7 @@ class AlumniController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Email OTP sent successfully',
-            'otp' => $otp
+            // 'otp' => $otp
         ], 200);
     }
 
